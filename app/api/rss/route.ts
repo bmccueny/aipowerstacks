@@ -1,0 +1,44 @@
+import { NextResponse } from 'next/server'
+import { createClient } from '@/lib/supabase/server'
+
+export async function GET() {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('blog_posts')
+    .select('title, slug, excerpt, published_at, tags')
+    .eq('status', 'published')
+    .order('published_at', { ascending: false })
+    .limit(20)
+
+  const posts = (data ?? []) as { title: string; slug: string; excerpt: string; published_at: string | null; tags: string[] }[]
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://aixplore.ai'
+
+  const items = posts.map((post) => `
+    <item>
+      <title><![CDATA[${post.title}]]></title>
+      <link>${siteUrl}/blog/${post.slug}</link>
+      <guid isPermaLink="true">${siteUrl}/blog/${post.slug}</guid>
+      <description><![CDATA[${post.excerpt}]]></description>
+      ${post.published_at ? `<pubDate>${new Date(post.published_at).toUTCString()}</pubDate>` : ''}
+      ${post.tags?.map((t) => `<category>${t}</category>`).join('') ?? ''}
+    </item>`).join('')
+
+  const rss = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>AIxplore Blog</title>
+    <link>${siteUrl}/blog</link>
+    <description>Latest AI news, guides, and insights</description>
+    <language>en-us</language>
+    <atom:link href="${siteUrl}/api/rss" rel="self" type="application/rss+xml" />
+    ${items}
+  </channel>
+</rss>`
+
+  return new NextResponse(rss, {
+    headers: {
+      'Content-Type': 'application/rss+xml; charset=utf-8',
+      'Cache-Control': 'public, max-age=3600, s-maxage=3600',
+    },
+  })
+}

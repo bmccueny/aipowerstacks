@@ -1,0 +1,61 @@
+import { notFound } from 'next/navigation'
+import { Suspense } from 'react'
+import type { Metadata } from 'next'
+import { getCategoryBySlug } from '@/lib/supabase/queries/categories'
+import { getToolsByCategory, getTopToolsByCategory } from '@/lib/supabase/queries/tools'
+import { ToolGrid } from '@/components/tools/ToolGrid'
+import { Pagination } from '@/components/common/Pagination'
+import { PAGE_SIZE } from '@/lib/constants'
+
+interface Props {
+  params: Promise<{ slug: string }>
+  searchParams: Promise<{ page?: string }>
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params
+  const category = await getCategoryBySlug(slug)
+  if (!category) return {}
+  return {
+    title: `Best ${category.name} AI Tools`,
+    description: category.description ?? `Discover the best ${category.name} AI tools. Browse and compare ${category.tool_count}+ tools.`,
+  }
+}
+
+export default async function CategoryPage({ params, searchParams }: Props) {
+  const { slug } = await params
+  const { page: pageStr } = await searchParams
+  const page = Number(pageStr ?? 1)
+
+  const [category, { tools }] = await Promise.all([
+    getCategoryBySlug(slug),
+    getToolsByCategory(slug, page),
+  ])
+
+  if (!category) notFound()
+
+  const hasMore = tools.length === PAGE_SIZE
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="mb-8 flex items-center gap-4">
+        <span className="text-5xl">{category.icon ?? '🤖'}</span>
+        <div>
+          <h1 className="text-3xl font-bold">{category.name}</h1>
+          {category.description && (
+            <p className="text-muted-foreground mt-1">{category.description}</p>
+          )}
+          {category.tool_count > 0 && (
+            <p className="text-sm text-muted-foreground mt-1">{category.tool_count} tools</p>
+          )}
+        </div>
+      </div>
+
+      <ToolGrid tools={tools} />
+
+      <Suspense>
+        <Pagination page={page} hasMore={hasMore} />
+      </Suspense>
+    </div>
+  )
+}

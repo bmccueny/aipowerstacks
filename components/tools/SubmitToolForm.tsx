@@ -1,0 +1,149 @@
+'use client'
+
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { PRICING_MODELS } from '@/lib/constants'
+
+interface Category { id: string; name: string }
+
+export function SubmitToolForm({ categories }: { categories: Category[] }) {
+  const router = useRouter()
+  const [loading, setLoading] = useState(false)
+  const [submitted, setSubmitted] = useState(false)
+  const [error, setError] = useState('')
+
+  const [form, setForm] = useState({
+    name: '',
+    website_url: '',
+    tagline: '',
+    description: '',
+    category_id: '',
+    pricing_model: '',
+    logo_url: '',
+    submitter_email: '',
+    notes: '',
+  })
+
+  const set = (k: keyof typeof form) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
+      setForm((prev) => ({ ...prev, [k]: e.target.value }))
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+
+    const res = await fetch('/api/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(form),
+    })
+
+    const data = await res.json()
+    if (!res.ok) {
+      setError(typeof data.error === 'string' ? data.error : 'Validation failed. Check all required fields.')
+      setLoading(false)
+    } else {
+      setSubmitted(true)
+    }
+  }
+
+  if (submitted) {
+    return (
+      <div className="glass-card rounded-xl p-10 text-center">
+        <div className="text-5xl mb-4">🎉</div>
+        <h2 className="text-2xl font-bold mb-3">Submission Received!</h2>
+        <p className="text-muted-foreground mb-6">
+          Thanks for submitting. Our team will review your tool and get back to you.
+        </p>
+        <Button onClick={() => router.push('/tools')}>Browse Tools</Button>
+      </div>
+    )
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="glass-card rounded-xl p-6 space-y-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label className="text-sm font-medium mb-1.5 block">Tool Name *</label>
+          <Input value={form.name} onChange={set('name')} placeholder="e.g. ChatGPT" required className="bg-white/5 border-white/10" />
+        </div>
+        <div>
+          <label className="text-sm font-medium mb-1.5 block">Website URL *</label>
+          <Input value={form.website_url} onChange={set('website_url')} placeholder="https://..." type="url" required className="bg-white/5 border-white/10" />
+        </div>
+      </div>
+
+      <div>
+        <label className="text-sm font-medium mb-1.5 block">Tagline *</label>
+        <Input value={form.tagline} onChange={set('tagline')} placeholder="One-line description (max 150 chars)" required maxLength={150} className="bg-white/5 border-white/10" />
+      </div>
+
+      <div>
+        <label className="text-sm font-medium mb-1.5 block">Description *</label>
+        <textarea
+          value={form.description}
+          onChange={set('description')}
+          placeholder="Describe what the tool does, its key features, and who it's for..."
+          required
+          maxLength={2000}
+          className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm resize-none h-28 focus:outline-none focus:border-primary/50"
+        />
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label className="text-sm font-medium mb-1.5 block">Category</label>
+          <select value={form.category_id} onChange={set('category_id')} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary/50">
+            <option value="">Select category...</option>
+            {categories.map((c) => (
+              <option key={c.id} value={c.id}>{c.name}</option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label className="text-sm font-medium mb-1.5 block">Pricing Model</label>
+          <select value={form.pricing_model} onChange={set('pricing_model')} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary/50">
+            <option value="">Select pricing...</option>
+            {PRICING_MODELS.map((p) => (
+              <option key={p.value} value={p.value}>{p.label}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label className="text-sm font-medium mb-1.5 block">Logo URL</label>
+        <Input value={form.logo_url} onChange={set('logo_url')} placeholder="https://... (direct image link)" type="url" className="bg-white/5 border-white/10" />
+      </div>
+
+      <div>
+        <label className="text-sm font-medium mb-1.5 block">Your Email</label>
+        <Input value={form.submitter_email} onChange={set('submitter_email')} placeholder="For submission updates (optional)" type="email" className="bg-white/5 border-white/10" />
+      </div>
+
+      <div>
+        <label className="text-sm font-medium mb-1.5 block">Additional Notes</label>
+        <textarea
+          value={form.notes}
+          onChange={set('notes')}
+          placeholder="Anything else you'd like us to know..."
+          maxLength={500}
+          className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm resize-none h-20 focus:outline-none focus:border-primary/50"
+        />
+      </div>
+
+      {error && <p className="text-sm text-destructive">{error}</p>}
+
+      <Button type="submit" disabled={loading} className="w-full">
+        {loading ? 'Submitting...' : 'Submit Tool for Review'}
+      </Button>
+
+      <p className="text-xs text-muted-foreground text-center">
+        By submitting, you confirm this tool is real and not spam.
+      </p>
+    </form>
+  )
+}
