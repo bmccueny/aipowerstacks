@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 import type { Metadata } from 'next'
 import { getCategoryBySlug } from '@/lib/supabase/queries/categories'
-import { getToolsByCategory, getTopToolsByCategory } from '@/lib/supabase/queries/tools'
+import { getToolsByCategory } from '@/lib/supabase/queries/tools'
 import { ToolGrid } from '@/components/tools/ToolGrid'
 import { Pagination } from '@/components/common/Pagination'
 import { PAGE_SIZE } from '@/lib/constants'
@@ -19,6 +19,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `Best ${category.name} AI Tools`,
     description: category.description ?? `Discover the best ${category.name} AI tools. Browse and compare ${category.tool_count}+ tools.`,
+    alternates: {
+      canonical: `/categories/${category.slug}`,
+    },
   }
 }
 
@@ -37,11 +40,11 @@ export default async function CategoryPage({ params, searchParams }: Props) {
   const hasMore = tools.length === PAGE_SIZE
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
-      <div className="mb-8 flex items-center gap-4">
+    <div className="page-shell">
+      <div className="page-hero flex items-center gap-4">
         <span className="text-5xl">{category.icon ?? '🤖'}</span>
         <div>
-          <h1 className="text-3xl font-bold">{category.name}</h1>
+          <h1 className="text-3xl sm:text-4xl font-black">{category.name}</h1>
           {category.description && (
             <p className="text-muted-foreground mt-1">{category.description}</p>
           )}
@@ -51,7 +54,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
         </div>
       </div>
 
-      <ToolGrid tools={tools} />
+      <ToolGrid tools={tools} cardStyle="home" />
 
       <Suspense>
         <Pagination page={page} hasMore={hasMore} />

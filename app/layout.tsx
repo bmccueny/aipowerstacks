@@ -1,36 +1,34 @@
 import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
+import { GeistSans } from 'geist/font/sans'
+import { SITE_URL } from '@/lib/constants/site'
+import { JsonLd } from '@/components/common/JsonLd'
+import { generateOrganizationJsonLd } from '@/lib/utils/seo'
+import { Toaster } from 'sonner'
 import './globals.css'
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
-})
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
-})
-
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: 'AIxplore — Discover the Best AI Tools',
-    template: '%s | AIxplore',
+    default: 'AIPowerStacks — Discover the Best AI Tools',
+    template: '%s | AIPowerStacks',
   },
   description: 'Discover 5,000+ AI tools organized by category. Find the best AI tools for writing, coding, image generation, video, productivity, and more.',
+  alternates: {
+    canonical: '/',
+  },
   keywords: ['AI tools', 'artificial intelligence', 'AI directory', 'machine learning tools'],
-  authors: [{ name: 'AIxplore' }],
-  creator: 'AIxplore',
+  authors: [{ name: 'AIPowerStacks' }],
+  creator: 'AIPowerStacks',
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    siteName: 'AIxplore',
-    title: 'AIxplore — Discover the Best AI Tools',
+    siteName: 'AIPowerStacks',
+    title: 'AIPowerStacks — Discover the Best AI Tools',
     description: 'Discover 5,000+ AI tools organized by category.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'AIxplore — Discover the Best AI Tools',
+    title: 'AIPowerStacks — Discover the Best AI Tools',
     description: 'Discover 5,000+ AI tools organized by category.',
   },
   robots: {
@@ -52,9 +50,18 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="dark">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+    <html lang="en" className={GeistSans.variable}>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme: dark)').matches)){document.documentElement.classList.add('dark')}}catch(e){}})()`,
+          }}
+        />
+        <JsonLd data={generateOrganizationJsonLd()} />
+      </head>
+      <body className="antialiased">
         {children}
+        <Toaster richColors position="bottom-right" />
       </body>
     </html>
   )

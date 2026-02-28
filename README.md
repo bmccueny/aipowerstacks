@@ -1,5 +1,56 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Daily AI News Automation (Vercel Cron + RSS)
+
+This project supports automated AI news ingestion via:
+
+- `GET /api/cron/ai-news` (secured with `CRON_SECRET`)
+- homepage section: `Latest AI News`
+
+### Setup
+
+1. Add these env vars in Vercel:
+   - `CRON_SECRET` (required)
+   - `NEWS_RSS_URL` (optional, defaults to `https://www.artificialintelligence-news.com/feed/`)
+   - `NEWS_SOURCE_NAME` (optional)
+   - `N8N_WEBHOOK_SECRET` (required for `/api/news/ingest`)
+   - `XAI_API_KEY` (required only if workflow generates Grok images)
+   - `GROK_IMAGE_MODEL` (optional, default `grok-2-image`)
+   - `BLOG_AUTOMATION_AUTHOR_ID` (optional; if unset, first admin profile is used)
+2. Keep `vercel.json` committed so the cron schedule is active.
+3. Deploy to Vercel.
+
+Cron is configured to run once daily at `17:00 UTC` (`0 17 * * *`).
+
+## Compare Metadata Backfill
+
+Use this script to fill or refresh compare metadata on `public.tools`:
+
+- `use_case`
+- `team_size`
+- `integrations`
+
+Commands:
+
+```bash
+npm run backfill:compare:dry
+npm run backfill:compare:apply
+```
+
+Optional flags:
+
+- `--status=published|pending|all` (default: `published`)
+- `--limit=100`
+- `--sample=10`
+- `--concurrency=8`
+- `--force` (overwrite existing values, not only missing fields)
+
+Example:
+
+```bash
+node scripts/backfill-tool-compare-metadata.mjs --apply --status=published --limit=200
+```
+
 ## Getting Started
 
 First, run the development server:

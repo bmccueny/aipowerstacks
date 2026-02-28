@@ -45,7 +45,7 @@ export function ReviewForm({ toolId, onSuccess }: ReviewFormProps) {
   if (submitted) {
     return (
       <div className="text-center py-4 text-muted-foreground text-sm">
-        Thanks for your review!
+        Thanks for your review. It&apos;s pending editorial approval.
       </div>
     )
   }
@@ -66,8 +66,8 @@ export function ReviewForm({ toolId, onSuccess }: ReviewFormProps) {
               <Star className={cn(
                 'h-6 w-6 transition-colors',
                 star <= (hovered || rating)
-                  ? 'fill-amber-400 text-amber-400'
-                  : 'fill-white/10 text-white/10'
+                  ? 'fill-amber-600 text-amber-600'
+                  : 'fill-black/20 text-black/20'
               )} />
             </button>
           ))}
@@ -79,7 +79,7 @@ export function ReviewForm({ toolId, onSuccess }: ReviewFormProps) {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Brief summary"
-          className="bg-white/5 border-white/10"
+          className="bg-background border-black/20"
           maxLength={100}
         />
       </div>
@@ -89,7 +89,7 @@ export function ReviewForm({ toolId, onSuccess }: ReviewFormProps) {
           value={body}
           onChange={(e) => setBody(e.target.value)}
           placeholder="Share your experience..."
-          className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm resize-none h-24 focus:outline-none focus:border-primary/50"
+          className="w-full bg-background border border-black/20 rounded-lg px-3 py-2 text-sm resize-none h-24 focus:outline-none focus:border-primary/50"
           maxLength={1000}
         />
       </div>

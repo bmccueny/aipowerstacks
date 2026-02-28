@@ -15,13 +15,42 @@ export const SORT_OPTIONS = [
   { value: 'popular', label: 'Most Popular' },
 ] as const
 
+export const USE_CASE_OPTIONS = [
+  { value: 'content-creation', label: 'Content Creation' },
+  { value: 'coding', label: 'Coding' },
+  { value: 'marketing', label: 'Marketing' },
+  { value: 'design', label: 'Design' },
+  { value: 'research', label: 'Research' },
+  { value: 'video', label: 'Video' },
+  { value: 'sales', label: 'Sales' },
+  { value: 'customer-support', label: 'Customer Support' },
+] as const
+
+export const TEAM_SIZE_OPTIONS = [
+  { value: 'solo', label: 'Solo' },
+  { value: 'small-team', label: 'Small Team (2-10)' },
+  { value: 'mid-size', label: 'Mid-size Team (11-50)' },
+  { value: 'enterprise', label: 'Enterprise (50+)' },
+] as const
+
+export const INTEGRATION_OPTIONS = [
+  { value: 'slack', label: 'Slack' },
+  { value: 'notion', label: 'Notion' },
+  { value: 'zapier', label: 'Zapier' },
+  { value: 'google-drive', label: 'Google Drive' },
+  { value: 'github', label: 'GitHub' },
+  { value: 'hubspot', label: 'HubSpot' },
+  { value: 'salesforce', label: 'Salesforce' },
+  { value: 'figma', label: 'Figma' },
+] as const
+
 export const PRICING_BADGE_COLORS: Record<string, string> = {
-  free: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
-  freemium: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
-  paid: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
-  trial: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
-  contact: 'bg-gray-500/20 text-gray-400 border-gray-500/30',
-  unknown: 'bg-gray-500/20 text-gray-400 border-gray-500/30',
+  free: 'bg-emerald-100 text-emerald-800 border-emerald-300',
+  freemium: 'bg-sky-100 text-sky-800 border-sky-300',
+  paid: 'bg-amber-100 text-amber-800 border-amber-300',
+  trial: 'bg-indigo-100 text-indigo-800 border-indigo-300',
+  contact: 'bg-stone-100 text-stone-800 border-stone-300',
+  unknown: 'bg-stone-100 text-stone-800 border-stone-300',
 }
 
 export const PRICING_LABELS: Record<string, string> = {

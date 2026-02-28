@@ -52,7 +52,7 @@ export default function RegisterPage() {
     <div className="glass-card rounded-2xl p-8 w-full max-w-md">
       <div className="flex items-center gap-2 mb-6">
         <Sparkles className="h-5 w-5 text-primary" />
-        <span className="font-bold">AIxplore</span>
+        <span className="font-bold">AIPowerStacks</span>
       </div>
       <h1 className="text-2xl font-bold mb-1">Create account</h1>
       <p className="text-muted-foreground text-sm mb-6">Join to save tools and write reviews</p>

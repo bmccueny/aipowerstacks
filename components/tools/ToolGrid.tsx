@@ -6,9 +6,10 @@ interface ToolGridProps {
   tools: ToolSearchResult[]
   view?: 'grid' | 'list'
   loading?: boolean
+  cardStyle?: 'default' | 'home'
 }
 
-export function ToolGrid({ tools, view = 'grid', loading = false }: ToolGridProps) {
+export function ToolGrid({ tools, view = 'grid', loading = false, cardStyle = 'default' }: ToolGridProps) {
   if (loading) {
     return (
       <div className={view === 'grid'
@@ -27,6 +28,9 @@ export function ToolGrid({ tools, view = 'grid', loading = false }: ToolGridProp
       <div className="text-center py-16">
         <p className="text-muted-foreground text-lg">No tools found.</p>
         <p className="text-muted-foreground text-sm mt-1">Try adjusting your search or filters.</p>
+        <p className="text-muted-foreground text-sm mt-3">
+          Can&apos;t find what you need? <a href="/submit" className="text-primary hover:underline">Submit a tool</a>.
+        </p>
       </div>
     )
   }
@@ -37,7 +41,7 @@ export function ToolGrid({ tools, view = 'grid', loading = false }: ToolGridProp
       : 'flex flex-col gap-2'
     }>
       {tools.map((tool) => (
-        <ToolCard key={tool.id} tool={tool} view={view} />
+        <ToolCard key={tool.id} tool={tool} view={view} cardStyle={cardStyle} />
       ))}
     </div>
   )

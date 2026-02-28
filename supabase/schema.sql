@@ -82,6 +82,9 @@ create table if not exists public.tools (
                      check (pricing_model in ('free','freemium','paid','trial','contact','unknown')),
   pricing_details  text,
   use_cases        text[],
+  use_case         text,
+  team_size        text,
+  integrations     text[],
   is_verified      boolean not null default false,
   is_featured      boolean not null default false,
   is_supertools    boolean not null default false,
@@ -93,6 +96,7 @@ create table if not exists public.tools (
   approved_at      timestamptz,
   avg_rating       numeric(3,2) not null default 0,
   review_count     integer not null default 0,
+  upvote_count     integer not null default 0,
   view_count       integer not null default 0,
   bookmark_count   integer not null default 0,
   search_vector    tsvector generated always as (
@@ -105,10 +109,20 @@ create table if not exists public.tools (
   updated_at       timestamptz not null default now()
 );
 
+alter table public.tools add column if not exists use_case text;
+alter table public.tools add column if not exists team_size text;
+alter table public.tools add column if not exists integrations text[];
+alter table public.tools add column if not exists upvote_count integer not null default 0;
+
 create index if not exists tools_slug_idx          on public.tools (slug);
 create index if not exists tools_category_idx      on public.tools (category_id);
 create index if not exists tools_pricing_idx       on public.tools (pricing_model);
 create index if not exists tools_status_idx        on public.tools (status);
+create index if not exists tools_use_case_idx      on public.tools (use_case);
+create index if not exists tools_team_size_idx     on public.tools (team_size);
+create index if not exists tools_integrations_idx  on public.tools using gin(integrations);
+create index if not exists tools_upvote_count_idx  on public.tools (upvote_count desc)
+  where status = 'published';
 create index if not exists tools_search_vector_idx on public.tools using gin(search_vector);
 create index if not exists tools_trgm_name_idx     on public.tools using gin(name gin_trgm_ops);
 create index if not exists tools_published_at_idx  on public.tools (published_at desc)
@@ -132,6 +146,39 @@ create table if not exists public.tool_tags (
 create index if not exists tool_tags_tag_idx on public.tool_tags (tag_id);
 
 -- ============================================================
+-- TOOL VOTES (anonymous visitor upvotes)
+-- ============================================================
+create table if not exists public.tool_votes (
+  id          uuid primary key default gen_random_uuid(),
+  tool_id     uuid not null references public.tools(id) on delete cascade,
+  visitor_id  text not null,
+  created_at  timestamptz not null default now(),
+  unique (tool_id, visitor_id)
+);
+
+create index if not exists tool_votes_tool_idx on public.tool_votes (tool_id);
+create index if not exists tool_votes_visitor_idx on public.tool_votes (visitor_id);
+
+create or replace function public.refresh_tool_upvotes()
+returns trigger language plpgsql security definer set search_path = public as $$
+declare
+  target_tool_id uuid;
+begin
+  target_tool_id := coalesce(new.tool_id, old.tool_id);
+  update public.tools
+  set
+    upvote_count = (select count(*) from public.tool_votes where tool_id = target_tool_id),
+    updated_at   = now()
+  where id = target_tool_id;
+  return null;
+end;
+$$;
+
+create or replace trigger trg_refresh_tool_upvotes
+  after insert or delete on public.tool_votes
+  for each row execute procedure public.refresh_tool_upvotes();
+
+-- ============================================================
 -- REVIEWS
 -- ============================================================
 create table if not exists public.reviews (
@@ -143,13 +190,25 @@ create table if not exists public.reviews (
   body          text,
   is_verified   boolean not null default false,
   helpful_count integer not null default 0,
+  status        text not null default 'pending'
+                  check (status in ('draft','pending','published')),
+  moderated_by  uuid references auth.users(id) on delete set null,
+  moderated_at  timestamptz,
+  rejection_reason text,
   created_at    timestamptz not null default now(),
   updated_at    timestamptz not null default now(),
   unique (tool_id, user_id)
 );
 
+alter table public.reviews add column if not exists status text not null default 'pending'
+  check (status in ('draft','pending','published'));
+alter table public.reviews add column if not exists moderated_by uuid references auth.users(id) on delete set null;
+alter table public.reviews add column if not exists moderated_at timestamptz;
+alter table public.reviews add column if not exists rejection_reason text;
+
 create index if not exists reviews_tool_idx on public.reviews (tool_id);
 create index if not exists reviews_user_idx on public.reviews (user_id);
+create index if not exists reviews_status_idx on public.reviews (status, created_at desc);
 
 create or replace function public.refresh_tool_rating()
 returns trigger language plpgsql security definer set search_path = public as $$
@@ -159,8 +218,8 @@ begin
   target_tool_id := coalesce(new.tool_id, old.tool_id);
   update public.tools
   set
-    avg_rating   = coalesce((select avg(rating)::numeric(3,2) from public.reviews where tool_id = target_tool_id), 0),
-    review_count = (select count(*) from public.reviews where tool_id = target_tool_id),
+    avg_rating   = coalesce((select avg(rating)::numeric(3,2) from public.reviews where tool_id = target_tool_id and status = 'published'), 0),
+    review_count = (select count(*) from public.reviews where tool_id = target_tool_id and status = 'published'),
     updated_at   = now()
   where id = target_tool_id;
   return null;
@@ -255,6 +314,26 @@ create index if not exists blog_posts_category_idx      on public.blog_posts (ca
 create index if not exists blog_posts_search_vector_idx on public.blog_posts using gin(search_vector);
 
 -- ============================================================
+-- AI NEWS (RSS INGEST)
+-- ============================================================
+create table if not exists public.ai_news (
+  id          uuid primary key default gen_random_uuid(),
+  guid        text not null unique,
+  title       text not null,
+  url         text not null,
+  summary     text,
+  source_name text not null default 'RSS Feed',
+  source_url  text,
+  image_url   text,
+  published_at timestamptz not null,
+  created_at  timestamptz not null default now(),
+  updated_at  timestamptz not null default now()
+);
+
+create index if not exists ai_news_published_idx on public.ai_news (published_at desc);
+create index if not exists ai_news_source_idx on public.ai_news (source_name);
+
+-- ============================================================
 -- NEWSLETTER SUBSCRIBERS
 -- ============================================================
 create table if not exists public.newsletter_subscribers (
@@ -270,6 +349,64 @@ create table if not exists public.newsletter_subscribers (
 create index if not exists newsletter_email_idx on public.newsletter_subscribers (email);
 
 -- ============================================================
+-- STORAGE (AVATARS)
+-- ============================================================
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values (
+  'avatars',
+  'avatars',
+  true,
+  2097152,
+  array['image/jpeg', 'image/png', 'image/webp']
+)
+on conflict (id) do update
+set
+  public = excluded.public,
+  file_size_limit = excluded.file_size_limit,
+  allowed_mime_types = excluded.allowed_mime_types;
+
+drop policy if exists "avatars_public_read" on storage.objects;
+drop policy if exists "avatars_auth_insert" on storage.objects;
+drop policy if exists "avatars_auth_update" on storage.objects;
+drop policy if exists "avatars_auth_delete" on storage.objects;
+
+create policy "avatars_public_read"
+  on storage.objects
+  for select
+  using (bucket_id = 'avatars');
+
+create policy "avatars_auth_insert"
+  on storage.objects
+  for insert
+  to authenticated
+  with check (
+    bucket_id = 'avatars'
+    and (storage.foldername(name))[1] = auth.uid()::text
+  );
+
+create policy "avatars_auth_update"
+  on storage.objects
+  for update
+  to authenticated
+  using (
+    bucket_id = 'avatars'
+    and (storage.foldername(name))[1] = auth.uid()::text
+  )
+  with check (
+    bucket_id = 'avatars'
+    and (storage.foldername(name))[1] = auth.uid()::text
+  );
+
+create policy "avatars_auth_delete"
+  on storage.objects
+  for delete
+  to authenticated
+  using (
+    bucket_id = 'avatars'
+    and (storage.foldername(name))[1] = auth.uid()::text
+  );
+
+-- ============================================================
 -- ROW LEVEL SECURITY
 -- ============================================================
 alter table public.profiles               enable row level security;
@@ -277,11 +414,13 @@ alter table public.categories             enable row level security;
 alter table public.tags                   enable row level security;
 alter table public.tools                  enable row level security;
 alter table public.tool_tags              enable row level security;
+alter table public.tool_votes             enable row level security;
 alter table public.reviews                enable row level security;
 alter table public.bookmarks              enable row level security;
 alter table public.tool_submissions       enable row level security;
 alter table public.blog_categories        enable row level security;
 alter table public.blog_posts             enable row level security;
+alter table public.ai_news                enable row level security;
 alter table public.newsletter_subscribers enable row level security;
 
 create or replace function public.is_admin()
@@ -315,8 +454,12 @@ create policy "tools_admin_manage" on public.tools
 create policy "tool_tags_public_read"  on public.tool_tags for select using (true);
 create policy "tool_tags_admin_manage" on public.tool_tags for all using (public.is_admin());
 
+-- Tool Votes
+create policy "tool_votes_public_read" on public.tool_votes for select using (true);
+create policy "tool_votes_admin_manage" on public.tool_votes for all using (public.is_admin());
+
 -- Reviews
-create policy "reviews_public_read"   on public.reviews for select using (true);
+create policy "reviews_public_read"   on public.reviews for select using (status = 'published' or auth.uid() = user_id or public.is_admin());
 create policy "reviews_auth_insert"   on public.reviews for insert with check (auth.uid() = user_id);
 create policy "reviews_own_update"    on public.reviews for update using (auth.uid() = user_id);
 create policy "reviews_own_delete"    on public.reviews for delete using (auth.uid() = user_id);
@@ -338,6 +481,10 @@ create policy "blog_posts_admin_manage"    on public.blog_posts for all using (p
 create policy "blog_cats_public_read"      on public.blog_categories for select using (true);
 create policy "blog_cats_admin_manage"     on public.blog_categories for all using (public.is_admin());
 
+-- AI News
+create policy "ai_news_public_read" on public.ai_news for select using (true);
+create policy "ai_news_admin_manage" on public.ai_news for all using (public.is_admin());
+
 -- Newsletter
 create policy "newsletter_public_insert" on public.newsletter_subscribers
   for insert with check (true);
@@ -352,6 +499,9 @@ create or replace function public.search_tools(
   p_category    uuid    default null,
   p_pricing     text    default null,
   p_verified    boolean default null,
+  p_use_case    text    default null,
+  p_team_size   text    default null,
+  p_integration text    default null,
   p_sort        text    default 'relevance',
   p_limit       integer default 24,
   p_offset      integer default 0
@@ -367,7 +517,11 @@ returns table (
   is_featured   boolean,
   avg_rating    numeric,
   review_count  integer,
+  upvote_count  integer,
   category_id   uuid,
+  use_case      text,
+  team_size     text,
+  integrations  text[],
   published_at  timestamptz,
   rank          real
 )
@@ -383,7 +537,8 @@ begin
   select
     t.id, t.name, t.slug, t.tagline, t.logo_url,
     t.pricing_model, t.is_verified, t.is_featured,
-    t.avg_rating, t.review_count, t.category_id,
+    t.avg_rating, t.review_count, t.upvote_count, t.category_id,
+    t.use_case, t.team_size, t.integrations,
     t.published_at,
     case
       when ts_query is not null then ts_rank(t.search_vector, ts_query)
@@ -396,11 +551,15 @@ begin
     and (p_category is null or t.category_id = p_category)
     and (p_pricing is null or t.pricing_model = p_pricing)
     and (p_verified is null or t.is_verified = p_verified)
+    and (p_use_case is null or t.use_case = p_use_case)
+    and (p_team_size is null or t.team_size = p_team_size)
+    and (p_integration is null or (t.integrations is not null and p_integration = any(t.integrations)))
   order by
     case when p_sort = 'relevance' and ts_query is not null
          then ts_rank(t.search_vector, ts_query) end desc nulls last,
     case when p_sort = 'rating'   then t.avg_rating   end desc nulls last,
     case when p_sort = 'newest'   then t.published_at end desc nulls last,
+    case when p_sort = 'popular'  then t.upvote_count end desc nulls last,
     case when p_sort = 'popular'  then t.view_count   end desc nulls last,
     t.avg_rating desc,
     t.published_at desc

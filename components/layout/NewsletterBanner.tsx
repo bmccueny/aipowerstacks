@@ -4,12 +4,20 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Mail } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
-export function NewsletterBanner({ source = 'footer' }: { source?: string }) {
+export function NewsletterBanner({
+  source = 'footer',
+  tone = 'light',
+}: {
+  source?: string
+  tone?: 'light' | 'dark'
+}) {
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
   const [error, setError] = useState('')
+  const isDark = tone === 'dark'
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -33,21 +41,31 @@ export function NewsletterBanner({ source = 'footer' }: { source?: string }) {
 
   if (done) {
     return (
-      <div className="glass-card rounded-xl p-6 text-center">
-        <Mail className="h-8 w-8 text-primary mx-auto mb-2" />
-        <p className="font-semibold">You&apos;re subscribed!</p>
-        <p className="text-sm text-muted-foreground mt-1">We&apos;ll keep you updated on the latest AI tools.</p>
+      <div className={cn(
+        'rounded-xl p-6 text-center',
+        isDark ? 'border border-white/20 bg-white/5 text-white' : 'glass-card'
+      )}>
+        <Mail className={cn('h-8 w-8 mx-auto mb-2', isDark ? 'text-white' : 'text-primary')} />
+        <p className="font-semibold">You&apos;re in!</p>
+        <p className={cn('text-sm mt-1', isDark ? 'text-white/75' : 'text-muted-foreground')}>
+          First issue lands in your inbox this Friday.
+        </p>
       </div>
     )
   }
 
   return (
-    <div className="glass-card rounded-xl p-6">
+    <div className={cn(
+      'rounded-xl p-6',
+      isDark ? 'border border-white/20 bg-white/5 text-white' : 'glass-card'
+    )}>
       <div className="flex items-center gap-3 mb-3">
-        <Mail className="h-5 w-5 text-primary shrink-0" />
+        <Mail className={cn('h-5 w-5 shrink-0', isDark ? 'text-white' : 'text-primary')} />
         <div>
-          <p className="font-semibold text-sm">Stay up to date</p>
-          <p className="text-xs text-muted-foreground">Get weekly AI tool discoveries in your inbox.</p>
+          <p className="font-semibold text-sm">Every Friday: 5 best new AI tools</p>
+          <p className={cn('text-xs', isDark ? 'text-white/75' : 'text-muted-foreground')}>
+            No fluff. Just the tools worth your time.
+          </p>
         </div>
       </div>
       <form onSubmit={handleSubmit} className="flex gap-2">
@@ -57,13 +75,26 @@ export function NewsletterBanner({ source = 'footer' }: { source?: string }) {
           onChange={(e) => setEmail(e.target.value)}
           placeholder="your@email.com"
           required
-          className="bg-white/5 border-white/10 flex-1"
+          className={cn(
+            'flex-1',
+            isDark
+              ? 'bg-black/30 border-white/30 text-white placeholder:text-white/50 focus:border-white/60'
+              : 'bg-background border-black/20'
+          )}
         />
-        <Button type="submit" disabled={loading} size="sm">
+        <Button
+          type="submit"
+          disabled={loading}
+          size="sm"
+          variant={isDark ? 'outline' : 'default'}
+          className={cn(
+            isDark ? 'border-white/35 bg-white/10 text-white hover:bg-white hover:text-black' : ''
+          )}
+        >
           {loading ? '...' : 'Subscribe'}
         </Button>
       </form>
-      {error && <p className="text-xs text-destructive mt-2">{error}</p>}
+      {error && <p className={cn('text-xs mt-2', isDark ? 'text-red-300' : 'text-destructive')}>{error}</p>}
     </div>
   )
 }

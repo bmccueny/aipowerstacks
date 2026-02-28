@@ -104,6 +104,9 @@ export type Database = {
           pricing_model: 'free' | 'freemium' | 'paid' | 'trial' | 'contact' | 'unknown'
           pricing_details: string | null
           use_cases: string[] | null
+          use_case: string | null
+          team_size: string | null
+          integrations: string[] | null
           is_verified: boolean
           is_featured: boolean
           is_supertools: boolean
@@ -114,9 +117,18 @@ export type Database = {
           approved_at: string | null
           avg_rating: number
           review_count: number
+          upvote_count: number
           view_count: number
           bookmark_count: number
           published_at: string | null
+          has_api: boolean
+          has_mobile_app: boolean
+          is_open_source: boolean
+          pricing_type: string | null
+          trains_on_data: boolean
+          has_sso: boolean
+          security_certifications: string[] | null
+          model_provider: string | null
           created_at: string
           updated_at: string
         }
@@ -133,6 +145,9 @@ export type Database = {
           pricing_model?: 'free' | 'freemium' | 'paid' | 'trial' | 'contact' | 'unknown'
           pricing_details?: string | null
           use_cases?: string[] | null
+          use_case?: string | null
+          team_size?: string | null
+          integrations?: string[] | null
           is_verified?: boolean
           is_featured?: boolean
           is_supertools?: boolean
@@ -142,6 +157,15 @@ export type Database = {
           approved_by?: string | null
           approved_at?: string | null
           published_at?: string | null
+          upvote_count?: number
+          has_api?: boolean
+          has_mobile_app?: boolean
+          is_open_source?: boolean
+          pricing_type?: string | null
+          trains_on_data?: boolean
+          has_sso?: boolean
+          security_certifications?: string[] | null
+          model_provider?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -157,6 +181,9 @@ export type Database = {
           pricing_model?: 'free' | 'freemium' | 'paid' | 'trial' | 'contact' | 'unknown'
           pricing_details?: string | null
           use_cases?: string[] | null
+          use_case?: string | null
+          team_size?: string | null
+          integrations?: string[] | null
           is_verified?: boolean
           is_featured?: boolean
           is_supertools?: boolean
@@ -165,6 +192,15 @@ export type Database = {
           approved_by?: string | null
           approved_at?: string | null
           published_at?: string | null
+          upvote_count?: number
+          has_api?: boolean
+          has_mobile_app?: boolean
+          is_open_source?: boolean
+          pricing_type?: string | null
+          trains_on_data?: boolean
+          has_sso?: boolean
+          security_certifications?: string[] | null
+          model_provider?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -173,6 +209,22 @@ export type Database = {
         Row: { tool_id: string; tag_id: string }
         Insert: { tool_id: string; tag_id: string }
         Update: { tool_id?: string; tag_id?: string }
+        Relationships: []
+      }
+      tool_votes: {
+        Row: {
+          id: string
+          tool_id: string
+          visitor_id: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          tool_id: string
+          visitor_id: string
+          created_at?: string
+        }
+        Update: Record<string, never>
         Relationships: []
       }
       reviews: {
@@ -185,6 +237,10 @@ export type Database = {
           body: string | null
           is_verified: boolean
           helpful_count: number
+          status: 'draft' | 'pending' | 'published'
+          moderated_by: string | null
+          moderated_at: string | null
+          rejection_reason: string | null
           created_at: string
           updated_at: string
         }
@@ -197,6 +253,10 @@ export type Database = {
           body?: string | null
           is_verified?: boolean
           helpful_count?: number
+          status?: 'draft' | 'pending' | 'published'
+          moderated_by?: string | null
+          moderated_at?: string | null
+          rejection_reason?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -204,6 +264,11 @@ export type Database = {
           rating?: number
           title?: string | null
           body?: string | null
+          helpful_count?: number
+          status?: 'draft' | 'pending' | 'published'
+          moderated_by?: string | null
+          moderated_at?: string | null
+          rejection_reason?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -336,6 +401,46 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_news: {
+        Row: {
+          id: string
+          guid: string
+          title: string
+          url: string
+          summary: string | null
+          source_name: string
+          source_url: string | null
+          image_url: string | null
+          published_at: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          guid: string
+          title: string
+          url: string
+          summary?: string | null
+          source_name?: string
+          source_url?: string | null
+          image_url?: string | null
+          published_at: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          guid?: string
+          title?: string
+          url?: string
+          summary?: string | null
+          source_name?: string
+          source_url?: string | null
+          image_url?: string | null
+          published_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       newsletter_subscribers: {
         Row: {
           id: string
@@ -359,6 +464,98 @@ export type Database = {
         }
         Relationships: []
       }
+      collections: {
+        Row: {
+          id: string
+          user_id: string
+          name: string
+          description: string | null
+          is_public: boolean
+          share_slug: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          name: string
+          description?: string | null
+          is_public?: boolean
+          share_slug?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          name?: string
+          description?: string | null
+          is_public?: boolean
+          share_slug?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "collections_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      collection_items: {
+        Row: {
+          collection_id: string
+          tool_id: string
+          sort_order: number
+          created_at: string
+        }
+        Insert: {
+          collection_id: string
+          tool_id: string
+          sort_order?: number
+          created_at?: string
+        }
+        Update: {
+          collection_id?: string
+          tool_id?: string
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "collection_items_collection_id_fkey"
+            columns: ["collection_id"]
+            isOneToOne: false
+            referencedRelation: "collections"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collection_items_tool_id_fkey"
+            columns: ["tool_id"]
+            isOneToOne: false
+            referencedRelation: "tools"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      blueprint_requests: {
+        Row: {
+          id: string
+          email: string
+          goal: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          email: string
+          goal: string
+          created_at?: string
+        }
+        Update: {
+          email?: string
+          goal?: string
+        }
+        Relationships: []
+      }
     }
     Views: Record<string, never>
     Functions: {
@@ -368,6 +565,9 @@ export type Database = {
           p_category?: string
           p_pricing?: string
           p_verified?: boolean
+          p_use_case?: string
+          p_team_size?: string
+          p_integration?: string
           p_sort?: string
           p_limit?: number
           p_offset?: number
@@ -377,13 +577,21 @@ export type Database = {
           name: string
           slug: string
           tagline: string
+          website_url: string
           logo_url: string | null
           pricing_model: string
           is_verified: boolean
           is_featured: boolean
           avg_rating: number
           review_count: number
+          upvote_count: number
           category_id: string
+          use_case: string | null
+          team_size: string | null
+          integrations: string[] | null
+          has_api: boolean
+          has_mobile_app: boolean
+          is_open_source: boolean
           published_at: string | null
           rank: number
         }[]

@@ -13,9 +13,14 @@ export type Bookmark = Tables['bookmarks']['Row']
 export type ToolSubmission = Tables['tool_submissions']['Row']
 export type BlogCategory = Tables['blog_categories']['Row']
 export type BlogPost = Tables['blog_posts']['Row']
+export type AINews = Tables['ai_news']['Row']
 export type NewsletterSubscriber = Tables['newsletter_subscribers']['Row']
+export type Collection = Tables['collections']['Row']
+export type CollectionItem = Tables['collection_items']['Row']
 
 export type ToolSearchResult = Database['public']['Functions']['search_tools']['Returns'][number]
+
+export type ToolCardData = ToolSearchResult & { screenshot_urls?: string[] | null }
 
 export type PricingModel = 'free' | 'freemium' | 'paid' | 'trial' | 'contact' | 'unknown'
 export type SortOption = 'relevance' | 'newest' | 'rating' | 'popular'

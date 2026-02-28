@@ -3,27 +3,53 @@ import Image from 'next/image'
 import { Clock, Calendar } from 'lucide-react'
 import type { BlogPostSummary } from '@/lib/supabase/queries/blog'
 
+function normalizeThumUrl(url: string | null): string | null {
+  if (!url) return null
+  if (!url.startsWith('https://image.thum.io/get/')) return url
+
+  const marker = '/noanimate/'
+  const markerIndex = url.indexOf(marker)
+  if (markerIndex === -1) return url
+
+  try {
+    const parsed = new URL(url)
+    const articlePartRaw = parsed.pathname.slice(markerIndex + marker.length).replace(/^\/+/, '')
+    if (!articlePartRaw) return url
+
+    const articleUrl = decodeURIComponent(articlePartRaw) + (parsed.search || '')
+    return `${url.slice(0, markerIndex + marker.length)}${encodeURIComponent(articleUrl)}`
+  } catch {
+    return url
+  }
+}
+
 export function BlogCard({ post, featured = false }: { post: BlogPostSummary; featured?: boolean }) {
   const date = post.published_at ? new Date(post.published_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : null
+  const coverImageUrl = normalizeThumUrl(post.cover_image_url)
 
   if (featured) {
     return (
       <Link href={`/blog/${post.slug}`} className="block group">
-        <div className="glass-card rounded-xl overflow-hidden flex flex-col lg:flex-row gap-0">
-          {post.cover_image_url && (
+        <div className="glass-card card-hover rounded-[6px] overflow-hidden flex flex-col lg:flex-row">
+          {coverImageUrl ? (
             <div className="relative h-56 lg:h-auto lg:w-1/2 shrink-0">
-              <Image src={post.cover_image_url} alt={post.title} fill className="object-cover" />
+              <Image src={coverImageUrl} alt={post.title} fill unoptimized className="object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent to-transparent" />
+            </div>
+          ) : (
+            <div className="h-56 lg:h-auto lg:w-1/2 shrink-0 bg-gradient-to-br from-primary/10 to-amber-100 flex items-center justify-center">
+              <span className="text-6xl opacity-20">✦</span>
             </div>
           )}
-          <div className="p-6 flex flex-col justify-center">
+          <div className="p-7 flex flex-col justify-center">
             {post.tags?.[0] && (
-              <span className="text-xs font-semibold text-primary uppercase tracking-wide mb-3">{post.tags[0]}</span>
+              <span className="text-xs font-semibold text-primary uppercase tracking-wider mb-3">{post.tags[0]}</span>
             )}
-            <h2 className="text-2xl font-bold mb-3 group-hover:text-primary transition-colors line-clamp-3">{post.title}</h2>
-            <p className="text-muted-foreground text-sm line-clamp-3 mb-4">{post.excerpt}</p>
-            <div className="flex items-center gap-4 text-xs text-muted-foreground">
-              {date && <span className="flex items-center gap-1"><Calendar className="h-3 w-3" />{date}</span>}
-              {post.reading_time_min && <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{post.reading_time_min} min read</span>}
+            <h2 className="text-2xl font-bold mb-3 group-hover:text-primary transition-colors line-clamp-3 leading-[1.25]">{post.title}</h2>
+            <p className="text-muted-foreground text-[14px] line-clamp-3 mb-5 leading-[1.6]">{post.excerpt}</p>
+            <div className="flex items-center gap-4 text-[13px] text-muted-foreground">
+              {date && <span className="flex items-center gap-1.5"><Calendar className="h-3 w-3" />{date}</span>}
+              {post.reading_time_min && <span className="flex items-center gap-1.5"><Clock className="h-3 w-3" />{post.reading_time_min} min read</span>}
             </div>
           </div>
         </div>
@@ -32,26 +58,26 @@ export function BlogCard({ post, featured = false }: { post: BlogPostSummary; fe
   }
 
   return (
-    <Link href={`/blog/${post.slug}`} className="block group">
-      <div className="glass-card rounded-xl overflow-hidden h-full flex flex-col">
-        {post.cover_image_url ? (
-          <div className="relative h-44 shrink-0">
-            <Image src={post.cover_image_url} alt={post.title} fill className="object-cover" />
+    <Link href={`/blog/${post.slug}`} className="block group h-full">
+      <div className="glass-card card-hover rounded-[6px] overflow-hidden h-full flex flex-col">
+        {coverImageUrl ? (
+          <div className="relative h-44 shrink-0 overflow-hidden">
+            <Image src={coverImageUrl} alt={post.title} fill unoptimized className="object-cover group-hover:scale-105 transition-transform duration-300" />
           </div>
         ) : (
-          <div className="h-44 bg-primary/5 flex items-center justify-center shrink-0">
-            <span className="text-4xl opacity-30">📝</span>
+          <div className="h-44 bg-gradient-to-br from-primary/8 to-amber-100 flex items-center justify-center shrink-0">
+            <span className="text-5xl opacity-20">✦</span>
           </div>
         )}
-        <div className="p-4 flex flex-col flex-1">
+        <div className="p-5 flex flex-col flex-1">
           {post.tags?.[0] && (
-            <span className="text-xs font-semibold text-primary uppercase tracking-wide mb-2">{post.tags[0]}</span>
+            <span className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">{post.tags[0]}</span>
           )}
-          <h3 className="font-semibold mb-2 group-hover:text-primary transition-colors line-clamp-2 flex-1">{post.title}</h3>
-          <p className="text-xs text-muted-foreground line-clamp-2 mb-3">{post.excerpt}</p>
-          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+          <h3 className="font-semibold text-[16px] mb-2 group-hover:text-primary transition-colors line-clamp-2 flex-1 leading-[1.3]">{post.title}</h3>
+          <p className="text-[13px] text-muted-foreground line-clamp-2 mb-3 leading-[1.5]">{post.excerpt}</p>
+          <div className="flex items-center gap-3 text-[12px] text-muted-foreground border-t border-black/10 pt-3 mt-auto">
             {date && <span>{date}</span>}
-            {post.reading_time_min && <span>{post.reading_time_min} min</span>}
+            {post.reading_time_min && <span>{post.reading_time_min} min read</span>}
           </div>
         </div>
       </div>

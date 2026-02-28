@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Sparkles, Eye, EyeOff } from 'lucide-react'
@@ -10,11 +10,17 @@ import { createClient } from '@/lib/supabase/client'
 
 export default function LoginPage() {
   const router = useRouter()
+  const [redirectTo, setRedirectTo] = useState('/dashboard')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPass, setShowPass] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+
+  useEffect(() => {
+    const value = new URLSearchParams(window.location.search).get('redirectTo')
+    if (value) setRedirectTo(value)
+  }, [])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -26,16 +32,18 @@ export default function LoginPage() {
       setError(error.message)
       setLoading(false)
     } else {
-      router.push('/dashboard')
+      router.push(redirectTo)
       router.refresh()
     }
   }
 
   const handleGoogle = async () => {
     const supabase = createClient()
+    const callback = new URL(`${window.location.origin}/auth/callback`)
+    callback.searchParams.set('next', redirectTo)
     await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: `${window.location.origin}/auth/callback` },
+      options: { redirectTo: callback.toString() },
     })
   }
 
@@ -43,7 +51,7 @@ export default function LoginPage() {
     <div className="glass-card rounded-2xl p-8 w-full max-w-md">
       <div className="flex items-center gap-2 mb-6">
         <Sparkles className="h-5 w-5 text-primary" />
-        <span className="font-bold">AIxplore</span>
+        <span className="font-bold">AIPowerStacks</span>
       </div>
       <h1 className="text-2xl font-bold mb-1">Welcome back</h1>
       <p className="text-muted-foreground text-sm mb-6">Sign in to your account</p>

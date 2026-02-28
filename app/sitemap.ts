@@ -1,7 +1,8 @@
 import type { MetadataRoute } from 'next'
 import { createClient } from '@/lib/supabase/server'
+import { SITE_URL } from '@/lib/constants/site'
 
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://aixplore.app'
+const BASE_URL = SITE_URL
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const supabase = await createClient()

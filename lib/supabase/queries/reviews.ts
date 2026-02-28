@@ -1,19 +1,39 @@
 import { createClient } from '@/lib/supabase/server'
 import type { Review } from '@/lib/types'
 
-export async function getReviewsByTool(toolId: string): Promise<(Review & { profiles: { display_name: string | null; avatar_url: string | null } })[]> {
+export async function getReviewsByTool(toolId: string): Promise<(Review & { profiles: { display_name: string | null; avatar_url: string | null; role: string | null } })[]> {
   const supabase = await createClient()
 
   const { data, error } = await supabase
     .from('reviews')
-    .select(`
-      *,
-      profiles (display_name, avatar_url)
-    `)
+    .select('*')
     .eq('tool_id', toolId)
+    .eq('status', 'published')
+    .order('helpful_count', { ascending: false })
     .order('created_at', { ascending: false })
     .limit(20)
 
-  if (error) return []
-  return data as never
+  if (error || !data) return []
+
+  const reviews = data as Review[]
+  const userIds = [...new Set(reviews.map((r) => r.user_id))]
+  if (userIds.length === 0) {
+    return reviews.map((r) => ({ ...r, profiles: { display_name: null, avatar_url: null, role: null } }))
+  }
+
+  const { data: profiles } = await supabase
+    .from('profiles')
+    .select('id, display_name, avatar_url, role')
+    .in('id', userIds)
+
+  const profileMap = new Map((profiles ?? []).map((p) => [p.id, {
+    display_name: p.display_name,
+    avatar_url: p.avatar_url,
+    role: p.role,
+  }]))
+
+  return reviews.map((review) => ({
+    ...review,
+    profiles: profileMap.get(review.user_id) ?? { display_name: null, avatar_url: null, role: null },
+  }))
 }

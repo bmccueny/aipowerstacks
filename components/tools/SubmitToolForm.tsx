@@ -8,22 +8,40 @@ import { PRICING_MODELS } from '@/lib/constants'
 
 interface Category { id: string; name: string }
 
-export function SubmitToolForm({ categories }: { categories: Category[] }) {
+export function SubmitToolForm({
+  categories,
+  initialValues,
+  mode,
+}: {
+  categories: Category[]
+  initialValues?: Partial<{
+    name: string
+    website_url: string
+    tagline: string
+    description: string
+    category_id: string
+    pricing_model: string
+    logo_url: string
+    submitter_email: string
+    notes: string
+  }>
+  mode?: 'submit' | 'claim' | 'suggest-edit'
+}) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState('')
 
   const [form, setForm] = useState({
-    name: '',
-    website_url: '',
-    tagline: '',
-    description: '',
-    category_id: '',
-    pricing_model: '',
-    logo_url: '',
-    submitter_email: '',
-    notes: '',
+    name: initialValues?.name ?? '',
+    website_url: initialValues?.website_url ?? '',
+    tagline: initialValues?.tagline ?? '',
+    description: initialValues?.description ?? '',
+    category_id: initialValues?.category_id ?? '',
+    pricing_model: initialValues?.pricing_model ?? '',
+    logo_url: initialValues?.logo_url ?? '',
+    submitter_email: initialValues?.submitter_email ?? '',
+    notes: initialValues?.notes ?? '',
   })
 
   const set = (k: keyof typeof form) =>
@@ -43,6 +61,11 @@ export function SubmitToolForm({ categories }: { categories: Category[] }) {
 
     const data = await res.json()
     if (!res.ok) {
+      if (res.status === 401 && typeof window !== 'undefined') {
+        const redirectTo = `${window.location.pathname}${window.location.search}`
+        window.location.href = `/login?redirectTo=${encodeURIComponent(redirectTo)}`
+        return
+      }
       setError(typeof data.error === 'string' ? data.error : 'Validation failed. Check all required fields.')
       setLoading(false)
     } else {
@@ -65,20 +88,27 @@ export function SubmitToolForm({ categories }: { categories: Category[] }) {
 
   return (
     <form onSubmit={handleSubmit} className="glass-card rounded-xl p-6 space-y-5">
+      {mode && mode !== 'submit' && (
+        <div className="rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-xs text-muted-foreground">
+          {mode === 'claim'
+            ? 'Claim request mode: Tell us why you should manage this listing.'
+            : 'Suggest edit mode: Share what should be corrected on this listing.'}
+        </div>
+      )}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="text-sm font-medium mb-1.5 block">Tool Name *</label>
-          <Input value={form.name} onChange={set('name')} placeholder="e.g. ChatGPT" required className="bg-white/5 border-white/10" />
+          <Input value={form.name} onChange={set('name')} placeholder="e.g. ChatGPT" required className="bg-background border-black/20" />
         </div>
         <div>
           <label className="text-sm font-medium mb-1.5 block">Website URL *</label>
-          <Input value={form.website_url} onChange={set('website_url')} placeholder="https://..." type="url" required className="bg-white/5 border-white/10" />
+          <Input value={form.website_url} onChange={set('website_url')} placeholder="https://..." type="url" required className="bg-background border-black/20" />
         </div>
       </div>
 
       <div>
         <label className="text-sm font-medium mb-1.5 block">Tagline *</label>
-        <Input value={form.tagline} onChange={set('tagline')} placeholder="One-line description (max 150 chars)" required maxLength={150} className="bg-white/5 border-white/10" />
+        <Input value={form.tagline} onChange={set('tagline')} placeholder="One-line description (max 150 chars)" required maxLength={150} className="bg-background border-black/20" />
       </div>
 
       <div>
@@ -89,14 +119,14 @@ export function SubmitToolForm({ categories }: { categories: Category[] }) {
           placeholder="Describe what the tool does, its key features, and who it's for..."
           required
           maxLength={2000}
-          className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm resize-none h-28 focus:outline-none focus:border-primary/50"
+          className="w-full bg-background border border-black/20 rounded-lg px-3 py-2 text-sm resize-none h-28 focus:outline-none focus:border-primary/50"
         />
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="text-sm font-medium mb-1.5 block">Category</label>
-          <select value={form.category_id} onChange={set('category_id')} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary/50">
+          <select value={form.category_id} onChange={set('category_id')} className="w-full bg-background border border-black/20 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary/50">
             <option value="">Select category...</option>
             {categories.map((c) => (
               <option key={c.id} value={c.id}>{c.name}</option>
@@ -105,7 +135,7 @@ export function SubmitToolForm({ categories }: { categories: Category[] }) {
         </div>
         <div>
           <label className="text-sm font-medium mb-1.5 block">Pricing Model</label>
-          <select value={form.pricing_model} onChange={set('pricing_model')} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary/50">
+          <select value={form.pricing_model} onChange={set('pricing_model')} className="w-full bg-background border border-black/20 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary/50">
             <option value="">Select pricing...</option>
             {PRICING_MODELS.map((p) => (
               <option key={p.value} value={p.value}>{p.label}</option>
@@ -116,12 +146,12 @@ export function SubmitToolForm({ categories }: { categories: Category[] }) {
 
       <div>
         <label className="text-sm font-medium mb-1.5 block">Logo URL</label>
-        <Input value={form.logo_url} onChange={set('logo_url')} placeholder="https://... (direct image link)" type="url" className="bg-white/5 border-white/10" />
+        <Input value={form.logo_url} onChange={set('logo_url')} placeholder="https://... (direct image link)" type="url" className="bg-background border-black/20" />
       </div>
 
       <div>
         <label className="text-sm font-medium mb-1.5 block">Your Email</label>
-        <Input value={form.submitter_email} onChange={set('submitter_email')} placeholder="For submission updates (optional)" type="email" className="bg-white/5 border-white/10" />
+        <Input value={form.submitter_email} onChange={set('submitter_email')} placeholder="For submission updates (optional)" type="email" className="bg-background border-black/20" />
       </div>
 
       <div>
@@ -131,7 +161,7 @@ export function SubmitToolForm({ categories }: { categories: Category[] }) {
           onChange={set('notes')}
           placeholder="Anything else you'd like us to know..."
           maxLength={500}
-          className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm resize-none h-20 focus:outline-none focus:border-primary/50"
+          className="w-full bg-background border border-black/20 rounded-lg px-3 py-2 text-sm resize-none h-20 focus:outline-none focus:border-primary/50"
         />
       </div>
 

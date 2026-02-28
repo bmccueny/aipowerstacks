@@ -74,3 +74,24 @@ export type BlogPostFull = BlogPostSummary & {
   created_at: string
   updated_at: string
 }
+
+export async function getLatestBriefings(limit = 3): Promise<BlogPostSummary[]> {
+  const supabase = await createClient()
+  const { data: categories } = await supabase
+    .from('blog_categories')
+    .select('id')
+    .in('slug', ['daily-ai-briefing', 'ai-briefing', 'ai-briefings'])
+
+  const categoryIds = (categories ?? []).map((cat) => cat.id).filter(Boolean)
+  if (!categoryIds.length) return []
+
+  const { data } = await supabase
+    .from('blog_posts')
+    .select('id, title, slug, excerpt, cover_image_url, tags, reading_time_min, published_at')
+    .eq('status', 'published')
+    .in('category_id', categoryIds)
+    .order('published_at', { ascending: false })
+    .limit(limit)
+
+  return (data ?? []) as BlogPostSummary[]
+}

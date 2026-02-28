@@ -1,13 +1,15 @@
 import Link from 'next/link'
 import {
   LayoutDashboard, Wrench, InboxIcon, FolderOpen,
-  FileText, Users, Sparkles
+  FileText, Users, Sparkles, Star
 } from 'lucide-react'
 
 const adminNavItems = [
   { href: '/admin', label: 'Overview', icon: LayoutDashboard },
+  { href: '/admin/control-center', label: 'Control Center', icon: LayoutDashboard },
   { href: '/admin/tools', label: 'Tools', icon: Wrench },
   { href: '/admin/submissions', label: 'Submissions', icon: InboxIcon },
+  { href: '/admin/reviews', label: 'Reviews', icon: Star },
   { href: '/admin/categories', label: 'Categories', icon: FolderOpen },
   { href: '/admin/blog', label: 'Blog', icon: FileText },
   { href: '/admin/users', label: 'Users', icon: Users },
@@ -20,7 +22,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="p-4 border-b border-white/10">
           <Link href="/admin" className="flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-primary" />
-            <span className="font-bold">AIxplore Admin</span>
+            <span className="font-bold">AIPowerStacks Admin</span>
           </Link>
         </div>
         <nav className="flex-1 p-3 space-y-1">

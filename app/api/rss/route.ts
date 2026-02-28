@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { SITE_URL } from '@/lib/constants/site'
 
 export async function GET() {
   const supabase = await createClient()
@@ -11,7 +12,7 @@ export async function GET() {
     .limit(20)
 
   const posts = (data ?? []) as { title: string; slug: string; excerpt: string; published_at: string | null; tags: string[] }[]
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://aixplore.ai'
+  const siteUrl = SITE_URL
 
   const items = posts.map((post) => `
     <item>
@@ -26,7 +27,7 @@ export async function GET() {
   const rss = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>AIxplore Blog</title>
+    <title>AIPowerStacks Blog</title>
     <link>${siteUrl}/blog</link>
     <description>Latest AI news, guides, and insights</description>
     <language>en-us</language>

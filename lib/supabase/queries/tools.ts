@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
-import type { ToolSearchResult, ToolWithTags } from '@/lib/types'
+import type { ToolCardData, ToolSearchResult, ToolWithTags, PricingModel } from '@/lib/types'
 import { PAGE_SIZE } from '@/lib/constants'
 
 type SearchToolsArgs = {
@@ -7,6 +7,9 @@ type SearchToolsArgs = {
   p_category?: string | null
   p_pricing?: string | null
   p_verified?: boolean | null
+  p_use_case?: string | null
+  p_team_size?: string | null
+  p_integration?: string | null
   p_sort?: string
   p_limit?: number
   p_offset?: number
@@ -23,13 +26,31 @@ export async function searchTools({
   category,
   pricing,
   verified,
+  useCase,
+  teamSize,
+  integration,
+  audience,
+  hasApi,
+  hasMobile,
+  isOpenSource,
+  privacyFirst,
+  enterpriseReady,
   sort = 'relevance',
   page = 1,
 }: {
   query?: string
   category?: string
-  pricing?: string
+  pricing?: PricingModel
   verified?: boolean
+  useCase?: string
+  teamSize?: string
+  integration?: string
+  audience?: string
+  hasApi?: boolean
+  hasMobile?: boolean
+  isOpenSource?: boolean
+  privacyFirst?: boolean
+  enterpriseReady?: boolean
   sort?: string
   page?: number
 }): Promise<{ tools: ToolSearchResult[]; total: number }> {
@@ -46,22 +67,62 @@ export async function searchTools({
     categoryId = (cat as { id: string } | null)?.id
   }
 
-  const { data, error } = await rpcSearchTools(supabase, {
-    search_query: query || null,
-    p_category: categoryId || null,
-    p_pricing: pricing || null,
-    p_verified: verified ?? null,
-    p_sort: sort,
-    p_limit: PAGE_SIZE,
-    p_offset: offset,
-  })
+  // Build a standard query for when persona/capabilities are involved
+  let builder = supabase
+    .from('tools')
+    .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, avg_rating, review_count, upvote_count, category_id, published_at, screenshot_urls, is_supertools, target_audience, has_api, has_mobile_app, is_open_source, trains_on_data, has_sso, security_certifications, model_provider')
+    .eq('status', 'published')
+
+  if (query) {
+    // If search query exists, use the RPC for better search
+    const { data, error } = await rpcSearchTools(supabase, {
+      search_query: query || null,
+      p_category: categoryId || null,
+      p_pricing: pricing || null,
+      p_verified: verified ?? null,
+      p_use_case: useCase || null,
+      p_team_size: teamSize || null,
+      p_integration: integration || null,
+      p_sort: sort,
+      p_limit: PAGE_SIZE,
+      p_offset: offset,
+    })
+    return { tools: data ?? [], total: data?.length ?? 0 }
+  }
+
+  // Apply filters
+  if (categoryId) builder = builder.eq('category_id', categoryId)
+  if (pricing) builder = builder.eq('pricing_model', pricing)
+  if (verified) builder = builder.eq('is_verified', true)
+  if (useCase) builder = builder.eq('use_case', useCase)
+  if (teamSize) builder = builder.eq('team_size', teamSize)
+  if (audience) builder = builder.eq('target_audience', audience)
+  if (hasApi) builder = builder.eq('has_api', true)
+  if (hasMobile) builder = builder.eq('has_mobile_app', true)
+  if (isOpenSource) builder = builder.eq('is_open_source', true)
+  if (privacyFirst) builder = builder.eq('trains_on_data', false)
+  if (enterpriseReady) builder = builder.eq('has_sso', true)
+
+  // Sort
+  if (sort === 'rating') {
+    builder = builder.order('avg_rating', { ascending: false }).order('review_count', { ascending: false })
+  } else if (sort === 'newest') {
+    builder = builder.order('published_at', { ascending: false })
+  } else if (sort === 'popular') {
+    builder = builder.order('upvote_count', { ascending: false })
+  } else {
+    // Default: SuperTools first, then popular
+    builder = builder.order('is_supertools', { ascending: false }).order('upvote_count', { ascending: false })
+  }
+
+  const { data, error } = await builder.range(offset, offset + PAGE_SIZE - 1)
 
   if (error) {
     console.error('searchTools error:', error)
     return { tools: [], total: 0 }
   }
 
-  return { tools: data ?? [], total: data?.length ?? 0 }
+  return { tools: (data as any) ?? [], total: data?.length ?? 0 }
 }
 
 export async function getToolBySlug(slug: string): Promise<ToolWithTags | null> {
@@ -84,34 +145,42 @@ export async function getToolBySlug(slug: string): Promise<ToolWithTags | null> 
   return data as unknown as ToolWithTags
 }
 
-export async function getLatestTools(limit = 8): Promise<ToolSearchResult[]> {
+export async function getSiteStats(): Promise<{ toolCount: number; reviewCount: number }> {
   const supabase = await createClient()
-
-  const { data } = await rpcSearchTools(supabase, {
-    search_query: null,
-    p_category: null,
-    p_pricing: null,
-    p_verified: null,
-    p_sort: 'newest',
-    p_limit: limit,
-    p_offset: 0,
-  })
-
-  return data ?? []
+  const [{ count: toolCount }, { count: reviewCount }] = await Promise.all([
+    supabase.from('tools').select('*', { count: 'exact', head: true }).eq('status', 'published'),
+    supabase.from('reviews').select('*', { count: 'exact', head: true }).eq('status', 'published'),
+  ])
+  return { toolCount: toolCount ?? 0, reviewCount: reviewCount ?? 0 }
 }
 
-export async function getSuperTools(limit = 8): Promise<ToolSearchResult[]> {
+export async function getLatestTools(limit = 8): Promise<ToolCardData[]> {
   const supabase = await createClient()
 
   const { data } = await supabase
     .from('tools')
-    .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, is_featured, avg_rating, review_count, category_id, published_at')
+    .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, is_featured, avg_rating, review_count, upvote_count, category_id, published_at, screenshot_urls')
     .eq('status', 'published')
-    .eq('is_supertools', true)
-    .order('avg_rating', { ascending: false })
+    .order('published_at', { ascending: false })
     .limit(limit)
 
-  return (data ?? []) as unknown as ToolSearchResult[]
+  return (data ?? []) as unknown as ToolCardData[]
+}
+
+export async function getSuperTools(limit = 8): Promise<ToolCardData[]> {
+  const supabase = await createClient()
+
+  const { data } = await supabase
+    .from('tools')
+    .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, is_featured, avg_rating, review_count, upvote_count, category_id, published_at, screenshot_urls')
+    .eq('status', 'published')
+    .eq('is_supertools', true)
+    .order('upvote_count', { ascending: false })
+    .order('avg_rating', { ascending: false })
+    .order('review_count', { ascending: false })
+    .limit(limit)
+
+  return (data ?? []) as unknown as ToolCardData[]
 }
 
 export async function getFeaturedTools(limit = 6): Promise<ToolSearchResult[]> {
@@ -119,7 +188,7 @@ export async function getFeaturedTools(limit = 6): Promise<ToolSearchResult[]> {
 
   const { data } = await supabase
     .from('tools')
-    .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, is_featured, avg_rating, review_count, category_id, published_at')
+    .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, is_featured, avg_rating, review_count, upvote_count, category_id, published_at')
     .eq('status', 'published')
     .eq('is_featured', true)
     .order('avg_rating', { ascending: false })
@@ -146,11 +215,139 @@ export async function getTopToolsByCategory(categorySlug: string, limit = 10): P
 
   const { data } = await supabase
     .from('tools')
-    .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, is_featured, avg_rating, review_count, category_id, published_at')
+    .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, is_featured, avg_rating, review_count, upvote_count, category_id, published_at')
     .eq('status', 'published')
     .eq('category_id', catId)
     .order('avg_rating', { ascending: false })
     .limit(limit)
 
   return (data ?? []) as unknown as ToolSearchResult[]
+}
+
+export async function getRelatedToolsByCategory({
+  categoryId,
+  excludeToolId,
+  limit = 3,
+}: {
+  categoryId: string
+  excludeToolId: string
+  limit?: number
+}): Promise<ToolSearchResult[]> {
+  const supabase = await createClient()
+
+  const { data } = await supabase
+    .from('tools')
+    .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, is_featured, avg_rating, review_count, upvote_count, category_id, published_at')
+    .eq('status', 'published')
+    .eq('category_id', categoryId)
+    .neq('id', excludeToolId)
+    .order('avg_rating', { ascending: false })
+    .order('review_count', { ascending: false })
+    .limit(limit)
+
+  return (data ?? []) as unknown as ToolSearchResult[]
+}
+
+export async function getToolsBySlugs(slugs: string[]): Promise<ToolSearchResult[]> {
+  if (slugs.length === 0) return []
+
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('tools')
+    .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, is_featured, avg_rating, review_count, category_id, published_at, website_url, pricing_details, use_case, team_size, integrations')
+    .in('slug', slugs)
+    .eq('status', 'published')
+
+  if (!data) return []
+
+  const ordered = slugs
+    .map((slug) => data.find((tool) => tool.slug === slug))
+    .filter(Boolean)
+
+  return ordered as unknown as ToolSearchResult[]
+}
+
+/**
+ * Fetch tools based on matchmaker criteria
+ */
+export async function getMatchedTools({
+  useCase,
+  pricing,
+  persona,
+  needsApi = false,
+  needsMobile = false,
+  needsOpenSource = false,
+  needsPrivacy = false,
+  needsSSO = false,
+  limit = 4,
+}: {
+  useCase: string
+  pricing: 'free' | 'paid' | 'any'
+  persona: string
+  needsApi?: boolean
+  needsMobile?: boolean
+  needsOpenSource?: boolean
+  needsPrivacy?: boolean
+  needsSSO?: boolean
+  limit?: number
+}) {
+  const supabase = await createClient()
+  
+  const buildBaseQuery = () => {
+    let q = supabase
+      .from('tools')
+      .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, avg_rating, review_count, upvote_count, has_api, has_mobile_app, is_open_source, is_supertools, trains_on_data, has_sso, security_certifications')
+      .eq('status', 'published')
+      .eq('use_case', useCase)
+
+    if (pricing === 'free') {
+      q = q.eq('pricing_model', 'free')
+    } else if (pricing === 'paid') {
+      q = q.neq('pricing_model', 'free')
+    }
+
+    if (needsApi) q = q.eq('has_api', true)
+    if (needsMobile) q = q.eq('has_mobile_app', true)
+    if (needsOpenSource) q = q.eq('is_open_source', true)
+    if (needsPrivacy) q = q.eq('trains_on_data', false)
+    if (needsSSO) q = q.eq('has_sso', true)
+    
+    return q
+  }
+
+  // 1. Try with persona (High precision)
+  let { data, error } = await buildBaseQuery()
+    .eq('target_audience', persona)
+    .order('is_supertools', { ascending: false })
+    .order('upvote_count', { ascending: false })
+    .limit(limit)
+
+  // 2. FALLBACK: If no results, try without persona but keep core filters
+  if (!data || data.length === 0) {
+    const fallback = await buildBaseQuery()
+      .order('is_supertools', { ascending: false })
+      .order('upvote_count', { ascending: false })
+      .limit(limit)
+    data = fallback.data
+  }
+
+  // 3. NUCLEAR FALLBACK: If still no results, just get top SuperTools for that use case
+  if (!data || data.length === 0) {
+    const nuclear = await supabase
+      .from('tools')
+      .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, avg_rating, review_count, upvote_count, has_api, has_mobile_app, is_open_source, is_supertools, trains_on_data, has_sso, security_certifications')
+      .eq('status', 'published')
+      .eq('use_case', useCase)
+      .order('is_supertools', { ascending: false })
+      .order('upvote_count', { ascending: false })
+      .limit(limit)
+    data = nuclear.data
+  }
+
+  if (error) {
+    console.error('getMatchedTools error:', error)
+    return []
+  }
+
+  return data as unknown as ToolSearchResult[]
 }

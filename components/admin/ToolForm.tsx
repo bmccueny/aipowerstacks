@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { PRICING_MODELS } from '@/lib/constants'
+import { INTEGRATION_OPTIONS, PRICING_MODELS, TEAM_SIZE_OPTIONS, USE_CASE_OPTIONS } from '@/lib/constants'
 
 interface Category { id: string; name: string }
 
@@ -21,6 +21,9 @@ interface ToolFormProps {
     category_id: string
     pricing_model: string
     pricing_details: string | null
+    use_case: string | null
+    team_size: string | null
+    integrations: string[] | null
     status: string
     is_verified: boolean
     is_featured: boolean
@@ -44,6 +47,9 @@ export function ToolForm({ categories, tool }: ToolFormProps) {
     category_id: tool?.category_id ?? '',
     pricing_model: tool?.pricing_model ?? 'free',
     pricing_details: tool?.pricing_details ?? '',
+    use_case: tool?.use_case ?? '',
+    team_size: tool?.team_size ?? '',
+    integrations: (tool?.integrations ?? []).join(', '),
     status: tool?.status ?? 'published',
     is_verified: tool?.is_verified ?? false,
     is_featured: tool?.is_featured ?? false,
@@ -76,7 +82,16 @@ export function ToolForm({ categories, tool }: ToolFormProps) {
     const res = await fetch(url, {
       method,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...form, logo_url: form.logo_url || null, pricing_details: form.pricing_details || null }),
+      body: JSON.stringify({
+        ...form,
+        logo_url: form.logo_url || null,
+        pricing_details: form.pricing_details || null,
+        use_case: form.use_case || null,
+        team_size: form.team_size || null,
+        integrations: form.integrations
+          ? form.integrations.split(',').map((item) => item.trim()).filter(Boolean)
+          : null,
+      }),
     })
 
     const data = await res.json()
@@ -154,6 +169,35 @@ export function ToolForm({ categories, tool }: ToolFormProps) {
       <div>
         <label className="text-sm font-medium mb-1.5 block">Pricing Details</label>
         <Input value={form.pricing_details} onChange={set('pricing_details')} placeholder="e.g. Free up to 10 users" className={inputCls} />
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label className="text-sm font-medium mb-1.5 block">Primary Use Case</label>
+          <select value={form.use_case} onChange={set('use_case')}
+            className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary/50">
+            <option value="">Select use case...</option>
+            {USE_CASE_OPTIONS.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
+          </select>
+        </div>
+        <div>
+          <label className="text-sm font-medium mb-1.5 block">Team Size</label>
+          <select value={form.team_size} onChange={set('team_size')}
+            className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary/50">
+            <option value="">Select team size...</option>
+            {TEAM_SIZE_OPTIONS.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label className="text-sm font-medium mb-1.5 block">Integrations (comma-separated)</label>
+        <Input
+          value={form.integrations}
+          onChange={set('integrations')}
+          placeholder={INTEGRATION_OPTIONS.map((item) => item.value).slice(0, 4).join(', ')}
+          className={inputCls}
+        />
       </div>
 
       <div className="flex flex-wrap gap-4">

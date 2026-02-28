@@ -30,6 +30,7 @@ export async function POST(request: Request) {
       rating,
       title: title ?? null,
       body: reviewBody ?? null,
+      status: 'pending',
     })
     .select()
     .single()
@@ -41,5 +42,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: error.message }, { status: 400 })
   }
 
-  return NextResponse.json({ review: data })
+  return NextResponse.json({
+    review: data,
+    message: 'Review submitted and sent for moderation.',
+  })
 }

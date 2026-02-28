@@ -55,7 +55,7 @@ export function BookmarkButton({ toolId }: { toolId: string }) {
       size="sm"
       onClick={toggle}
       disabled={loading}
-      className={`gap-2 border-white/10 ${bookmarked ? 'bg-primary/10 text-primary border-primary/30' : ''}`}
+      className={`gap-2 border-black/20 ${bookmarked ? 'bg-primary/10 text-primary border-primary/30' : ''}`}
     >
       <Bookmark className={`h-4 w-4 ${bookmarked ? 'fill-current' : ''}`} />
       {bookmarked ? 'Saved' : 'Save'}

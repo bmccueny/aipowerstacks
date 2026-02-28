@@ -45,11 +45,12 @@ export default function SettingsPage() {
     const file = e.target.files?.[0]
     if (!file || !user) return
     setUploading(true)
+    setMessage('')
     setError('')
 
     const supabase = createClient()
     const ext = file.name.split('.').pop()
-    const path = `avatars/${user.id}.${ext}`
+    const path = `${user.id}/avatar.${ext}`
 
     const { error: uploadError } = await supabase.storage
       .from('avatars')
@@ -63,6 +64,7 @@ export default function SettingsPage() {
 
     const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
     setAvatarUrl(publicUrl)
+    setMessage('Photo uploaded. Click Save Changes to persist it.')
     setUploading(false)
   }
 
@@ -75,13 +77,16 @@ export default function SettingsPage() {
     const supabase = createClient()
     const { error: updateError } = await supabase
       .from('profiles')
-      .update({ display_name: displayName || null, avatar_url: avatarUrl })
-      .eq('id', user.id)
+      .upsert(
+        { id: user.id, display_name: displayName || null, avatar_url: avatarUrl },
+        { onConflict: 'id' }
+      )
 
     if (updateError) {
       setError(updateError.message)
     } else {
       setMessage('Settings saved.')
+      window.dispatchEvent(new Event('profile-updated'))
     }
     setSaving(false)
   }

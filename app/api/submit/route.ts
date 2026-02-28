@@ -15,6 +15,12 @@ const submitSchema = z.object({
 })
 
 export async function POST(request: Request) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) {
+    return NextResponse.json({ error: 'Authentication required. Please log in to submit a tool.' }, { status: 401 })
+  }
+
   const body = await request.json()
   const parsed = submitSchema.safeParse(body)
   if (!parsed.success) {
@@ -22,9 +28,6 @@ export async function POST(request: Request) {
   }
 
   const { name, website_url, tagline, description, category_id, pricing_model, logo_url, submitter_email, notes } = parsed.data
-
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
 
   const { error } = await supabase
     .from('tool_submissions')
@@ -38,7 +41,7 @@ export async function POST(request: Request) {
       logo_url: logo_url || null,
       submitter_email: submitter_email || null,
       notes: notes || null,
-      submitted_by: user?.id ?? null,
+      submitted_by: user.id,
     })
 
   if (error) return NextResponse.json({ error: error.message }, { status: 400 })

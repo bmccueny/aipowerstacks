@@ -17,7 +17,7 @@ export function ViewToggle() {
   }
 
   return (
-    <div className="flex items-center gap-1 border border-white/10 rounded-lg p-1">
+    <div className="flex items-center gap-1 border border-black/20 rounded-lg p-1">
       <Button
         variant={view === 'grid' ? 'secondary' : 'ghost'}
         size="icon"

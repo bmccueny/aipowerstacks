@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import type { Metadata } from 'next'
 import { Badge } from '@/components/ui/badge'
+import { UserRoleActions } from '@/components/admin/UserRoleActions'
 
 export const metadata: Metadata = { title: 'Manage Users' }
 
@@ -12,7 +13,13 @@ export default async function AdminUsersPage() {
     .order('created_at', { ascending: false })
     .limit(50)
 
-  const users = (data ?? []) as { id: string; display_name: string | null; username: string | null; role: string; created_at: string }[]
+  const users = (data ?? []) as {
+    id: string
+    display_name: string | null
+    username: string | null
+    role: 'user' | 'editor' | 'admin'
+    created_at: string
+  }[]
 
   const roleColors: Record<string, string> = {
     admin: 'bg-red-500/20 text-red-400 border-red-500/30',
@@ -31,6 +38,7 @@ export default async function AdminUsersPage() {
               <th className="text-left p-3 font-medium text-muted-foreground">Name</th>
               <th className="text-left p-3 font-medium text-muted-foreground">Username</th>
               <th className="text-left p-3 font-medium text-muted-foreground">Role</th>
+              <th className="text-left p-3 font-medium text-muted-foreground">Change Role</th>
               <th className="text-left p-3 font-medium text-muted-foreground">Joined</th>
             </tr>
           </thead>
@@ -41,6 +49,9 @@ export default async function AdminUsersPage() {
                 <td className="p-3 text-muted-foreground">{u.username ?? '—'}</td>
                 <td className="p-3">
                   <Badge variant="outline" className={`text-xs ${roleColors[u.role] ?? ''}`}>{u.role}</Badge>
+                </td>
+                <td className="p-3">
+                  <UserRoleActions userId={u.id} currentRole={u.role} />
                 </td>
                 <td className="p-3 text-muted-foreground">{new Date(u.created_at).toLocaleDateString()}</td>
               </tr>

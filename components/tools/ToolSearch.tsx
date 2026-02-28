@@ -12,7 +12,34 @@ export function ToolSearch() {
   const searchParams = useSearchParams()
   const [, startTransition] = useTransition()
   const [value, setValue] = useState(searchParams.get('q') ?? '')
+  const [recent, setRecent] = useState<string[]>([])
   const debouncedValue = useDebounce(value, 300)
+
+  useEffect(() => {
+    try {
+      const stored = window.localStorage.getItem('recent_tool_searches')
+      const parsed = stored ? JSON.parse(stored) : []
+      if (Array.isArray(parsed)) {
+        setRecent(parsed.filter((v) => typeof v === 'string').slice(0, 6))
+      }
+    } catch {
+      setRecent([])
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!debouncedValue || debouncedValue.trim().length < 2) return
+    const normalized = debouncedValue.trim()
+    setRecent((prev) => {
+      const next = [normalized, ...prev.filter((item) => item.toLowerCase() !== normalized.toLowerCase())].slice(0, 6)
+      try {
+        window.localStorage.setItem('recent_tool_searches', JSON.stringify(next))
+      } catch {
+        // Ignore storage errors.
+      }
+      return next
+    })
+  }, [debouncedValue])
 
   useEffect(() => {
     const params = new URLSearchParams(searchParams.toString())
@@ -27,22 +54,46 @@ export function ToolSearch() {
     })
   }, [debouncedValue])
 
+  const applyRecent = (term: string) => {
+    setValue(term)
+    const params = new URLSearchParams(searchParams.toString())
+    params.set('q', term)
+    params.delete('page')
+    router.push(`${pathname}?${params.toString()}`)
+  }
+
   return (
-    <div className="relative flex-1">
-      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-      <Input
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        placeholder="Search 5,000+ AI tools..."
-        className="pl-9 pr-9 bg-white/5 border-white/10 focus:border-primary/50"
-      />
-      {value && (
-        <button
-          onClick={() => setValue('')}
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-        >
-          <X className="h-3.5 w-3.5" />
-        </button>
+    <div className="flex-1 space-y-2">
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          placeholder="Search 5,000+ AI tools..."
+          className="pl-9 pr-9 bg-background border-black/20 focus:border-primary/50"
+        />
+        {value && (
+          <button
+            onClick={() => setValue('')}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+          >
+            <X className="h-3.5 w-3.5" />
+          </button>
+        )}
+      </div>
+      {recent.length > 0 && (
+        <div className="flex flex-wrap gap-1.5">
+          {recent.map((term) => (
+            <button
+              key={term}
+              type="button"
+              onClick={() => applyRecent(term)}
+              className="rounded-full border border-black/25 px-2.5 py-1 text-[11px] text-muted-foreground hover:text-foreground hover:border-black/45 transition-colors"
+            >
+              {term}
+            </button>
+          ))}
+        </div>
       )}
     </div>
   )
