@@ -66,9 +66,9 @@ export function DirectMessageDialog({
     } else {
       setMessages(data || [])
       // Mark as read
-      const unreadIds = (data as any[] || [])
+      const unreadIds = (data || [])
         .filter(m => m.receiver_id === currentUserId && !m.is_read)
-        .map(m => m.id as string)
+        .map(m => m.id)
       
       if (unreadIds.length > 0) {
         await supabase
