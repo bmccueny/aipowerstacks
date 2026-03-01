@@ -1,5 +1,35 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getMatchedTools } from '@/lib/supabase/queries/tools'
+import { getQueryEmbedding } from '@/lib/ai/embeddings'
+import { createAdminClient } from '@/lib/supabase/admin'
+
+export async function POST(req: NextRequest) {
+  try {
+    const { message } = await req.json()
+    const supabase = createAdminClient()
+    
+    // 1. Generate embedding for the user's natural language request
+    const embedding = await getQueryEmbedding(message)
+    const vectorStr = `[${embedding.join(',')}]`
+
+    // 2. Query Supabase using vector similarity
+    const { data: tools, error } = await (supabase as any).rpc('match_tools_semantic', {
+      query_embedding: vectorStr,
+      match_threshold: 0.3, // Adjust for precision vs recall
+      match_count: 4
+    })
+
+    if (error) throw error
+
+    return NextResponse.json({
+      tools: tools ?? [],
+      explanation: `I've analyzed your request semantically. Here are the best matches from our verified directory that align with your goal.`
+    })
+  } catch (err: any) {
+    console.error('Semantic Matchmaker Error:', err.message)
+    return NextResponse.json({ error: 'Failed to process message' }, { status: 500 })
+  }
+}
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)

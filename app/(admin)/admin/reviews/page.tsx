@@ -5,6 +5,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { Badge } from '@/components/ui/badge'
 import { StarRating } from '@/components/reviews/StarRating'
 import { ReviewModerationActions } from '@/components/admin/ReviewModerationActions'
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 
 export const metadata: Metadata = { title: 'Manage Reviews' }
 
@@ -57,7 +58,7 @@ export default async function AdminReviewsPage({
       ? supabase.from('tools').select('id, name, slug').in('id', toolIds)
       : Promise.resolve({ data: [], error: null }),
     userIds.length
-      ? supabase.from('profiles').select('id, display_name, username, role').in('id', userIds)
+      ? supabase.from('profiles').select('id, display_name, username, role, avatar_url').in('id', userIds)
       : Promise.resolve({ data: [], error: null }),
   ])
 
@@ -66,6 +67,7 @@ export default async function AdminReviewsPage({
     display_name: p.display_name,
     username: p.username,
     role: p.role,
+    avatar_url: p.avatar_url,
   }]))
 
   const isSimulationReview = (review: { title: string | null; body: string | null }) =>
@@ -169,11 +171,19 @@ export default async function AdminReviewsPage({
                   {review.rejection_reason && (
                     <p className="text-xs text-amber-400 mb-2">Rejection note: {review.rejection_reason}</p>
                   )}
-                  <p className="text-xs text-muted-foreground">
-                    By {review.profile?.display_name ?? review.profile?.username ?? 'Anonymous'} · {new Date(review.created_at).toLocaleDateString()} · Helpful {review.helpful_count}
-                  </p>
+                  <div className="flex items-center gap-2 mt-2">
+                    <Avatar className="h-5 w-5 border border-white/10">
+                      <AvatarImage src={review.profile?.avatar_url ?? undefined} />
+                      <AvatarFallback className="text-[8px] font-black">
+                        {(review.profile?.display_name || review.profile?.username || 'U')[0].toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <p className="text-xs text-muted-foreground">
+                      By {review.profile?.display_name ?? review.profile?.username ?? 'Anonymous'} · {new Date(review.created_at).toLocaleDateString()} · Helpful {review.helpful_count}
+                    </p>
+                  </div>
                   {review.tool && (
-                    <p className="text-xs mt-1">
+                    <p className="text-xs mt-1 pl-7">
                       <span className="text-muted-foreground">Tool: </span>
                       <Link href={`/tools/${review.tool.slug}`} className="text-primary hover:underline">
                         {review.tool.name}

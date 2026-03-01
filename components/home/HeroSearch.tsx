@@ -15,22 +15,21 @@ export function HeroSearch({ toolCount }: { toolCount: number }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="search-bar mt-10 rounded-[4px] flex items-center gap-3 w-full max-w-3xl px-5 sm:px-6 py-3">
-      <Search className="h-5 w-5 shrink-0 text-muted-foreground" />
+    <form onSubmit={handleSubmit} className="relative mt-10 w-full max-w-3xl group">
       <input
         type="text"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        placeholder={`Search ${toolCount}+ tools — writing, coding, image, video...`}
-        className="flex-1 bg-transparent text-sm sm:text-base text-foreground placeholder:text-muted-foreground outline-none min-w-0"
+        placeholder={`Search ${toolCount}+ tools ...`}
+        className="w-full h-14 lg:h-16 px-8 rounded-lg border border-black/20 bg-white text-xl outline-none focus:ring-1 focus:ring-black focus:border-black/60 transition-all dark:bg-zinc-900 dark:border-white/20 dark:text-white dark:focus:ring-white/40 dark:focus:border-white/60"
+        style={{ paddingLeft: '2rem', paddingRight: '5rem' }}
       />
       <button
         type="submit"
         aria-label="Search"
-        className="shrink-0 inline-flex items-center gap-1.5 rounded-[4px] bg-foreground text-background px-4 py-1.5 text-sm font-semibold hover:bg-primary hover:text-foreground transition-colors"
+        className="absolute right-3 top-1/2 -translate-y-1/2 h-10 w-10 lg:h-12 lg:w-12 inline-flex items-center justify-center rounded-md bg-black text-white hover:bg-primary transition-colors z-10"
       >
-        <span className="hidden sm:inline">Search</span>
-        <ArrowRight className="h-3.5 w-3.5" />
+        <Search className="h-5 w-5 lg:h-6 lg:w-6" />
       </button>
     </form>
   )

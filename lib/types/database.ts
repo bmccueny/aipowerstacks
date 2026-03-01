@@ -472,6 +472,11 @@ export type Database = {
           description: string | null
           is_public: boolean
           share_slug: string
+          icon: string | null
+          save_count: number
+          view_count: number
+          source_collection_id: string | null
+          template_id: string | null
           created_at: string
           updated_at: string
         }
@@ -482,6 +487,11 @@ export type Database = {
           description?: string | null
           is_public?: boolean
           share_slug?: string
+          icon?: string | null
+          save_count?: number
+          view_count?: number
+          source_collection_id?: string | null
+          template_id?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -490,6 +500,11 @@ export type Database = {
           description?: string | null
           is_public?: boolean
           share_slug?: string
+          icon?: string | null
+          save_count?: number
+          view_count?: number
+          source_collection_id?: string | null
+          template_id?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -507,18 +522,21 @@ export type Database = {
           collection_id: string
           tool_id: string
           sort_order: number
+          note: string | null
           created_at: string
         }
         Insert: {
           collection_id: string
           tool_id: string
           sort_order?: number
+          note?: string | null
           created_at?: string
         }
         Update: {
           collection_id?: string
           tool_id?: string
           sort_order?: number
+          note?: string | null
         }
         Relationships: [
           {
@@ -556,6 +574,153 @@ export type Database = {
         }
         Relationships: []
       }
+      profile_follows: {
+        Row: {
+          follower_id: string
+          following_id: string
+          created_at: string
+        }
+        Insert: {
+          follower_id: string
+          following_id: string
+          created_at?: string
+        }
+        Update: {
+          follower_id?: string
+          following_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profile_follows_follower_id_fkey"
+            columns: ["follower_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profile_follows_following_id_fkey"
+            columns: ["following_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      stack_challenges: {
+        Row: {
+          id: string
+          title: string
+          description: string | null
+          prompt: string
+          starts_at: string
+          ends_at: string
+          is_active: boolean
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          title: string
+          description?: string | null
+          prompt: string
+          starts_at: string
+          ends_at: string
+          is_active?: boolean
+          created_at?: string
+        }
+        Update: {
+          title?: string
+          description?: string | null
+          prompt?: string
+          starts_at?: string
+          ends_at?: string
+          is_active?: boolean
+        }
+        Relationships: []
+      }
+      challenge_submissions: {
+        Row: {
+          id: string
+          challenge_id: string
+          collection_id: string
+          user_id: string
+          vote_count: number
+          submitted_at: string
+        }
+        Insert: {
+          id?: string
+          challenge_id: string
+          collection_id: string
+          user_id: string
+          vote_count?: number
+          submitted_at?: string
+        }
+        Update: {
+          vote_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "challenge_submissions_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "stack_challenges"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "challenge_submissions_collection_id_fkey"
+            columns: ["collection_id"]
+            isOneToOne: false
+            referencedRelation: "collections"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "challenge_submissions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      challenge_votes: {
+        Row: {
+          challenge_id: string
+          collection_id: string
+          user_id: string
+          voted_at: string
+        }
+        Insert: {
+          challenge_id: string
+          collection_id: string
+          user_id: string
+          voted_at?: string
+        }
+        Update: {
+          collection_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "challenge_votes_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "stack_challenges"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "challenge_votes_collection_id_fkey"
+            columns: ["collection_id"]
+            isOneToOne: false
+            referencedRelation: "collections"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "challenge_votes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
     }
     Views: Record<string, never>
     Functions: {
@@ -592,6 +757,11 @@ export type Database = {
           has_api: boolean
           has_mobile_app: boolean
           is_open_source: boolean
+          has_cloud_sync: boolean
+          api_latency: number | null
+          api_uptime: number | null
+          verified_by_admin: boolean
+          admin_review_video_url: string | null
           published_at: string | null
           rank: number
         }[]
@@ -599,6 +769,14 @@ export type Database = {
       is_admin: {
         Args: Record<string, never>
         Returns: boolean
+      }
+      increment_save_count: {
+        Args: { collection_id: string }
+        Returns: void
+      }
+      increment_stack_view: {
+        Args: { collection_id: string }
+        Returns: void
       }
     }
   }

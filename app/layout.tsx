@@ -1,6 +1,13 @@
 import type { Metadata } from 'next'
 import { GeistSans } from 'geist/font/sans'
+import { Space_Grotesk } from 'next/font/google'
 import { SITE_URL } from '@/lib/constants/site'
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  weight: ['700'],
+  variable: '--font-display',
+})
 import { JsonLd } from '@/components/common/JsonLd'
 import { generateOrganizationJsonLd } from '@/lib/utils/seo'
 import { Toaster } from 'sonner'
@@ -9,27 +16,46 @@ import './globals.css'
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: 'AIPowerStacks — Discover the Best AI Tools',
+    default: 'AIPowerStacks | Compare 5,000+ AI Tools by Use Case',
     template: '%s | AIPowerStacks',
   },
-  description: 'Discover 5,000+ AI tools organized by category. Find the best AI tools for writing, coding, image generation, video, productivity, and more.',
+  description: 'Compare 5,000+ AI tools side-by-side. Filter by use case, pricing, and integrations. Verified listings, real user reviews, and daily updates.',
   alternates: {
     canonical: '/',
   },
-  keywords: ['AI tools', 'artificial intelligence', 'AI directory', 'machine learning tools'],
+  keywords: [
+    'AI tools directory',
+    'best AI tools 2026',
+    'compare AI tools',
+    'AI tools for business',
+    'AI writing tools',
+    'AI coding tools',
+    'AI image generator',
+    'AI video tools',
+    'AI productivity tools',
+    'AI tools for marketing',
+    'AI tool finder',
+    'free AI tools',
+    'AI software comparison',
+    'artificial intelligence tools',
+    'machine learning tools',
+  ],
   authors: [{ name: 'AIPowerStacks' }],
   creator: 'AIPowerStacks',
+  icons: {
+    icon: '/icon.svg',
+  },
   openGraph: {
     type: 'website',
     locale: 'en_US',
     siteName: 'AIPowerStacks',
-    title: 'AIPowerStacks — Discover the Best AI Tools',
-    description: 'Discover 5,000+ AI tools organized by category.',
+    title: 'AIPowerStacks | Compare 5,000+ AI Tools by Use Case',
+    description: 'Find, compare, and shortlist AI tools in seconds. 5,000+ verified listings with real user reviews, updated daily.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'AIPowerStacks — Discover the Best AI Tools',
-    description: 'Discover 5,000+ AI tools organized by category.',
+    title: 'AIPowerStacks | Compare 5,000+ AI Tools by Use Case',
+    description: 'Find, compare, and shortlist AI tools in seconds. 5,000+ verified listings with real user reviews, updated daily.',
   },
   robots: {
     index: true,
@@ -50,7 +76,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={GeistSans.variable}>
+    <html lang="en" className={`${GeistSans.variable} ${spaceGrotesk.variable}`} suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{

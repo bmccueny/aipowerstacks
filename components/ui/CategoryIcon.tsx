@@ -43,7 +43,7 @@ export function CategoryIcon({ slug, emoji, className }: CategoryIconProps) {
 
   if (icon) {
     return (
-      <div className={`p-2 rounded-lg bg-primary/5 text-primary group-hover:bg-primary group-hover:text-background transition-all duration-300 ${className}`}>
+      <div className={`p-2 rounded-md bg-primary/5 text-primary group-hover:bg-primary group-hover:text-background group-hover:scale-110 group-hover:-rotate-3 transition-all duration-300 ${className}`}>
         {icon}
       </div>
     )
@@ -51,7 +51,7 @@ export function CategoryIcon({ slug, emoji, className }: CategoryIconProps) {
 
   // Fallback to emoji if no icon found, but style it nicely
   return (
-    <div className={`text-2xl leading-none grayscale group-hover:grayscale-0 transition-all duration-300 ${className}`}>
+    <div className={`text-2xl leading-none grayscale group-hover:grayscale-0 group-hover:scale-125 group-hover:rotate-12 transition-all duration-300 ${className}`}>
       {emoji || '🤖'}
     </div>
   )

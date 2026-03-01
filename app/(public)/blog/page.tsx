@@ -26,7 +26,7 @@ export default async function BlogPage({
 
   return (
     <div className="page-shell">
-      <div className="page-hero mb-10 text-center">
+      <div className="page-hero text-center">
         <div className="inline-flex items-center gap-2 gum-pill px-3 py-1 text-xs font-semibold uppercase tracking-wide mb-4">
           <Sparkles className="h-3.5 w-3.5" />
           AI Briefing
@@ -62,9 +62,9 @@ export default async function BlogPage({
                 href={item.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block group h-full"
+                className="override grid h-full overflow-hidden rounded-lg brutalist-card-effect no-underline group"
               >
-                <div className="glass-card card-hover rounded-[4px] overflow-hidden h-full flex flex-col">
+                <div className="h-full flex flex-col">
                   {item.image_url ? (
                     <div className="relative h-44 shrink-0 overflow-hidden">
                       <Image
@@ -72,7 +72,7 @@ export default async function BlogPage({
                         alt={item.title}
                         fill
                         unoptimized
-                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        className="object-cover transition-transform duration-300"
                       />
                     </div>
                   ) : (
@@ -87,7 +87,7 @@ export default async function BlogPage({
                       </span>
                       <ExternalLink className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0" />
                     </div>
-                    <h3 className="font-semibold text-[16px] mb-2 group-hover:text-primary transition-colors line-clamp-2 flex-1 leading-[1.3]">
+                    <h3 className="font-semibold text-[16px] mb-2 transition-colors line-clamp-2 flex-1 leading-[1.3]">
                       {item.title}
                     </h3>
                     {item.summary ? (
@@ -95,7 +95,7 @@ export default async function BlogPage({
                         {item.summary}
                       </p>
                     ) : null}
-                    <div className="text-[12px] text-muted-foreground border-t border-black/10 pt-3 mt-auto">
+                    <div className="text-[12px] text-muted-foreground border-t border-foreground/10 pt-3 mt-auto">
                       {new Date(item.published_at).toLocaleDateString('en-US', {
                         month: 'short',
                         day: 'numeric',
@@ -117,7 +117,7 @@ export default async function BlogPage({
       )}
 
       <section className="mt-12">
-        <div className="gum-card rounded-[4px] p-6 sm:p-8">
+        <div className="gum-card rounded-md p-6 sm:p-8">
           <div className="flex items-center gap-2 mb-3">
             <Sparkles className="h-4 w-4 text-primary" />
             <span className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">Newsletter</span>

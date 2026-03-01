@@ -1,14 +1,14 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
-import { Trash2 } from 'lucide-react'
+import { useState, useEffect, useRef, useTransition } from 'react'
+import { Trash2, Loader2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 
-export function DeleteStackButton({ collectionId }: { collectionId: string }) {
+export function DeleteStackButton({ collectionId, stackName }: { collectionId: string, stackName?: string }) {
   const [confirming, setConfirming] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [isPending, startTransition] = useTransition()
   const router = useRouter()
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -30,15 +30,33 @@ export function DeleteStackButton({ collectionId }: { collectionId: string }) {
     e.preventDefault()
     e.stopPropagation()
     if (timerRef.current) clearTimeout(timerRef.current)
-    setLoading(true)
-    const { error } = await createClient().from('collections').delete().eq('id', collectionId)
-    if (error) {
-      toast.error(error.message)
-      setLoading(false)
-      setConfirming(false)
-    } else {
-      toast.success('Stack deleted')
-      router.refresh()
+    
+    const supabase = createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (user) {
+      // Try to delete from collection_saves first (linking table)
+      await supabase
+        .from('collection_saves')
+        .delete()
+        .eq('collection_id', collectionId)
+        .eq('user_id', user.id)
+
+      // Also try deleting from collections if it's the owner
+      const { error: colError } = await supabase
+        .from('collections')
+        .delete()
+        .eq('id', collectionId)
+        .eq('user_id', user.id)
+
+      if (colError) {
+        toast.error(colError.message)
+      } else {
+        toast.success(stackName ? `Deleted stack: ${stackName}` : 'Stack deleted')
+        startTransition(() => {
+          router.refresh()
+        })
+      }
     }
   }
 
@@ -49,14 +67,16 @@ export function DeleteStackButton({ collectionId }: { collectionId: string }) {
       <div className="flex items-center gap-1" onClick={e => e.preventDefault()}>
         <button
           onClick={handleDelete}
-          disabled={loading}
-          className="text-[10px] font-semibold text-red-500 bg-red-500/10 border border-red-500/20 px-2 py-1 rounded-full hover:bg-red-500/20 transition-colors disabled:opacity-50"
+          disabled={isPending}
+          className="text-[10px] font-semibold text-red-500 bg-red-500/10 border border-red-500/20 px-2 py-1 rounded-full hover:bg-red-500/20 transition-colors disabled:opacity-50 flex items-center gap-1"
         >
-          {loading ? '...' : 'Delete'}
+          {isPending ? <Loader2 className="h-2 w-2 animate-spin" /> : null}
+          {isPending ? 'Deleting...' : 'Confirm'}
         </button>
         <button
           onClick={cancel}
-          className="text-[10px] font-semibold text-muted-foreground bg-muted border border-border px-2 py-1 rounded-full hover:bg-muted/80 transition-colors"
+          disabled={isPending}
+          className="text-[10px] font-semibold text-muted-foreground bg-muted border border-border px-2 py-1 rounded-full hover:bg-muted/80 transition-colors disabled:opacity-50"
         >
           Cancel
         </button>
@@ -68,7 +88,7 @@ export function DeleteStackButton({ collectionId }: { collectionId: string }) {
     <button
       onClick={startConfirm}
       title="Delete stack"
-      className="flex items-center justify-center h-11 w-11 rounded-lg text-muted-foreground/40 hover:text-red-500 hover:bg-red-500/10 transition-colors"
+      className="flex items-center justify-center h-8 w-8 rounded-lg text-muted-foreground/40 hover:text-red-500 hover:bg-red-500/10 transition-colors"
     >
       <Trash2 className="h-4 w-4" />
     </button>

@@ -8,6 +8,7 @@ create table if not exists public.collections (
   id           uuid primary key default gen_random_uuid(),
   user_id      uuid not null references auth.users(id) on delete cascade,
   name         text not null,
+  icon         text,
   description  text,
   is_public    boolean not null default false,
   share_slug   text unique not null default encode(gen_random_bytes(6), 'hex'),
@@ -64,30 +65,24 @@ alter table public.collection_items enable row level security;
 create policy "Users can view items in their own collections"
   on public.collection_items for select
   using (
-    exists (
-      select 1 from public.collections
-      where id = collection_items.collection_id
-      and user_id = auth.uid()
+    collection_id in (
+      select id from public.collections where user_id = auth.uid()
     )
   );
 
 create policy "Anyone can view items in public collections"
   on public.collection_items for select
   using (
-    exists (
-      select 1 from public.collections
-      where id = collection_items.collection_id
-      and is_public = true
+    collection_id in (
+      select id from public.collections where is_public = true
     )
   );
 
 create policy "Users can manage items in their own collections"
   on public.collection_items for all
   using (
-    exists (
-      select 1 from public.collections
-      where id = collection_items.collection_id
-      and user_id = auth.uid()
+    collection_id in (
+      select id from public.collections where user_id = auth.uid()
     )
   );
 

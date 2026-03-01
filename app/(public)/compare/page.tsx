@@ -1,12 +1,14 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
-import { ExternalLink, Sparkles } from 'lucide-react'
+import { ExternalLink, Sparkles, Check, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { StarRating } from '@/components/reviews/StarRating'
 import { createClient } from '@/lib/supabase/server'
 import { getSuperTools } from '@/lib/supabase/queries/tools'
 import { PRICING_BADGE_COLORS, PRICING_LABELS } from '@/lib/constants'
+import { CompareSearch } from '@/components/tools/CompareSearch'
+import { Suspense } from 'react'
 
 export async function generateMetadata({
   searchParams,
@@ -45,53 +47,18 @@ type CompareTool = {
   has_api: boolean
   has_mobile_app: boolean
   is_open_source: boolean
+  has_cloud_sync: boolean
   avg_rating: number
   review_count: number
   use_case: string | null
   team_size: string | null
   integrations: string[] | null
-}
-
-type AutoMetadata = {
-  use_case: string
-  team_size: string
-  integrations: string[]
-}
-
-const USE_CASE_PATTERNS: [RegExp, string][] = [
-  [/writing|copy|content/i, 'Writing & content'],
-  [/code|development|build/i, 'Coding & development'],
-  [/design|creative|image|video/i, 'Design & visual content'],
-  [/plan|schedule|project/i, 'Planning & productivity'],
-  [/customer|support|helpdesk/i, 'Customer support'],
-  [/research|data|analytics/i, 'Research & insights'],
-]
-
-const TEAM_SIZE_PATTERNS: [RegExp, string][] = [
-  [/enterprise|team|company|organization/i, 'Mid & enterprise teams'],
-  [/solo|personal|creator|student/i, 'Solo creators'],
-]
-
-const INTEGRATIONS_BASE = ['Slack', 'Notion', 'Google Sheets', 'Zapier', 'Figma']
-
-function deriveMetadata(tool: CompareTool): AutoMetadata {
-  const tagline = tool.tagline ?? ''
-  const useCaseMatch = USE_CASE_PATTERNS.find(([regex]) => regex.test(tagline))
-  const teamSizeMatch = TEAM_SIZE_PATTERNS.find(([regex]) => regex.test(tagline))
-
-  const integrations = tool.integrations && tool.integrations.length > 0
-    ? tool.integrations
-    : INTEGRATIONS_BASE
-
-  return {
-    use_case: useCaseMatch ? useCaseMatch[1] : 'General productivity',
-    team_size: teamSizeMatch ? teamSizeMatch[1] : 'Teams of all sizes',
-    integrations,
-  }
+  api_latency?: number | null
+  api_uptime?: number | null
 }
 
 function labelize(value: string | null | undefined) {
-  if (!value) return 'Not specified'
+  if (!value) return 'TBD'
   return value
     .split('-')
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
@@ -114,7 +81,7 @@ export default async function ComparePage({
   const { data } = slugs.length
     ? await supabase
       .from('tools')
-      .select('id, name, slug, tagline, website_url, pricing_model, pricing_details, pricing_type, has_api, has_mobile_app, is_open_source, avg_rating, review_count, use_case, team_size, integrations')
+      .select('id, name, slug, tagline, website_url, pricing_model, pricing_details, pricing_type, has_api, has_mobile_app, is_open_source, has_cloud_sync, avg_rating, review_count, use_case, team_size, integrations')
       .in('slug', slugs)
       .eq('status', 'published')
     : { data: [] as CompareTool[] }
@@ -140,23 +107,27 @@ export default async function ComparePage({
   return (
     <div className="page-shell">
       <div className="page-hero text-center">
-        <div className="inline-flex items-center gap-2 gum-pill !border px-3 py-1 text-xs font-semibold uppercase tracking-wide mb-4">
+        <div className="inline-flex items-center gap-2 gum-pill px-3 py-1 text-xs font-semibold uppercase tracking-wide mb-4">
           <Sparkles className="h-3.5 w-3.5" />
           Decision View
         </div>
         <h1 className="text-3xl sm:text-4xl font-black mb-2">Compare AI Tools</h1>
-        <p className="text-muted-foreground">Compare pricing, fit, and integrations before you commit.</p>
+        <p className="text-muted-foreground mb-8">Compare pricing, fit, and integrations before you commit.</p>
+        
+        <Suspense>
+          <CompareSearch currentSlugs={slugs} />
+        </Suspense>
       </div>
 
       <section className="grid gap-4 md:grid-cols-2 mb-8">
-        <div className="glass-card rounded-[4px] p-5">
-          <h2 className="text-base font-semibold mb-2">Why compare first?</h2>
+        <div className="glass-card rounded-md p-5">
+          <h3 className="text-base font-semibold mb-2">Why compare first?</h3>
           <p className="text-sm text-muted-foreground leading-relaxed">
             Comparing first reduces tool overlap, prevents expensive switches, and helps teams align on one stack faster.
           </p>
         </div>
-        <div className="glass-card rounded-[4px] p-5">
-          <h2 className="text-base font-semibold mb-2">How to use this page</h2>
+        <div className="glass-card rounded-md p-5">
+          <h3 className="text-base font-semibold mb-2">How to use this page</h3>
           <p className="text-sm text-muted-foreground leading-relaxed">
             Add tools from any detail page, then compare best use case, team fit, integrations, ratings, and pricing side-by-side.
           </p>
@@ -168,7 +139,7 @@ export default async function ComparePage({
           <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground mb-3">Quick Starts</h2>
           <div className="grid gap-3 md:grid-cols-2">
             {comparePresets.map((preset) => (
-              <Link key={preset.title} href={`/compare?tools=${encodeURIComponent(preset.slugs.join(','))}`} className="glass-card card-hover rounded-[8px] p-4 block">
+              <Link key={preset.title} href={`/compare?tools=${encodeURIComponent(preset.slugs.join(','))}`} className="glass-card rounded-md p-4 block">
                 <p className="font-semibold text-sm">{preset.title}</p>
                 <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{preset.description}</p>
               </Link>
@@ -178,14 +149,14 @@ export default async function ComparePage({
       )}
 
       {tools.length < 2 ? (
-        <div className="glass-card rounded-[4px] p-6 space-y-4">
+        <div className="glass-card rounded-md p-6 space-y-4">
           <p className="text-sm text-muted-foreground">
             Add at least 2 tools to compare. Use <span className="text-foreground font-medium">Add to Compare</span> on any tool page, or start with a quick preset below.
           </p>
           <div className="flex flex-wrap gap-2">
             {suggestions.map((tool) => (
               <Link key={tool.id} href={`/compare?tools=${tool.slug}`}>
-                <Badge variant="outline" className="border-black/30 hover:border-primary/40 transition-colors">
+                <Badge variant="outline" className="border-foreground/30 hover:border-primary/40 transition-colors">
                   {tool.name}
                 </Badge>
               </Link>
@@ -193,15 +164,15 @@ export default async function ComparePage({
           </div>
         </div>
       ) : (
-        <div className="glass-card rounded-[4px] overflow-x-auto">
-          <div className="px-4 sm:px-5 py-3 border-b border-black/15 bg-background/60">
+        <div className="glass-card rounded-md overflow-x-auto">
+          <div className="px-4 sm:px-5 py-3 border-b border-foreground/15 bg-background/60">
             <p className="text-xs text-muted-foreground">
               Tip: choose by <span className="text-foreground font-medium">Best Use Case</span> and <span className="text-foreground font-medium">Integrations</span> first, then validate pricing.
             </p>
           </div>
           <table className="w-full min-w-[760px]">
             <thead>
-              <tr className="border-b border-black/20">
+              <tr className="border-b border-foreground/20">
                 <th className="text-left p-4 text-sm text-muted-foreground font-medium">Feature</th>
                 {tools.map((tool) => (
                   <th key={tool.id} className="text-left p-4 min-w-56">
@@ -215,18 +186,29 @@ export default async function ComparePage({
               </tr>
             </thead>
             <tbody>
-              <tr className="border-b border-black/10">
+              <tr className="border-b border-foreground/10">
                 <td className="p-4 text-sm text-muted-foreground">Pricing</td>
-                {tools.map((tool) => (
-                  <td key={tool.id} className="p-4">
-                    <Badge variant="outline" className={`text-xs ${PRICING_BADGE_COLORS[tool.pricing_model] ?? PRICING_BADGE_COLORS.unknown}`}>
-                      {PRICING_LABELS[tool.pricing_model] ?? 'Unknown'}
-                    </Badge>
-                    {tool.pricing_details && <p className="text-xs text-muted-foreground mt-1">{tool.pricing_details}</p>}
-                  </td>
-                ))}
+                {tools.map((tool) => {
+                  const label = PRICING_LABELS[tool.pricing_model] ?? 'Unknown'
+                  const showDetails = tool.pricing_details && tool.pricing_details.toLowerCase() !== label.toLowerCase()
+                  return (
+                    <td key={tool.id} className="p-4">
+                      <div className="flex flex-col gap-1.5">
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline" className={`text-[10px] uppercase font-bold tracking-tight ${PRICING_BADGE_COLORS[tool.pricing_model] ?? PRICING_BADGE_COLORS.unknown}`}>
+                            {label}
+                          </Badge>
+                          <span className="text-sm capitalize font-medium">
+                            {tool.pricing_type?.replace('-', ' ') ?? 'Subscription'}
+                          </span>
+                        </div>
+                        {showDetails && <p className="text-xs text-muted-foreground leading-snug">{tool.pricing_details}</p>}
+                      </div>
+                    </td>
+                  )
+                })}
               </tr>
-              <tr className="border-b border-black/10">
+              <tr className="border-b border-foreground/10">
                 <td className="p-4 text-sm text-muted-foreground">Rating</td>
                 {tools.map((tool) => (
                   <td key={tool.id} className="p-4">
@@ -241,60 +223,96 @@ export default async function ComparePage({
                   </td>
                 ))}
               </tr>
-              <tr className="border-b border-black/10">
+              <tr className="border-b border-foreground/10">
                 <td className="p-4 text-sm text-muted-foreground">Capabilities</td>
                 {tools.map((tool) => (
                   <td key={tool.id} className="p-4">
-                    <div className="flex flex-wrap gap-1.5">
-                      {tool.has_api && <Badge variant="secondary" className="text-[10px] bg-blue-50 text-blue-700 border-blue-200">API</Badge>}
-                      {tool.has_mobile_app && <Badge variant="secondary" className="text-[10px] bg-purple-50 text-purple-700 border-purple-200">Mobile</Badge>}
-                      {tool.is_open_source && <Badge variant="secondary" className="text-[10px] bg-emerald-50 text-emerald-700 border-emerald-200">Open Source</Badge>}
-                      {!tool.has_api && !tool.has_mobile_app && !tool.is_open_source && <span className="text-xs text-muted-foreground/60">—</span>}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between gap-4">
+                        <span className="text-[11px] text-muted-foreground uppercase font-semibold">API Access</span>
+                        {tool.has_api ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <X className="h-3.5 w-3.5 text-muted-foreground/30" />}
+                      </div>
+                      <div className="flex items-center justify-between gap-4">
+                        <span className="text-[11px] text-muted-foreground uppercase font-semibold">Mobile App</span>
+                        {tool.has_mobile_app ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <X className="h-3.5 w-3.5 text-muted-foreground/30" />}
+                      </div>
+                      <div className="flex items-center justify-between gap-4">
+                        <span className="text-[11px] text-muted-foreground uppercase font-semibold">Open Source</span>
+                        {tool.is_open_source ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <X className="h-3.5 w-3.5 text-muted-foreground/30" />}
+                      </div>
+                      <div className="flex items-center justify-between gap-4">
+                        <span className="text-[11px] text-muted-foreground uppercase font-semibold">Cloud Sync</span>
+                        {tool.has_cloud_sync ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <X className="h-3.5 w-3.5 text-muted-foreground/30" />}
+                      </div>
                     </div>
                   </td>
                 ))}
               </tr>
               <tr className="border-b border-black/10">
-                <td className="p-4 text-sm text-muted-foreground">Pricing Model</td>
+                <td className="p-4 text-sm text-muted-foreground">API Latency</td>
                 {tools.map((tool) => (
-                  <td key={tool.id} className="p-4 text-sm capitalize">
-                    {tool.pricing_type?.replace('-', ' ') ?? 'Subscription'}
+                  <td key={tool.id} className="p-4">
+                    {tool.has_api ? (
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono text-xs font-bold">
+                          {tool.api_latency ? `${tool.api_latency}ms` : '---'}
+                        </span>
+                        {tool.api_latency && (
+                          <div className={`h-1.5 w-1.5 rounded-full ${tool.api_latency < 300 ? 'bg-emerald-500' : tool.api_latency < 1000 ? 'bg-amber-500' : 'bg-red-500'}`} />
+                        )}
+                      </div>
+                    ) : (
+                      <span className="text-muted-foreground/30">—</span>
+                    )}
                   </td>
                 ))}
               </tr>
               <tr className="border-b border-black/10">
-                <td className="p-4 text-sm text-muted-foreground">Best Use Case</td>
+                <td className="p-4 text-sm text-muted-foreground">API Uptime</td>
+                {tools.map((tool) => (
+                  <td key={tool.id} className="p-4">
+                    {tool.has_api ? (
+                      <span className="font-mono text-xs font-bold text-emerald-600">
+                        {tool.api_uptime ? `${Number(tool.api_uptime).toFixed(1)}%` : '100%'}
+                      </span>
+                    ) : (
+                      <span className="text-muted-foreground/30">—</span>
+                    )}
+                  </td>
+                ))}
+              </tr>
+
+              <tr className="border-b border-foreground/10">
+                <td className="p-4 text-sm text-muted-foreground">Use Case</td>
+
                 {tools.map((tool) => (
                   <td key={tool.id} className="p-4 text-sm">
-                    {labelize(tool.use_case ?? deriveMetadata(tool).use_case)}
+                    {labelize(tool.use_case)}
                   </td>
                 ))}
               </tr>
-              <tr className="border-b border-black/10">
+              <tr className="border-b border-foreground/10">
                 <td className="p-4 text-sm text-muted-foreground">Team Size</td>
                 {tools.map((tool) => (
                   <td key={tool.id} className="p-4 text-sm">
-                    {labelize(tool.team_size ?? deriveMetadata(tool).team_size)}
+                    {labelize(tool.team_size)}
                   </td>
                 ))}
               </tr>
-              <tr className="border-b border-black/10">
+              <tr className="border-b border-foreground/10">
                 <td className="p-4 text-sm text-muted-foreground">Integrations</td>
                 {tools.map((tool) => (
                   <td key={tool.id} className="p-4">
-                    {(tool.integrations && tool.integrations.length > 0)
-                      || deriveMetadata(tool).integrations.length > 0 ? (
+                    {tool.integrations && tool.integrations.length > 0 ? (
                       <div className="flex flex-wrap gap-1.5">
-                        {(tool.integrations && tool.integrations.length > 0
-                          ? tool.integrations
-                          : deriveMetadata(tool).integrations).map((integration) => (
-                          <Badge key={integration} variant="outline" className="text-[10px] border-black/30">
+                        {tool.integrations.map((integration) => (
+                          <Badge key={integration} variant="outline" className="text-[10px] border-foreground/30">
                             {labelize(integration)}
                           </Badge>
                         ))}
                       </div>
                     ) : (
-                      <p className="text-xs text-muted-foreground">Not specified</p>
+                      <p className="text-xs text-muted-foreground italic">TBD</p>
                     )}
                   </td>
                 ))}

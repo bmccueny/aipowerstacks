@@ -1,0 +1,11 @@
+export function BrandMark({ className, variant = 'color' }: { className?: string; variant?: 'color' | 'dark' }) {
+  const bg = variant === 'dark' ? '#000' : 'oklch(0.79 0.17 355)'
+  return (
+    <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+      <rect width="28" height="28" rx="7" fill={bg} />
+      <rect x="5" y="7" width="18" height="3.5" rx="1.75" fill="black" />
+      <rect x="5" y="12.25" width="13" height="3.5" rx="1.75" fill="black" />
+      <rect x="5" y="17.5" width="8" height="3.5" rx="1.75" fill="black" />
+    </svg>
+  )
+}

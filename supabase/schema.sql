@@ -511,6 +511,7 @@ returns table (
   name          text,
   slug          text,
   tagline       text,
+  website_url   text,
   logo_url      text,
   pricing_model text,
   is_verified   boolean,
@@ -522,6 +523,9 @@ returns table (
   use_case      text,
   team_size     text,
   integrations  text[],
+  has_api       boolean,
+  has_mobile_app boolean,
+  is_open_source boolean,
   published_at  timestamptz,
   rank          real
 )
@@ -535,10 +539,11 @@ begin
 
   return query
   select
-    t.id, t.name, t.slug, t.tagline, t.logo_url,
+    t.id, t.name, t.slug, t.tagline, t.website_url, t.logo_url,
     t.pricing_model, t.is_verified, t.is_featured,
     t.avg_rating, t.review_count, t.upvote_count, t.category_id,
     t.use_case, t.team_size, t.integrations,
+    t.has_api, t.has_mobile_app, t.is_open_source,
     t.published_at,
     case
       when ts_query is not null then ts_rank(t.search_vector, ts_query)

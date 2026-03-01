@@ -4,6 +4,7 @@ import type { Metadata } from 'next'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Plus, ExternalLink } from 'lucide-react'
+import { DeleteToolButton } from '@/components/admin/DeleteToolButton'
 
 export const metadata: Metadata = { title: 'Manage Tools' }
 
@@ -85,11 +86,12 @@ export default async function AdminToolsPage({
                 <td className="p-3">
                   <div className="flex items-center gap-2 justify-end">
                     <Link href={`/admin/tools/${tool.id}`}>
-                      <Button variant="ghost" size="sm">Edit</Button>
+                      <Button variant="ghost" size="sm" className="h-8">Edit</Button>
                     </Link>
                     <Link href={`/tools/${tool.slug}`} target="_blank">
-                      <Button variant="ghost" size="sm"><ExternalLink className="h-3.5 w-3.5" /></Button>
+                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0"><ExternalLink className="h-3.5 w-3.5" /></Button>
                     </Link>
+                    <DeleteToolButton toolId={tool.id} toolName={tool.name} />
                   </div>
                 </td>
               </tr>

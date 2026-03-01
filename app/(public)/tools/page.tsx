@@ -101,7 +101,7 @@ export default async function ToolsPage({ searchParams }: ToolsPageProps) {
         <p className="text-muted-foreground max-w-2xl mx-auto">Compare tools by category, pricing, use case, team size, and integrations in one place.</p>
       </section>
 
-      <div className="glass-card rounded-[4px] border-[1.5px] border-foreground p-4 mb-2 space-y-3">
+      <div className="glass-card rounded-md p-4 mb-2 space-y-3">
         <Suspense>
           <div className="flex flex-col sm:flex-row gap-3">
             <ToolSearch />

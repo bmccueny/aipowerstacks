@@ -21,7 +21,11 @@ import {
   Github,
   CheckCircle2,
   ShieldCheck,
-  Lock
+  Lock,
+  MessageSquare,
+  Send,
+  Wand2,
+  Loader2
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ToolCard } from '@/components/tools/ToolCard'
@@ -29,6 +33,7 @@ import type { ToolSearchResult } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
 type Step = 'goal' | 'requirements' | 'budget' | 'persona' | 'results'
+type Mode = 'wizard' | 'chat'
 
 const GOALS = [
   { id: 'content-creation', label: 'Create Content', icon: PenLine, desc: 'Writing, social media, & blogs' },
@@ -59,7 +64,10 @@ const REQUIREMENTS = [
 ]
 
 export function AiMatchmaker() {
+  const [mode, setMode] = useState<Mode>('chat')
   const [step, setStep] = useState<Step>('goal')
+  const [chatMessage, setChatMessage] = useState('')
+  const [chatExplanation, setChatExplanation] = useState('')
   const [selections, setSelections] = useState({
     useCase: '',
     pricing: 'any',
@@ -84,12 +92,34 @@ export function AiMatchmaker() {
 
   const handleSelect = (key: string, value: string) => {
     setSelections(prev => ({ ...prev, [key]: value }))
-    
     if (step === 'budget') setStep('persona')
-    else if (step === 'persona') fetchResults(value)
+    else if (step === 'persona') fetchWizardResults(value)
   }
 
-  const fetchResults = async (finalPersona: string) => {
+  const handleChatSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!chatMessage.trim()) return
+    
+    setLoading(true)
+    setStep('results')
+    
+    try {
+      const res = await fetch('/api/matchmaker', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: chatMessage })
+      })
+      const data = await res.json()
+      setResults(data.tools)
+      setChatExplanation(data.explanation)
+    } catch (err) {
+      console.error('Chat matchmaker failed:', err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const fetchWizardResults = async (finalPersona: string) => {
     setLoading(true)
     setStep('results')
     
@@ -122,19 +152,21 @@ export function AiMatchmaker() {
       persona: '', 
       needsApi: false, 
       needsMobile: false, 
-      needsOpenSource: false,
+      needsOpenSource: false, 
       needsPrivacy: false,
       needsSSO: false
     })
     setStep('goal')
     setResults([])
+    setChatMessage('')
+    setChatExplanation('')
   }
 
-  const progress = step === 'goal' ? 20 : step === 'requirements' ? 40 : step === 'budget' ? 60 : step === 'persona' ? 80 : 100
+  const progress = step === 'results' ? 100 : mode === 'chat' ? 50 : (step === 'goal' ? 20 : step === 'requirements' ? 40 : step === 'budget' ? 60 : 80)
 
   return (
     <div className="w-full">
-      <div className="gum-card rounded-[4px] border-[1px] border-foreground overflow-hidden">
+      <div className="gum-card rounded-xl border-[1px] border-foreground overflow-hidden">
         <div className="h-1 bg-muted">
           <div 
             className="h-full bg-primary transition-all duration-500 ease-out" 
@@ -143,7 +175,77 @@ export function AiMatchmaker() {
         </div>
 
         <div className="p-6 sm:p-10">
-          {step === 'goal' && (
+          {step !== 'results' && (
+            <div className="flex items-center gap-2 mb-8 bg-muted/30 p-1 rounded-md w-fit mx-auto">
+              <button
+                onClick={() => setMode('chat')}
+                className={cn(
+                  "flex items-center gap-2 px-4 py-1.5 text-xs font-bold uppercase tracking-tight rounded transition-all",
+                  mode === 'chat' ? "bg-background text-primary shadow-sm" : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                <Wand2 className="h-3.5 w-3.5" /> AI Agent
+              </button>
+              <button
+                onClick={() => setMode('wizard')}
+                className={cn(
+                  "flex items-center gap-2 px-4 py-1.5 text-xs font-bold uppercase tracking-tight rounded transition-all",
+                  mode === 'wizard' ? "bg-background text-primary shadow-sm" : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                <Zap className="h-3.5 w-3.5" /> Guided Wizard
+              </button>
+            </div>
+          )}
+
+          {step === 'goal' && mode === 'chat' && (
+            <div className="animate-in-stagger text-center max-w-xl mx-auto py-4">
+              <h2 className="text-3xl font-black mb-3 uppercase tracking-tight">How can I help you build?</h2>
+              <p className="text-muted-foreground mb-10 text-sm sm:text-base leading-relaxed">
+                Describe your project in plain English (e.g. &quot;I want to build a mobile app for dentists&quot;) and I&quot;ll find the perfect stack for you.
+              </p>
+              
+              <form onSubmit={handleChatSubmit} className="relative group">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <MessageSquare className="h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                </div>
+                <input
+                  type="text"
+                  value={chatMessage}
+                  onChange={(e) => setChatMessage(e.target.value)}
+                  placeholder="Tell me your goal..."
+                  className="w-full bg-background border-2 border-foreground rounded-md h-14 pl-12 pr-32 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all font-bold"
+                  autoFocus
+                />
+                <div className="absolute inset-y-0 right-2 flex items-center">
+                  <Button type="submit" disabled={!chatMessage.trim() || loading} className="h-10 px-6 gap-2">
+                    {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                    <span>Match Me</span>
+                  </Button>
+                </div>
+              </form>
+              
+              <div className="mt-8 flex flex-wrap justify-center gap-2">
+                <span className="text-[10px] uppercase font-black tracking-widest text-muted-foreground w-full mb-1">Try these:</span>
+                {[
+                  "Build an iOS app for fitness",
+                  "Launch a viral TikTok brand",
+                  "Secure enterprise AI for data",
+                  "Open source code assistant"
+                ].map(suggestion => (
+                  <button 
+                    key={suggestion}
+                    onClick={() => setChatMessage(suggestion)}
+                    className="text-[11px] font-bold px-3 py-1.5 rounded-full border border-foreground/10 hover:border-primary/30 hover:bg-primary/5 transition-all"
+                  >
+                    {suggestion}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {step === 'goal' && mode === 'wizard' && (
             <div className="animate-in-stagger">
               <h2 className="text-2xl font-bold mb-2 uppercase tracking-tight">1. What are you building?</h2>
               <p className="text-muted-foreground mb-8 text-sm sm:text-base">We&apos;ll find the tools that match your specific workflow.</p>
@@ -152,7 +254,7 @@ export function AiMatchmaker() {
                   <button
                     key={g.id}
                     onClick={() => handleGoalSelect(g.id)}
-                    className="glass-card flex items-center gap-4 p-4 text-left hover:border-primary transition-colors group rounded-[4px]"
+                    className="glass-card flex items-center gap-4 p-4 text-left hover:border-primary transition-colors group rounded-md"
                   >
                     <div className="h-10 w-10 rounded-lg bg-primary/5 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
                       <g.icon className="h-5 w-5" />
@@ -182,7 +284,7 @@ export function AiMatchmaker() {
                       key={r.id}
                       onClick={() => toggleRequirement(r.id)}
                       className={cn(
-                        "glass-card flex flex-col items-center p-4 text-center transition-all group rounded-[4px]",
+                        "glass-card flex flex-col items-center p-4 text-center transition-all group rounded-md",
                         isActive ? "border-primary bg-primary/5 ring-1 ring-primary" : "hover:border-primary/50"
                       )}
                     >
@@ -219,7 +321,7 @@ export function AiMatchmaker() {
                   <button
                     key={b.id}
                     onClick={() => handleSelect('pricing', b.id)}
-                    className="glass-card flex flex-col items-center p-6 text-center hover:border-primary transition-colors group rounded-[4px]"
+                    className="glass-card flex flex-col items-center p-6 text-center hover:border-primary transition-colors group rounded-md"
                   >
                     <div className="h-12 w-12 rounded-full bg-primary/5 flex items-center justify-center text-primary mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
                       <b.icon className="h-6 w-6" />
@@ -244,7 +346,7 @@ export function AiMatchmaker() {
                   <button
                     key={p.id}
                     onClick={() => handleSelect('persona', p.id)}
-                    className="glass-card flex flex-col items-center p-6 text-center hover:border-primary transition-colors group rounded-[4px]"
+                    className="glass-card flex flex-col items-center p-6 text-center hover:border-primary transition-colors group rounded-md"
                   >
                     <div className="h-12 w-12 rounded-full bg-primary/5 flex items-center justify-center text-primary mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
                       <p.icon className="h-6 w-6" />
@@ -259,12 +361,16 @@ export function AiMatchmaker() {
 
           {step === 'results' && (
             <div className="animate-in-stagger">
-              <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
                 <div>
-                  <h2 className="text-2xl font-bold mb-1 uppercase tracking-tight">Your Perfect AI Stack</h2>
-                  <p className="text-muted-foreground text-sm">Based on your goals and technical needs.</p>
+                  <h2 className="text-2xl font-bold mb-1 uppercase tracking-tight">Your Custom AI Stack</h2>
+                  {chatExplanation ? (
+                    <p className="text-muted-foreground text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: chatExplanation }} />
+                  ) : (
+                    <p className="text-muted-foreground text-sm">Based on your goals and technical needs.</p>
+                  )}
                 </div>
-                <Button variant="ghost" size="sm" onClick={reset} className="gap-2">
+                <Button variant="outline" size="sm" onClick={reset} className="gap-2 text-primary border-primary/20 hover:bg-primary hover:text-primary-foreground">
                   <RotateCcw className="h-3.5 w-3.5" /> Start Over
                 </Button>
               </div>
@@ -272,7 +378,7 @@ export function AiMatchmaker() {
               {loading ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {[1, 2, 3, 4].map(i => (
-                    <div key={i} className="glass-card h-48 animate-pulse rounded-[4px]" />
+                    <div key={i} className="glass-card h-48 animate-pulse rounded-md" />
                   ))}
                 </div>
               ) : results.length > 0 ? (
@@ -282,7 +388,7 @@ export function AiMatchmaker() {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-12 glass-card rounded-[4px] border-dashed">
+                <div className="text-center py-12 glass-card rounded-md border-dashed">
                   <p className="text-muted-foreground mb-4">No perfect match found for this specific criteria.</p>
                   <Button onClick={reset}>Try different criteria</Button>
                 </div>

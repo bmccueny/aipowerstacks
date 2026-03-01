@@ -1,6 +1,50 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
 
+export async function GET(req: Request) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  try {
+    const { searchParams } = new URL(req.url)
+    const toolId = searchParams.get('toolId')
+
+    if (!toolId) {
+      return NextResponse.json({ error: 'Missing toolId' }, { status: 400 })
+    }
+
+    const { data: collections, error: collectionsError } = await supabase
+      .from('collections')
+      .select('id')
+      .eq('user_id', user.id)
+
+    if (collectionsError) throw collectionsError
+
+    const ownedCollectionIds = (collections ?? []).map((row) => row.id)
+    if (ownedCollectionIds.length === 0) {
+      return NextResponse.json({ collectionIds: [] })
+    }
+
+    const { data, error } = await supabase
+      .from('collection_items')
+      .select('collection_id')
+      .eq('tool_id', toolId)
+      .in('collection_id', ownedCollectionIds)
+
+    if (error) throw error
+
+    const collectionIds = [...new Set((data ?? []).map((row) => row.collection_id))]
+    return NextResponse.json({ collectionIds })
+  } catch (error) {
+    console.error('Error listing collection memberships:', error)
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
+  }
+}
+
 export async function POST(req: Request) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()

@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { ChevronRight, ExternalLink, ShieldCheck, Star, Tag } from 'lucide-react'
+import { ChevronRight, ExternalLink, ShieldCheck, Star, Tag, TrendingDown, TrendingUp, Check, X, Zap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { JsonLd } from '@/components/common/JsonLd'
@@ -12,6 +12,7 @@ import { BookmarkButton } from '@/components/tools/BookmarkButton'
 import { AddToStackButton } from '@/components/tools/AddToStackButton'
 import { AddToCompareButton } from '@/components/tools/AddToCompareButton'
 import { NewsletterBanner } from '@/components/layout/NewsletterBanner'
+import { AdminReviewPanel } from '@/components/admin/AdminReviewPanel'
 import { createClient } from '@/lib/supabase/server'
 import { getToolBySlug, getRelatedToolsByCategory } from '@/lib/supabase/queries/tools'
 import { getReviewsByTool } from '@/lib/supabase/queries/reviews'
@@ -41,12 +42,14 @@ export default async function ToolDetailPage({ params }: Props) {
   const { slug } = await params
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
+  const { data: profile } = user ? await supabase.from('profiles').select('role').eq('id', user.id).single() : { data: null }
+  const isAdmin = profile?.role === 'admin'
   const tool = await getToolBySlug(slug)
 
   if (!tool) notFound()
 
   const [reviews, alternatives] = await Promise.all([
-    getReviewsByTool(tool.id),
+    getReviewsByTool(tool.id, user?.id),
     getRelatedToolsByCategory({
       categoryId: tool.category_id,
       excludeToolId: tool.id,
@@ -90,6 +93,13 @@ export default async function ToolDetailPage({ params }: Props) {
       : daysSinceUpdate <= 30
         ? 'Updated this month'
         : 'Older data'
+  const updatedDateText = updatedAt
+    ? new Intl.DateTimeFormat('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    }).format(new Date(updatedAt))
+    : null
 
   const breadcrumbItems = [
     { name: 'Home', url: '/' },
@@ -98,14 +108,17 @@ export default async function ToolDetailPage({ params }: Props) {
     { name: tool.name, url: `/tools/${tool.slug}` },
   ]
 
+  const { data: trend } = await (supabase as any).rpc('get_tool_price_trend', { p_tool_id: tool.id })
+  const priceChange = (trend as any)?.[0]?.percent_change ?? 0
+
   return (
     <>
       <JsonLd data={generateJsonLd(tool)} />
       <JsonLd data={generateFaqJsonLd(tool)} />
       <JsonLd data={generateBreadcrumbJsonLd(breadcrumbItems)} />
 
-      <div className="max-w-6xl mx-auto px-4 py-10 pb-28 lg:pb-10">
-        <nav className="flex items-center gap-1.5 text-sm text-muted-foreground mb-8">
+      <div className="page-shell">
+        <nav className="flex items-center gap-1.5 text-sm text-muted-foreground mb-6">
           <Link href="/" className="hover:text-foreground transition-colors">Home</Link>
           <ChevronRight className="h-3.5 w-3.5" />
           <Link href="/tools" className="hover:text-foreground transition-colors">Tools</Link>
@@ -119,19 +132,24 @@ export default async function ToolDetailPage({ params }: Props) {
           <span className="text-foreground">{tool.name}</span>
         </nav>
 
-        <div className="glass-card rounded-[10px] p-6 mb-6">
+        <div className="rounded-md border-2 border-amber-500/40 bg-amber-500/5 p-6 mb-6">
           <div className="flex flex-col sm:flex-row gap-6">
-            <div className="h-20 w-20 shrink-0 rounded-2xl bg-muted overflow-hidden flex items-center justify-center">
+            <div className="h-24 w-24 shrink-0 rounded-md border border-foreground/15 bg-background overflow-hidden flex items-center justify-center">
               {tool.logo_url ? (
-                <Image src={tool.logo_url} alt={tool.name} width={80} height={80} className="object-cover" />
+                <Image src={tool.logo_url} alt={tool.name} width={96} height={96} className="object-cover" />
               ) : (
-                <span className="text-3xl font-bold text-primary">{tool.name[0]}</span>
+                <span className="text-4xl font-bold text-primary">{tool.name[0]}</span>
               )}
             </div>
             <div className="flex-1">
               <div className="flex flex-wrap items-start gap-2 mb-2">
-                <h1 className="text-2xl font-bold">{tool.name}</h1>
-                {tool.is_verified && (
+                <h1 className="text-3xl font-black text-amber-700 dark:text-amber-400">{tool.name}</h1>
+                {tool.verified_by_admin && (
+                  <Badge className="bg-emerald-100 text-emerald-800 border-emerald-300 gap-1 hover:bg-emerald-200">
+                    <ShieldCheck className="h-3.5 w-3.5" /> Expert Verified
+                  </Badge>
+                )}
+                {tool.is_verified && !tool.verified_by_admin && (
                   <div className="flex items-center gap-1 text-emerald-700 text-sm">
                     <ShieldCheck className="h-4 w-4" />
                     <span>Verified</span>
@@ -153,6 +171,14 @@ export default async function ToolDetailPage({ params }: Props) {
                 )}
                 <Badge variant="outline" className="border-foreground/30 bg-background/80">{freshnessLabel}</Badge>
               </div>
+              <div className="space-y-1 mb-4 text-xs text-muted-foreground">
+                {tool.is_verified ? (
+                  <p>Verified means our editorial team reviewed core listing fields like product type, pricing model, and destination URL.</p>
+                ) : null}
+                <p>
+                  Updated means this listing was last refreshed on {updatedDateText ?? 'an unpublished date'}.
+                </p>
+              </div>
               <div className="flex items-center gap-3 flex-wrap">
                 <a href={tool.website_url} target="_blank" rel="noopener noreferrer">
                   <Button className="gap-2">
@@ -160,6 +186,14 @@ export default async function ToolDetailPage({ params }: Props) {
                     <ExternalLink className="h-4 w-4" />
                   </Button>
                 </a>
+                {tool.admin_review_video_url && (
+                  <a href={tool.admin_review_video_url} target="_blank" rel="noopener noreferrer">
+                    <Button variant="outline" className="gap-2 border-primary text-primary hover:bg-primary/5">
+                      <Zap className="h-4 w-4 fill-primary" />
+                      Watch Expert Review
+                    </Button>
+                  </a>
+                )}
                 {tool.avg_rating > 0 && (
                   <div className="flex items-center gap-2">
                     <StarRating rating={tool.avg_rating} size="sm" />
@@ -175,7 +209,7 @@ export default async function ToolDetailPage({ params }: Props) {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
-            <div className="glass-card rounded-[10px] p-6">
+            <div className="glass-card rounded-md p-6">
               <h2 className="text-lg font-semibold mb-3">About {tool.name}</h2>
               <p className="text-muted-foreground leading-relaxed">{tool.description}</p>
             </div>
@@ -183,7 +217,7 @@ export default async function ToolDetailPage({ params }: Props) {
             {showProsConsSection && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {pros.length > 0 && (
-                  <div className="glass-card rounded-[10px] p-5">
+                  <div className="glass-card rounded-md p-5">
                     <h2 className="text-base font-semibold mb-3">Pros</h2>
                     <ul className="space-y-2 text-sm text-muted-foreground">
                       {pros.map((item) => (
@@ -196,7 +230,7 @@ export default async function ToolDetailPage({ params }: Props) {
                   </div>
                 )}
                 {cons.length > 0 && (
-                  <div className="glass-card rounded-[10px] p-5">
+                  <div className="glass-card rounded-md p-5">
                     <h2 className="text-base font-semibold mb-3">Cons</h2>
                     <ul className="space-y-2 text-sm text-muted-foreground">
                       {cons.map((item) => (
@@ -212,7 +246,7 @@ export default async function ToolDetailPage({ params }: Props) {
             )}
 
             {bestFor.length > 0 && (
-              <div className="glass-card rounded-[10px] p-6">
+              <div className="glass-card rounded-md p-6">
                 <h2 className="text-lg font-semibold mb-3">Best For</h2>
                 <ul className="space-y-2">
                   {bestFor.map((uc) => (
@@ -226,11 +260,11 @@ export default async function ToolDetailPage({ params }: Props) {
             )}
 
             {alternatives.length > 0 && (
-              <div className="glass-card rounded-[10px] p-6">
+              <div className="glass-card rounded-md p-6">
                 <h2 className="text-lg font-semibold mb-3">Alternatives</h2>
                 <div className="space-y-3">
                   {alternatives.map((alt) => (
-                    <div key={alt.id} className="border border-foreground/20 rounded-xl p-3 flex items-center justify-between gap-4">
+                    <div key={alt.id} className="border border-foreground/20 rounded-md p-3 flex items-center justify-between gap-4">
                       <div className="min-w-0 flex items-center gap-3">
                         <div className="h-9 w-9 shrink-0 rounded-lg bg-muted overflow-hidden flex items-center justify-center">
                           {alt.logo_url ? (
@@ -261,7 +295,7 @@ export default async function ToolDetailPage({ params }: Props) {
             )}
 
             {screenshots.length > 0 && (
-              <div className="glass-card rounded-[10px] p-6">
+              <div className="glass-card rounded-md p-6">
                 <h2 className="text-lg font-semibold mb-3">Screenshots</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {screenshots.map((url, i) => (
@@ -273,14 +307,23 @@ export default async function ToolDetailPage({ params }: Props) {
               </div>
             )}
 
-            <div id="reviews" className="glass-card rounded-[10px] p-6">
+            {isAdmin && (
+              <AdminReviewPanel 
+                toolId={tool.id} 
+                initialVerified={tool.verified_by_admin ?? false}
+                initialVideoUrl={tool.admin_review_video_url ?? null}
+                initialNotes={tool.admin_review_notes ?? null}
+              />
+            )}
+
+            <div id="reviews" className="glass-card rounded-md p-6">
               <h2 className="text-lg font-semibold mb-4">Reviews</h2>
               {reviews.length === 0 ? (
                 <p className="text-muted-foreground text-sm">No published reviews yet. Be the first to submit one.</p>
               ) : (
-                <div className="space-y-1">
+                <div>
                   {reviews.map((review) => (
-                    <ReviewCard key={review.id} review={review} />
+                    <ReviewCard key={review.id} review={review} currentUserId={user?.id} />
                   ))}
                 </div>
               )}
@@ -300,22 +343,22 @@ export default async function ToolDetailPage({ params }: Props) {
           </div>
 
           <div className="space-y-4 lg:sticky lg:top-24 self-start">
-            <div className="glass-card rounded-[10px] p-5 space-y-3">
+            <div className="glass-card rounded-md p-5 space-y-3 hidden lg:block">
               <h3 className="text-sm font-semibold">Try This Tool</h3>
               <a href={tool.website_url} target="_blank" rel="noopener noreferrer" className="block">
-                <Button className="w-full gap-2">
+                <Button className="w-full h-11 gap-2">
                   Visit Website
                   <ExternalLink className="h-4 w-4" />
                 </Button>
               </a>
-              <p className="text-xs text-muted-foreground">Save to your personal AI stack or shortlist for comparison.</p>
-              <AddToStackButton toolId={tool.id} toolName={tool.name} />
+              <p className="text-xs text-muted-foreground">Build your AI workflow by adding this tool to a stack, then compare options side-by-side.</p>
+              <AddToStackButton toolId={tool.id} toolName={tool.name} className="h-11 w-full" />
               <AddToCompareButton slug={tool.slug} fullWidth />
               <BookmarkButton toolId={tool.id} />
             </div>
 
             {tool.tool_tags && tool.tool_tags.length > 0 && (
-              <div className="glass-card rounded-[10px] p-5">
+              <div className="glass-card rounded-md p-5">
                 <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
                   <Tag className="h-4 w-4" /> Tags
                 </h3>
@@ -329,12 +372,61 @@ export default async function ToolDetailPage({ params }: Props) {
               </div>
             )}
 
-            <div className="glass-card rounded-[10px] p-5">
-              <h3 className="text-sm font-semibold mb-3">Details</h3>
+            <div className="glass-card rounded-md p-5">
+              <h3 className="text-sm font-semibold mb-3">Technical Specs</h3>
+              <dl className="space-y-2 text-sm mb-6">
+                <div className="flex justify-between gap-3">
+                  <dt className="text-muted-foreground">API Access</dt>
+                  <dd>{tool.has_api ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <X className="h-3.5 w-3.5 text-muted-foreground/30" />}</dd>
+                </div>
+                <div className="flex justify-between gap-3">
+                  <dt className="text-muted-foreground">Mobile App</dt>
+                  <dd>{tool.has_mobile_app ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <X className="h-3.5 w-3.5 text-muted-foreground/30" />}</dd>
+                </div>
+                <div className="flex justify-between gap-3">
+                  <dt className="text-muted-foreground">Open Source</dt>
+                  <dd>{tool.is_open_source ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <X className="h-3.5 w-3.5 text-muted-foreground/30" />}</dd>
+                </div>
+                {tool.has_api && (
+                  <>
+                    <div className="flex justify-between gap-3 pt-2 border-t border-foreground/5">
+                      <dt className="text-muted-foreground flex items-center gap-1.5">
+                        API Latency
+                        <span className="flex h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" title="Live data" />
+                      </dt>
+                      <dd className="font-mono text-[11px] font-bold text-foreground">
+                        {tool.api_latency ? `${tool.api_latency}ms` : 'Calculating...'}
+                      </dd>
+                    </div>
+                    <div className="flex justify-between gap-3">
+                      <dt className="text-muted-foreground">API Uptime</dt>
+                      <dd className="font-mono text-[11px] font-bold text-emerald-600">
+                        {tool.api_uptime ? `${Number(tool.api_uptime).toFixed(1)}%` : '100.0%'}
+                      </dd>
+                    </div>
+                  </>
+                )}
+              </dl>
+
+              <h3 className="text-sm font-semibold mb-3">Listing Details</h3>
               <dl className="space-y-2 text-sm">
                 <div className="flex justify-between gap-3">
                   <dt className="text-muted-foreground">Pricing</dt>
-                  <dd><Badge variant="outline" className={`text-xs ${pricingColor}`}>{pricingLabel}</Badge></dd>
+                  <dd className="flex flex-col items-end gap-1">
+                    <Badge variant="outline" className={`text-xs ${pricingColor}`}>{pricingLabel}</Badge>
+                    {priceChange < 0 && (
+                      <span className="text-[10px] font-bold text-emerald-600 bg-emerald-500/10 px-1.5 py-0.5 rounded flex items-center gap-1 animate-in fade-in slide-in-from-right-1">
+                        <TrendingDown className="h-2.5 w-2.5" />
+                        Price dropped {Math.abs(priceChange).toFixed(0)}%
+                      </span>
+                    )}
+                    {priceChange > 0 && (
+                      <span className="text-[10px] font-bold text-amber-600 bg-amber-500/10 px-1.5 py-0.5 rounded flex items-center gap-1">
+                        <TrendingUp className="h-2.5 w-2.5" />
+                        Price rose {priceChange.toFixed(0)}%
+                      </span>
+                    )}
+                  </dd>
                 </div>
                 {tool.pricing_details && (
                   <div className="flex justify-between gap-3">
@@ -373,7 +465,7 @@ export default async function ToolDetailPage({ params }: Props) {
                 <div className="flex justify-between gap-3">
                   <dt className="text-muted-foreground">Reviews</dt>
                   <dd className="flex items-center gap-1">
-                    <Star className="h-3 w-3 fill-amber-600 text-amber-600" />
+                    <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
                     {tool.avg_rating > 0 ? `${tool.avg_rating.toFixed(1)} (${tool.review_count})` : 'No reviews'}
                   </dd>
                 </div>
@@ -411,15 +503,20 @@ export default async function ToolDetailPage({ params }: Props) {
       </div>
 
       <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-foreground/15 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/85 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
-        <div className="max-w-6xl mx-auto flex items-center gap-2">
+        <div className="flex items-center gap-2">
           <a href={tool.website_url} target="_blank" rel="noopener noreferrer" className="flex-1">
-            <Button className="w-full gap-2">
+            <Button className="w-full h-11 gap-2">
               Visit Website
               <ExternalLink className="h-4 w-4" />
             </Button>
           </a>
+          <AddToStackButton
+            toolId={tool.id}
+            toolName={tool.name}
+            className="h-11 flex-1 !max-w-none"
+          />
           <Link href={compareHref} className="flex-1">
-            <Button variant="outline" className="w-full">Compare</Button>
+            <Button variant="outline" className="w-full h-11">Compare</Button>
           </Link>
         </div>
       </div>

@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import { Sparkles, ShieldCheck, Zap, TrendingUp } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 export const metadata: Metadata = {
   title: 'About AIPowerStacks',
@@ -49,7 +51,7 @@ export default function AboutPage() {
               description: 'Every feature, from comparison to bookmarking, is designed to save you time.'
             }
           ].map((feature, i) => (
-            <div key={i} className="glass-card rounded-[4px] p-6 border-[1px] border-foreground">
+            <div key={i} className="glass-card rounded-md p-6">
               <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary mb-4">
                 <feature.icon className="h-6 w-6" />
               </div>
@@ -60,16 +62,14 @@ export default function AboutPage() {
         </div>
       </div>
 
-      <div className="gum-card rounded-[4px] border-[1px] border-foreground p-8 text-center">
+      <div className="gum-card rounded-md p-8 text-center">
         <h2 className="text-2xl font-bold mb-4">Building an AI tool?</h2>
         <p className="text-muted-foreground mb-6">
           Get your tool in front of thousands of founders, developers, and creators. We prioritize quality listings that provide real value to our community.
         </p>
-        <a href="/submit">
-          <button className="btn-hover bg-foreground text-background px-8 py-3 rounded-[4px] font-bold uppercase tracking-wider">
-            Submit Your Tool
-          </button>
-        </a>
+        <Link href="/submit">
+          <Button>Submit Your Tool</Button>
+        </Link>
       </div>
     </div>
   )

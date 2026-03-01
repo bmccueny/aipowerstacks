@@ -30,7 +30,7 @@ export function BlogCard({ post, featured = false }: { post: BlogPostSummary; fe
   if (featured) {
     return (
       <Link href={`/blog/${post.slug}`} className="block group">
-        <div className="glass-card card-hover rounded-[6px] overflow-hidden flex flex-col lg:flex-row">
+        <div className="override grid h-full overflow-hidden rounded-lg brutalist-card-effect no-underline lg:grid-cols-2">
           {coverImageUrl ? (
             <div className="relative h-56 lg:h-auto lg:w-1/2 shrink-0">
               <Image src={coverImageUrl} alt={post.title} fill unoptimized className="object-cover" />
@@ -45,8 +45,8 @@ export function BlogCard({ post, featured = false }: { post: BlogPostSummary; fe
             {post.tags?.[0] && (
               <span className="text-xs font-semibold text-primary uppercase tracking-wider mb-3">{post.tags[0]}</span>
             )}
-            <h2 className="text-2xl font-bold mb-3 group-hover:text-primary transition-colors line-clamp-3 leading-[1.25]">{post.title}</h2>
-            <p className="text-muted-foreground text-[14px] line-clamp-3 mb-5 leading-[1.6]">{post.excerpt}</p>
+            <h2 className="text-2xl font-bold mb-3 pb-0.5 transition-colors line-clamp-2 leading-[1.25]">{post.title}</h2>
+            <p className="text-muted-foreground text-[14px] line-clamp-2 mb-5 pb-0.5 leading-[1.6]">{post.excerpt}</p>
             <div className="flex items-center gap-4 text-[13px] text-muted-foreground">
               {date && <span className="flex items-center gap-1.5"><Calendar className="h-3 w-3" />{date}</span>}
               {post.reading_time_min && <span className="flex items-center gap-1.5"><Clock className="h-3 w-3" />{post.reading_time_min} min read</span>}
@@ -59,10 +59,10 @@ export function BlogCard({ post, featured = false }: { post: BlogPostSummary; fe
 
   return (
     <Link href={`/blog/${post.slug}`} className="block group h-full">
-      <div className="glass-card card-hover rounded-[6px] overflow-hidden h-full flex flex-col">
+      <div className="override grid h-full overflow-hidden rounded-lg brutalist-card-effect no-underline">
         {coverImageUrl ? (
           <div className="relative h-44 shrink-0 overflow-hidden">
-            <Image src={coverImageUrl} alt={post.title} fill unoptimized className="object-cover group-hover:scale-105 transition-transform duration-300" />
+            <Image src={coverImageUrl} alt={post.title} fill unoptimized className="object-cover transition-transform duration-300" />
           </div>
         ) : (
           <div className="h-44 bg-gradient-to-br from-primary/8 to-amber-100 flex items-center justify-center shrink-0">
@@ -73,8 +73,8 @@ export function BlogCard({ post, featured = false }: { post: BlogPostSummary; fe
           {post.tags?.[0] && (
             <span className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">{post.tags[0]}</span>
           )}
-          <h3 className="font-semibold text-[16px] mb-2 group-hover:text-primary transition-colors line-clamp-2 flex-1 leading-[1.3]">{post.title}</h3>
-          <p className="text-[13px] text-muted-foreground line-clamp-2 mb-3 leading-[1.5]">{post.excerpt}</p>
+          <h3 className="font-semibold text-[16px] mb-2 pb-0.5 transition-colors line-clamp-2 flex-1 leading-[1.3]">{post.title}</h3>
+          <p className="text-[13px] text-muted-foreground line-clamp-2 mb-3 pb-0.5 leading-[1.5]">{post.excerpt}</p>
           <div className="flex items-center gap-3 text-[12px] text-muted-foreground border-t border-black/10 pt-3 mt-auto">
             {date && <span>{date}</span>}
             {post.reading_time_min && <span>{post.reading_time_min} min read</span>}

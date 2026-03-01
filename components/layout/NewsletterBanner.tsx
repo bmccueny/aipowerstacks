@@ -46,9 +46,9 @@ export function NewsletterBanner({
         isDark ? 'border border-white/20 bg-white/5 text-white' : 'glass-card'
       )}>
         <Mail className={cn('h-8 w-8 mx-auto mb-2', isDark ? 'text-white' : 'text-primary')} />
-        <p className="font-semibold">You&apos;re in!</p>
+        <p className="font-semibold">Welcome aboard.</p>
         <p className={cn('text-sm mt-1', isDark ? 'text-white/75' : 'text-muted-foreground')}>
-          First issue lands in your inbox this Friday.
+          Your first stack report drops this Friday.
         </p>
       </div>
     )
@@ -62,9 +62,9 @@ export function NewsletterBanner({
       <div className="flex items-center gap-3 mb-3">
         <Mail className={cn('h-5 w-5 shrink-0', isDark ? 'text-white' : 'text-primary')} />
         <div>
-          <p className="font-semibold text-sm">Every Friday: 5 best new AI tools</p>
+          <p className="font-semibold text-sm">5 vetted AI tools, every Friday</p>
           <p className={cn('text-xs', isDark ? 'text-white/75' : 'text-muted-foreground')}>
-            No fluff. Just the tools worth your time.
+            Tested and ranked so you skip the hype. Join 2,000+ readers.
           </p>
         </div>
       </div>
@@ -91,7 +91,7 @@ export function NewsletterBanner({
             isDark ? 'border-white/35 bg-white/10 text-white hover:bg-white hover:text-black' : ''
           )}
         >
-          {loading ? '...' : 'Subscribe'}
+          {loading ? '...' : 'Get the List'}
         </Button>
       </form>
       {error && <p className={cn('text-xs mt-2', isDark ? 'text-red-300' : 'text-destructive')}>{error}</p>}

@@ -41,7 +41,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
 
   return (
     <div className="page-shell">
-      <div className="page-hero flex items-center gap-4">
+      <div className="page-hero flex flex-col items-start sm:flex-row sm:items-center gap-4">
         <span className="text-5xl">{category.icon ?? '🤖'}</span>
         <div>
           <h1 className="text-3xl sm:text-4xl font-black">{category.name}</h1>

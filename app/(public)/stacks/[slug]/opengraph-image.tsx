@@ -17,7 +17,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
 
   const fallback = (
     <div style={{ background: 'linear-gradient(to bottom right, #111, #000)', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontFamily: 'sans-serif', fontSize: 48 }}>
-      AIPowerStacks Power Stacks
+      AIPowerStacks
     </div>
   )
 

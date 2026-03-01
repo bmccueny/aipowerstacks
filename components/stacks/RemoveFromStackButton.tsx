@@ -6,10 +6,11 @@ import { createClient } from '@/lib/supabase/client'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 
-export function RemoveFromStackButton({ collectionId, toolId, toolName }: {
+export function RemoveFromStackButton({ collectionId, toolId, toolName, onSuccess }: {
   collectionId: string
   toolId: string
   toolName: string
+  onSuccess?: () => void
 }) {
   const [confirming, setConfirming] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -43,6 +44,7 @@ export function RemoveFromStackButton({ collectionId, toolId, toolName }: {
       setConfirming(false)
     } else {
       toast.success(`Removed ${toolName} from stack`)
+      onSuccess?.()
       router.refresh()
     }
   }

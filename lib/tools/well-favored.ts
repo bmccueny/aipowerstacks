@@ -5,10 +5,16 @@ type ToolIdentity = {
 
 const WELL_FAVORED_SLUGS = new Set([
   'claude-code',
+  'speechify',
+  'lovo-ai',
+  'gemini',
 ])
 
 const WELL_FAVORED_NAMES = new Set([
   'claude code',
+  'speechify',
+  'lovo ai',
+  'gemini',
 ])
 
 function normalizeName(value: string): string {

@@ -5,16 +5,16 @@ import { Button } from '@/components/ui/button'
 import { FeaturedCheckout } from '@/components/advertise/FeaturedCheckout'
 
 export const metadata: Metadata = {
-  title: 'Go Featured — AIPowerStacks',
-  description: 'Get your AI tool in front of high-intent buyers. Featured listing includes top placement, stronger visibility, and faster discovery.',
+  title: 'Featured Listings for AI Tools | AIPowerStacks',
+  description: 'Put your AI tool in front of buyers actively comparing solutions. Featured placement starts at $99/mo with instant activation.',
 }
 
 const perks = [
-  { icon: TrendingUp, title: 'Top-of-list placement', desc: 'Show up above standard listings in your category, right where buyers start scanning.' },
-  { icon: BadgeCheck, title: 'Trust signal on card', desc: 'Get a premium visual marker that helps buyers notice your listing faster.' },
-  { icon: BarChart3, title: 'Homepage exposure', desc: 'Rotate into homepage highlights where high-intent traffic is strongest.' },
-  { icon: Star, title: 'Roundup consideration', desc: 'Get prioritized when we assemble weekly and monthly tool shortlists.' },
-  { icon: Zap, title: 'Launch in minutes', desc: 'Checkout, activate, and go live quickly without manual back-and-forth.' },
+  { icon: TrendingUp, title: 'Top-of-category placement', desc: 'Appear above organic listings in your category — the first thing buyers scan.' },
+  { icon: BadgeCheck, title: 'Verified badge on your card', desc: 'A visual trust signal that increases click-through rates by standing out in search results.' },
+  { icon: BarChart3, title: 'Homepage rotation', desc: 'Get featured on the homepage where 60%+ of high-intent traffic lands first.' },
+  { icon: Star, title: 'Weekly roundup inclusion', desc: 'Priority placement in our Friday newsletter sent to thousands of decision-makers.' },
+  { icon: Zap, title: 'Live in under 5 minutes', desc: 'Self-serve checkout. No sales calls, no contracts, no waiting.' },
 ]
 
 export default function AdvertisePage() {
@@ -26,11 +26,11 @@ export default function AdvertisePage() {
           Go Featured
         </div>
         <h1 className="text-4xl sm:text-5xl font-black mb-4 leading-tight">
-          Get in front of high-intent<br />AI tool buyers
+          Reach buyers who are already<br />comparing AI tools
         </h1>
         <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-          Reach decision-stage visitors already comparing solutions, not cold traffic.
-          Featured placement helps your tool get seen before alternatives.
+          These visitors are mid-decision, not cold. Featured placement puts your tool
+          in front of them before they pick a competitor.
         </p>
       </div>
 
@@ -50,17 +50,17 @@ export default function AdvertisePage() {
 
       <div className="gum-card rounded-3xl p-8 sm:p-10 bg-primary/10 text-center mb-8">
         <p className="text-4xl font-black mb-1">$99 <span className="text-xl font-semibold text-muted-foreground">/ month</span></p>
-        <p className="text-sm text-muted-foreground mb-8">No annual contract. Cancel anytime. Goes live in minutes.</p>
+        <p className="text-sm text-muted-foreground mb-8">Month-to-month. Cancel anytime. Live in minutes, not days.</p>
 
-        <p className="text-sm font-semibold mb-3">Paste your AIPowerStacks URL or tool slug</p>
+        <p className="text-sm font-semibold mb-3">Paste your AIPowerStacks tool URL or slug</p>
         <FeaturedCheckout />
 
         <p className="text-xs text-muted-foreground mt-5">
           Not listed yet?{' '}
           <Link href="/submit" className="underline underline-offset-4 font-semibold hover:text-foreground transition-colors">
-            Submit your tool first — takes two minutes
+            Submit your tool first (free, 2 minutes)
           </Link>
-          {' '}— then come back to upgrade.
+          {' '}then come back to upgrade.
         </p>
       </div>
 
@@ -68,33 +68,33 @@ export default function AdvertisePage() {
         <div className="glass-card rounded-[10px] p-5">
           <p className="text-sm font-semibold mb-2">Trust & transparency</p>
           <ul className="space-y-1.5 text-sm text-muted-foreground">
-            <li>• Featured placements are clearly labeled for users.</li>
-            <li>• Editorial coverage and sponsorship placement are kept separate.</li>
-            <li>• Monthly billing with self-serve cancellation.</li>
+            <li>• Featured placements are always labeled — no hidden ads.</li>
+            <li>• Editorial rankings and paid placement are completely separate.</li>
+            <li>• Self-serve billing. Cancel from your dashboard in one click.</li>
           </ul>
         </div>
         <div className="glass-card rounded-[10px] p-5">
           <p className="text-sm font-semibold mb-2">What to expect</p>
           <ul className="space-y-1.5 text-sm text-muted-foreground">
-            <li>• Immediate homepage/category visibility after checkout.</li>
-            <li>• More qualified clicks from users actively comparing tools.</li>
-            <li>• Best performance when paired with strong reviews and clear value props.</li>
+            <li>• Instant visibility on your category page and homepage after checkout.</li>
+            <li>• Higher-quality clicks from users actively shortlisting tools.</li>
+            <li>• Strongest results when your listing has solid reviews and a clear value prop.</li>
           </ul>
         </div>
       </div>
 
       <div className="gum-card rounded-[10px] p-6">
-        <p className="font-bold mb-1">Questions before you launch?</p>
+        <p className="font-bold mb-1">Questions? We respond same-day.</p>
         <p className="text-sm text-muted-foreground mb-3">
-          Read the{' '}
-          <Link href="/blog" className="underline underline-offset-4">AI briefing</Link>
-          {' '}to see how we cover tools, or{' '}
+          Read our{' '}
+          <Link href="/blog" className="underline underline-offset-4">AI tool briefings</Link>
+          {' '}to see editorial standards, or{' '}
           <a href="mailto:hello@aipowerstacks.com" className="underline underline-offset-4">email us</a>
-          {' '}for volume pricing on multiple tools.
+          {' '}for volume pricing on 3+ tools.
         </p>
         <Link href="/tools">
           <Button variant="outline" size="sm" className="gap-1.5">
-            Browse directory <ArrowRight className="h-3.5 w-3.5" />
+            Browse the directory <ArrowRight className="h-3.5 w-3.5" />
           </Button>
         </Link>
       </div>

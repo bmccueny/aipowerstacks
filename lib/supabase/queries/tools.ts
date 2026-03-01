@@ -73,9 +73,9 @@ export async function searchTools({
     .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, avg_rating, review_count, upvote_count, category_id, published_at, screenshot_urls, is_supertools, target_audience, has_api, has_mobile_app, is_open_source, trains_on_data, has_sso, security_certifications, model_provider')
     .eq('status', 'published')
 
+  // If search query exists, use the RPC for better search
   if (query) {
-    // If search query exists, use the RPC for better search
-    const { data, error } = await rpcSearchTools(supabase, {
+    const { data: rpcData, error: rpcError } = await rpcSearchTools(supabase, {
       search_query: query || null,
       p_category: categoryId || null,
       p_pricing: pricing || null,
@@ -87,16 +87,22 @@ export async function searchTools({
       p_limit: PAGE_SIZE,
       p_offset: offset,
     })
-    return { tools: data ?? [], total: data?.length ?? 0 }
+    
+    if (rpcError) {
+      console.error('searchTools RPC error:', rpcError)
+      return { tools: [], total: 0 }
+    }
+
+    return { tools: rpcData ?? [], total: rpcData?.length ?? 0 }
   }
 
   // Apply filters
-  if (categoryId) builder = builder.eq('category_id', categoryId)
-  if (pricing) builder = builder.eq('pricing_model', pricing)
+  if (categoryId) builder = builder.eq('category_id', categoryId as any)
+  if (pricing) builder = builder.eq('pricing_model', pricing as any)
   if (verified) builder = builder.eq('is_verified', true)
-  if (useCase) builder = builder.eq('use_case', useCase)
-  if (teamSize) builder = builder.eq('team_size', teamSize)
-  if (audience) builder = builder.eq('target_audience', audience)
+  if (useCase) builder = builder.eq('use_case', useCase as any)
+  if (teamSize) builder = builder.eq('team_size', teamSize as any)
+  if (audience) builder = builder.eq('target_audience', audience as any)
   if (hasApi) builder = builder.eq('has_api', true)
   if (hasMobile) builder = builder.eq('has_mobile_app', true)
   if (isOpenSource) builder = builder.eq('is_open_source', true)
@@ -298,7 +304,9 @@ export async function getMatchedTools({
       .from('tools')
       .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, avg_rating, review_count, upvote_count, has_api, has_mobile_app, is_open_source, is_supertools, trains_on_data, has_sso, security_certifications')
       .eq('status', 'published')
-      .eq('use_case', useCase)
+
+    // 1. Deep Text Analysis: match use_case OR check tagline/description for keywords
+    q = q.or(`use_case.eq.${useCase},tagline.ilike.%${useCase}%,description.ilike.%${useCase}%`)
 
     if (pricing === 'free') {
       q = q.eq('pricing_model', 'free')
@@ -315,39 +323,43 @@ export async function getMatchedTools({
     return q
   }
 
-  // 1. Try with persona (High precision)
-  let { data, error } = await buildBaseQuery()
-    .eq('target_audience', persona)
-    .order('is_supertools', { ascending: false })
-    .order('upvote_count', { ascending: false })
+  // A. Try with BOTH use case and persona (High precision)
+  let { data } = await buildBaseQuery()
+    .or(`target_audience.eq.${persona},target_audience.is.null`) // Include tools with no audience set
+    .order('is_supertools', { ascending: false }) // 1. Best-in-class first
+    .order('is_verified', { ascending: false })   // 2. Editor vetted second
+    .order('avg_rating', { ascending: false })    // 3. Community rating third
+    .order('upvote_count', { ascending: false })  // 4. Popularity last
     .limit(limit)
 
-  // 2. FALLBACK: If no results, try without persona but keep core filters
-  if (!data || data.length === 0) {
-    const fallback = await buildBaseQuery()
-      .order('is_supertools', { ascending: false })
-      .order('upvote_count', { ascending: false })
-      .limit(limit)
-    data = fallback.data
-  }
-
-  // 3. NUCLEAR FALLBACK: If still no results, just get top SuperTools for that use case
-  if (!data || data.length === 0) {
-    const nuclear = await supabase
+  // B. FALLBACK: If still no results, broaden to just the use case category
+  if (!data || data.length < 2) {
+    const fallback = await supabase
       .from('tools')
       .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, avg_rating, review_count, upvote_count, has_api, has_mobile_app, is_open_source, is_supertools, trains_on_data, has_sso, security_certifications')
       .eq('status', 'published')
       .eq('use_case', useCase)
       .order('is_supertools', { ascending: false })
+      .order('is_verified', { ascending: false })
+      .order('avg_rating', { ascending: false })
+      .limit(limit)
+    
+    if (fallback.data && fallback.data.length > 0) {
+      data = fallback.data
+    }
+  }
+
+  // C. NUCLEAR FALLBACK: If still nothing, get top supertools overall to ensure we never show an empty screen
+  if (!data || data.length === 0) {
+    const nuclear = await supabase
+      .from('tools')
+      .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, avg_rating, review_count, upvote_count, has_api, has_mobile_app, is_open_source, is_supertools, trains_on_data, has_sso, security_certifications')
+      .eq('status', 'published')
+      .eq('is_supertools', true)
       .order('upvote_count', { ascending: false })
       .limit(limit)
     data = nuclear.data
   }
 
-  if (error) {
-    console.error('getMatchedTools error:', error)
-    return []
-  }
-
-  return data as unknown as ToolSearchResult[]
+  return (data as any) ?? [] as ToolSearchResult[]
 }

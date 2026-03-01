@@ -8,6 +8,18 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useRouter } from 'next/navigation'
+import { Linkedin, Github, ShieldCheck, ExternalLink, Twitter, Youtube, Instagram, Globe, Plus, X } from 'lucide-react'
+
+type SocialLink = { platform: string; url: string }
+
+const PLATFORMS = [
+  { id: 'twitter',   label: 'Twitter / X', icon: Twitter,   placeholder: 'https://twitter.com/username' },
+  { id: 'linkedin',  label: 'LinkedIn',     icon: Linkedin,  placeholder: 'https://linkedin.com/in/username' },
+  { id: 'github',    label: 'GitHub',       icon: Github,    placeholder: 'https://github.com/username' },
+  { id: 'youtube',   label: 'YouTube',      icon: Youtube,   placeholder: 'https://youtube.com/@username' },
+  { id: 'instagram', label: 'Instagram',    icon: Instagram, placeholder: 'https://instagram.com/username' },
+  { id: 'website',   label: 'Website',      icon: Globe,     placeholder: 'https://yourwebsite.com' },
+] as const
 
 export default function SettingsPage() {
   const router = useRouter()
@@ -15,7 +27,12 @@ export default function SettingsPage() {
 
   const [user, setUser] = useState<{ id: string; email?: string } | null>(null)
   const [displayName, setDisplayName] = useState('')
+  const [username, setUsername] = useState('')
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
+  const [linkedinUrl, setLinkedinUrl] = useState('')
+  const [githubUrl, setGithubUrl] = useState('')
+  const [isVerified, setIsVerified] = useState(false)
+  const [socialLinks, setSocialLinks] = useState<SocialLink[]>([])
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [message, setMessage] = useState('')
@@ -28,14 +45,19 @@ export default function SettingsPage() {
       setUser(data.user)
       supabase
         .from('profiles')
-        .select('display_name, avatar_url')
+        .select('display_name, username, avatar_url, linkedin_url, github_url, is_identity_verified, social_links')
         .eq('id', data.user.id)
-        .single()
+        .maybeSingle()
         .then(({ data: row }) => {
-          const profile = row as { display_name: string | null; avatar_url: string | null } | null
+          const profile = row as any
           if (profile) {
             setDisplayName(profile.display_name ?? '')
+            setUsername(profile.username ?? '')
             setAvatarUrl(profile.avatar_url ?? null)
+            setLinkedinUrl(profile.linkedin_url ?? '')
+            setGithubUrl(profile.github_url ?? '')
+            setIsVerified(profile.is_identity_verified ?? false)
+            setSocialLinks(Array.isArray(profile.social_links) ? profile.social_links : [])
           }
         })
     })
@@ -74,19 +96,39 @@ export default function SettingsPage() {
     setMessage('')
     setError('')
 
+    if (username && !/^[a-z0-9_]+$/.test(username)) {
+      setError('Username can only contain lowercase letters, numbers, and underscores.')
+      setSaving(false)
+      return
+    }
+
     const supabase = createClient()
     const { error: updateError } = await supabase
       .from('profiles')
       .upsert(
-        { id: user.id, display_name: displayName || null, avatar_url: avatarUrl },
+        { 
+          id: user.id, 
+          display_name: displayName || null, 
+          username: username.toLowerCase() || null,
+          avatar_url: avatarUrl,
+          linkedin_url: linkedinUrl || null,
+          github_url: githubUrl || null,
+          social_links: socialLinks.filter((l) => l.url.trim()),
+          updated_at: new Date().toISOString()
+        },
         { onConflict: 'id' }
       )
 
     if (updateError) {
-      setError(updateError.message)
+      if (updateError.code === '23505') {
+        setError('This username is already taken. Please choose another one.')
+      } else {
+        setError(updateError.message)
+      }
     } else {
       setMessage('Settings saved.')
       window.dispatchEvent(new Event('profile-updated'))
+      router.refresh()
     }
     setSaving(false)
   }
@@ -99,12 +141,12 @@ export default function SettingsPage() {
     <div className="max-w-lg">
       <h1 className="text-3xl font-bold mb-8">Account Settings</h1>
 
-      <div className="glass-card rounded-xl p-6 space-y-6">
+      <div className="glass-card rounded-md p-6 space-y-6">
         <div>
           <p className="text-sm font-medium mb-3">Profile Photo</p>
           <div className="flex items-center gap-4">
             <Avatar className="h-16 w-16">
-              <AvatarImage src={avatarUrl ?? undefined} />
+              <AvatarImage src={avatarUrl ?? undefined} className="object-cover" />
               <AvatarFallback className="bg-primary/20 text-primary text-lg">{initials}</AvatarFallback>
             </Avatar>
             <div>
@@ -130,6 +172,21 @@ export default function SettingsPage() {
         </div>
 
         <div>
+          <label className="text-sm font-medium mb-1.5 block">Username</label>
+          <div className="relative">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">@</span>
+            <Input
+              value={username}
+              onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
+              placeholder="username"
+              className="bg-white/5 border-white/10 pl-7"
+              maxLength={20}
+            />
+          </div>
+          <p className="text-[10px] text-muted-foreground mt-1">Unique handle for your public profile. Alphanumeric and underscores only.</p>
+        </div>
+
+        <div>
           <label className="text-sm font-medium mb-1.5 block">Display Name</label>
           <Input
             value={displayName}
@@ -148,6 +205,120 @@ export default function SettingsPage() {
             className="bg-white/5 border-white/10 opacity-60"
           />
           <p className="text-xs text-muted-foreground mt-1">Email cannot be changed here.</p>
+        </div>
+
+        <div className="pt-4 border-t border-white/10 space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-base font-bold">Social Links</h2>
+            <span className="text-xs text-muted-foreground">{socialLinks.length}/5</span>
+          </div>
+          <div className="space-y-2">
+            {socialLinks.map((link, i) => {
+              const platform = PLATFORMS.find((p) => p.id === link.platform) ?? PLATFORMS[0]
+              const Icon = platform.icon
+              return (
+                <div key={i} className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-1 bg-white/5 border border-white/10 rounded-md px-3 h-10 min-w-0">
+                    <Icon className="h-4 w-4 text-muted-foreground shrink-0" />
+                    <select
+                      value={link.platform}
+                      onChange={(e) => {
+                        const updated = [...socialLinks]
+                        updated[i] = { ...updated[i], platform: e.target.value }
+                        setSocialLinks(updated)
+                      }}
+                      className="bg-transparent text-xs text-muted-foreground border-none outline-none shrink-0"
+                    >
+                      {PLATFORMS.map((p) => (
+                        <option key={p.id} value={p.id}>{p.label}</option>
+                      ))}
+                    </select>
+                    <div className="w-px h-4 bg-white/10 shrink-0" />
+                    <input
+                      type="url"
+                      value={link.url}
+                      onChange={(e) => {
+                        const updated = [...socialLinks]
+                        updated[i] = { ...updated[i], url: e.target.value }
+                        setSocialLinks(updated)
+                      }}
+                      placeholder={platform.placeholder}
+                      className="flex-1 bg-transparent text-sm outline-none min-w-0"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setSocialLinks(socialLinks.filter((_, j) => j !== i))}
+                    className="h-8 w-8 flex items-center justify-center rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors shrink-0"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+              )
+            })}
+          </div>
+          {socialLinks.length < 5 && (
+            <Button
+              variant="outline"
+              size="sm"
+              type="button"
+              onClick={() => setSocialLinks([...socialLinks, { platform: 'twitter', url: '' }])}
+              className="border-white/10 text-xs"
+            >
+              <Plus className="h-3.5 w-3.5 mr-1.5" /> Add Social
+            </Button>
+          )}
+        </div>
+
+        <div className="pt-4 border-t border-white/10 space-y-4">
+          <h2 className="text-base font-bold flex items-center gap-2">
+            <ShieldCheck className="h-4 w-4 text-primary" /> Professional Identity
+          </h2>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            Linking your professional profiles adds weight to your reviews and stacks. Verified pros get a special badge.
+          </p>
+          
+          <div className="space-y-3">
+            <div>
+              <label className="text-[11px] font-black uppercase tracking-widest text-muted-foreground mb-1.5 block">LinkedIn Profile</label>
+              <div className="relative">
+                <Linkedin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  value={linkedinUrl}
+                  onChange={(e) => setLinkedinUrl(e.target.value)}
+                  placeholder="https://linkedin.com/in/username"
+                  className="bg-white/5 border-white/10 pl-10 h-10 text-sm"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="text-[11px] font-black uppercase tracking-widest text-muted-foreground mb-1.5 block">GitHub Profile</label>
+              <div className="relative">
+                <Github className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  value={githubUrl}
+                  onChange={(e) => setGithubUrl(e.target.value)}
+                  placeholder="https://github.com/username"
+                  className="bg-white/5 border-white/10 pl-10 h-10 text-sm"
+                />
+              </div>
+            </div>
+          </div>
+
+          {!isVerified ? (
+            <div className="bg-primary/5 border border-primary/20 rounded-md p-4">
+              <p className="text-xs font-bold text-primary mb-1">Request Verification</p>
+              <p className="text-[11px] text-muted-foreground mb-3">Once your profiles are linked, our team will review your identity.</p>
+              <Button variant="outline" size="sm" className="h-8 text-[10px] uppercase font-black tracking-wider border-primary/30 text-primary hover:bg-primary/10">
+                Apply for Verified Badge
+              </Button>
+            </div>
+          ) : (
+            <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-md p-3 flex items-center gap-2">
+              <ShieldCheck className="h-4 w-4 text-emerald-500" />
+              <span className="text-xs font-bold text-emerald-500">Identity Verified</span>
+            </div>
+          )}
         </div>
 
         {error && <p className="text-sm text-destructive">{error}</p>}

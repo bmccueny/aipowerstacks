@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { INTEGRATION_OPTIONS, PRICING_MODELS, TEAM_SIZE_OPTIONS, USE_CASE_OPTIONS } from '@/lib/constants'
+import { DeleteToolButton } from './DeleteToolButton'
 
 interface Category { id: string; name: string }
 
@@ -216,11 +217,16 @@ export function ToolForm({ categories, tool }: ToolFormProps) {
 
       {error && <p className="text-sm text-destructive">{error}</p>}
 
-      <div className="flex gap-3">
-        <Button type="submit" disabled={loading}>
-          {loading ? 'Saving...' : tool ? 'Update Tool' : 'Create Tool'}
-        </Button>
-        <Button type="button" variant="ghost" onClick={() => router.push('/admin/tools')}>Cancel</Button>
+      <div className="flex items-center justify-between pt-6 border-t border-white/5">
+        <div className="flex gap-3">
+          <Button type="submit" disabled={loading}>
+            {loading ? 'Saving...' : tool ? 'Update Tool' : 'Create Tool'}
+          </Button>
+          <Button type="button" variant="ghost" onClick={() => router.push('/admin/tools')}>Cancel</Button>
+        </div>
+        {tool && (
+          <DeleteToolButton toolId={tool.id} toolName={tool.name} />
+        )}
       </div>
     </form>
   )

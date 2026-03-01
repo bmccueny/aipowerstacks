@@ -23,8 +23,8 @@ export function StarRating({ rating, max = 5, size = 'md', className }: StarRati
           className={cn(
             sizes[size],
             i < Math.round(rating)
-              ? 'fill-amber-600 text-amber-600'
-              : 'fill-black/20 text-black/20'
+              ? 'fill-yellow-400 text-yellow-400'
+              : 'fill-foreground/15 text-foreground/15'
           )}
         />
       ))}

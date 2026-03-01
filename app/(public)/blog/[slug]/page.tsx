@@ -93,7 +93,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           )}
           <h1 className="text-4xl sm:text-5xl font-black mb-4 leading-tight tracking-tight">{post.title}</h1>
 
-          <div className="flex items-center gap-4 text-sm text-muted-foreground mb-8">
+          <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-sm text-muted-foreground mb-8">
             {date && <span className="flex items-center gap-1.5"><Calendar className="h-4 w-4" />{date}</span>}
             {post.reading_time_min && <span className="flex items-center gap-1.5"><Clock className="h-4 w-4" />{post.reading_time_min} min read</span>}
           </div>

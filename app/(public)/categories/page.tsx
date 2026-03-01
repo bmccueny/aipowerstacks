@@ -33,14 +33,15 @@ export default async function CategoriesPage() {
           <Link
             key={cat.id}
             href={`/categories/${cat.slug}`}
-            className="glass-card category-card rounded-[4px] p-4 flex flex-col items-center justify-center gap-2.5 group text-center min-h-[122px] animate-in-stagger"
-            style={{ animationDelay: `${idx * 0.03}s` }}
+            className="category-card rounded-md p-3 flex flex-col items-center justify-center gap-2 group text-center min-h-[100px] animate-in-stagger"
+            style={{
+              animationDelay: `${idx * 0.03}s`,
+            }}
           >
             <CategoryIcon slug={cat.slug} emoji={cat.icon} />
             <div>
-              <p className="text-[13px] font-medium group-hover:text-primary transition-colors leading-[1.35]">{cat.name}</p>
-              {cat.tool_count > 0 && (
-                <p className="text-[12px] text-muted-foreground mt-0.5">{cat.tool_count} tools</p>
+              <p className="text-[13px] font-medium transition-colors leading-[1.35]">{cat.name}</p>
+              {cat.tool_count > 0 && (                <p className="text-[12px] text-muted-foreground mt-0.5">{cat.tool_count} tools</p>
               )}
             </div>
           </Link>

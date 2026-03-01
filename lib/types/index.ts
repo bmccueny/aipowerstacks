@@ -33,6 +33,11 @@ export type ToolWithCategory = Tool & {
 
 export type ToolWithTags = ToolWithCategory & {
   tool_tags: { tags: Pick<Tag, 'id' | 'name' | 'slug'> }[]
+  verified_by_admin?: boolean
+  api_latency?: number | null
+  api_uptime?: number | null
+  admin_review_video_url?: string | null
+  admin_review_notes?: string | null
 }
 
 export type BlogPostWithAuthor = BlogPost & {

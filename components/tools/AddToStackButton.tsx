@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Layers, Plus, Check, Loader2 } from 'lucide-react'
+import { Layers, Plus, Check, Loader2, Sparkles } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,61 +16,131 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
-import { createClient } from '@/lib/supabase/client'
 import { toast } from 'sonner'
+import { createClient } from '@/lib/supabase/client'
 
-export function AddToStackButton({ toolId, toolName }: { toolId: string; toolName: string }) {
-  const [collections, setCollections] = useState<any[]>([])
+const STACK_ICONS = ['⚡', '🚀', '🧠', '🎯', '🔥', '💡', '🛠️', '📊', '✍️', '🎨', '📸', '🤖', '📱', '🌐', '🔐', '📈']
+
+type Collection = {
+  id: string
+  name: string
+  icon: string | null
+}
+
+export function AddToStackButton({
+  toolId,
+  toolName,
+  className,
+  showLabel = true,
+}: {
+  toolId: string
+  toolName: string
+  className?: string
+  showLabel?: boolean
+}) {
+  const [collections, setCollections] = useState<Collection[]>([])
   const [itemCounts, setItemCounts] = useState<Record<string, boolean>>({})
   const [loading, setLoading] = useState(false)
   const [fetching, setFetching] = useState(false)
-  const [newStackName, setNewStackName] = useState('')
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [user, setUser] = useState<any>(null)
+  const [newStackName, setNewStackName] = useState('')
+  const [newStackIcon, setNewStackIcon] = useState('⚡')
+  const [dropdownOpen, setDropdownOpen] = useState(false)
+  const [justAdded, setJustAdded] = useState(false)
+  const addedAnimationTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  // Lightweight session check — reads from local cache, no network call
-  useEffect(() => {
-    createClient().auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) setUser(session.user)
-    })
-  }, [])
+  const redirectToLogin = () => {
+    const redirectTo = `${window.location.pathname}${window.location.search}`
+    window.location.href = `/login?redirectTo=${encodeURIComponent(redirectTo)}`
+  }
+
+  const fetchCollectionsViaClient = async () => {
+    const supabase = createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return null
+
+    const { data, error } = await supabase
+      .from('collections')
+      .select('id, name, icon')
+      .eq('user_id', user.id)
+      .is('source_collection_id', null)
+      .order('name')
+
+    if (error) throw error
+    return (data ?? []) as Collection[]
+  }
+
+  const fetchMembershipViaClient = async (collectionIds: string[]) => {
+    if (collectionIds.length === 0) return {} as Record<string, boolean>
+
+    const supabase = createClient()
+    const { data, error } = await supabase
+      .from('collection_items')
+      .select('collection_id')
+      .eq('tool_id', toolId)
+      .in('collection_id', collectionIds)
+
+    if (error) throw error
+
+    return (data ?? []).reduce<Record<string, boolean>>((acc, row) => {
+      acc[row.collection_id] = true
+      return acc
+    }, {})
+  }
 
   const fetchCollections = async () => {
-    const supabase = createClient()
     setFetching(true)
-    const [{ data }, { data: items }] = await Promise.all([
-      supabase.from('collections').select('id, name, is_public').eq('user_id', user.id).order('name'),
-      supabase.from('collection_items').select('collection_id').eq('tool_id', toolId),
-    ])
-    const inCollections: Record<string, boolean> = {}
-    items?.forEach(i => { inCollections[i.collection_id] = true })
-    setCollections(data ?? [])
-    setItemCounts(inCollections)
-    setFetching(false)
+    try {
+      const cols = await fetchCollectionsViaClient()
+      if (!cols) {
+        redirectToLogin()
+        return false
+      }
+      setCollections(cols)
+
+      const fallbackMembership = await fetchMembershipViaClient(cols.map((c) => c.id))
+      setItemCounts(fallbackMembership)
+      return true
+    } catch (err: any) {
+      toast.error('Failed to load your stacks: ' + (err.message || 'Unknown error'))
+      return false
+    } finally {
+      setFetching(false)
+    }
   }
 
   const toggleToolInCollection = async (collectionId: string, currentlyIn: boolean) => {
     const supabase = createClient()
     if (currentlyIn) {
-      const { error } = await supabase.from('collection_items').delete()
-        .eq('collection_id', collectionId).eq('tool_id', toolId)
-      if (!error) {
-        setItemCounts(prev => ({ ...prev, [collectionId]: false }))
-        toast.success('Removed from stack')
+      setItemCounts(prev => ({ ...prev, [collectionId]: false }))
+      const { error } = await supabase
+        .from('collection_items')
+        .delete()
+        .eq('collection_id', collectionId)
+        .eq('tool_id', toolId)
+      if (error) {
+        setItemCounts(prev => ({ ...prev, [collectionId]: true }))
+        toast.error(error.message || 'Failed to remove from stack')
       } else {
-        toast.error(error.message)
+        toast.success('Removed from stack')
       }
     } else {
-      const { error } = await supabase.from('collection_items')
+      setItemCounts(prev => ({ ...prev, [collectionId]: true }))
+      const { error } = await supabase
+        .from('collection_items')
         .insert({ collection_id: collectionId, tool_id: toolId })
-      if (!error || error.code === '23505') {
-        setItemCounts(prev => ({ ...prev, [collectionId]: true }))
-        toast.success('Added to stack')
+
+      if (error && error.code !== '23505') {
+        setItemCounts(prev => ({ ...prev, [collectionId]: false }))
+        toast.error(error.message || 'Failed to add to stack')
       } else {
-        toast.error(error.message)
+        triggerAddedAnimation()
+        setDropdownOpen(false)
+        toast.success('Added to stack')
       }
     }
   }
@@ -78,105 +148,226 @@ export function AddToStackButton({ toolId, toolName }: { toolId: string; toolNam
   const createAndAdd = async () => {
     const name = newStackName.trim()
     if (!name) return
-    const supabase = createClient()
     setLoading(true)
+    
     try {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
+        redirectToLogin()
+        return
+      }
+
       const { data: newCol, error: createError } = await supabase
         .from('collections')
-        .insert({ user_id: user.id, name, is_public: true })
-        .select().single()
-
-      if (createError) { toast.error(createError.message); setLoading(false); return }
+        .insert({
+          user_id: user.id,
+          name,
+          icon: newStackIcon,
+          is_public: false,
+        })
+        .select('id')
+        .single()
+      if (createError) throw createError
 
       const { error: addError } = await supabase
-        .from('collection_items').insert({ collection_id: newCol.id, tool_id: toolId })
+        .from('collection_items')
+        .insert({ collection_id: newCol.id, tool_id: toolId })
+      if (addError && addError.code !== '23505') throw addError
 
-      if (addError && addError.code !== '23505') {
-        toast.error(addError.message)
-      } else {
-        setCollections(prev => [...prev, newCol].sort((a, b) => a.name.localeCompare(b.name)))
-        setItemCounts(prev => ({ ...prev, [newCol.id]: true }))
-        setNewStackName('')
-        setIsDialogOpen(false)
-        toast.success('Stack created and tool added!')
-      }
+      await fetchCollections()
+      triggerAddedAnimation()
+      setNewStackName('')
+      setNewStackIcon('⚡')
+      setIsDialogOpen(false)
+      toast.success(`"${name}" created and tool added!`)
     } catch (err: any) {
-      toast.error(err.message ?? 'Unexpected error')
+      toast.error(err.message || 'Failed to create stack')
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
   }
 
-  if (!user) {
-    return (
-      <Button
-        variant="outline"
-        size="sm"
-        className="w-full gap-2 border-border"
-        onClick={() => window.location.href = `/login?redirectTo=${window.location.pathname}`}
-      >
-        <Layers className="h-4 w-4" />
-        Add to Stack
-      </Button>
-    )
+  const handleTriggerClick = async (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setDropdownOpen(true)
   }
+
+  useEffect(() => {
+    if (!dropdownOpen) return
+    let active = true
+    ;(async () => {
+      const loaded = await fetchCollections()
+      if (active && !loaded) setDropdownOpen(false)
+    })()
+    return () => {
+      active = false
+    }
+    // Intentionally keyed by open state + current tool.
+  }, [dropdownOpen, toolId])
+
+  useEffect(() => {
+    return () => {
+      if (addedAnimationTimeoutRef.current) {
+        clearTimeout(addedAnimationTimeoutRef.current)
+      }
+    }
+  }, [])
+
+  const triggerAddedAnimation = () => {
+    setJustAdded(true)
+    if (addedAnimationTimeoutRef.current) {
+      clearTimeout(addedAnimationTimeoutRef.current)
+    }
+    addedAnimationTimeoutRef.current = setTimeout(() => {
+      setJustAdded(false)
+    }, 1400)
+  }
+
+  const alreadyInAStack = Object.values(itemCounts).some(Boolean)
 
   return (
     <>
-      <DropdownMenu onOpenChange={(open) => open && fetchCollections()}>
+      <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm" className="w-full gap-2 border-border">
-            <Layers className="h-4 w-4" />
-            Add to Stack
+          <Button
+            variant="outline"
+            size="sm"
+            className={`relative w-auto max-w-full shrink-0 whitespace-nowrap gap-2 rounded-sm font-medium brutalist-card-effect ${
+              alreadyInAStack ? 'text-primary border-primary/40' : ''
+            } ${
+              justAdded ? 'scale-[1.02] bg-primary/10 border-primary' : ''
+            } ${className || ''}`}
+            onClick={handleTriggerClick}
+            disabled={loading}
+          >
+            {justAdded && (
+              <span className="pointer-events-none absolute inset-0 rounded-md border border-primary/30 animate-stack-success-ring" />
+            )}
+            {loading ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : alreadyInAStack ? (
+              <Check className={`h-4 w-4 text-primary ${justAdded ? 'animate-stack-success-icon' : ''}`} />
+            ) : (
+              <Layers className="h-4 w-4" />
+            )}
+            {showLabel && (
+              <span className={justAdded ? '' : 'hidden sm:inline'}>
+                {justAdded ? 'Added!' : alreadyInAStack ? 'In Your Stack' : 'Add to Stack'}
+              </span>
+            )}
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-56">
-          <DropdownMenuLabel>Select a Stack</DropdownMenuLabel>
+        <DropdownMenuContent
+          align="end"
+          className="w-64 p-2"
+          onKeyDown={e => e.stopPropagation()}
+        >
+          <DropdownMenuLabel className="px-3 py-2 text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
+            Add {toolName} to a stack
+          </DropdownMenuLabel>
           <DropdownMenuSeparator />
-
-          {fetching && collections.length === 0 ? (
-            <div className="p-4 flex justify-center"><Loader2 className="h-4 w-4 animate-spin" /></div>
-          ) : (
-            <div className="max-h-60 overflow-y-auto">
-              {collections.map((col) => (
+          <div className="max-h-60 overflow-y-auto">
+            {fetching && collections.length === 0 ? (
+              <div className="p-4 flex justify-center"><Loader2 className="h-4 w-4 animate-spin text-primary" /></div>
+            ) : collections.length === 0 ? (
+              <div className="p-3 text-center">
+                <p className="text-sm font-medium text-muted-foreground">No stacks yet</p>
+                <p className="text-[11px] text-muted-foreground/70 mt-0.5">Create your first stack below.</p>
+              </div>
+            ) : (
+              collections.map((col) => (
                 <DropdownMenuItem
                   key={col.id}
-                  className="flex items-center justify-between cursor-pointer"
-                  onClick={() => toggleToolInCollection(col.id, !!itemCounts[col.id])}
+                  className="flex items-center gap-3 p-3 cursor-pointer"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    toggleToolInCollection(col.id, !!itemCounts[col.id])
+                  }}
                 >
-                  <span className="truncate">{col.name}</span>
-                  {itemCounts[col.id] && <Check className="h-4 w-4 text-primary" />}
+                  <div className="h-8 w-8 rounded bg-primary/5 flex items-center justify-center shrink-0 text-lg">
+                    {col.icon || '⚡'}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-bold leading-none truncate">{col.name}</p>
+                    {itemCounts[col.id] && (
+                      <p className="text-[10px] text-primary mt-1 leading-tight">Added</p>
+                    )}
+                  </div>
+                  {itemCounts[col.id] && (
+                    <Check className="h-4 w-4 text-primary shrink-0" />
+                  )}
                 </DropdownMenuItem>
-              ))}
-              {collections.length === 0 && (
-                <p className="text-xs text-muted-foreground p-3 text-center">No stacks yet.</p>
-              )}
-            </div>
-          )}
-
+              ))
+            )}
+          </div>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="cursor-pointer gap-2 text-primary" onClick={() => setIsDialogOpen(true)}>
-            <Plus className="h-4 w-4" />
-            Create New Stack
+          <DropdownMenuItem
+            className="flex items-center gap-3 p-3 cursor-pointer text-primary"
+            onSelect={(e) => {
+              e.preventDefault()
+              setDropdownOpen(false)
+              setIsDialogOpen(true)
+            }}
+          >
+            <div className="h-8 w-8 rounded bg-primary/5 flex items-center justify-center shrink-0 text-primary">
+              <Plus className="h-4 w-4" />
+            </div>
+            <div>
+              <p className="text-sm font-bold leading-none">Create New Stack</p>
+              <p className="text-[10px] text-muted-foreground mt-1 leading-tight">Start a new workflow</p>
+            </div>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <Dialog open={isDialogOpen} onOpenChange={(open) => { setIsDialogOpen(open); if (!open) setNewStackName('') }}>
-        <DialogContent className="sm:max-w-sm">
+      <Dialog open={isDialogOpen} onOpenChange={(open) => { setIsDialogOpen(open); if (!open) { setNewStackName(''); setNewStackIcon('⚡') } }}>
+        <DialogContent className="sm:max-w-sm" onClick={e => e.stopPropagation()}>
           <DialogHeader>
-            <DialogTitle>Create New Stack</DialogTitle>
+            <DialogTitle>Create a New Stack</DialogTitle>
+            <DialogDescription>
+              Add <strong>{toolName}</strong> to a new stack.
+            </DialogDescription>
           </DialogHeader>
-          <Input
-            autoFocus
-            placeholder="Stack name..."
-            value={newStackName}
-            onChange={e => setNewStackName(e.target.value)}
-            onKeyDown={e => { if (e.key === 'Enter') createAndAdd() }}
-          />
+          <div className="space-y-3">
+            <div>
+              <p className="text-xs text-muted-foreground mb-2 font-medium">Pick an icon</p>
+              <div className="grid grid-cols-6 sm:grid-cols-8 gap-1">
+                {STACK_ICONS.map((e) => (
+                  <button
+                    key={e}
+                    type="button"
+                    onClick={() => setNewStackIcon(e)}
+                    className={`h-9 w-9 rounded-lg text-lg flex items-center justify-center transition-colors ${
+                      newStackIcon === e
+                        ? 'bg-primary/20 border-2 border-primary/60'
+                        : 'hover:bg-muted border-2 border-transparent'
+                    }`}
+                  >
+                    {e}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <Input
+              autoFocus
+              placeholder="e.g. Content Creation, Dev Tools..."
+              value={newStackName}
+              onChange={e => setNewStackName(e.target.value)}
+              onKeyDown={e => {
+                if (e.key === 'Enter') {
+                  e.stopPropagation()
+                  createAndAdd()
+                }
+              }}
+            />
+          </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
             <Button onClick={createAndAdd} disabled={loading || !newStackName.trim()}>
-              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Create'}
+              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Create & Add'}
             </Button>
           </DialogFooter>
         </DialogContent>

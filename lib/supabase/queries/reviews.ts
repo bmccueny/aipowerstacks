@@ -1,14 +1,21 @@
 import { createClient } from '@/lib/supabase/server'
 import type { Review } from '@/lib/types'
 
-export async function getReviewsByTool(toolId: string): Promise<(Review & { profiles: { display_name: string | null; avatar_url: string | null; role: string | null } })[]> {
+export async function getReviewsByTool(toolId: string, currentUserId?: string): Promise<(Review & { profiles: { display_name: string | null; avatar_url: string | null; role: string | null } })[]> {
   const supabase = await createClient()
 
-  const { data, error } = await supabase
+  let query = supabase
     .from('reviews')
     .select('*')
     .eq('tool_id', toolId)
-    .eq('status', 'published')
+
+  if (currentUserId) {
+    query = query.or(`status.eq.published,user_id.eq.${currentUserId}`)
+  } else {
+    query = query.eq('status', 'published')
+  }
+
+  const { data, error } = await query
     .order('helpful_count', { ascending: false })
     .order('created_at', { ascending: false })
     .limit(20)
