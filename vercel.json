@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/cron/ai-news",
-      "schedule": "0 */6 * * *"
+      "schedule": "0 0 * * *"
     }
   ]
 }
