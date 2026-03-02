@@ -38,6 +38,22 @@ const DEFAULT_FEED_URLS = [
   'https://feeds.feedburner.com/venturebeat/SZYF',
 ]
 
+const AI_KEYWORDS = [
+  'ai', 'llm', 'gpt', 'claude', 'anthropic', 'openai', 'gemini', 'perplexity', 
+  'machine learning', 'deep learning', 'neural', 'bot', 'agent', 'automation',
+  'copilot', 'midjourney', 'stable diffusion', 'suno', 'elevenlabs', 'nvidia',
+  'tpu', 'gpu', 'quantum', 'robot', 'autonomous', 'model', 'training', 'inference',
+  'transformer', 'llama', 'stable video', 'runway', 'pika', 'flux', 'ideogram'
+]
+
+function isAiRelated(title, summary) {
+  const text = `${title} ${summary || ''}`.toLowerCase()
+  return AI_KEYWORDS.some(k => {
+    if (k === 'ai') return /\bai\b/i.test(text)
+    return text.includes(k)
+  })
+}
+
 if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
   console.error('[sync-news] Missing SUPABASE_URL or SERVICE_ROLE_KEY')
   process.exit(1)
@@ -216,7 +232,10 @@ async function main() {
 
   console.log(`[sync-news] ${allItems.length} unique items across ${feedUrls.length} feeds`)
 
-  const enriched = await enrichAll(allItems)
+  const aiOnlyItems = allItems.filter(item => isAiRelated(item.title, item.summary))
+  console.log(`[sync-news] ${aiOnlyItems.length} AI-related items out of ${allItems.length}`)
+
+  const enriched = await enrichAll(aiOnlyItems)
   const withImages = enriched.filter((i) => i.image_url).length
   console.log(`[sync-news] ${withImages}/${enriched.length} items have images after enrichment`)
 

@@ -7,6 +7,23 @@ const DEFAULT_FEED_URLS = [
   'https://www.engadget.com/rss.xml',
   'https://feeds.feedburner.com/venturebeat/SZYF',
 ]
+
+const AI_KEYWORDS = [
+  'ai', 'llm', 'gpt', 'claude', 'anthropic', 'openai', 'gemini', 'perplexity', 
+  'machine learning', 'deep learning', 'neural', 'bot', 'agent', 'automation',
+  'copilot', 'midjourney', 'stable diffusion', 'suno', 'elevenlabs', 'nvidia',
+  'tpu', 'gpu', 'quantum', 'robot', 'autonomous', 'model', 'training', 'inference',
+  'transformer', 'llama', 'stable video', 'runway', 'pika', 'flux', 'ideogram'
+]
+
+function isAiRelated(title: string, summary: string | null) {
+  const text = `${title} ${summary || ''}`.toLowerCase()
+  return AI_KEYWORDS.some(k => {
+    if (k === 'ai') return /\bai\b/i.test(text)
+    return text.includes(k)
+  })
+}
+
 const MAX_ITEMS_PER_FEED = 12
 const ENRICH_BATCH_SIZE = 5
 const ARTICLE_FETCH_TIMEOUT_MS = 8000
@@ -256,7 +273,13 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'No items parsed from any feed' }, { status: 422 })
   }
 
-  const enrichedItems = await enrichItems(allItems)
+  const aiOnlyItems = allItems.filter(item => isAiRelated(item.title, item.summary))
+  
+  if (aiOnlyItems.length === 0) {
+    return NextResponse.json({ success: true, message: 'No AI-related items found in this run', ranAt: nowIso })
+  }
+
+  const enrichedItems = await enrichItems(aiOnlyItems)
 
   const nowIso = new Date().toISOString()
   const rows = enrichedItems.map((item) => ({
