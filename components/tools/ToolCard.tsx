@@ -63,7 +63,9 @@ export function ToolCard({ tool, view = 'grid', cardStyle = 'default' }: ToolCar
           <p className="text-[14px] leading-[1.45] text-muted-foreground truncate mt-0.5 relative z-10">{tool.tagline}</p>
           <div className="mt-1.5 flex flex-wrap items-center gap-1.5 relative z-10">
             {isWellFavored && <WellFavoredBadge className="shrink-0" sparkle={hasBeenHovered} />}
-            <Badge variant="outline" className={`text-[11px] ${pricingColor}`}>{pricingLabel}</Badge>
+            <Badge variant="outline" className={`text-[11px] ${pricingColor}`}>
+              {tool.pricing_details && tool.pricing_details !== 'N/A' ? tool.pricing_details : pricingLabel}
+            </Badge>
             {tool.has_api && <Badge variant="secondary" className="text-[10px] bg-blue-50 text-blue-700 border-blue-200">API</Badge>}
             {tool.is_open_source && <Badge variant="secondary" className="text-[10px] bg-emerald-50 text-emerald-700 border-emerald-200">Open Source</Badge>}
           </div>
@@ -121,7 +123,9 @@ export function ToolCard({ tool, view = 'grid', cardStyle = 'default' }: ToolCar
                   <ShieldCheck className="h-3 w-3" /> Expert Verified
                 </Badge>
               )}
-              <Badge variant="outline" className={`text-[11px] ${pricingColor}`}>{pricingLabel}</Badge>
+              <Badge variant="outline" className={`text-[11px] ${pricingColor}`}>
+                {tool.pricing_details && tool.pricing_details !== 'N/A' ? tool.pricing_details : pricingLabel}
+              </Badge>
               {tool.has_api && <Badge variant="secondary" className="text-[10px] bg-blue-50 text-blue-700 border-blue-200">API</Badge>}
               {tool.is_open_source && <Badge variant="secondary" className="text-[10px] bg-emerald-50 text-emerald-700 border-emerald-200">Open Source</Badge>}
             </div>
@@ -186,7 +190,9 @@ export function ToolCard({ tool, view = 'grid', cardStyle = 'default' }: ToolCar
                   <ShieldCheck className="h-3 w-3" /> Expert Verified
                 </Badge>
               )}
-              <Badge variant="outline" className={`text-[11px] ${pricingColor}`}>{pricingLabel}</Badge>
+              <Badge variant="outline" className={`text-[11px] ${pricingColor}`}>
+                {tool.pricing_details && tool.pricing_details !== 'N/A' ? tool.pricing_details : pricingLabel}
+              </Badge>
             </div>
           </div>
         </div>
