@@ -361,14 +361,9 @@ export default async function HomePage() {
                           {new Date(news.published_at).toLocaleDateString()}
                         </span>
                       </div>
-                      <h3 className="font-bold text-[15px] leading-tight mb-2 pb-0.5 transition-colors line-clamp-2">
+                      <h3 className="font-bold text-[16px] leading-tight mb-4 pb-0.5 transition-colors line-clamp-3 flex-1 group-hover:text-primary transition-colors">
                         {news.title}
                       </h3>
-                      {news.summary && (
-                        <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed mb-4 pb-0.5 flex-1">
-                          {news.summary}
-                        </p>
-                      )}
                       <div className="mt-auto flex items-center text-xs font-bold text-foreground transition-colors gap-1 uppercase tracking-tighter">
                         Read Story <ChevronRight className="h-3 w-3" />
                       </div>

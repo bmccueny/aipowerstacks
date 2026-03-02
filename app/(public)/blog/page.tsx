@@ -87,14 +87,9 @@ export default async function BlogPage({
                       </span>
                       <ExternalLink className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0" />
                     </div>
-                    <h3 className="font-semibold text-[16px] mb-2 transition-colors line-clamp-2 flex-1 leading-[1.3]">
+                    <h3 className="font-semibold text-[17px] mb-3 transition-colors line-clamp-3 flex-1 leading-[1.3] group-hover:text-primary transition-colors">
                       {item.title}
                     </h3>
-                    {item.summary ? (
-                      <p className="text-[13px] text-muted-foreground line-clamp-2 mb-3 leading-[1.5]">
-                        {item.summary}
-                      </p>
-                    ) : null}
                     <div className="text-[12px] text-muted-foreground border-t border-foreground/10 pt-3 mt-auto">
                       {new Date(item.published_at).toLocaleDateString('en-US', {
                         month: 'short',
