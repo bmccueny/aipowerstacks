@@ -61,18 +61,22 @@ export default async function ToolDetailPage({ params }: Props) {
   const pricingColor = PRICING_BADGE_COLORS[tool.pricing_model] ?? PRICING_BADGE_COLORS.unknown
   const pricingLabel = PRICING_LABELS[tool.pricing_model] ?? 'Unknown'
 
-  const pros = [
-    tool.is_verified ? 'Verified listing with core tool details reviewed by the editorial team.' : null,
-    tool.pricing_model === 'free' || tool.pricing_model === 'freemium' ? 'Accessible pricing model for early testing.' : null,
-    tool.review_count > 0 && tool.avg_rating >= 4 ? `Strong user sentiment with a ${tool.avg_rating.toFixed(1)} average rating.` : null,
-    tool.integrations && tool.integrations.length > 0 ? `Integration support includes ${tool.integrations.slice(0, 3).map((item) => labelize(item)).filter(Boolean).join(', ')}.` : null,
-  ].filter(Boolean) as string[]
+  const pros = (tool.pros && tool.pros.length > 0) 
+    ? tool.pros 
+    : [
+        tool.is_verified ? 'Verified listing with core tool details reviewed by the editorial team.' : null,
+        tool.pricing_model === 'free' || tool.pricing_model === 'freemium' ? 'Accessible pricing model for early testing.' : null,
+        tool.review_count > 0 && tool.avg_rating >= 4 ? `Strong user sentiment with a ${tool.avg_rating.toFixed(1)} average rating.` : null,
+        tool.integrations && tool.integrations.length > 0 ? `Integration support includes ${tool.integrations.slice(0, 3).map((item) => labelize(item)).filter(Boolean).join(', ')}.` : null,
+      ].filter(Boolean) as string[]
 
-  const cons = [
-    !tool.pricing_details ? 'Pricing details are limited and may require visiting the official website.' : null,
-    tool.review_count < 3 ? 'Limited public review volume, so performance may vary by workflow.' : null,
-    screenshots.length === 0 ? 'No screenshots provided for quick visual evaluation.' : null,
-  ].filter(Boolean) as string[]
+  const cons = (tool.cons && tool.cons.length > 0)
+    ? tool.cons
+    : [
+        !tool.pricing_details ? 'Pricing details are limited and may require visiting the official website.' : null,
+        tool.review_count < 3 ? 'Limited public review volume, so performance may vary by workflow.' : null,
+        screenshots.length === 0 ? 'No screenshots provided for quick visual evaluation.' : null,
+      ].filter(Boolean) as string[]
 
   const showProsConsSection = pros.length > 0 || cons.length > 0
 
@@ -158,7 +162,14 @@ export default async function ToolDetailPage({ params }: Props) {
               </div>
               <p className="text-muted-foreground mb-3 leading-relaxed">{tool.tagline}</p>
               <div className="flex flex-wrap gap-2 mb-4">
-                <Badge variant="outline" className={pricingColor}>{pricingLabel}</Badge>
+                <div className="flex flex-wrap gap-1">
+                  <Badge variant="outline" className={pricingColor}>{pricingLabel}</Badge>
+                  {tool.pricing_tags?.map(tag => (
+                    <Badge key={tag} variant="secondary" className="text-[10px] bg-stone-100 text-stone-600 border-stone-200">
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
                 {tool.is_supertools && (
                   <Badge variant="outline" className="bg-indigo-100 text-indigo-800 border-indigo-300">SuperTool</Badge>
                 )}
@@ -211,6 +222,20 @@ export default async function ToolDetailPage({ params }: Props) {
           <div className="lg:col-span-2 space-y-6">
             <div className="glass-card rounded-md p-6">
               <h2 className="text-lg font-semibold mb-3">About {tool.name}</h2>
+              <div className="flex flex-wrap gap-1.5 mb-4 items-center">
+                <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground mr-1">Pricing:</span>
+                {tool.pricing_tags && tool.pricing_tags.length > 0 ? (
+                  tool.pricing_tags.map(tag => (
+                    <Badge key={tag} variant="secondary" className="text-[10px] bg-primary/10 text-primary border-primary/20 uppercase font-bold">
+                      {tag}
+                    </Badge>
+                  ))
+                ) : (
+                  <Badge variant="outline" className={`text-[10px] uppercase font-bold ${pricingColor}`}>
+                    {pricingLabel}
+                  </Badge>
+                )}
+              </div>
               <p className="text-muted-foreground leading-relaxed">{tool.description}</p>
             </div>
 

@@ -59,9 +59,9 @@ export function CompareSearch({ currentSlugs }: { currentSlugs: string[] }) {
   }
 
   return (
-    <div ref={wrapperRef} className="relative w-full max-w-md mx-auto mb-8">
+    <div ref={wrapperRef} className="relative w-full mb-4">
       <div className="relative group">
-        <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
           <Search className="h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
         </div>
         <input
@@ -69,13 +69,13 @@ export function CompareSearch({ currentSlugs }: { currentSlugs: string[] }) {
           value={query}
           onChange={(e) => { setQuery(e.target.value); setOpen(true) }}
           onFocus={() => setOpen(true)}
-          placeholder="Add another tool to compare..."
-          className="w-full bg-background border-[1.5px] border-foreground/20 rounded-md h-11 pl-10 pr-10 focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all text-sm font-medium"
+          placeholder="Search tools to add..."
+          className="w-full bg-background border-[1.5px] border-foreground/10 rounded-xl h-12 pl-11 pr-10 focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all text-sm font-bold shadow-sm"
         />
         {query && (
           <button 
             onClick={() => setQuery('')}
-            className="absolute inset-y-0 right-0 pr-3 flex items-center text-muted-foreground hover:text-foreground"
+            className="absolute inset-y-0 right-0 pr-4 flex items-center text-muted-foreground hover:text-foreground"
           >
             <X className="h-4 w-4" />
           </button>
@@ -83,40 +83,44 @@ export function CompareSearch({ currentSlugs }: { currentSlugs: string[] }) {
       </div>
 
       {open && (query.length >= 2 || results.length > 0) && (
-        <div className="absolute z-50 w-full mt-2 bg-background border-[1.5px] border-foreground rounded-md shadow-[4px_4px_0_0_#000] overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
-          {loading ? (
-            <div className="p-4 text-center text-muted-foreground">
-              <Loader2 className="h-5 w-5 animate-spin mx-auto mb-2" />
-              <p className="text-xs">Searching tools...</p>
-            </div>
-          ) : results.length > 0 ? (
-            <div className="divide-y divide-foreground/5">
-              {results.map((tool) => (
-                <button
-                  key={tool.id}
-                  onClick={() => addTool(tool.slug)}
-                  className="w-full flex items-center gap-3 p-3 hover:bg-primary/5 transition-colors text-left group"
-                >
-                  <div className="h-8 w-8 rounded bg-muted overflow-hidden flex items-center justify-center shrink-0 border border-foreground/10">
-                    {tool.logo_url ? (
-                      <Image src={tool.logo_url} alt={tool.name} width={32} height={32} className="object-contain" />
-                    ) : (
-                      <span className="text-[10px] font-bold text-primary">{tool.name[0]}</span>
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold truncate group-hover:text-primary transition-colors">{tool.name}</p>
-                    <p className="text-[10px] text-muted-foreground truncate">{tool.tagline}</p>
-                  </div>
-                  <Plus className="h-4 w-4 text-primary opacity-0 group-hover:opacity-100 transition-all transform group-hover:scale-110" />
-                </button>
-              ))}
-            </div>
-          ) : (
-            <div className="p-4 text-center text-muted-foreground text-xs italic">
-              No results found for &quot;{query}&quot;
-            </div>
-          )}
+        <div className="absolute top-full left-0 right-0 z-40 mt-3 bg-background border border-foreground/10 rounded-2xl shadow-[0_25px_70px_rgba(0,0,0,0.3)] overflow-visible animate-in fade-in slide-in-from-top-4 duration-300 backdrop-blur-2xl lg:min-w-[500px]">
+          <div className="overflow-hidden rounded-2xl border border-foreground/5 bg-background/95">
+            {loading ? (
+              <div className="p-8 text-center text-muted-foreground">
+                <Loader2 className="h-6 w-6 animate-spin mx-auto mb-3 text-primary" />
+                <p className="text-xs font-black uppercase tracking-widest opacity-50">Scanning Database</p>
+              </div>
+            ) : results.length > 0 ? (
+              <div className="divide-y divide-foreground/5 p-2">
+                {results.map((tool) => (
+                  <button
+                    key={tool.id}
+                    onClick={() => addTool(tool.slug)}
+                    className="w-full flex items-center gap-4 p-3 hover:bg-primary/5 transition-all text-left group rounded-xl"
+                  >
+                    <div className="h-10 w-10 rounded-lg bg-white overflow-hidden flex items-center justify-center shrink-0 border border-foreground/5 shadow-sm group-hover:border-primary/20 transition-colors">
+                      {tool.logo_url ? (
+                        <img src={tool.logo_url} alt={tool.name} className="object-contain p-1" />
+                      ) : (
+                        <span className="text-xs font-black text-primary uppercase">{tool.name[0]}</span>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-black truncate group-hover:text-primary transition-colors leading-tight mb-0.5">{tool.name}</p>
+                      <p className="text-[10px] text-muted-foreground truncate leading-none uppercase tracking-tighter opacity-70">{tool.tagline}</p>
+                    </div>
+                    <div className="h-8 w-8 rounded-full bg-primary/5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all transform scale-75 group-hover:scale-100">
+                      <Plus className="h-4 w-4 text-primary" />
+                    </div>
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <div className="p-8 text-center text-muted-foreground">
+                <p className="text-xs font-bold italic opacity-50">No tools found matching &quot;{query}&quot;</p>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>

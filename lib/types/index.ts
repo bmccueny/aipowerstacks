@@ -18,9 +18,16 @@ export type NewsletterSubscriber = Tables['newsletter_subscribers']['Row']
 export type Collection = Tables['collections']['Row']
 export type CollectionItem = Tables['collection_items']['Row']
 
-export type ToolSearchResult = Database['public']['Functions']['search_tools']['Returns'][number]
+export type ToolSearchResult = Database['public']['Functions']['search_tools']['Returns'][number] & {
+  pricing_tags?: string[] | null
+  pricing_details?: string | null
+}
 
-export type ToolCardData = ToolSearchResult & { screenshot_urls?: string[] | null }
+export type ToolCardData = ToolSearchResult & { 
+  screenshot_urls?: string[] | null
+  pricing_tags?: string[] | null
+  pricing_details?: string | null
+}
 
 export type PricingModel = 'free' | 'freemium' | 'paid' | 'trial' | 'contact' | 'unknown'
 export type SortOption = 'relevance' | 'newest' | 'rating' | 'popular'
@@ -38,6 +45,8 @@ export type ToolWithTags = ToolWithCategory & {
   api_uptime?: number | null
   admin_review_video_url?: string | null
   admin_review_notes?: string | null
+  pros?: string[] | null
+  cons?: string[] | null
 }
 
 export type BlogPostWithAuthor = BlogPost & {

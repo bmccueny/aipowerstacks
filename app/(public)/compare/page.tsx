@@ -1,31 +1,74 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
-import { ExternalLink, Sparkles, Check, X } from 'lucide-react'
+import { 
+  ExternalLink, Sparkles, Check, X, Info, Trophy, Zap, 
+  ArrowRight, MousePointer2, Share2, Plus, Notebook, 
+  Video, Mic, Palette, ChevronDown, LayoutGrid 
+} from 'lucide-react'
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuSeparator
+} from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { StarRating } from '@/components/reviews/StarRating'
 import { createClient } from '@/lib/supabase/server'
-import { getSuperTools } from '@/lib/supabase/queries/tools'
+import { getSuperTools, getSimilarTools } from '@/lib/supabase/queries/tools'
 import { PRICING_BADGE_COLORS, PRICING_LABELS } from '@/lib/constants'
 import { CompareSearch } from '@/components/tools/CompareSearch'
+import { MatrixAutoFocus } from '@/components/tools/MatrixAutoFocus'
 import { Suspense } from 'react'
+import { cn } from '@/lib/utils'
+import { CompareTable } from '@/components/tools/CompareTable'
 
 export async function generateMetadata({
   searchParams,
 }: {
   searchParams: Promise<{ tools?: string }>
 }): Promise<Metadata> {
-  const { tools } = await searchParams
-  const slugCount = (tools ?? '')
+  const { tools: toolsParam } = await searchParams
+  const slugs = (toolsParam ?? '')
     .split(',')
-    .map((slug) => slug.trim())
+    .map((slug) => slug.trim().toLowerCase())
     .filter(Boolean)
-    .length
-  const isThinCompareState = slugCount > 0 && slugCount < 2
+    .slice(0, 3)
+
+  const isThinCompareState = slugs.length > 0 && slugs.length < 2
+  
+  let title = 'Compare AI Tools Side-by-Side | AIPowerStacks'
+  let description = 'Make informed decisions with our AI comparison engine. Compare features, pricing, pros, and cons side-by-side.'
+
+  if (slugs.length >= 1) {
+    const supabase = await createClient()
+    const { data } = await supabase
+      .from('tools')
+      .select('name')
+      .in('slug', slugs)
+    
+    if (data && data.length > 0) {
+      const names = data.map(t => t.name).join(' vs ')
+      title = `${names} Comparison | AIPowerStacks`
+      description = `Side-by-side technical breakdown of ${names}. Compare pricing, API access, pros, and cons to find the best fit for your workflow.`
+    }
+  }
 
   return {
-    title: 'Compare AI Tools',
-    description: 'Compare AI tools side-by-side by pricing, fit, team size, integrations, and ratings.',
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+    },
     alternates: {
       canonical: '/compare',
     },
@@ -33,36 +76,6 @@ export async function generateMetadata({
       ? { index: false, follow: true }
       : { index: true, follow: true },
   }
-}
-
-type CompareTool = {
-  id: string
-  name: string
-  slug: string
-  tagline: string
-  website_url: string
-  pricing_model: string
-  pricing_details: string | null
-  pricing_type: string | null
-  has_api: boolean
-  has_mobile_app: boolean
-  is_open_source: boolean
-  has_cloud_sync: boolean
-  avg_rating: number
-  review_count: number
-  use_case: string | null
-  team_size: string | null
-  integrations: string[] | null
-  api_latency?: number | null
-  api_uptime?: number | null
-}
-
-function labelize(value: string | null | undefined) {
-  if (!value) return 'TBD'
-  return value
-    .split('-')
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(' ')
 }
 
 export default async function ComparePage({
@@ -81,259 +94,252 @@ export default async function ComparePage({
   const { data } = slugs.length
     ? await supabase
       .from('tools')
-      .select('id, name, slug, tagline, website_url, pricing_model, pricing_details, pricing_type, has_api, has_mobile_app, is_open_source, has_cloud_sync, avg_rating, review_count, use_case, team_size, integrations')
+      .select('id, name, slug, tagline, website_url, logo_url, pricing_model, pricing_details, pricing_tags, pricing_type, has_api, has_mobile_app, is_open_source, has_cloud_sync, avg_rating, review_count, use_case, team_size, integrations, pros, cons, is_supertools')
       .in('slug', slugs)
       .eq('status', 'published')
-    : { data: [] as CompareTool[] }
+    : { data: [] as any[] }
 
   const tools = slugs
-    .map((slug) => (data as CompareTool[] | undefined)?.find((tool) => tool.slug === slug))
-    .filter(Boolean) as CompareTool[]
+    .map((slug) => (data as any[] | undefined)?.find((tool) => tool.slug === slug))
+    .filter(Boolean)
 
-  const suggestions = await getSuperTools(4)
+  const recommendations = slugs.length > 0 
+    ? await getSimilarTools(slugs, 4)
+    : await getSuperTools(4)
+
   const comparePresets = [
     {
-      title: 'Most Compared Trio',
-      description: 'Start with three popular options and narrow down quickly.',
-      slugs: suggestions.slice(0, 3).map((tool) => tool.slug),
+      title: 'Top Tier Coding',
+      description: 'Compare the industry leaders in AI software development.',
+      slugs: ['cursor-editor', 'devin-pro', 'claude-code'],
+      icon: <Zap className="h-4 w-4 text-amber-500" />
     },
     {
-      title: 'Fast 2-Tool Check',
-      description: 'Run a simple head-to-head before you commit.',
-      slugs: suggestions.slice(0, 2).map((tool) => tool.slug),
+      title: 'Content Powerhouse',
+      description: 'Head-to-head for marketing and creative teams.',
+      slugs: ['jasper-brand-voice', 'copy-ai', 'writesonic-ai'],
+      icon: <Trophy className="h-4 w-4 text-primary" />
     },
-  ].filter((preset) => preset.slugs.length >= 2)
+    {
+      title: 'AI Note-Taking',
+      description: 'Compare AI-powered knowledge bases and smart notes.',
+      slugs: ['notion-ai', 'obsidian-ai', 'mem-ai'],
+      icon: <Notebook className="h-4 w-4 text-blue-500" />
+    },
+    {
+      title: 'AI Film Studio',
+      description: 'Professional text-to-video tools side-by-side.',
+      slugs: ['sora-2', 'runway-gen-3', 'kling-ai'],
+      icon: <Video className="h-4 w-4 text-rose-500" />
+    },
+    {
+      title: 'Voice & Dubbing',
+      description: 'The best AI voice cloning and translation tech.',
+      slugs: ['elevenlabs-dubbing', 'murf-ai', 'lovo-ai'],
+      icon: <Mic className="h-4 w-4 text-indigo-500" />
+    },
+    {
+      title: 'Visual Design',
+      description: 'High-fidelity generative art head-to-head.',
+      slugs: ['midjourney-v7', 'flux2', 'gpt-image-15'],
+      icon: <Palette className="h-4 w-4 text-orange-500" />
+    },
+  ]
+
+  const activePreset = comparePresets.find(p => 
+    p.slugs.length === slugs.length && 
+    p.slugs.every(s => slugs.includes(s))
+  )
 
   return (
     <div className="page-shell">
-      <div className="page-hero text-center">
-        <div className="inline-flex items-center gap-2 gum-pill px-3 py-1 text-xs font-semibold uppercase tracking-wide mb-4">
-          <Sparkles className="h-3.5 w-3.5" />
-          Decision View
-        </div>
-        <h1 className="text-3xl sm:text-4xl font-black mb-2">Compare AI Tools</h1>
-        <p className="text-muted-foreground mb-8">Compare pricing, fit, and integrations before you commit.</p>
+      <Suspense>
+        <MatrixAutoFocus />
+      </Suspense>
+
+      {/* Enhanced Hero Section */}
+      <div className="page-hero relative overflow-hidden text-center py-12 sm:py-16 mb-8">
+        <div className="absolute top-0 left-0 w-full h-full opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, black 1px, transparent 0)', backgroundSize: '24px 24px' }} />
         
-        <Suspense>
-          <CompareSearch currentSlugs={slugs} />
-        </Suspense>
+        <div className="relative z-10 px-4">
+          <div className="inline-flex items-center gap-2 gum-pill px-4 py-1.5 text-[10px] font-black uppercase tracking-[0.15em] mb-6 animate-in-stagger">
+            <Sparkles className="h-3.5 w-3.5" />
+            AI Decision Engine
+          </div>
+          <h1 className="text-4xl sm:text-6xl font-black mb-4 tracking-tighter animate-in-stagger" style={{ animationDelay: '0.1s' }}>
+            Compare <span className="text-primary italic">Better</span>.
+          </h1>
+          <p className="text-muted-foreground max-w-xl mx-auto text-base sm:text-lg animate-in-stagger" style={{ animationDelay: '0.2s' }}>
+            Stop guessing and start building. Compare technical specs, real-world pros/cons, and pricing side-by-side.
+          </p>
+        </div>
       </div>
 
-      <section className="grid gap-4 md:grid-cols-2 mb-8">
-        <div className="glass-card rounded-md p-5">
-          <h3 className="text-base font-semibold mb-2">Why compare first?</h3>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            Comparing first reduces tool overlap, prevents expensive switches, and helps teams align on one stack faster.
-          </p>
-        </div>
-        <div className="glass-card rounded-md p-5">
-          <h3 className="text-base font-semibold mb-2">How to use this page</h3>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            Add tools from any detail page, then compare best use case, team fit, integrations, ratings, and pricing side-by-side.
-          </p>
-        </div>
-      </section>
-
-      {comparePresets.length > 0 && (
-        <section className="mb-8">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground mb-3">Quick Starts</h2>
-          <div className="grid gap-3 md:grid-cols-2">
-            {comparePresets.map((preset) => (
-              <Link key={preset.title} href={`/compare?tools=${encodeURIComponent(preset.slugs.join(','))}`} className="glass-card rounded-md p-4 block">
-                <p className="font-semibold text-sm">{preset.title}</p>
-                <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{preset.description}</p>
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {tools.length < 2 ? (
-        <div className="glass-card rounded-md p-6 space-y-4">
-          <p className="text-sm text-muted-foreground">
-            Add at least 2 tools to compare. Use <span className="text-foreground font-medium">Add to Compare</span> on any tool page, or start with a quick preset below.
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {suggestions.map((tool) => (
-              <Link key={tool.id} href={`/compare?tools=${tool.slug}`}>
-                <Badge variant="outline" className="border-foreground/30 hover:border-primary/40 transition-colors">
-                  {tool.name}
-                </Badge>
-              </Link>
-            ))}
-          </div>
-        </div>
-      ) : (
-        <div className="glass-card rounded-md overflow-x-auto">
-          <div className="px-4 sm:px-5 py-3 border-b border-foreground/15 bg-background/60">
-            <p className="text-xs text-muted-foreground">
-              Tip: choose by <span className="text-foreground font-medium">Best Use Case</span> and <span className="text-foreground font-medium">Integrations</span> first, then validate pricing.
-            </p>
-          </div>
-          <table className="w-full min-w-[760px]">
-            <thead>
-              <tr className="border-b border-foreground/20">
-                <th className="text-left p-4 text-sm text-muted-foreground font-medium">Feature</th>
-                {tools.map((tool) => (
-                  <th key={tool.id} className="text-left p-4 min-w-56">
-                    <div className="space-y-2">
-                      <div className="font-semibold">{tool.name}</div>
-                      <p className="text-xs text-muted-foreground">{tool.tagline}</p>
-                      <Link href={`/tools/${tool.slug}`} className="text-xs text-primary hover:underline">View details</Link>
+      {/* Mobile Preset Trigger - Only visible on small screens */}
+      <div className="lg:hidden mb-6 px-4 animate-in fade-in slide-in-from-top-4 duration-500 delay-200">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className={cn(
+              "w-full h-12 justify-between border-foreground/10 bg-background shadow-sm rounded-xl px-4",
+              activePreset && "border-primary/30 bg-primary/5"
+            )}>
+              <div className="flex items-center gap-3">
+                {activePreset ? (
+                  <>
+                    <div className="text-primary">{activePreset.icon}</div>
+                    <span className="font-black uppercase tracking-widest text-[10px] text-primary truncate max-w-[200px]">Active: {activePreset.title}</span>
+                  </>
+                ) : (
+                  <>
+                    <LayoutGrid className="h-4 w-4 text-primary" />
+                    <span className="font-black uppercase tracking-widest text-[10px] text-foreground">Select Comparison Preset</span>
+                  </>
+                )}
+              </div>
+              <ChevronDown className="h-4 w-4 opacity-50" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-[calc(100vw-2rem)] p-2 backdrop-blur-xl bg-background/95 z-[60]">
+            <DropdownMenuLabel className="text-[10px] font-black uppercase tracking-widest opacity-50 px-3 py-2">Quick Start Matrix</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <div className="grid grid-cols-1 gap-1">
+              {comparePresets.map((preset) => (
+                <DropdownMenuItem key={preset.title} asChild className="p-0">
+                  <Link 
+                    href={`/compare?tools=${encodeURIComponent(preset.slugs.join(','))}`}
+                    className={cn(
+                      "flex items-center gap-4 p-3 cursor-pointer rounded-xl transition-colors",
+                      activePreset?.title === preset.title ? "bg-primary/10" : "hover:bg-primary/5"
+                    )}
+                  >
+                    <div className="h-10 w-10 rounded-lg bg-muted flex items-center justify-center shrink-0">
+                      {preset.icon}
                     </div>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="border-b border-foreground/10">
-                <td className="p-4 text-sm text-muted-foreground">Pricing</td>
-                {tools.map((tool) => {
-                  const label = PRICING_LABELS[tool.pricing_model] ?? 'Unknown'
-                  const showDetails = tool.pricing_details && tool.pricing_details.toLowerCase() !== label.toLowerCase()
-                  return (
-                    <td key={tool.id} className="p-4">
-                      <div className="flex flex-col gap-1.5">
-                        <div className="flex items-center gap-2">
-                          <Badge variant="outline" className={`text-[10px] uppercase font-bold tracking-tight ${PRICING_BADGE_COLORS[tool.pricing_model] ?? PRICING_BADGE_COLORS.unknown}`}>
-                            {label}
-                          </Badge>
-                          <span className="text-sm capitalize font-medium">
-                            {tool.pricing_type?.replace('-', ' ') ?? 'Subscription'}
-                          </span>
-                        </div>
-                        {showDetails && <p className="text-xs text-muted-foreground leading-snug">{tool.pricing_details}</p>}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-2">
+                        <p className={cn("font-bold text-sm leading-none", activePreset?.title === preset.title ? "text-primary" : "text-foreground")}>{preset.title}</p>
+                        {activePreset?.title === preset.title && <Check className="h-3 w-3 text-primary" />}
                       </div>
-                    </td>
-                  )
-                })}
-              </tr>
-              <tr className="border-b border-foreground/10">
-                <td className="p-4 text-sm text-muted-foreground">Rating</td>
-                {tools.map((tool) => (
-                  <td key={tool.id} className="p-4">
-                    {tool.review_count > 0 ? (
-                      <div className="space-y-1">
-                        <StarRating rating={tool.avg_rating} size="sm" />
-                        <p className="text-xs text-muted-foreground">{tool.avg_rating.toFixed(1)} ({tool.review_count} reviews)</p>
-                      </div>
-                    ) : (
-                      <p className="text-xs text-muted-foreground">No reviews yet</p>
-                    )}
-                  </td>
-                ))}
-              </tr>
-              <tr className="border-b border-foreground/10">
-                <td className="p-4 text-sm text-muted-foreground">Capabilities</td>
-                {tools.map((tool) => (
-                  <td key={tool.id} className="p-4">
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between gap-4">
-                        <span className="text-[11px] text-muted-foreground uppercase font-semibold">API Access</span>
-                        {tool.has_api ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <X className="h-3.5 w-3.5 text-muted-foreground/30" />}
-                      </div>
-                      <div className="flex items-center justify-between gap-4">
-                        <span className="text-[11px] text-muted-foreground uppercase font-semibold">Mobile App</span>
-                        {tool.has_mobile_app ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <X className="h-3.5 w-3.5 text-muted-foreground/30" />}
-                      </div>
-                      <div className="flex items-center justify-between gap-4">
-                        <span className="text-[11px] text-muted-foreground uppercase font-semibold">Open Source</span>
-                        {tool.is_open_source ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <X className="h-3.5 w-3.5 text-muted-foreground/30" />}
-                      </div>
-                      <div className="flex items-center justify-between gap-4">
-                        <span className="text-[11px] text-muted-foreground uppercase font-semibold">Cloud Sync</span>
-                        {tool.has_cloud_sync ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <X className="h-3.5 w-3.5 text-muted-foreground/30" />}
-                      </div>
+                      <p className="text-[10px] text-muted-foreground truncate mt-1">{preset.description}</p>
                     </div>
-                  </td>
-                ))}
-              </tr>
-              <tr className="border-b border-black/10">
-                <td className="p-4 text-sm text-muted-foreground">API Latency</td>
-                {tools.map((tool) => (
-                  <td key={tool.id} className="p-4">
-                    {tool.has_api ? (
-                      <div className="flex items-center gap-2">
-                        <span className="font-mono text-xs font-bold">
-                          {tool.api_latency ? `${tool.api_latency}ms` : '---'}
-                        </span>
-                        {tool.api_latency && (
-                          <div className={`h-1.5 w-1.5 rounded-full ${tool.api_latency < 300 ? 'bg-emerald-500' : tool.api_latency < 1000 ? 'bg-amber-500' : 'bg-red-500'}`} />
-                        )}
-                      </div>
-                    ) : (
-                      <span className="text-muted-foreground/30">—</span>
-                    )}
-                  </td>
-                ))}
-              </tr>
-              <tr className="border-b border-black/10">
-                <td className="p-4 text-sm text-muted-foreground">API Uptime</td>
-                {tools.map((tool) => (
-                  <td key={tool.id} className="p-4">
-                    {tool.has_api ? (
-                      <span className="font-mono text-xs font-bold text-emerald-600">
-                        {tool.api_uptime ? `${Number(tool.api_uptime).toFixed(1)}%` : '100%'}
-                      </span>
-                    ) : (
-                      <span className="text-muted-foreground/30">—</span>
-                    )}
-                  </td>
-                ))}
-              </tr>
+                  </Link>
+                </DropdownMenuItem>
+              ))}
+            </div>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
 
-              <tr className="border-b border-foreground/10">
-                <td className="p-4 text-sm text-muted-foreground">Use Case</td>
+      <div className="grid gap-8 lg:grid-cols-4 items-start">
+        {/* Sidebar / Info - Visible only on Desktop */}
+        <aside className="hidden lg:block lg:col-span-1 space-y-6 sticky top-24">
+          <div className="glass-card rounded-xl p-6 border-primary/10">
+            <h3 className="text-xs font-black uppercase tracking-widest text-primary mb-4 flex items-center gap-2">
+              <Info className="h-3.5 w-3.5" /> Quick Guide
+            </h3>
+            <div className="space-y-4">
+              <div>
+                <p className="text-[11px] font-black uppercase tracking-wider text-foreground mb-1">Add Tools</p>
+                <p className="text-xs text-muted-foreground">Use the search bar to find and add up to 3 tools to your matrix.</p>
+              </div>
+              <div>
+                <p className="text-[11px] font-black uppercase tracking-wider text-foreground mb-1">Save State</p>
+                <p className="text-xs text-muted-foreground">The URL updates automatically. Copy the link to save or share your comparison.</p>
+              </div>
+              <div>
+                <p className="text-[11px] font-black uppercase tracking-wider text-foreground mb-1">Remove</p>
+                <p className="text-xs text-muted-foreground">Click the &quot;X&quot; on any tool header to remove it from the list.</p>
+              </div>
+            </div>
+          </div>
 
-                {tools.map((tool) => (
-                  <td key={tool.id} className="p-4 text-sm">
-                    {labelize(tool.use_case)}
-                  </td>
+          <section>
+            <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground mb-4 px-1">Quick Presets</h2>
+            <div className="grid gap-3">
+              {comparePresets.map((preset) => (
+                <Link 
+                  key={preset.title} 
+                  href={`/compare?tools=${encodeURIComponent(preset.slugs.join(','))}`} 
+                  className={cn(
+                    "glass-card rounded-xl p-4 block transition-all group border-transparent",
+                    activePreset?.title === preset.title ? "border-primary/40 bg-primary/5 ring-1 ring-primary/20" : "hover:border-primary/40"
+                  )}
+                >
+                  <div className="flex items-center gap-2 mb-1.5">
+                    {preset.icon}
+                    <p className={cn("font-bold text-sm group-hover:text-primary transition-colors", activePreset?.title === preset.title ? "text-primary" : "text-foreground")}>{preset.title}</p>
+                  </div>
+                  <p className="text-[11px] text-muted-foreground leading-snug">{preset.description}</p>
+                  <div className="mt-3 flex items-center gap-1 text-[9px] font-black uppercase tracking-wider text-primary opacity-0 group-hover:opacity-100 transform translate-x-[-4px] group-hover:translate-x-0 transition-all">
+                    {activePreset?.title === preset.title ? 'Active' : 'Compare Now'}
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        </aside>
+
+        {/* Comparison Table Section */}
+        <div id="comparison-matrix" className="lg:col-span-3 space-y-6">
+          <div className="animate-in-stagger relative z-30" style={{ animationDelay: '0.3s' }}>
+            <Suspense>
+              <CompareSearch currentSlugs={slugs} />
+            </Suspense>
+          </div>
+
+          {/* Dynamic Recommendations */}
+          {recommendations.length > 0 && (
+            <div className="flex flex-wrap items-center gap-2 mb-2 animate-in fade-in slide-in-from-left-4 duration-500 delay-300">
+              <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mr-2 flex items-center gap-1.5">
+                <Sparkles className="h-3 w-3 text-primary" /> 
+                {slugs.length > 0 ? 'Smart Addition:' : 'Top Starts:'}
+              </span>
+              {recommendations.slice(0, 3).map((rec) => (
+                <Link 
+                  key={rec.id} 
+                  href={`/compare?tools=${[...slugs, rec.slug].join(',')}`}
+                  className="group"
+                >
+                  <Badge variant="outline" className="h-8 border-foreground/10 hover:border-primary/40 hover:bg-primary/5 transition-all bg-background cursor-pointer gap-2 pr-3">
+                    <div className="h-4 w-4 rounded bg-white overflow-hidden border border-foreground/5 shrink-0 flex items-center justify-center">
+                      {rec.logo_url ? (
+                        <img src={rec.logo_url} alt="" className="object-contain" />
+                      ) : (
+                        <span className="text-[8px] font-black text-primary">{rec.name[0]}</span>
+                      )}
+                    </div>
+                    <span className="text-[10px] font-bold">{rec.name}</span>
+                    <Plus className="h-2.5 w-2.5 text-primary opacity-40 group-hover:opacity-100" />
+                  </Badge>
+                </Link>
+              ))}
+            </div>
+          )}
+
+          {tools.length === 0 ? (
+            <div className="glass-card rounded-2xl p-12 text-center border-dashed flex flex-col items-center justify-center min-h-[400px]">
+              <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center mb-6">
+                <MousePointer2 className="h-8 w-8 text-muted-foreground/40" />
+              </div>
+              <h3 className="text-xl font-bold mb-2 uppercase tracking-tight">Build Your Matrix</h3>
+              <p className="text-sm text-muted-foreground max-w-sm mx-auto mb-8">
+                Search for your first tool above or start with one of our suggestions below.
+              </p>
+              <div className="flex flex-wrap justify-center gap-2">
+                {recommendations.map((tool) => (
+                  <Link key={tool.id} href={`/compare?tools=${tool.slug}`}>
+                    <Badge variant="outline" className="h-9 px-4 border-foreground/20 hover:border-primary/40 transition-colors bg-background font-bold text-xs cursor-pointer">
+                      + {tool.name}
+                    </Badge>
+                  </Link>
                 ))}
-              </tr>
-              <tr className="border-b border-foreground/10">
-                <td className="p-4 text-sm text-muted-foreground">Team Size</td>
-                {tools.map((tool) => (
-                  <td key={tool.id} className="p-4 text-sm">
-                    {labelize(tool.team_size)}
-                  </td>
-                ))}
-              </tr>
-              <tr className="border-b border-foreground/10">
-                <td className="p-4 text-sm text-muted-foreground">Integrations</td>
-                {tools.map((tool) => (
-                  <td key={tool.id} className="p-4">
-                    {tool.integrations && tool.integrations.length > 0 ? (
-                      <div className="flex flex-wrap gap-1.5">
-                        {tool.integrations.map((integration) => (
-                          <Badge key={integration} variant="outline" className="text-[10px] border-foreground/30">
-                            {labelize(integration)}
-                          </Badge>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="text-xs text-muted-foreground italic">TBD</p>
-                    )}
-                  </td>
-                ))}
-              </tr>
-              <tr>
-                <td className="p-4 text-sm text-muted-foreground">Visit Website</td>
-                {tools.map((tool) => (
-                  <td key={tool.id} className="p-4">
-                    <a href={tool.website_url} target="_blank" rel="noopener noreferrer">
-                      <Button size="sm" className="gap-1.5 !border !border-black/20">
-                        Open
-                        <ExternalLink className="h-3.5 w-3.5" />
-                      </Button>
-                    </a>
-                  </td>
-                ))}
-              </tr>
-            </tbody>
-          </table>
+              </div>
+            </div>
+          ) : (
+            <CompareTable tools={tools} />
+          )}
         </div>
-      )}
+      </div>
     </div>
   )
 }

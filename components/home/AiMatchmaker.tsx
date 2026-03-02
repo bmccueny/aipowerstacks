@@ -29,6 +29,7 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ToolCard } from '@/components/tools/ToolCard'
+import { AiAgentLoading } from './AiAgentLoading'
 import type { ToolSearchResult } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
@@ -104,11 +105,14 @@ export function AiMatchmaker() {
     setStep('results')
     
     try {
-      const res = await fetch('/api/matchmaker', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: chatMessage })
-      })
+      const [res] = await Promise.all([
+        fetch('/api/matchmaker', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: chatMessage })
+        }),
+        new Promise(resolve => setTimeout(resolve, 6500)) // Deep simulation delay
+      ])
       const data = await res.json()
       setResults(data.tools)
       setChatExplanation(data.explanation)
@@ -135,7 +139,10 @@ export function AiMatchmaker() {
         needsSSO: selections.needsSSO.toString()
       })
       
-      const res = await fetch(`/api/matchmaker?${params.toString()}`)
+      const [res] = await Promise.all([
+        fetch(`/api/matchmaker?${params.toString()}`),
+        new Promise(resolve => setTimeout(resolve, 6500)) // Deep simulation delay
+      ])
       const data = await res.json()
       setResults(data)
     } catch (err) {
@@ -214,7 +221,7 @@ export function AiMatchmaker() {
                   value={chatMessage}
                   onChange={(e) => setChatMessage(e.target.value)}
                   placeholder="Tell me your goal..."
-                  className="w-full bg-background border-2 border-foreground rounded-md h-14 pl-12 pr-32 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all font-bold"
+                  className="w-full bg-background border-2 border-foreground rounded-md h-14 pl-12 pr-32 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all font-bold text-sm sm:text-base"
                   autoFocus
                 />
                 <div className="absolute inset-y-0 right-2 flex items-center">
@@ -361,30 +368,61 @@ export function AiMatchmaker() {
 
           {step === 'results' && (
             <div className="animate-in-stagger">
-              <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
-                <div>
-                  <h2 className="text-2xl font-bold mb-1 uppercase tracking-tight">Your Custom AI Stack</h2>
+              <div className="flex items-center justify-between mb-10 flex-wrap gap-4">
+                <div className="max-w-3xl">
+                  <h2 className="text-2xl sm:text-3xl font-black mb-6 uppercase tracking-tight flex items-center gap-3">
+                    <Sparkles className="h-6 w-6 text-primary" />
+                    Strategic Product Stack
+                  </h2>
+                  
                   {chatExplanation ? (
-                    <p className="text-muted-foreground text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: chatExplanation }} />
+                    <div className="glass-card border-primary/20 bg-primary/5 rounded-2xl p-6 sm:p-8 mb-4">
+                      <div className="space-y-6">
+                        {chatExplanation.split('\n\n').map((paragraph, idx) => {
+                          const [title, content] = paragraph.split(': ')
+                          
+                          if (content) {
+                            return (
+                              <div key={idx} className="flex gap-4 items-start group">
+                                <div className="mt-1.5 h-2.5 w-2.5 rounded-full bg-primary shrink-0 group-hover:scale-125 transition-transform shadow-[0_0_10px_rgba(var(--primary),0.5)]" />
+                                <p className="text-sm sm:text-base leading-relaxed text-foreground/90">
+                                  <span className="font-black uppercase tracking-wider text-[10px] sm:text-[11px] text-primary block mb-1">{title}</span>
+                                  {content.replace(/\*\*/g, '')}
+                                </p>
+                              </div>
+                            )
+                          }
+                          return (
+                            <p key={idx} className="text-base sm:text-lg font-bold text-foreground leading-snug border-b border-foreground/10 pb-4 mb-6 italic">
+                              &quot;{paragraph.replace(/\*\*/g, '')}&quot;
+                            </p>
+                          )
+                        })}
+                      </div>
+                    </div>
                   ) : (
-                    <p className="text-muted-foreground text-sm">Based on your goals and technical needs.</p>
+                    <p className="text-muted-foreground text-sm">Based on your specific project goals.</p>
                   )}
                 </div>
-                <Button variant="outline" size="sm" onClick={reset} className="gap-2 text-primary border-primary/20 hover:bg-primary hover:text-primary-foreground">
+                <Button variant="outline" size="sm" onClick={reset} className="gap-2 text-primary border-primary/20 hover:bg-primary hover:text-primary-foreground font-black uppercase tracking-widest text-[10px] h-10 px-4">
                   <RotateCcw className="h-3.5 w-3.5" /> Start Over
                 </Button>
               </div>
 
               {loading ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {[1, 2, 3, 4].map(i => (
-                    <div key={i} className="glass-card h-48 animate-pulse rounded-md" />
-                  ))}
-                </div>
+                <AiAgentLoading />
               ) : results.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className={cn(
+                  "grid gap-4 animate-in fade-in slide-in-from-bottom-4 duration-700",
+                  results.length > 3 ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" : "grid-cols-1 sm:grid-cols-2"
+                )}>
                   {results.map((tool) => (
-                    <ToolCard key={tool.id} tool={tool as any} cardStyle="home" />
+                    <ToolCard 
+                      key={tool.id} 
+                      tool={tool as any} 
+                      cardStyle="home" 
+                      compact={results.length > 3} 
+                    />
                   ))}
                 </div>
               ) : (

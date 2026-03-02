@@ -118,7 +118,7 @@ export function Navbar() {
     )
 
   return (
-    <header className="sticky top-0 z-50 bg-background border-b border-foreground dark:border-white/35">
+    <header className="sticky top-0 z-[100] bg-background border-b border-foreground dark:border-white/35">
       <div className="flex h-20 items-center justify-between pl-4 pr-4 lg:pl-6 xl:pl-8 lg:pr-0">
 
         <div className="flex items-center gap-3 shrink-0">
@@ -243,7 +243,7 @@ export function Navbar() {
 
       <div
         className={cn(
-          'fixed top-20 left-0 right-0 z-50 flex-col border-b border-foreground bg-foreground text-background lg:hidden dark:border-white/35',
+          'fixed top-20 left-0 right-0 z-[100] flex-col border-b border-foreground bg-foreground text-background lg:hidden dark:border-white/35',
           mobileOpen ? 'flex' : 'hidden'
         )}
       >

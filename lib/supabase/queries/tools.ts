@@ -70,7 +70,7 @@ export async function searchTools({
   // Build a standard query for when persona/capabilities are involved
   let builder = supabase
     .from('tools')
-    .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, avg_rating, review_count, upvote_count, category_id, published_at, screenshot_urls, is_supertools, target_audience, has_api, has_mobile_app, is_open_source, trains_on_data, has_sso, security_certifications, model_provider')
+    .select('id, name, slug, tagline, logo_url, pricing_model, pricing_details, is_verified, avg_rating, review_count, upvote_count, category_id, published_at, screenshot_urls, is_supertools, target_audience, has_api, has_mobile_app, is_open_source, trains_on_data, has_sso, security_certifications, model_provider')
     .eq('status', 'published')
 
   // If search query exists, use the RPC for better search
@@ -173,7 +173,7 @@ export async function getLatestTools(limit = 8): Promise<ToolCardData[]> {
   return (data ?? []) as unknown as ToolCardData[]
 }
 
-export async function getSuperTools(limit = 8): Promise<ToolCardData[]> {
+export async function getSuperTools(limit = 8): Promise<ToolSearchResult[]> {
   const supabase = await createClient()
 
   const { data } = await supabase
@@ -186,7 +186,34 @@ export async function getSuperTools(limit = 8): Promise<ToolCardData[]> {
     .order('review_count', { ascending: false })
     .limit(limit)
 
-  return (data ?? []) as unknown as ToolCardData[]
+  return (data ?? []) as unknown as ToolSearchResult[]
+}
+
+export async function getSimilarTools(slugs: string[], limit = 4): Promise<ToolSearchResult[]> {
+  if (slugs.length === 0) return []
+  const supabase = await createClient()
+  
+  // 1. Get the category IDs of the tools being compared
+  const { data: currentTools } = await supabase
+    .from('tools')
+    .select('category_id')
+    .in('slug', slugs)
+  
+  const categoryIds = Array.from(new Set(currentTools?.map(t => t.category_id).filter(Boolean)))
+
+  if (categoryIds.length === 0) return []
+
+  // 2. Find other tools in those categories
+  const { data } = await supabase
+    .from('tools')
+    .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, is_featured, avg_rating, review_count, upvote_count, category_id, published_at')
+    .in('category_id', categoryIds)
+    .not('slug', 'in', `(${slugs.join(',')})`)
+    .eq('status', 'published')
+    .order('upvote_count', { ascending: false })
+    .limit(limit)
+
+  return (data ?? []) as unknown as ToolSearchResult[]
 }
 
 export async function getFeaturedTools(limit = 6): Promise<ToolSearchResult[]> {

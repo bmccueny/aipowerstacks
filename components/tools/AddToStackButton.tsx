@@ -22,6 +22,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
 import { createClient } from '@/lib/supabase/client'
+import { cn } from '@/lib/utils'
 
 const STACK_ICONS = ['⚡', '🚀', '🧠', '🎯', '🔥', '💡', '🛠️', '📊', '✍️', '🎨', '📸', '🤖', '📱', '🌐', '🔐', '📈']
 
@@ -36,11 +37,13 @@ export function AddToStackButton({
   toolName,
   className,
   showLabel = true,
+  iconOnly = false,
 }: {
   toolId: string
   toolName: string
   className?: string
   showLabel?: boolean
+  iconOnly?: boolean
 }) {
   const [collections, setCollections] = useState<Collection[]>([])
   const [itemCounts, setItemCounts] = useState<Record<string, boolean>>({})
@@ -234,11 +237,13 @@ export function AddToStackButton({
           <Button
             variant="outline"
             size="sm"
-            className={`relative w-auto max-w-full shrink-0 whitespace-nowrap gap-2 rounded-sm font-medium brutalist-card-effect ${
-              alreadyInAStack ? 'text-primary border-primary/40' : ''
-            } ${
-              justAdded ? 'scale-[1.02] bg-primary/10 border-primary' : ''
-            } ${className || ''}`}
+            className={cn(
+              "relative shrink-0 whitespace-nowrap gap-2 rounded-sm font-medium transition-all",
+              iconOnly ? "w-9 h-9 p-0 flex items-center justify-center" : "w-auto max-w-full px-3 h-9 brutalist-card-effect",
+              alreadyInAStack ? 'text-primary border-primary/40' : '',
+              justAdded ? 'scale-[1.05] bg-primary/10 border-primary' : '',
+              className
+            )}
             onClick={handleTriggerClick}
             disabled={loading}
           >
@@ -246,13 +251,13 @@ export function AddToStackButton({
               <span className="pointer-events-none absolute inset-0 rounded-md border border-primary/30 animate-stack-success-ring" />
             )}
             {loading ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <Loader2 className="h-5 w-5 animate-spin" />
             ) : alreadyInAStack ? (
-              <Check className={`h-4 w-4 text-primary ${justAdded ? 'animate-stack-success-icon' : ''}`} />
+              <Check className={cn("h-5 w-5 text-primary", justAdded ? 'animate-stack-success-icon' : '')} />
             ) : (
-              <Layers className="h-4 w-4" />
+              <Layers className="h-5 w-5" />
             )}
-            {showLabel && (
+            {!iconOnly && showLabel && (
               <span className={justAdded ? '' : 'hidden sm:inline'}>
                 {justAdded ? 'Added!' : alreadyInAStack ? 'In Your Stack' : 'Add to Stack'}
               </span>
