@@ -17,15 +17,15 @@ import {
 import { cn } from '@/lib/utils'
 
 const navLinks = [
-  { href: '/tools', label: 'Search' },
+  { href: '/tools', label: 'Tools' },
+  { href: '/compare', label: 'Compare', icon: ArrowLeftRight },
   { href: '/categories', label: 'Categories' },
 ]
 
-const exploreLinks = [
-  { href: '/stacks', label: 'Power Stacks', icon: Layers, desc: 'Curated community workflows' },
-  { href: '/blog', label: 'News', icon: Newspaper, desc: 'Latest AI industry updates' },
+const communityLinks = [
+  { href: '/stacks', label: 'Power Stacks', icon: Layers, desc: 'Curated community AI workflows' },
   { href: '/blueprints', label: 'Blueprints', icon: Layout, desc: 'Ready-to-use AI recipes' },
-  { href: '/compare', label: 'Compare', icon: ArrowLeftRight, desc: 'Head-to-head analysis' },
+  { href: '/blog', label: 'News & Analysis', icon: Newspaper, desc: 'Latest AI industry updates' },
 ]
 
 export function Navbar() {
@@ -107,7 +107,7 @@ export function Navbar() {
     return pathname === path || (path !== '/' && pathname.startsWith(path))
   }
 
-  const exploreActive = exploreLinks.some((l) => pathname.startsWith(l.href))
+  const communityActive = communityLinks.some((l) => pathname.startsWith(l.href))
 
   const pillLink = (active: boolean) =>
     cn(
@@ -139,12 +139,12 @@ export function Navbar() {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className={cn(pillLink(exploreActive), 'gap-1 cursor-pointer')}>
-                Explore <ChevronDown className="h-4 w-4" />
+              <button className={cn(pillLink(communityActive), 'gap-1 cursor-pointer')}>
+                Community <ChevronDown className="h-4 w-4" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-64 p-2">
-              {exploreLinks.map((link) => (
+              {communityLinks.map((link) => (
                 <DropdownMenuItem key={link.href} asChild>
                   <Link href={link.href} className="flex items-start gap-3 p-3 cursor-pointer">
                     <div className="h-8 w-8 rounded bg-primary/5 flex items-center justify-center shrink-0 text-primary">
@@ -160,6 +160,11 @@ export function Navbar() {
             </DropdownMenuContent>
           </DropdownMenu>
 
+          {user && isAdmin && (
+            <Link href="/admin" className={pillLink(pathname.startsWith('/admin'))}>
+              Admin
+            </Link>
+          )}
           <Link href="/submit" className={pillLink(isActive('/submit'))}>
             Submit
           </Link>
@@ -260,9 +265,9 @@ export function Navbar() {
             {link.label}
           </Link>
         ))}
-        {exploreLinks.map((link) => (
+        {communityLinks.map((link) => (
           <Link
-            key={`mobile-explore-${link.href}`}
+            key={`mobile-community-${link.href}`}
             href={link.href}
             onClick={() => setMobileOpen(false)}
             className={cn(

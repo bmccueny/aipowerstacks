@@ -47,6 +47,8 @@ export type ToolWithTags = ToolWithCategory & {
   admin_review_notes?: string | null
   pros?: string[] | null
   cons?: string[] | null
+  pricing_tags?: string[] | null
+  pricing_details?: string | null
 }
 
 export type BlogPostWithAuthor = BlogPost & {

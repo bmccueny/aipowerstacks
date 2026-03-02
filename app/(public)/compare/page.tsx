@@ -91,21 +91,21 @@ export default async function ComparePage({
     .slice(0, 3)
 
   const supabase = await createClient()
-  const { data } = slugs.length
-    ? await supabase
-      .from('tools')
-      .select('id, name, slug, tagline, website_url, logo_url, pricing_model, pricing_details, pricing_tags, pricing_type, has_api, has_mobile_app, is_open_source, has_cloud_sync, avg_rating, review_count, use_case, team_size, integrations, pros, cons, is_supertools')
-      .in('slug', slugs)
-      .eq('status', 'published')
-    : { data: [] as any[] }
+
+  const [{ data }, recommendations] = await Promise.all([
+    slugs.length
+      ? supabase
+          .from('tools')
+          .select('id, name, slug, tagline, website_url, logo_url, pricing_model, pricing_details, pricing_tags, has_api, has_mobile_app, is_open_source, avg_rating, review_count, use_case, team_size, integrations, pros, cons, is_supertools, model_provider, trains_on_data, has_sso, security_certifications')
+          .in('slug', slugs)
+          .eq('status', 'published')
+      : Promise.resolve({ data: [] as any[] }),
+    slugs.length > 0 ? getSimilarTools(slugs, 4) : getSuperTools(4),
+  ])
 
   const tools = slugs
     .map((slug) => (data as any[] | undefined)?.find((tool) => tool.slug === slug))
     .filter(Boolean)
-
-  const recommendations = slugs.length > 0 
-    ? await getSimilarTools(slugs, 4)
-    : await getSuperTools(4)
 
   const comparePresets = [
     {

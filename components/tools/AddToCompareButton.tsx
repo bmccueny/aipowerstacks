@@ -1,75 +1,91 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
+import { ArrowLeftRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
-
-const STORAGE_KEY = 'compare_tool_slugs'
-
-function readStoredSlugs() {
-  if (typeof window === 'undefined') return [] as string[]
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY)
-    const parsed = raw ? JSON.parse(raw) : []
-    return Array.isArray(parsed) ? parsed.filter((v) => typeof v === 'string') : []
-  } catch {
-    return []
-  }
-}
-
-function writeStoredSlugs(slugs: string[]) {
-  if (typeof window === 'undefined') return
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(slugs.slice(0, 3)))
-}
+import { useCompare } from '@/lib/context/CompareContext'
 
 export function AddToCompareButton({
   slug,
+  name,
   className,
   fullWidth = false,
+  compact = false,
+  iconOnly = false,
 }: {
   slug: string
+  name: string
   className?: string
   fullWidth?: boolean
+  compact?: boolean
+  iconOnly?: boolean
 }) {
-  const router = useRouter()
-  const [slugs, setSlugs] = useState<string[]>([])
+  const { has, add, remove } = useCompare()
+  const isAdded = has(slug)
 
-  useEffect(() => {
-    setSlugs(readStoredSlugs())
-  }, [])
-
-  const isAdded = slugs.includes(slug)
-  const compareHref = useMemo(() => {
-    const joined = slugs.join(',')
-    return joined ? `/compare?tools=${encodeURIComponent(joined)}` : '/compare'
-  }, [slugs])
-
-  const add = () => {
-    const next = Array.from(new Set([slug, ...slugs])).slice(0, 3)
-    writeStoredSlugs(next)
-    setSlugs(next)
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (isAdded) {
+      remove(slug)
+    } else {
+      add(slug, name)
+    }
   }
 
-  const goToCompare = () => {
-    router.push(compareHref)
+  if (iconOnly) {
+    return (
+      <Button
+        type="button"
+        variant="outline"
+        size="icon"
+        className={cn(
+          'h-9 w-9 shrink-0 border-black/20',
+          isAdded ? 'text-primary border-primary/40 bg-primary/5' : '',
+          className
+        )}
+        onClick={handleClick}
+        title={isAdded ? 'Remove from Compare' : 'Add to Compare'}
+      >
+        <ArrowLeftRight className="h-3.5 w-3.5" />
+      </Button>
+    )
   }
 
-  return (
-    <div className={cn('flex items-center gap-2', className)}>
+  if (compact) {
+    return (
       <Button
         type="button"
         variant="outline"
         size="sm"
-        className={cn('border-black/20', fullWidth ? 'flex-1' : '')}
-        onClick={add}
-        disabled={isAdded}
+        className={cn(
+          'border-black/20 gap-1.5 whitespace-nowrap',
+          isAdded ? 'text-primary border-primary/40 bg-primary/5' : '',
+          fullWidth ? 'w-full' : '',
+          className
+        )}
+        onClick={handleClick}
       >
-        {isAdded ? 'Added to Compare' : 'Add to Compare'}
+        <ArrowLeftRight className="h-3.5 w-3.5 shrink-0" />
+        {isAdded ? 'Remove' : 'Compare'}
       </Button>
-      <Button type="button" variant="ghost" size="sm" className={cn(fullWidth ? 'flex-1' : '')} onClick={goToCompare}>
-        Compare ({slugs.length})
-      </Button>
-    </div>
+    )
+  }
+
+  return (
+    <Button
+      type="button"
+      variant="outline"
+      className={cn(
+        'border-black/20 gap-2',
+        isAdded ? 'text-primary border-primary/40 bg-primary/5' : '',
+        fullWidth ? 'w-full' : '',
+        className
+      )}
+      onClick={handleClick}
+    >
+      <ArrowLeftRight className="h-4 w-4 shrink-0" />
+      {isAdded ? 'Remove from Compare' : 'Add to Compare'}
+    </Button>
   )
 }

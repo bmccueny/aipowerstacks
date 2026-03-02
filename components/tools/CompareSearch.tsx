@@ -6,6 +6,8 @@ import { Search, Plus, Loader2, X } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import Image from 'next/image'
 
+const supabase = createClient()
+
 export function CompareSearch({ currentSlugs }: { currentSlugs: string[] }) {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -26,28 +28,32 @@ export function CompareSearch({ currentSlugs }: { currentSlugs: string[] }) {
   }, [])
 
   useEffect(() => {
+    let cancelled = false
     const search = async () => {
       if (query.length < 2) {
         setResults([])
         return
       }
       setLoading(true)
-      const supabase = createClient()
-      const { data } = await supabase
+      let builder = supabase
         .from('tools')
         .select('id, name, slug, tagline, logo_url')
         .ilike('name', `%${query}%`)
         .eq('status', 'published')
-        .not('slug', 'in', `(${currentSlugs.join(',')})`)
-        .limit(5)
-      
-      setResults(data ?? [])
-      setLoading(false)
+      if (currentSlugs.length > 0) {
+        builder = builder.not('slug', 'in', `(${currentSlugs.join(',')})`)
+      }
+      const { data } = await builder.limit(5)
+      if (!cancelled) {
+        setResults(data ?? [])
+        setLoading(false)
+      }
     }
 
     const timer = setTimeout(search, 300)
-    return () => clearTimeout(timer)
-  }, [query, currentSlugs])
+    return () => { cancelled = true; clearTimeout(timer) }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query, currentSlugs.join(',')])
 
   const addTool = (slug: string) => {
     const newSlugs = [...currentSlugs, slug].slice(0, 3)

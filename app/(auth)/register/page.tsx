@@ -50,7 +50,7 @@ export default function RegisterPage() {
 
   if (success) {
     return (
-      <div className="flex min-h-screen bg-[#f4f4f0] text-black font-sans selection:bg-[#ff90e8]">
+      <div className="flex min-h-screen bg-[#f4f4f0] text-black font-sans selection:bg-primary/30">
         <div className="flex-1 flex flex-col justify-center items-center p-8 text-center max-w-2xl mx-auto">
           <div className="h-24 w-24 bg-white border-4 border-black rounded-full flex items-center justify-center mb-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
             <span className="text-5xl">✉️</span>
@@ -59,9 +59,9 @@ export default function RegisterPage() {
           <p className="text-xl font-bold opacity-60 mb-12 max-w-md">
             We sent a confirmation link to <strong className="text-black">{email}</strong>. Click it to activate your account and start building.
           </p>
-          <Link 
-            href="/login" 
-            className="h-16 px-12 bg-black text-white font-black text-xl uppercase tracking-widest flex items-center justify-center hover:bg-[#23a094] transition-all shadow-[6px_6px_0px_0px_rgba(35,160,148,0.4)]"
+          <Link
+            href="/login"
+            className="h-16 px-12 bg-black text-white font-black text-xl uppercase tracking-widest flex items-center justify-center hover:bg-primary transition-all shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]"
           >
             Back to Sign In
           </Link>
@@ -71,7 +71,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-[#f4f4f0] text-black font-sans selection:bg-[#ff90e8]">
+    <div className="flex min-h-screen bg-[#f4f4f0] text-black font-sans selection:bg-primary/30">
       {/* Left Side: Content */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Header */}
@@ -84,7 +84,7 @@ export default function RegisterPage() {
           </Link>
           <Link 
             href="/login" 
-            className="text-sm font-bold underline underline-offset-4 hover:text-[#ff90e8] transition-colors"
+            className="text-sm font-bold underline underline-offset-4 hover:text-primary transition-colors"
           >
             Log in
           </Link>
@@ -117,7 +117,7 @@ export default function RegisterPage() {
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t-2 border-black/10" />
               </div>
-              <span className="relative z-10 bg-[#f4f4f0] px-6 text-sm font-black uppercase tracking-widest text-black/40">
+              <span className="relative z-10 bg-[#f5f4f0] px-6 text-sm font-black uppercase tracking-widest text-black/40">
                 or with email
               </span>
             </div>
@@ -207,7 +207,7 @@ export default function RegisterPage() {
               <button 
                 type="submit" 
                 disabled={loading}
-                className="w-full h-16 bg-black text-white font-black text-xl uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-[#23a094] transition-all disabled:opacity-50 group"
+                className="w-full h-16 bg-black text-white font-black text-xl uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-primary transition-all disabled:opacity-50 group"
               >
                 {loading ? (
                   <Loader2 className="h-8 w-8 animate-spin" />
@@ -231,8 +231,6 @@ export default function RegisterPage() {
 
       {/* Right Side: Visual Image */}
       <div className="hidden lg:block w-[40vw] border-l-2 border-black relative overflow-hidden bg-[#ffc900]">
-         {/* Using a different accent color (Yellow) for the Register page to distinguish it */}
-         <div className="absolute inset-0 opacity-40 mix-blend-multiply bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#ff90e8] via-transparent to-transparent" />
          <div className="absolute inset-0 flex items-center justify-center p-20 text-center">
             <div className="space-y-6">
                <div className="h-32 w-32 mx-auto flex items-center justify-center shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] rounded-[1.2rem]">

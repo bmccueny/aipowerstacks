@@ -80,6 +80,8 @@ export function AiMatchmaker() {
     needsSSO: false
   })
   const [results, setResults] = useState<ToolSearchResult[]>([])
+  const [stackRoles, setStackRoles] = useState<Record<string, string>>({})
+  const [processingModel, setProcessingModel] = useState('')
   const [loading, setLoading] = useState(false)
 
   const handleGoalSelect = (id: string) => {
@@ -114,8 +116,14 @@ export function AiMatchmaker() {
         new Promise(resolve => setTimeout(resolve, 6500)) // Deep simulation delay
       ])
       const data = await res.json()
-      setResults(data.tools)
-      setChatExplanation(data.explanation)
+      setResults(data.tools ?? [])
+      setChatExplanation(data.explanation ?? '')
+      setProcessingModel('Claude Haiku')
+      const rolesMap: Record<string, string> = {}
+      data.roles?.forEach(({ toolId, role }: { toolId: string; role: string }) => {
+        rolesMap[toolId] = role
+      })
+      setStackRoles(rolesMap)
     } catch (err) {
       console.error('Chat matchmaker failed:', err)
     } finally {
@@ -144,7 +152,8 @@ export function AiMatchmaker() {
         new Promise(resolve => setTimeout(resolve, 6500)) // Deep simulation delay
       ])
       const data = await res.json()
-      setResults(data)
+      setResults(data.tools ?? data)
+      if (data.explanation) setChatExplanation(data.explanation)
     } catch (err) {
       console.error('Matchmaker failed:', err)
     } finally {
@@ -165,6 +174,8 @@ export function AiMatchmaker() {
     })
     setStep('goal')
     setResults([])
+    setStackRoles({})
+    setProcessingModel('')
     setChatMessage('')
     setChatExplanation('')
   }
@@ -235,12 +246,14 @@ export function AiMatchmaker() {
               <div className="mt-8 flex flex-wrap justify-center gap-2">
                 <span className="text-[10px] uppercase font-black tracking-widest text-muted-foreground w-full mb-1">Try these:</span>
                 {[
-                  "Build an iOS app for fitness",
-                  "Launch a viral TikTok brand",
-                  "Secure enterprise AI for data",
-                  "Open source code assistant"
-                ].map(suggestion => (
-                  <button 
+                  "Build an AI chatbot for customer support",
+                  "Create viral short-form video content",
+                  "Ship an iOS fitness app with AI coaching",
+                  "Automate my content marketing pipeline",
+                  "Launch a self-hosted open source RAG agent",
+                  "Write and grow a technical newsletter",
+                ].slice(0, 4).map(suggestion => (
+                  <button
                     key={suggestion}
                     onClick={() => setChatMessage(suggestion)}
                     className="text-[11px] font-bold px-3 py-1.5 rounded-full border border-foreground/10 hover:border-primary/30 hover:bg-primary/5 transition-all"
@@ -370,10 +383,18 @@ export function AiMatchmaker() {
             <div className="animate-in-stagger">
               <div className="flex items-center justify-between mb-10 flex-wrap gap-4">
                 <div className="max-w-3xl">
-                  <h2 className="text-2xl sm:text-3xl font-black mb-6 uppercase tracking-tight flex items-center gap-3">
-                    <Sparkles className="h-6 w-6 text-primary" />
-                    Strategic Product Stack
-                  </h2>
+                  <div className="flex items-center gap-3 flex-wrap mb-6">
+                    <h2 className="text-2xl sm:text-3xl font-black uppercase tracking-tight flex items-center gap-3">
+                      <Sparkles className="h-6 w-6 text-primary" />
+                      Strategic Product Stack
+                    </h2>
+                    {processingModel && (
+                      <span className="inline-flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest border rounded px-2 py-1 leading-none shrink-0
+                        bg-violet-500/10 text-violet-600 dark:text-violet-400 border-violet-500/20">
+                        <Wand2 className="h-2.5 w-2.5" /> {processingModel}
+                      </span>
+                    )}
+                  </div>
                   
                   {chatExplanation ? (
                     <div className="glass-card border-primary/20 bg-primary/5 rounded-2xl p-6 sm:p-8 mb-4">
@@ -417,14 +438,21 @@ export function AiMatchmaker() {
                   results.length > 3 ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" : "grid-cols-1 sm:grid-cols-2"
                 )}>
                   {results.map((tool) => (
-                    <ToolCard 
-                      key={tool.id} 
-                      tool={tool as any} 
-                      cardStyle="home" 
-                      compact={results.length > 3} 
-                    />
+                    <div key={tool.id} className="flex flex-col gap-1.5">
+                      {stackRoles[tool.id] && (
+                        <span className="inline-flex items-center gap-1.5 text-[9px] font-black uppercase tracking-[0.12em] text-primary border border-primary/25 bg-primary/5 rounded px-2 py-0.5 w-fit ml-1">
+                          {stackRoles[tool.id]}
+                        </span>
+                      )}
+                      <ToolCard
+                        tool={tool as any}
+                        cardStyle="home"
+                        compact={results.length > 3}
+                      />
+                    </div>
                   ))}
                 </div>
+
               ) : (
                 <div className="text-center py-12 glass-card rounded-md border-dashed">
                   <p className="text-muted-foreground mb-4">No perfect match found for this specific criteria.</p>

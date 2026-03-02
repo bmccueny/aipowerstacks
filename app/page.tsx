@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowRight, ChevronRight, ExternalLink, Newspaper, Sparkles, Zap, Shield, TrendingUp, Layers } from 'lucide-react'
+import { ArrowRight, ChevronRight, ExternalLink, Newspaper, Sparkles, Zap, ShieldCheck, TrendingUp, Layers } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Navbar } from '@/components/layout/Navbar'
@@ -14,6 +14,7 @@ import { getAllCategories } from '@/lib/supabase/queries/categories'
 import { getLatestAINews } from '@/lib/supabase/queries/news'
 import { getLatestTools, getSuperTools, getSiteStats } from '@/lib/supabase/queries/tools'
 import { getLatestBriefings } from '@/lib/supabase/queries/blog'
+import { CompareTray } from '@/components/tools/CompareTray'
 import { SITE_URL } from '@/lib/constants/site'
 import { createClient } from '@/lib/supabase/server'
 
@@ -129,34 +130,53 @@ export default async function HomePage() {
             Filter by use case, pricing, integrations, and team size. Shortlist faster with side-by-side comparisons, real user reviews, and verified listings.
           </p>
           <div className="grid grid-cols-3 gap-6 max-w-md mx-auto mb-10">
-            {[
-              {
-                icon: Zap,
-                label: 'Updated Daily',
-                microcopy: 'New tools added and listings refreshed every 24 hours.',
-              },
-              {
-                icon: Shield,
-                label: 'Editorially Verified',
-                microcopy: 'Pricing, features, and links checked by our team before publishing.',
-              },
-              {
-                icon: TrendingUp,
-                label: 'Community Rated',
-                microcopy: 'Rankings powered by real user reviews, not paid placement.',
-              },
-            ].map(({ icon: Icon, label, microcopy }, idx) => (
-              <div key={label} className="flex flex-col items-center gap-1.5 text-center group">
-                <div 
-                  className="p-3.5 rounded-xl glass shadow-[0_12px_24px_-8px_rgba(0,0,0,0.18)] dark:shadow-[0_12px_24px_-8px_rgba(0,0,0,0.5)] animate-delicate-float"
-                  style={{ animationDelay: `${idx * 1.2}s` }}
-                >
-                  <Icon className="h-6 w-6 text-primary" />
-                </div>
-                <span className="text-xs font-bold tracking-tight text-foreground/80 mt-1">{label}</span>
-                <span className="text-[10px] leading-relaxed text-muted-foreground/60 max-w-[10rem] group-hover:text-muted-foreground transition-colors">{microcopy}</span>
+            {/* Updated Daily */}
+            <div className="flex flex-col items-center gap-1.5 text-center group">
+              <div
+                className="p-3.5 rounded-xl glass shadow-[0_12px_24px_-8px_rgba(0,0,0,0.18)] dark:shadow-[0_12px_24px_-8px_rgba(0,0,0,0.5)] animate-delicate-float"
+                style={{ animationDelay: '0s' }}
+              >
+                <Zap className="h-6 w-6 text-primary" />
               </div>
-            ))}
+              <span className="text-xs font-bold tracking-tight text-foreground/80 mt-1">Updated Daily</span>
+              <span className="text-[10px] leading-relaxed text-muted-foreground/60 max-w-[10rem] group-hover:text-muted-foreground transition-colors">New tools added and listings refreshed every 24 hours.</span>
+            </div>
+
+            {/* Editorially Verified — premium treatment */}
+            <div className="flex flex-col items-center gap-1.5 text-center group">
+              <div
+                className="relative p-3.5 rounded-xl animate-delicate-float overflow-hidden"
+                style={{ animationDelay: '1.2s' }}
+              >
+                {/* Pink gradient background */}
+                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-primary/30 via-rose-200/15 to-rose-500/25" />
+                {/* Fine pink border */}
+                <div className="absolute inset-0 rounded-xl border border-primary/50 dark:border-primary/30" />
+                {/* Top gloss line — the luxury touch */}
+                <div className="absolute inset-x-3 top-0 h-px bg-gradient-to-r from-transparent via-rose-100/90 to-transparent" />
+                {/* Warm shadow ring */}
+                <div className="absolute inset-0 rounded-xl shadow-[0_12px_28px_-6px_rgba(255,0,0,0.15),0_0_0_1px_rgba(255,0,0,0.05),inset_0_1px_0_rgba(255,255,255,0.25)] dark:shadow-[0_12px_28px_-6px_rgba(255,0,0,0.3)]" />
+                {/* Icon */}
+                <ShieldCheck
+                  className="relative h-6 w-6 text-primary dark:text-primary"
+                  style={{ filter: 'drop-shadow(0 1px 6px rgba(255,0,0,0.3))' }}
+                />
+              </div>
+              <span className="text-xs font-black tracking-tight text-primary mt-1 uppercase">Verified</span>
+              <span className="text-[10px] leading-relaxed text-muted-foreground/60 max-w-[10rem] group-hover:text-muted-foreground transition-colors">Pricing, features, and links checked by our team before publishing.</span>
+            </div>
+
+            {/* Community Rated */}
+            <div className="flex flex-col items-center gap-1.5 text-center group">
+              <div
+                className="p-3.5 rounded-xl glass shadow-[0_12px_24px_-8px_rgba(0,0,0,0.18)] dark:shadow-[0_12px_24px_-8px_rgba(0,0,0,0.5)] animate-delicate-float"
+                style={{ animationDelay: '2.4s' }}
+              >
+                <TrendingUp className="h-6 w-6 text-primary" />
+              </div>
+              <span className="text-xs font-bold tracking-tight text-foreground/80 mt-1">Community Rated</span>
+              <span className="text-[10px] leading-relaxed text-muted-foreground/60 max-w-[10rem] group-hover:text-muted-foreground transition-colors">Rankings powered by real user reviews, not paid placement.</span>
+            </div>
           </div>
           <div className="flex justify-center">
             <HeroSearch toolCount={toolCount} />
@@ -174,19 +194,15 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* AI Matchmaker Agent */}
-        <section className="px-4 max-w-4xl mx-auto w-full -mt-8 relative z-20">
-          <AiMatchmaker />
-        </section>
-
-        {/* Categories */}
+          {/* Categories — directory entry point, above the fold */}
         {featuredCategories.length > 0 && (
-          <section className="px-4 max-w-7xl mx-auto w-full">
+          <section className="px-4 max-w-7xl mx-auto w-full -mt-8">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold">Browse AI Tools by Category</h2>
               <Link href="/categories" className="text-sm font-bold text-foreground hover:underline flex items-center gap-1">
                 View all <ArrowRight className="h-3.5 w-3.5" />
-              </Link>            </div>
+              </Link>
+            </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
               {featuredCategories.map((cat) => (
                 <Link
@@ -202,14 +218,69 @@ export default async function HomePage() {
           </section>
         )}
 
-        {/* Power Stacks Marketing — hidden once user has built a stack */}
+        {/* Top Rated — highest authority content */}
+        {superTools.length > 0 && (
+          <section className="px-4 max-w-7xl mx-auto w-full">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-2xl font-bold">Highest-Rated AI Tools</h2>
+                <p className="text-sm text-muted-foreground mt-1">Top-scored by the community and verified by our editors</p>
+              </div>
+              <Link href="/tools?sort=rating" className="text-sm font-bold text-foreground hover:underline flex items-center gap-1">
+                View all <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {superTools.map((tool, idx) => (
+                <div key={tool.id} className="animate-in-stagger" style={{ animationDelay: `${idx * 0.05}s` }}>
+                  <ToolCard tool={tool} cardStyle="home" />
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* AI Matchmaker — discovery aid, after above-fold directory */}
+        <section className="px-4 max-w-4xl mx-auto w-full">
+          <AiMatchmaker />
+        </section>
+
+        {/* New Tools */}
+        <section className="px-4 max-w-7xl mx-auto w-full">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-2xl font-bold">Newly Added AI Tools</h2>
+              <p className="text-sm text-muted-foreground mt-1">Just listed this week — be the first to review them</p>
+            </div>
+            <Link href="/tools?sort=newest" className="text-sm font-bold text-foreground hover:underline flex items-center gap-1">
+              View all <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+          {latestTools.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {latestTools.map((tool, idx) => (
+                <div key={tool.id} className="animate-in-stagger" style={{ animationDelay: `${idx * 0.05}s` }}>
+                  <ToolCard tool={tool} cardStyle="home" />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="gum-card rounded-md h-[250px] animate-pulse bg-muted/50" />
+              ))}
+            </div>
+          )}
+        </section>
+
+        {/* Power Stacks CTA — community bridge, shown after directory content */}
         {!hasStacks && <section className="px-4 max-w-7xl mx-auto w-full">
           <div className="relative overflow-hidden rounded-md border border-primary/20 bg-primary/5 p-8 md:p-12">
             <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none hidden md:block">
               <Layers className="h-64 w-64 text-primary" />
             </div>
             <div className="relative z-10 max-w-2xl">
-              <Badge className="mb-4 bg-primary text-primary-foreground hover:bg-primary/90">New Feature</Badge>
+              <Badge className="mb-4 bg-primary text-primary-foreground hover:bg-primary/90">Community</Badge>
               <h2 className="text-3xl md:text-4xl font-black mb-4">Build Your <span className="text-primary">AI Power Stack</span></h2>
               <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
                 Save, organize, and share your go-to AI tools in one place. Create custom &quot;Stacks&quot; for every workflow — whether you ship code, create content, or run a team.
@@ -239,55 +310,6 @@ export default async function HomePage() {
             </div>
           </div>
         </section>}
-
-        {/* Top Rated */}
-        {superTools.length > 0 && (
-          <section className="px-4 max-w-7xl mx-auto w-full">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="text-2xl font-bold">Highest-Rated AI Tools</h2>
-                <p className="text-sm text-muted-foreground mt-1">Top-scored by the community and verified by our editors</p>
-              </div>
-              <Link href="/tools?sort=rating" className="text-sm font-bold text-foreground hover:underline flex items-center gap-1">
-                View all <ArrowRight className="h-3.5 w-3.5" />
-              </Link>            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {superTools.map((tool, idx) => (
-                <div key={tool.id} className="animate-in-stagger" style={{ animationDelay: `${idx * 0.05}s` }}>
-                  <ToolCard tool={tool} cardStyle="home" />
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* New Tools */}
-        <section className="px-4 max-w-7xl mx-auto w-full">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h2 className="text-2xl font-bold">Newly Added AI Tools</h2>
-              <p className="text-sm text-muted-foreground mt-1">Just listed this week — be the first to review them</p>
-            </div>
-            <Link href="/tools?sort=newest" className="text-sm font-bold text-foreground hover:underline flex items-center gap-1">
-              View all <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
-          </div>
-          {latestTools.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {latestTools.map((tool, idx) => (
-                <div key={tool.id} className="animate-in-stagger" style={{ animationDelay: `${idx * 0.05}s` }}>
-                  <ToolCard tool={tool} cardStyle="home" />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="gum-card rounded-md h-[250px] animate-pulse bg-muted/50" />
-              ))}
-            </div>
-          )}
-        </section>
 
         {/* Newsletter + Submit CTA */}
         <section className="px-4 max-w-7xl mx-auto w-full">
@@ -382,6 +404,7 @@ export default async function HomePage() {
         </section>
       </main>
       <Footer />
+      <CompareTray />
     </>
   )
 }

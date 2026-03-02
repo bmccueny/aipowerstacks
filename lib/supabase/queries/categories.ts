@@ -7,6 +7,7 @@ export async function getAllCategories(): Promise<Category[]> {
   const { data, error } = await supabase
     .from('categories')
     .select('*')
+    .gt('tool_count', 0)
     .order('sort_order', { ascending: true })
     .order('name', { ascending: true })
 

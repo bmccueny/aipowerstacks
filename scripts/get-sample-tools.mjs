@@ -23,7 +23,7 @@ function getDatabaseUrl() {
 }
 
 async function getTools() {
-  const dbUrl = getDatabaseUrl();
+  const dbUrl = getDatabaseUrl() || 'postgresql://postgres:rockyou12!BBB@db.bynjsccnclkvcqulukij.supabase.co:5432/postgres';
   const client = new Client({ connectionString: dbUrl });
   try {
     await client.connect();

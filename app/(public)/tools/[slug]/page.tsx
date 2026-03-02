@@ -1,7 +1,8 @@
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { ChevronRight, ExternalLink, ShieldCheck, Star, Tag, TrendingDown, TrendingUp, Check, X, Zap } from 'lucide-react'
+import { ChevronRight, ExternalLink, Star, Tag, TrendingDown, TrendingUp, Check, X, Zap } from 'lucide-react'
+import { VerifiedBadge } from '@/components/ui/VerifiedBadge'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { JsonLd } from '@/components/common/JsonLd'
@@ -149,15 +150,10 @@ export default async function ToolDetailPage({ params }: Props) {
               <div className="flex flex-wrap items-start gap-2 mb-2">
                 <h1 className="text-3xl font-black text-amber-700 dark:text-amber-400">{tool.name}</h1>
                 {tool.verified_by_admin && (
-                  <Badge className="bg-emerald-100 text-emerald-800 border-emerald-300 gap-1 hover:bg-emerald-200">
-                    <ShieldCheck className="h-3.5 w-3.5" /> Expert Verified
-                  </Badge>
+                  <VerifiedBadge size="sm" showLabel label="Expert Verified" />
                 )}
                 {tool.is_verified && !tool.verified_by_admin && (
-                  <div className="flex items-center gap-1 text-emerald-700 text-sm">
-                    <ShieldCheck className="h-4 w-4" />
-                    <span>Verified</span>
-                  </div>
+                  <VerifiedBadge size="sm" showLabel />
                 )}
               </div>
               <p className="text-muted-foreground mb-3 leading-relaxed">{tool.tagline}</p>
@@ -378,7 +374,7 @@ export default async function ToolDetailPage({ params }: Props) {
               </a>
               <p className="text-xs text-muted-foreground">Build your AI workflow by adding this tool to a stack, then compare options side-by-side.</p>
               <AddToStackButton toolId={tool.id} toolName={tool.name} className="h-11 w-full" />
-              <AddToCompareButton slug={tool.slug} fullWidth />
+              <AddToCompareButton slug={tool.slug} name={tool.name} fullWidth />
               <BookmarkButton toolId={tool.id} />
             </div>
 

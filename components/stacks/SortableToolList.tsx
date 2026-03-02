@@ -18,7 +18,8 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { GripVertical, ExternalLink, ShieldCheck } from 'lucide-react'
+import { GripVertical, ExternalLink } from 'lucide-react'
+import { VerifiedBadge } from '@/components/ui/VerifiedBadge'
 import { Badge } from '@/components/ui/badge'
 import { RemoveFromStackButton } from '@/components/stacks/RemoveFromStackButton'
 import { ToolNoteButton } from '@/components/stacks/ToolNoteButton'
@@ -88,7 +89,7 @@ function SortableToolRow({ tool, index, collectionId, onRemove }: {
                 <Link href={`/tools/${tool.slug}`} className="font-bold text-[17px] leading-snug hover:text-primary transition-colors">
                   {tool.name}
                 </Link>
-                {tool.is_verified && <ShieldCheck className="h-4 w-4 text-emerald-600 shrink-0" />}
+                {tool.is_verified && <VerifiedBadge size="md" />}
               </div>
               <p className="text-muted-foreground text-sm mt-1 leading-relaxed line-clamp-2">{tool.tagline}</p>
               <ToolNoteButton collectionId={collectionId} toolId={tool.id} initialNote={tool._note} />

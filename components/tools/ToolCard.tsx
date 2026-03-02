@@ -3,12 +3,14 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Star, ExternalLink, ShieldCheck } from 'lucide-react'
+import { Star, ExternalLink } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import type { ToolCardData } from '@/lib/types'
 import { PRICING_BADGE_COLORS, PRICING_LABELS } from '@/lib/constants'
 import { WellFavoredBadge } from './WellFavoredBadge'
+import { VerifiedBadge } from '@/components/ui/VerifiedBadge'
 import { AddToStackButton } from './AddToStackButton'
+import { AddToCompareButton } from './AddToCompareButton'
 import { isWellFavoredTool } from '@/lib/tools/well-favored'
 import { cn } from '@/lib/utils'
 
@@ -60,7 +62,7 @@ export function ToolCard({ tool, view = 'grid', cardStyle = 'default', compact =
             >
               {tool.name}
             </Link>
-            {tool.is_verified && <ShieldCheck className="h-3.5 w-3.5 text-emerald-700 shrink-0 relative z-10" />}
+            {tool.is_verified && <VerifiedBadge size="sm" className="relative z-10" />}
           </div>
           <p className="text-[14px] leading-[1.45] text-muted-foreground truncate mt-0.5 relative z-10">{tool.tagline}</p>
           <div className="mt-1.5 flex flex-wrap items-center gap-1.5 relative z-10">
@@ -108,18 +110,18 @@ export function ToolCard({ tool, view = 'grid', cardStyle = 'default', compact =
 
   if (cardStyle === 'home') {
     return (
-      <div 
+      <div
         onMouseEnter={() => setHasBeenHovered(true)}
         className={cn(
-          "gum-card rounded-xl relative flex flex-col group h-full transition-all duration-300",
-          compact ? "p-4 min-h-[200px] items-center text-center" : "p-6 min-h-[280px]"
+          "card-directory relative flex flex-col group h-full",
+          compact ? "p-4 min-h-[200px] items-center text-center" : "p-5 min-h-[260px]"
         )}
       >
         {compact ? (
           <div className="flex flex-col items-center justify-center flex-1 w-full gap-4">
             {tool.is_verified && (
-              <div className="absolute top-3 right-3 z-20">
-                <ShieldCheck className="h-5 w-5 text-emerald-500 fill-emerald-500/10 drop-shadow-sm" />
+              <div className="absolute top-3 right-3 z-20 glass rounded-lg p-1.5 shadow-[0_4px_10px_-2px_rgba(0,0,0,0.14)]">
+                <VerifiedBadge size="sm" />
               </div>
             )}
             <div className="h-20 w-20 rounded-2xl border border-foreground/15 bg-background shadow-md overflow-hidden flex items-center justify-center relative z-10 transition-transform group-hover:scale-110">
@@ -147,23 +149,28 @@ export function ToolCard({ tool, view = 'grid', cardStyle = 'default', compact =
                   >
                     {tool.name}
                   </Link>
-                  {tool.is_verified ? (
-                    <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-emerald-700 mt-0.5 relative z-10" />
-                  ) : null}
+                  {tool.is_verified && <VerifiedBadge size="sm" className="mt-0.5 relative z-10" />}
                 </div>
                 <div className="mt-1 flex items-center gap-1.5 flex-wrap relative z-10">
+                  {tool.avg_rating > 0 ? (
+                    <>
+                      <Star className="h-3.5 w-3.5 fill-primary text-primary shrink-0" />
+                      <span className="text-[13px] font-bold leading-none">{tool.avg_rating.toFixed(1)}</span>
+                      <span className="text-[11px] text-muted-foreground">({tool.review_count})</span>
+                    </>
+                  ) : null}
                   {isWellFavored ? <WellFavoredBadge sparkle={hasBeenHovered} /> : null}
                   <div className="flex flex-wrap gap-1">
                     {tool.pricing_tags && tool.pricing_tags.length > 0 ? (
-                      tool.pricing_tags.slice(0, 2).map(tag => (
-                        <Badge key={tag} variant="secondary" className="text-[10px] bg-stone-100 text-stone-600 border-stone-200 uppercase font-bold">
+                      tool.pricing_tags.slice(0, 1).map(tag => (
+                        <span key={tag} className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
                           {tag}
-                        </Badge>
+                        </span>
                       ))
                     ) : (
-                      <Badge variant="outline" className={`text-[11px] ${pricingColor}`}>
+                      <span className={cn("text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border", pricingColor)}>
                         {pricingLabel}
-                      </Badge>
+                      </span>
                     )}
                   </div>
                 </div>
@@ -205,22 +212,10 @@ export function ToolCard({ tool, view = 'grid', cardStyle = 'default', compact =
               </div>
             </>
           ) : (
-            <>
-              <div className="flex items-center gap-3">
-                <a
-                  href={tool.website_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={(e) => e.stopPropagation()}
-                  className="inline-flex items-center gap-1 text-[12px] font-bold uppercase tracking-tight text-primary hover:underline"
-                >
-                  Visit <ExternalLink className="h-3 w-3" />
-                </a>
-              </div>
-              <div onClick={(e) => e.stopPropagation()}>
-                <AddToStackButton toolId={tool.id} toolName={tool.name} />
-              </div>
-            </>
+            <div className="flex items-center gap-2 w-full" onClick={(e) => e.stopPropagation()}>
+              <AddToStackButton toolId={tool.id} toolName={tool.name} className="flex-1" />
+              <AddToCompareButton slug={tool.slug} name={tool.name} iconOnly />
+            </div>
           )}
         </div>
       </div>
@@ -228,12 +223,12 @@ export function ToolCard({ tool, view = 'grid', cardStyle = 'default', compact =
   }
 
   return (
-    <div 
+    <div
       onMouseEnter={() => setHasBeenHovered(true)}
-      className="relative glass-card rounded-xl h-full flex flex-col overflow-hidden group"
+      className="relative card-directory h-full flex flex-col overflow-hidden group"
     >
       {screenshotUrl && (
-        <div className="relative h-40 border-b border-foreground/10 shrink-0 overflow-hidden">
+        <div className="relative h-40 border-b border-foreground/10 shrink-0 overflow-hidden rounded-t-[14px]">
           <Image
             src={screenshotUrl}
             alt={`${tool.name} screenshot`}
@@ -242,62 +237,58 @@ export function ToolCard({ tool, view = 'grid', cardStyle = 'default', compact =
           />
         </div>
       )}
-      <div className="p-5 flex flex-col gap-4 flex-1">
+
+      {/* Top bar: pricing badge right-aligned */}
+      <div className="px-5 pt-4 flex items-center justify-end gap-2 relative z-10">
+        {tool.pricing_tags && tool.pricing_tags.length > 0 ? (
+          <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/20">
+            {tool.pricing_tags[0]}
+          </span>
+        ) : (
+          <span className={cn("text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full border", pricingColor)}>
+            {pricingLabel}
+          </span>
+        )}
+      </div>
+
+      <div className="px-5 pb-5 flex flex-col gap-3 flex-1">
+        {/* Logo + name + rating */}
         <div className="flex items-start gap-4">
           <div className="h-14 w-14 shrink-0 rounded-md bg-muted overflow-hidden flex items-center justify-center relative z-10">
             {renderLogo(56)}
           </div>
-          <div className="flex-1 min-w-0">
+          <div className="flex-1 min-w-0 pt-0.5">
             <div className="flex items-center gap-1.5">
               <Link
                 href={`/tools/${tool.slug}`}
-                className="font-semibold text-[18px] transition-colors leading-[1.3] line-clamp-2 after:absolute after:inset-0 after:z-0"
+                className="font-bold text-[18px] leading-[1.3] line-clamp-2 after:absolute after:inset-0 after:z-0"
               >
                 {tool.name}
               </Link>
-              {tool.is_verified && <ShieldCheck className="h-3.5 w-3.5 text-emerald-700 shrink-0 relative z-10" />}
+              {tool.is_verified && <VerifiedBadge size="sm" className="relative z-10 shrink-0" />}
             </div>
-            <div className="mt-1.5 flex flex-wrap items-center gap-1.5 relative z-10">
-              {isWellFavored && <WellFavoredBadge sparkle={hasBeenHovered} />}
-              {tool.verified_by_admin && (
-                <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200 flex items-center gap-1 text-[10px] font-bold">
-                  <ShieldCheck className="h-3 w-3" /> Expert Verified
-                </Badge>
+            {/* Rating — always visible */}
+            <div className="mt-1 flex items-center gap-1.5 relative z-10">
+              {tool.avg_rating > 0 ? (
+                <>
+                  <Star className="h-4 w-4 fill-primary text-primary shrink-0" />
+                  <span className="text-[15px] font-bold leading-none">{tool.avg_rating.toFixed(1)}</span>
+                  <span className="text-[12px] text-muted-foreground">({tool.review_count})</span>
+                </>
+              ) : (
+                <span className="text-[12px] text-muted-foreground/50">No reviews yet</span>
               )}
-              <div className="flex flex-wrap gap-1">
-                {tool.pricing_tags && tool.pricing_tags.length > 0 ? (
-                  tool.pricing_tags.map(tag => (
-                    <Badge key={tag} variant="secondary" className="text-[10px] bg-stone-100 text-stone-600 border-stone-200 uppercase font-bold">
-                      {tag}
-                    </Badge>
-                  ))
-                ) : (
-                  <Badge variant="outline" className={`text-[11px] ${pricingColor}`}>
-                    {pricingLabel}
-                  </Badge>
-                )}
-              </div>
+              {isWellFavored && <WellFavoredBadge sparkle={hasBeenHovered} className="ml-1" />}
             </div>
           </div>
         </div>
 
-        <p className="pb-0.5 text-[15px] text-muted-foreground line-clamp-2 flex-1 leading-[1.5] relative z-10">{tool.tagline}</p>
+        <p className="text-[14px] text-muted-foreground line-clamp-2 flex-1 leading-[1.5] relative z-10">{tool.tagline}</p>
 
-        <div className="flex items-center justify-between mt-auto pt-2 border-t border-foreground/10 gap-3 relative z-10">
-          <div className="min-w-0">
-            <a
-              href={tool.website_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-              className="inline-flex items-center gap-1 text-[12px] font-bold uppercase tracking-tight text-primary hover:underline"
-            >
-              Visit <ExternalLink className="h-3 w-3" />
-            </a>
-          </div>
-          <div className="shrink-0" onClick={(e) => e.stopPropagation()}>
-            <AddToStackButton toolId={tool.id} toolName={tool.name} />
-          </div>
+        {/* Footer: Stack + Compare — always visible, equal weight */}
+        <div className="flex items-center gap-2 mt-auto pt-3 border-t border-foreground/10 relative z-10" onClick={(e) => e.stopPropagation()}>
+          <AddToStackButton toolId={tool.id} toolName={tool.name} className="flex-1" />
+          <AddToCompareButton slug={tool.slug} iconOnly />
         </div>
       </div>
     </div>

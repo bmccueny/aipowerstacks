@@ -16,9 +16,10 @@ const updateSchema = z.object({
   reading_time_min: z.number().int().min(1).nullable().optional(),
 })
 
-async function isAdmin(supabase: Awaited<ReturnType<typeof createClient>>, userId: string) {
+async function isStaff(supabase: Awaited<ReturnType<typeof createClient>>, userId: string) {
   const { data } = await supabase.from('profiles').select('role').eq('id', userId).single()
-  return (data as { role: string } | null)?.role === 'admin'
+  const role = (data as { role: string } | null)?.role
+  return role === 'admin' || role === 'editor'
 }
 
 export async function PUT(
@@ -28,7 +29,7 @@ export async function PUT(
   const { id } = await params
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user || !await isAdmin(supabase, user.id)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  if (!user || !await isStaff(supabase, user.id)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
   const body = await request.json()
   const parsed = updateSchema.safeParse(body)
@@ -54,7 +55,7 @@ export async function DELETE(
   const { id } = await params
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user || !await isAdmin(supabase, user.id)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  if (!user || !await isStaff(supabase, user.id)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
   const admin = createAdminClient()
   const { error } = await admin.from('blog_posts').delete().eq('id', id)

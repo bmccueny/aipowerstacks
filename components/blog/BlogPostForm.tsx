@@ -275,7 +275,22 @@ export function BlogPostForm({ post }: BlogPostFormProps) {
 
           <div className="gum-card rounded-2xl p-4 space-y-5">
             <div>
-              <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2 block">Cover Image URL</label>
+              <div className="flex items-center justify-between mb-2">
+                <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground block">Cover Image URL</label>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const url = prompt('Enter a tool website URL to generate a screenshot:')
+                    if (url) {
+                      const clean = url.replace(/^(https?:\/\/)?(www\.)?/, '')
+                      setField('cover_image_url', `https://image.thum.io/get/width/1200/crop/650/noanimate/https://${clean}`)
+                    }
+                  }}
+                  className="text-[10px] font-black uppercase tracking-widest text-primary hover:underline"
+                >
+                  Screenshot Tool
+                </button>
+              </div>
               <Input
                 value={form.cover_image_url}
                 onChange={(e) => setField('cover_image_url', e.target.value)}
@@ -293,6 +308,13 @@ export function BlogPostForm({ post }: BlogPostFormProps) {
                     className="object-cover"
                     onError={() => {}}
                   />
+                  <button
+                    type="button"
+                    onClick={() => setField('cover_image_url', '')}
+                    className="absolute top-1 right-1 p-1 bg-black/50 text-white rounded-full hover:bg-black/70 transition-colors"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
                 </div>
               )}
             </div>

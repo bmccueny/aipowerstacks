@@ -42,6 +42,21 @@ export function BlogCard({ post, featured = false }: { post: BlogPostSummary; fe
             </div>
           )}
           <div className="p-7 flex flex-col justify-center">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="h-6 w-6 rounded-full border border-black/10 bg-primary/10 flex items-center justify-center overflow-hidden relative">
+                {post.author?.avatar_url ? (
+                  <Image src={post.author.avatar_url} alt={post.author.display_name ?? ''} fill className="object-cover" />
+                ) : (
+                  <span className="text-[10px] font-black">{(post.author?.display_name?.[0] ?? 'A').toUpperCase()}</span>
+                )}
+              </div>
+              <span className="text-[11px] font-bold">
+                {post.author?.display_name || 'AIPowerStacks Team'}
+                {post.author?.username && (
+                  <span className="text-muted-foreground ml-1.5 font-medium">@{post.author.username}</span>
+                )}
+              </span>
+            </div>
             {post.tags?.[0] && (
               <span className="text-xs font-semibold text-primary uppercase tracking-wider mb-3">{post.tags[0]}</span>
             )}
@@ -70,6 +85,18 @@ export function BlogCard({ post, featured = false }: { post: BlogPostSummary; fe
           </div>
         )}
         <div className="p-5 flex flex-col flex-1">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="h-5 w-5 rounded-full border border-black/10 bg-primary/10 flex items-center justify-center overflow-hidden relative">
+              {post.author?.avatar_url ? (
+                <Image src={post.author.avatar_url} alt={post.author.display_name ?? ''} fill className="object-cover" />
+              ) : (
+                <span className="text-[8px] font-black">{(post.author?.display_name?.[0] ?? 'A').toUpperCase()}</span>
+              )}
+            </div>
+            <span className="text-[10px] font-bold truncate">
+              {post.author?.display_name || 'AIPowerStacks Team'}
+            </span>
+          </div>
           {post.tags?.[0] && (
             <span className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">{post.tags[0]}</span>
           )}

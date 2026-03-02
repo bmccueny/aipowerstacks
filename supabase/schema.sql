@@ -474,12 +474,20 @@ create policy "submissions_anyone_insert" on public.tool_submissions for insert 
 create policy "submissions_own_read"      on public.tool_submissions for select using (auth.uid() = submitted_by);
 create policy "submissions_admin_manage"  on public.tool_submissions for all using (public.is_admin());
 
+create or replace function public.is_staff()
+returns boolean language sql security definer set search_path = public as $$
+  select exists (
+    select 1 from public.profiles
+    where id = auth.uid() and role in ('admin', 'editor')
+  );
+$$;
+
 -- Blog
 create policy "blog_posts_public_read_published" on public.blog_posts
   for select using (status = 'published');
-create policy "blog_posts_admin_manage"    on public.blog_posts for all using (public.is_admin());
+create policy "blog_posts_staff_manage"    on public.blog_posts for all using (public.is_staff());
 create policy "blog_cats_public_read"      on public.blog_categories for select using (true);
-create policy "blog_cats_admin_manage"     on public.blog_categories for all using (public.is_admin());
+create policy "blog_cats_staff_manage"     on public.blog_categories for all using (public.is_staff());
 
 -- AI News
 create policy "ai_news_public_read" on public.ai_news for select using (true);

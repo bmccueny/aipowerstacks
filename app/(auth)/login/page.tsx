@@ -50,7 +50,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-[#f4f4f0] text-black font-sans selection:bg-[#ff90e8]">
+    <div className="flex min-h-screen bg-[#f4f4f0] text-black font-sans selection:bg-primary/30">
       {/* Left Side: Content */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Header */}
@@ -63,7 +63,7 @@ export default function LoginPage() {
           </Link>
           <Link 
             href="/register" 
-            className="text-sm font-bold underline underline-offset-4 hover:text-[#ff90e8] transition-colors"
+            className="text-sm font-bold underline underline-offset-4 hover:text-primary transition-colors"
           >
             Sign up
           </Link>
@@ -96,7 +96,7 @@ export default function LoginPage() {
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t-2 border-black/10" />
               </div>
-              <span className="relative z-10 bg-[#f4f4f0] px-6 text-sm font-black uppercase tracking-widest text-black/40">
+              <span className="relative z-10 bg-[#f5f4f0] px-6 text-sm font-black uppercase tracking-widest text-black/40">
                 or with email
               </span>
             </div>
@@ -129,7 +129,7 @@ export default function LoginPage() {
               <fieldset className="group">
                 <legend className="w-full mb-3 flex items-center justify-between">
                   <span className="text-sm font-black uppercase tracking-widest opacity-60">Password</span>
-                  <Link href="/forgot-password" className="text-xs font-bold underline underline-offset-2 hover:text-[#ff90e8]">
+                  <Link href="/forgot-password" className="text-xs font-bold underline underline-offset-2 hover:text-primary">
                     Forgot your password?
                   </Link>
                 </legend>
@@ -155,7 +155,7 @@ export default function LoginPage() {
               <button 
                 type="submit" 
                 disabled={loading}
-                className="w-full h-16 bg-black text-white font-black text-xl uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-[#23a094] transition-all disabled:opacity-50 group"
+                className="w-full h-16 bg-black text-white font-black text-xl uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-primary transition-all disabled:opacity-50 group"
               >
                 {loading ? (
                   <Loader2 className="h-8 w-8 animate-spin" />
@@ -178,10 +178,8 @@ export default function LoginPage() {
       </div>
 
       {/* Right Side: Visual Image */}
-      <div className="hidden lg:block w-[40vw] border-l-2 border-black relative overflow-hidden bg-[#ff90e8]">
-         {/* Using a nice abstract gradient placeholder for the authentic Gumroad feel */}
-         <div className="absolute inset-0 opacity-40 mix-blend-multiply bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#ffc900] via-transparent to-transparent" />
-         <div className="absolute inset-0 flex items-center justify-center p-20 text-center">
+      <div className="hidden lg:block w-[40vw] border-l-2 border-black relative overflow-hidden bg-[#0a0a0a]">
+         <div className="absolute inset-0 flex items-center justify-center p-20 text-center text-white">
             <div className="space-y-6">
                <div className="h-32 w-32 mx-auto flex items-center justify-center shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] rounded-[1.2rem]">
                   <BrandMark className="h-32 w-32" />

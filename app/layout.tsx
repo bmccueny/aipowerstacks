@@ -14,6 +14,7 @@ const redditSans = Reddit_Sans({
   variable: '--font-reddit',
 })
 
+import { CompareProvider } from '@/lib/context/CompareContext'
 import { JsonLd } from '@/components/common/JsonLd'
 import { generateOrganizationJsonLd } from '@/lib/utils/seo'
 import { Toaster } from 'sonner'
@@ -92,8 +93,10 @@ export default function RootLayout({
         <JsonLd data={generateOrganizationJsonLd()} />
       </head>
       <body className="antialiased">
-        {children}
-        <Toaster richColors position="bottom-right" />
+        <CompareProvider>
+          {children}
+          <Toaster richColors position="bottom-right" />
+        </CompareProvider>
       </body>
     </html>
   )

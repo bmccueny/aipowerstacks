@@ -86,105 +86,144 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   return (
     <>
       <JsonLd data={jsonLd} />
-      <article className="page-shell max-w-5xl">
-        <div className="glass-card rounded-3xl p-6 sm:p-8">
-          {post.tags?.[0] && (
-            <span className="text-xs font-semibold text-primary uppercase tracking-wide mb-4 block">{post.tags[0]}</span>
-          )}
-          <h1 className="text-4xl sm:text-5xl font-black mb-4 leading-tight tracking-tight">{post.title}</h1>
+      <article className="page-shell max-w-4xl mx-auto">
+        <div className="bg-background border-2 border-foreground dark:border-white rounded-3xl overflow-hidden shadow-[8px_8px_0_0_#000] dark:shadow-[8px_8px_0_0_var(--primary)] mb-12">
+          {/* Header Section */}
+          <div className="p-8 sm:p-12 border-b-2 border-foreground dark:border-white">
+            <div className="flex flex-wrap items-center gap-3 mb-6">
+              {post.tags?.[0] && (
+                <span className="px-3 py-1 bg-primary text-black text-xs font-black uppercase tracking-wider rounded-full border-2 border-black">
+                  {post.tags[0]}
+                </span>
+              )}
+              {date && (
+                <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                  {date}
+                </span>
+              )}
+            </div>
+            
+            <h1 className="text-4xl sm:text-6xl font-black mb-6 leading-[1.1] tracking-tight">
+              {post.title}
+            </h1>
 
-          <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-sm text-muted-foreground mb-8">
-            {date && <span className="flex items-center gap-1.5"><Calendar className="h-4 w-4" />{date}</span>}
-            {post.reading_time_min && <span className="flex items-center gap-1.5"><Clock className="h-4 w-4" />{post.reading_time_min} min read</span>}
+            <div className="flex items-center gap-6">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-full border-2 border-black bg-primary/20 flex items-center justify-center font-black overflow-hidden relative">
+                  {post.author?.avatar_url ? (
+                    <Image src={post.author.avatar_url} alt={post.author.display_name ?? ''} fill className="object-cover" />
+                  ) : (
+                    <span className="text-sm">{(post.author?.display_name?.[0] ?? 'A').toUpperCase()}</span>
+                  )}
+                </div>
+                <div>
+                  <p className="text-sm font-black leading-none">
+                    {post.author?.display_name || 'AIPowerStacks Team'}
+                    {post.author?.username && (
+                      <span className="text-muted-foreground ml-2 font-bold">@{post.author.username}</span>
+                    )}
+                  </p>
+                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mt-1">
+                    {post.reading_time_min ? `${post.reading_time_min} min read` : 'Briefing'}
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div className="grid lg:grid-cols-[56px_minmax(0,1fr)] gap-6 lg:gap-8">
-            <aside className="hidden lg:flex flex-col gap-2 sticky top-24 self-start">
-              <a href={shareLinks.x} target="_blank" rel="noopener noreferrer" aria-label="Share on X" className="social-icon-btn">
-                <XIcon className="h-3.5 w-3.5" />
-              </a>
-              <a href={shareLinks.linkedin} target="_blank" rel="noopener noreferrer" aria-label="Share on LinkedIn" className="social-icon-btn">
-                <LinkedInIcon className="h-3.5 w-3.5" />
-              </a>
-              <a href={shareLinks.facebook} target="_blank" rel="noopener noreferrer" aria-label="Share on Facebook" className="social-icon-btn">
-                <FacebookIcon className="h-3.5 w-3.5" />
-              </a>
-            </aside>
+          {/* Featured Image */}
+          {coverImageUrl && (
+            <div className="relative aspect-[21/9] border-b-2 border-foreground dark:border-white bg-muted">
+              <Image src={coverImageUrl} alt={post.title} fill unoptimized className="object-cover" />
+            </div>
+          )}
 
-            <div>
-              <div className="lg:hidden flex flex-wrap items-center gap-2 mb-6">
-                <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Share</span>
-                <a href={shareLinks.x} target="_blank" rel="noopener noreferrer" aria-label="Share on X" className="social-icon-btn">
-                  <XIcon className="h-3.5 w-3.5" />
-                </a>
-                <a href={shareLinks.linkedin} target="_blank" rel="noopener noreferrer" aria-label="Share on LinkedIn" className="social-icon-btn">
-                  <LinkedInIcon className="h-3.5 w-3.5" />
-                </a>
-                <a href={shareLinks.facebook} target="_blank" rel="noopener noreferrer" aria-label="Share on Facebook" className="social-icon-btn">
-                  <FacebookIcon className="h-3.5 w-3.5" />
-                </a>
+          {/* Content Section */}
+          <div className="p-8 sm:p-12">
+            {post.excerpt && (
+              <div className="mb-12 p-6 bg-primary/5 border-2 border-black dark:border-white rounded-2xl relative overflow-hidden group">
+                <div className="absolute top-0 left-0 w-2 h-full bg-primary" />
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-primary mb-3">The Short Version</p>
+                <p className="text-lg font-bold leading-relaxed italic">&quot;{post.excerpt}&quot;</p>
+              </div>
+            )}
+
+            {post.video_embed_url && (
+              <div className="aspect-video mb-12 rounded-2xl overflow-hidden border-2 border-black shadow-[4px_4px_0_0_#000] dark:shadow-[4px_4px_0_0_var(--primary)]">
+                <iframe
+                  src={post.video_embed_url}
+                  className="w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                  title={post.title}
+                />
+              </div>
+            )}
+
+            <div
+              className="prose prose-base sm:prose-lg max-w-none 
+                prose-headings:font-black prose-headings:tracking-tight prose-headings:text-foreground
+                prose-h2:text-3xl prose-h2:mt-16 prose-h2:mb-6 prose-h2:pb-4 prose-h2:border-b-2 prose-h2:border-black/10
+                prose-h3:text-xl prose-h3:mt-10 prose-h3:mb-4
+                prose-p:leading-relaxed prose-p:text-foreground/80
+                prose-li:text-foreground/80 prose-li:leading-relaxed
+                prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:bg-primary/5 prose-blockquote:p-6 prose-blockquote:rounded-r-xl prose-blockquote:italic
+                prose-a:text-primary prose-a:font-black prose-a:underline decoration-2 underline-offset-4 hover:bg-primary/10 transition-colors
+                prose-img:rounded-2xl prose-img:border-2 prose-img:border-black/10 prose-img:shadow-xl
+                dark:prose-invert dark:prose-headings:text-white dark:prose-p:text-white/80 dark:prose-h2:border-white/10"
+              dangerouslySetInnerHTML={{ __html: safeContent }}
+            />
+
+            {/* Tags & Sharing */}
+            <div className="mt-16 pt-10 border-t-2 border-black/10 dark:border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-8">
+              <div className="flex flex-wrap gap-2">
+                {post.tags?.map((tag) => (
+                  <span key={tag} className="px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-background border-2 border-black hover:bg-primary hover:text-black transition-colors cursor-default">
+                    #{tag}
+                  </span>
+                ))}
               </div>
 
-              {coverImageUrl && (
-                <div className="relative h-72 sm:h-96 rounded-[10px] overflow-hidden mb-8">
-                  <Image src={coverImageUrl} alt={post.title} fill unoptimized className="object-cover" />
+              <div className="flex items-center gap-4">
+                <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Share Post</span>
+                <div className="flex gap-2">
+                  <a href={shareLinks.x} target="_blank" rel="noopener noreferrer" className="h-10 w-10 flex items-center justify-center rounded-full border-2 border-black hover:bg-primary transition-all hover:-translate-y-1 active:translate-y-0">
+                    <XIcon className="h-4 w-4" />
+                  </a>
+                  <a href={shareLinks.linkedin} target="_blank" rel="noopener noreferrer" className="h-10 w-10 flex items-center justify-center rounded-full border-2 border-black hover:bg-primary transition-all hover:-translate-y-1 active:translate-y-0">
+                    <LinkedInIcon className="h-4 w-4" />
+                  </a>
+                  <a href={shareLinks.facebook} target="_blank" rel="noopener noreferrer" className="h-10 w-10 flex items-center justify-center rounded-full border-2 border-black hover:bg-primary transition-all hover:-translate-y-1 active:translate-y-0">
+                    <FacebookIcon className="h-4 w-4" />
+                  </a>
                 </div>
-              )}
-
-              {post.excerpt && (
-                <div className="mb-8 rounded-[10px] border border-black/20 bg-background/70 p-4">
-                  <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-muted-foreground mb-2">TL;DR</p>
-                  <p className="text-sm leading-relaxed text-foreground/90">{post.excerpt}</p>
-                </div>
-              )}
-
-              {post.video_embed_url && (
-                <div className="aspect-video mb-8 rounded-[10px] overflow-hidden">
-                  <iframe
-                    src={post.video_embed_url}
-                    className="w-full h-full"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                    title={post.title}
-                  />
-                </div>
-              )}
-
-              <div
-                className="prose prose-base sm:prose-lg max-w-none prose-headings:font-black prose-headings:tracking-tight prose-h2:mt-12 prose-h2:mb-4 prose-h3:mt-8 prose-h3:mb-3 prose-p:leading-relaxed prose-p:text-foreground/90 prose-li:leading-relaxed prose-blockquote:border-l-black/45 prose-blockquote:text-foreground/80 prose-a:text-primary prose-a:font-semibold prose-a:no-underline hover:prose-a:underline prose-img:rounded-[10px]"
-                dangerouslySetInnerHTML={{ __html: safeContent }}
-              />
-
-              {post.tags && post.tags.length > 0 && (
-                <div className="flex flex-wrap gap-2 mt-10 pt-6 border-t border-black/20">
-                  {post.tags.map((tag) => (
-                    <span key={tag} className="px-3 py-1 rounded-[6px] text-xs bg-background border border-black/20 text-muted-foreground">
-                      #{tag}
-                    </span>
-                  ))}
-                </div>
-              )}
-
-              <div className="mt-10 pt-8 border-t border-black/20">
-                <p className="text-sm font-semibold mb-2">Get the next briefing first</p>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Weekly AI signal for builders: what shipped, what changed, and what to do next.
-                </p>
-                <div className="max-w-lg">
-                  <NewsletterBanner source="blog-post" />
-                </div>
-                <Link href="/blog" className="inline-block mt-4 text-sm font-semibold text-primary hover:underline">
-                  Back to all briefings
-                </Link>
               </div>
+            </div>
+          </div>
+
+          {/* Newsletter Footer */}
+          <div className="bg-foreground text-background dark:bg-primary dark:text-black p-8 sm:p-12">
+            <div className="max-w-2xl">
+              <h3 className="text-2xl sm:text-3xl font-black mb-4 leading-tight">
+                Stop guessing. Start building.
+              </h3>
+              <p className="text-sm sm:text-lg mb-8 opacity-90 font-medium">
+                Join 5,000+ developers and founders getting the weekly AI signal. No hype, just the tools and insights you need.
+              </p>
+              <div className="newsletter-invert">
+                <NewsletterBanner source="blog-post" />
+              </div>
+              <Link href="/blog" className="inline-block mt-8 text-xs font-black uppercase tracking-widest border-b-2 border-current hover:opacity-70 transition-opacity">
+                ← Back to all briefings
+              </Link>
             </div>
           </div>
         </div>
 
         {relatedPosts.length > 0 && (
-          <section className="mt-10">
-            <h2 className="text-lg font-semibold mb-4">More from AI Briefing</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <section className="mb-20">
+            <h2 className="text-2xl font-black mb-8 uppercase tracking-tight">More from AI Briefing</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {relatedPosts.map((related) => (
                 <BlogCard key={related.id} post={related} />
               ))}

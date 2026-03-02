@@ -265,6 +265,7 @@ async function fetchFeed(feedUrl: string): Promise<ParsedRssItem[]> {
 }
 
 export async function GET(request: Request) {
+  const nowIso = new Date().toISOString()
   const cronSecret = process.env.CRON_SECRET
   const authHeader = request.headers.get('authorization')
   if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {

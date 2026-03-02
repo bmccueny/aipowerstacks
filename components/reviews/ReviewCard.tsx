@@ -3,7 +3,8 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { StarRating } from './StarRating'
-import { ShieldCheck, Pencil, Trash2, Loader2, X, Check, Star, Linkedin, Github } from 'lucide-react'
+import { Pencil, Trash2, Loader2, X, Check, Star, Linkedin, Github } from 'lucide-react'
+import { VerifiedBadge } from '@/components/ui/VerifiedBadge'
 import { Badge } from '@/components/ui/badge'
 import { HelpfulButton } from './HelpfulButton'
 import { Button } from '@/components/ui/button'
@@ -170,11 +171,7 @@ export function ReviewCard({ review, currentUserId }: ReviewCardProps) {
       <div className="flex items-start justify-between gap-3 mb-2">
         <div className="flex items-center gap-2">
           <StarRating rating={review.rating} size="sm" />
-          {review.is_verified && (
-            <span className="flex items-center gap-1 text-xs text-emerald-700">
-              <ShieldCheck className="h-3 w-3" /> Verified
-            </span>
-          )}
+          {review.is_verified && <VerifiedBadge size="xs" showLabel />}
           {review.profiles?.role === 'editor' && (
             <Badge variant="outline" className="text-[10px] border-sky-300 bg-sky-100 text-sky-800">Editor</Badge>
           )}
@@ -227,9 +224,7 @@ export function ReviewCard({ review, currentUserId }: ReviewCardProps) {
             <div className="flex items-center gap-1.5 mb-0.5">
               <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider leading-none">Reviewer</span>
               {review.profiles?.is_identity_verified && (
-                <span className="bg-emerald-100 text-emerald-700 border border-emerald-200 text-[9px] font-black uppercase px-1 py-0.5 rounded leading-none flex items-center gap-0.5">
-                  <ShieldCheck className="h-2 w-2" /> Verified Pro
-                </span>
+                <VerifiedBadge size="xs" showLabel label="Verified Pro" />
               )}
             </div>
             <div className="flex items-center gap-2">
