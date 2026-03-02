@@ -54,6 +54,14 @@ function isAiRelated(title, summary) {
   })
 }
 
+function areTooSimilar(t1, t2) {
+  const w1 = new Set(t1.toLowerCase().split(/\W+/).filter(w => w.length > 3))
+  const w2 = new Set(t2.toLowerCase().split(/\W+/).filter(w => w.length > 3))
+  const intersection = new Set([...w1].filter(x => w2.has(x)))
+  const similarity = intersection.size / Math.max(w1.size, w2.size)
+  return similarity > 0.6
+}
+
 if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
   console.error('[sync-news] Missing SUPABASE_URL or SERVICE_ROLE_KEY')
   process.exit(1)
@@ -233,9 +241,17 @@ async function main() {
   console.log(`[sync-news] ${allItems.length} unique items across ${feedUrls.length} feeds`)
 
   const aiOnlyItems = allItems.filter(item => isAiRelated(item.title, item.summary))
-  console.log(`[sync-news] ${aiOnlyItems.length} AI-related items out of ${allItems.length}`)
+  
+  const uniqueAiItems = []
+  for (const item of aiOnlyItems) {
+    const isDup = uniqueAiItems.some(existing => areTooSimilar(existing.title, item.title))
+    if (!isDup) uniqueAiItems.push(item)
+    if (uniqueAiItems.length >= 3) break
+  }
 
-  const enriched = await enrichAll(aiOnlyItems)
+  console.log(`[sync-news] ${uniqueAiItems.length} unique AI-related items out of ${allItems.length}`)
+
+  const enriched = await enrichAll(uniqueAiItems)
   const withImages = enriched.filter((i) => i.image_url).length
   console.log(`[sync-news] ${withImages}/${enriched.length} items have images after enrichment`)
 

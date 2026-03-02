@@ -24,6 +24,26 @@ function isAiRelated(title: string, summary: string | null) {
   })
 }
 
+function getSimilarity(s1: string, s2: string) {
+  const n1 = s1.toLowerCase().replace(/[^a-z0-9]/g, '')
+  const n2 = s2.toLowerCase().replace(/[^a-z0-9]/g, '')
+  if (n1 === n2) return 1
+  
+  const set1 = new Set(n1.split(''))
+  const set2 = new Set(n2.split(''))
+  const intersection = new Set([...set1].filter(x => set2.has(x)))
+  return (2 * intersection.size) / (set1.size + set2.size)
+}
+
+function areTooSimilar(t1: string, t2: string) {
+  // Simple word-based overlap is better for titles
+  const w1 = new Set(t1.toLowerCase().split(/\W+/).filter(w => w.length > 3))
+  const w2 = new Set(t2.toLowerCase().split(/\W+/).filter(w => w.length > 3))
+  const intersection = new Set([...w1].filter(x => w2.has(x)))
+  const similarity = intersection.size / Math.max(w1.size, w2.size)
+  return similarity > 0.6 // 60% word overlap is "basically the same"
+}
+
 const MAX_ITEMS_PER_FEED = 12
 const ENRICH_BATCH_SIZE = 5
 const ARTICLE_FETCH_TIMEOUT_MS = 8000
@@ -275,11 +295,19 @@ export async function GET(request: Request) {
 
   const aiOnlyItems = allItems.filter(item => isAiRelated(item.title, item.summary))
   
-  if (aiOnlyItems.length === 0) {
+  // Deduplicate by similarity
+  const uniqueAiItems: ParsedRssItem[] = []
+  for (const item of aiOnlyItems) {
+    const isDup = uniqueAiItems.some(existing => areTooSimilar(existing.title, item.title))
+    if (!isDup) uniqueAiItems.push(item)
+    if (uniqueAiItems.length >= 3) break // User asked for only 3
+  }
+
+  if (uniqueAiItems.length === 0) {
     return NextResponse.json({ success: true, message: 'No AI-related items found in this run', ranAt: nowIso })
   }
 
-  const enrichedItems = await enrichItems(aiOnlyItems)
+  const enrichedItems = await enrichItems(uniqueAiItems)
 
   const nowIso = new Date().toISOString()
   const rows = enrichedItems.map((item) => ({
