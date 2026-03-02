@@ -308,9 +308,13 @@ export async function GET(request: Request) {
   }
 
   const enrichedItems = await enrichItems(uniqueAiItems)
+  const itemsWithImages = enrichedItems.filter((i) => i.image_url)
 
-  const nowIso = new Date().toISOString()
-  const rows = enrichedItems.map((item) => ({
+  if (itemsWithImages.length === 0) {
+    return NextResponse.json({ success: true, message: 'No AI-related items with images found in this run', ranAt: nowIso })
+  }
+
+  const rows = itemsWithImages.map((item) => ({
     guid: item.guid,
     title: item.title,
     url: item.url,

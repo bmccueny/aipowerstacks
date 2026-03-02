@@ -62,9 +62,10 @@ export async function GET(request: Request) {
     
     for (const item of dayItems) {
       const isAi = isAiRelated(item.title, item.summary)
+      const hasImage = !!item.image_url
       const isDup = keptInDay.some(existing => areTooSimilar(existing.title, item.title))
       
-      if (isAi && !isDup && keptInDay.length < 3) {
+      if (isAi && hasImage && !isDup && keptInDay.length < 3) {
         keptInDay.push(item)
         toKeep.push(item.id)
       } else {

@@ -252,13 +252,15 @@ async function main() {
   console.log(`[sync-news] ${uniqueAiItems.length} unique AI-related items out of ${allItems.length}`)
 
   const enriched = await enrichAll(uniqueAiItems)
-  const withImages = enriched.filter((i) => i.image_url).length
-  console.log(`[sync-news] ${withImages}/${enriched.length} items have images after enrichment`)
+  const itemsWithImages = enriched.filter((i) => i.image_url)
+  console.log(`[sync-news] ${itemsWithImages.length}/${enriched.length} items kept (must have images)`)
 
   const nowIso = new Date().toISOString()
-  const rows = enriched.map((item) => ({ ...item, updated_at: nowIso }))
+  const rows = itemsWithImages.map((item) => ({ ...item, updated_at: nowIso }))
 
-  await upsertToSupabase(rows)
+  if (rows.length > 0) {
+    await upsertToSupabase(rows)
+  }
 
   console.log(`[sync-news] Done — ${rows.length} upserted in ${Date.now() - start}ms`)
 }
