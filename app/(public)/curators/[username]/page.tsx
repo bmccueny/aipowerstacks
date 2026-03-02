@@ -456,11 +456,9 @@ export default async function CuratorPage({
               {profile.role === 'admin' && (
                 <div className="badge-flare badge-admin flex items-center gap-3 p-3 rounded-lg overflow-hidden border-2 relative">
                   <div className="sparkle-container">
-                    <div className="sparkle" style={{ top: '20%', left: '10%', animationDelay: '0s' }} />
-                    <div className="sparkle" style={{ top: '70%', left: '25%', animationDelay: '0.4s' }} />
-                    <div className="sparkle" style={{ top: '10%', left: '60%', animationDelay: '0.8s' }} />
-                    <div className="sparkle" style={{ top: '80%', left: '85%', animationDelay: '1.2s' }} />
-                    <div className="sparkle" style={{ top: '40%', left: '90%', animationDelay: '0.2s' }} />
+                    <div className="sparkle" style={{ top: '6%', left: '6%', animationDelay: '0s' }} />
+                    <div className="sparkle" style={{ top: '88%', left: '45%', animationDelay: '0.4s' }} />
+                    <div className="sparkle" style={{ top: '12%', left: '92%', animationDelay: '0.8s' }} />
                   </div>
                   <div className="h-11 w-11 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0 shadow-[0_0_15px_oklch(0.64_0.17_163_/_0.4)] border border-emerald-500/30">
                     <ShieldCheck className="h-6 w-6 text-emerald-500" />
