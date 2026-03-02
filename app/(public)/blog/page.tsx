@@ -90,9 +90,9 @@ export default async function BlogPage({
                     <h3 className="font-semibold text-[17px] mb-3 transition-colors line-clamp-3 flex-1 leading-[1.3] group-hover:text-primary transition-colors">
                       {item.title}
                     </h3>
-                    <div className="text-[12px] text-muted-foreground border-t border-foreground/10 pt-3 mt-auto">
+                    <div className="text-[14px] font-reddit font-semibold text-muted-foreground border-t border-foreground/10 pt-3 mt-auto">
                       {new Date(item.published_at).toLocaleDateString('en-US', {
-                        month: 'short',
+                        month: 'long',
                         day: 'numeric',
                         year: 'numeric',
                       })}

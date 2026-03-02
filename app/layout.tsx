@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { GeistSans } from 'geist/font/sans'
-import { Space_Grotesk } from 'next/font/google'
+import { Space_Grotesk, Reddit_Sans } from 'next/font/google'
 import { SITE_URL } from '@/lib/constants/site'
 
 const spaceGrotesk = Space_Grotesk({
@@ -8,6 +8,12 @@ const spaceGrotesk = Space_Grotesk({
   weight: ['700'],
   variable: '--font-display',
 })
+
+const redditSans = Reddit_Sans({
+  subsets: ['latin'],
+  variable: '--font-reddit',
+})
+
 import { JsonLd } from '@/components/common/JsonLd'
 import { generateOrganizationJsonLd } from '@/lib/utils/seo'
 import { Toaster } from 'sonner'
@@ -76,7 +82,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`${GeistSans.variable} ${spaceGrotesk.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${GeistSans.variable} ${spaceGrotesk.variable} ${redditSans.variable}`} suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{

@@ -357,8 +357,12 @@ export default async function HomePage() {
                         <span className="text-[10px] font-bold uppercase tracking-widest text-primary px-2 py-0.5 rounded-full bg-primary/10">
                           {news.source_name}
                         </span>
-                        <span className="text-[10px] text-muted-foreground">
-                          {new Date(news.published_at).toLocaleDateString()}
+                        <span className="text-[14px] font-reddit font-semibold text-muted-foreground">
+                          {new Date(news.published_at).toLocaleDateString('en-US', {
+                            month: 'long',
+                            day: 'numeric',
+                            year: 'numeric',
+                          })}
                         </span>
                       </div>
                       <h3 className="font-bold text-[16px] leading-tight mb-4 pb-0.5 transition-colors line-clamp-3 flex-1 group-hover:text-primary transition-colors">
