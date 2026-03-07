@@ -14,8 +14,6 @@ export async function POST(req: Request) {
     const payload = await req.json()
     const { name, description, is_public, icon, template_id } = payload
 
-    console.log('Creating collection:', { userId: user.id, name, is_public, icon })
-
     if (!name) {
       return NextResponse.json({ error: 'Name is required' }, { status: 400 })
     }
