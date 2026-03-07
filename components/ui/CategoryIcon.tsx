@@ -8,27 +8,87 @@ import {
   Video,
   Mic2,
   Cpu,
-  Mail,
+  TrendingUp,
   Search,
   MessageSquare,
   BarChart3,
-  Bot,
-  BrainCircuit
+  Terminal,
+  BrainCircuit,
+  Globe,
+  Zap,
+  Smartphone,
+  Mail,
+  Scale,
+  DollarSign,
+  HeartPulse,
+  Users,
+  Headphones,
+  Languages,
+  FileText,
+  Box,
+  UserCircle,
+  Presentation,
+  ShoppingCart,
+  Sparkles,
+  Star,
+  Gift,
+  Palette,
+  BookOpen,
+  Wand2,
+  Layers,
 } from 'lucide-react'
 
-const ICON_MAP: Record<string, React.ReactNode> = {
-  'writing': <PenLine className="h-6 w-6" />,
-  'image-generation': <ImageIcon className="h-6 w-6" />,
-  'coding': <Code2 className="h-6 w-6" />,
-  'video': <Video className="h-6 w-6" />,
-  'audio': <Mic2 className="h-6 w-6" />,
-  'marketing': <Mail className="h-6 w-6" />,
-  'search': <Search className="h-6 w-6" />,
-  'chatbot': <MessageSquare className="h-6 w-6" />,
-  'analytics': <BarChart3 className="h-6 w-6" />,
-  'productivity': <Cpu className="h-6 w-6" />,
-  'developer-tools': <Bot className="h-6 w-6" />,
-  'research': <BrainCircuit className="h-6 w-6" />,
+// Each entry: [icon, bg color, icon color] — colors use Tailwind arbitrary values tied to the theme
+const ICON_MAP: Record<string, [React.ReactNode, string, string]> = {
+  // Crimson / primary — creative & content
+  'writing':             [<PenLine className="h-5 w-5" />,        'bg-[oklch(0.95_0.04_22)]',   'text-[oklch(0.55_0.23_22)]'],
+  'ai-chat':             [<MessageSquare className="h-5 w-5" />,   'bg-[oklch(0.95_0.04_22)]',   'text-[oklch(0.55_0.23_22)]'],
+  'chatbot':             [<MessageSquare className="h-5 w-5" />,   'bg-[oklch(0.95_0.04_22)]',   'text-[oklch(0.55_0.23_22)]'],
+  'summarization':       [<FileText className="h-5 w-5" />,        'bg-[oklch(0.95_0.04_22)]',   'text-[oklch(0.55_0.23_22)]'],
+  'translation':         [<Languages className="h-5 w-5" />,       'bg-[oklch(0.95_0.04_22)]',   'text-[oklch(0.55_0.23_22)]'],
+  'presentations':       [<Presentation className="h-5 w-5" />,    'bg-[oklch(0.95_0.04_22)]',   'text-[oklch(0.55_0.23_22)]'],
+
+  // Electric blue — tech & dev
+  'coding':              [<Code2 className="h-5 w-5" />,           'bg-[oklch(0.94_0.06_200)]',  'text-[oklch(0.50_0.22_200)]'],
+  'developer-tools':     [<Terminal className="h-5 w-5" />,        'bg-[oklch(0.94_0.06_200)]',  'text-[oklch(0.50_0.22_200)]'],
+  'automation':          [<Zap className="h-5 w-5" />,             'bg-[oklch(0.94_0.06_200)]',  'text-[oklch(0.50_0.22_200)]'],
+  'productivity':        [<Cpu className="h-5 w-5" />,             'bg-[oklch(0.94_0.06_200)]',  'text-[oklch(0.50_0.22_200)]'],
+  'search':              [<Search className="h-5 w-5" />,          'bg-[oklch(0.94_0.06_200)]',  'text-[oklch(0.50_0.22_200)]'],
+
+  // Plasma purple — AI & intelligence
+  'research':            [<BrainCircuit className="h-5 w-5" />,    'bg-[oklch(0.94_0.06_280)]',  'text-[oklch(0.52_0.22_280)]'],
+  'analytics':           [<BarChart3 className="h-5 w-5" />,       'bg-[oklch(0.94_0.06_280)]',  'text-[oklch(0.52_0.22_280)]'],
+  'data-analytics':      [<BarChart3 className="h-5 w-5" />,       'bg-[oklch(0.94_0.06_280)]',  'text-[oklch(0.52_0.22_280)]'],
+  'ai-supertools':       [<Sparkles className="h-5 w-5" />,        'bg-[oklch(0.94_0.06_280)]',  'text-[oklch(0.52_0.22_280)]'],
+  'life-assistant':      [<Star className="h-5 w-5" />,            'bg-[oklch(0.94_0.06_280)]',  'text-[oklch(0.52_0.22_280)]'],
+
+  // Neon green — media & creative
+  'image-generation':    [<ImageIcon className="h-5 w-5" />,       'bg-[oklch(0.94_0.07_120)]',  'text-[oklch(0.45_0.20_120)]'],
+  'video':               [<Video className="h-5 w-5" />,           'bg-[oklch(0.94_0.07_120)]',  'text-[oklch(0.45_0.20_120)]'],
+  'audio':               [<Mic2 className="h-5 w-5" />,            'bg-[oklch(0.94_0.07_120)]',  'text-[oklch(0.45_0.20_120)]'],
+  'voice':               [<Headphones className="h-5 w-5" />,      'bg-[oklch(0.94_0.07_120)]',  'text-[oklch(0.45_0.20_120)]'],
+  'design':              [<Palette className="h-5 w-5" />,         'bg-[oklch(0.94_0.07_120)]',  'text-[oklch(0.45_0.20_120)]'],
+  '3d-animation':        [<Box className="h-5 w-5" />,             'bg-[oklch(0.94_0.07_120)]',  'text-[oklch(0.45_0.20_120)]'],
+  'avatars':             [<UserCircle className="h-5 w-5" />,      'bg-[oklch(0.94_0.07_120)]',  'text-[oklch(0.45_0.20_120)]'],
+
+  // Sunset orange — business & growth
+  'marketing':           [<TrendingUp className="h-5 w-5" />,      'bg-[oklch(0.95_0.06_45)]',   'text-[oklch(0.52_0.22_45)]'],
+  'business':            [<Layers className="h-5 w-5" />,          'bg-[oklch(0.95_0.06_45)]',   'text-[oklch(0.52_0.22_45)]'],
+  'seo':                 [<Globe className="h-5 w-5" />,           'bg-[oklch(0.95_0.06_45)]',   'text-[oklch(0.52_0.22_45)]'],
+  'social-media':        [<Smartphone className="h-5 w-5" />,      'bg-[oklch(0.95_0.06_45)]',   'text-[oklch(0.52_0.22_45)]'],
+  'email':               [<Mail className="h-5 w-5" />,            'bg-[oklch(0.95_0.06_45)]',   'text-[oklch(0.52_0.22_45)]'],
+  'ecommerce':           [<ShoppingCart className="h-5 w-5" />,    'bg-[oklch(0.95_0.06_45)]',   'text-[oklch(0.52_0.22_45)]'],
+  'sales':               [<DollarSign className="h-5 w-5" />,      'bg-[oklch(0.95_0.06_45)]',   'text-[oklch(0.52_0.22_45)]'],
+
+  // Neutral — professional / utility
+  'legal':               [<Scale className="h-5 w-5" />,           'bg-[oklch(0.93_0.01_240)]',  'text-[oklch(0.40_0.04_240)]'],
+  'finance':             [<DollarSign className="h-5 w-5" />,      'bg-[oklch(0.93_0.01_240)]',  'text-[oklch(0.40_0.04_240)]'],
+  'healthcare':          [<HeartPulse className="h-5 w-5" />,      'bg-[oklch(0.93_0.01_240)]',  'text-[oklch(0.40_0.04_240)]'],
+  'hr':                  [<Users className="h-5 w-5" />,           'bg-[oklch(0.93_0.01_240)]',  'text-[oklch(0.40_0.04_240)]'],
+  'customer-support':    [<Headphones className="h-5 w-5" />,      'bg-[oklch(0.93_0.01_240)]',  'text-[oklch(0.40_0.04_240)]'],
+  'education':           [<BookOpen className="h-5 w-5" />,        'bg-[oklch(0.93_0.01_240)]',  'text-[oklch(0.40_0.04_240)]'],
+  'verified':            [<Wand2 className="h-5 w-5" />,           'bg-[oklch(0.93_0.01_240)]',  'text-[oklch(0.40_0.04_240)]'],
+  'free-tools':          [<Gift className="h-5 w-5" />,            'bg-[oklch(0.93_0.01_240)]',  'text-[oklch(0.40_0.04_240)]'],
 }
 
 interface CategoryIconProps {
@@ -38,20 +98,32 @@ interface CategoryIconProps {
 }
 
 export function CategoryIcon({ slug, emoji, className }: CategoryIconProps) {
-  // Try to find a specific SVG icon for the slug
-  const icon = ICON_MAP[slug] || ICON_MAP[slug.replace('-tools', '')] || ICON_MAP[slug.replace('ai-', '')]
+  const normalized =
+    ICON_MAP[slug] ??
+    ICON_MAP[slug.replace('-tools', '')] ??
+    ICON_MAP[slug.replace('ai-', '')] ??
+    null
 
-  if (icon) {
+  if (normalized) {
+    const [icon, bg, color] = normalized
     return (
-      <div className={`p-2 rounded-md bg-primary/5 text-primary group-hover:bg-primary group-hover:text-background group-hover:scale-110 group-hover:-rotate-3 transition-all duration-300 ${className}`}>
+      <div className={[
+        'p-2 rounded-lg transition-all duration-300',
+        'group-hover:scale-110 group-hover:-rotate-3',
+        bg,
+        color,
+        // On hover, flip to primary bg + white icon
+        'group-hover:bg-primary group-hover:text-white',
+        className,
+      ].filter(Boolean).join(' ')}>
         {icon}
       </div>
     )
   }
 
-  // Fallback to emoji if no icon found, but style it nicely
+  // Fallback to emoji
   return (
-    <div className={`text-2xl leading-none grayscale group-hover:grayscale-0 group-hover:scale-125 group-hover:rotate-12 transition-all duration-300 ${className}`}>
+    <div className={`text-2xl leading-none grayscale group-hover:grayscale-0 group-hover:scale-125 group-hover:rotate-12 transition-all duration-300 ${className ?? ''}`}>
       {emoji || '🤖'}
     </div>
   )
