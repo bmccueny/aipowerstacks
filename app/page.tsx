@@ -113,52 +113,55 @@ export default async function HomePage() {
       <Navbar />
       <main className="min-h-screen flex flex-col gap-16 md:gap-20 pb-24">
 
-        {/* Primary Search Section */}
-        <section className="px-4 max-w-4xl mx-auto w-full pt-16 pb-8">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-              Find the Perfect AI Tool
+        {/* Hero Section */}
+        <section className="px-4 max-w-4xl mx-auto w-full pt-20 pb-8">
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/8 border border-primary/15 text-primary text-xs font-semibold uppercase tracking-widest mb-6">
+              {toolCount.toLocaleString()}+ Verified Tools
+            </div>
+            <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-foreground mb-5 leading-[1.1]">
+              The AI Tool Intelligence<br className="hidden md:block" /> Platform
             </h1>
-            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-              Search through {toolCount.toLocaleString()}+ verified AI tools across {categoryCount}+ categories
+            <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
+              Compare, evaluate, and shortlist AI tools across {categoryCount}+ categories — with verified reviews and daily updates.
             </p>
           </div>
 
-          {/* Prominent Search Bar */}
-          <div className="max-w-2xl mx-auto mb-12">
+          {/* Search Bar */}
+          <div className="max-w-2xl mx-auto mb-8">
             <HeroSearch toolCount={siteStats.toolCount} />
           </div>
 
           {/* Quick Actions */}
-          <div className="flex flex-wrap justify-center gap-4 mb-8">
+          <div className="flex flex-wrap justify-center gap-3 mb-12">
             <Link
               href="/tools"
-              className="px-6 py-3 bg-primary text-white rounded-full font-semibold hover:bg-primary/90 transition-colors flex items-center gap-2"
+              className="px-5 py-2.5 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-primary/90 transition-colors flex items-center gap-2"
             >
               Browse All Tools
-              <ArrowRight className="h-4 w-4" />
+              <ArrowRight className="h-3.5 w-3.5" />
             </Link>
             <Link
               href="/tools?pricing=free"
-              className="px-6 py-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-700 rounded-full font-semibold hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              className="px-5 py-2.5 rounded-lg text-sm font-semibold border border-border text-foreground hover:bg-muted transition-colors"
             >
               Free Tools Only
             </Link>
           </div>
 
-          {/* Quick Stats */}
-          <div className="grid grid-cols-3 gap-8 max-w-md mx-auto">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-primary mb-1">{toolCount.toLocaleString()}+</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Tools</div>
+          {/* Stats */}
+          <div className="grid grid-cols-3 divide-x divide-border border border-border rounded-xl max-w-sm mx-auto overflow-hidden">
+            <div className="text-center py-4 px-2">
+              <div className="text-xl font-bold text-foreground">{toolCount.toLocaleString()}+</div>
+              <div className="text-xs text-muted-foreground mt-0.5">Tools</div>
             </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-primary mb-1">{reviewCount.toLocaleString()}+</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Reviews</div>
+            <div className="text-center py-4 px-2">
+              <div className="text-xl font-bold text-foreground">{reviewCount.toLocaleString()}+</div>
+              <div className="text-xs text-muted-foreground mt-0.5">Reviews</div>
             </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-primary mb-1">{categoryCount}+</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Categories</div>
+            <div className="text-center py-4 px-2">
+              <div className="text-xl font-bold text-foreground">{categoryCount}+</div>
+              <div className="text-xs text-muted-foreground mt-0.5">Categories</div>
             </div>
           </div>
         </section>
