@@ -73,7 +73,7 @@ export async function searchTools({
     .select('id, name, slug, tagline, logo_url, pricing_model, pricing_details, is_verified, avg_rating, review_count, upvote_count, category_id, published_at, screenshot_urls, is_supertools, target_audience, has_api, has_mobile_app, is_open_source, trains_on_data, has_sso, security_certifications, model_provider')
     .eq('status', 'published')
 
-  // If search query exists, use the RPC for better search
+  // If search query exists, try RPC first, fall back to ilike
   if (query) {
     const { data: rpcData, error: rpcError } = await rpcSearchTools(supabase, {
       search_query: query || null,
@@ -87,13 +87,47 @@ export async function searchTools({
       p_limit: PAGE_SIZE,
       p_offset: offset,
     })
-    
+
+    if (!rpcError && rpcData && rpcData.length > 0) {
+      return { tools: rpcData, total: rpcData.length }
+    }
+
     if (rpcError) {
-      console.error('searchTools RPC error:', rpcError)
+      console.warn('search_tools RPC unavailable, falling back to ilike search:', rpcError.message)
+    }
+
+    // ilike fallback: search name, tagline, description
+    const term = `%${query}%`
+    let fallback = supabase
+      .from('tools')
+      .select('id, name, slug, tagline, logo_url, pricing_model, pricing_details, is_verified, avg_rating, review_count, upvote_count, category_id, published_at, screenshot_urls, is_supertools, target_audience, has_api, has_mobile_app, is_open_source, trains_on_data, has_sso, security_certifications, model_provider')
+      .eq('status', 'published')
+      .or(`name.ilike.${term},tagline.ilike.${term},description.ilike.${term}`)
+
+    if (categoryId) fallback = fallback.eq('category_id', categoryId as any)
+    if (pricing)    fallback = fallback.eq('pricing_model', pricing as any)
+    if (verified)   fallback = fallback.eq('is_verified', true)
+
+    if (sort === 'rating') {
+      fallback = fallback.order('avg_rating', { ascending: false }).order('review_count', { ascending: false })
+    } else if (sort === 'newest') {
+      fallback = fallback.order('published_at', { ascending: false })
+    } else if (sort === 'popular') {
+      fallback = fallback.order('upvote_count', { ascending: false })
+    } else {
+      fallback = fallback.order('is_supertools', { ascending: false }).order('upvote_count', { ascending: false })
+    }
+
+    fallback = fallback.range(offset, offset + PAGE_SIZE - 1)
+
+    const { data: fallbackData, error: fallbackError } = await fallback
+
+    if (fallbackError) {
+      console.error('searchTools ilike fallback error:', fallbackError)
       return { tools: [], total: 0 }
     }
 
-    return { tools: rpcData ?? [], total: rpcData?.length ?? 0 }
+    return { tools: (fallbackData as any) ?? [], total: fallbackData?.length ?? 0 }
   }
 
   // Apply filters
