@@ -37,7 +37,6 @@
     "lowlight": "^3.3.0",
     "lucide-react": "^0.575.0",
     "next": "16.1.6",
-    "node": "^25.7.0",
     "pg": "^8.19.0",
     "radix-ui": "^1.4.3",
     "react": "19.2.3",
@@ -48,6 +47,9 @@
     "tailwind-merge": "^3.5.0",
     "vercel": "^50.25.4",
     "zod": "^4.3.6"
+  },
+  "engines": {
+    "node": ">=22"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
