@@ -297,18 +297,14 @@ export default async function HomePage() {
             <div className="p-8 sm:p-10 flex flex-col justify-center gap-4 bg-foreground text-background md:border-l border-t md:border-t-0 border-foreground">
               <div>
                 <h2 className="text-xl font-bold">Built an AI tool? Get discovered.</h2>
-                <p className="text-sm opacity-70 mt-1">Put your tool in front of {toolCount >= 1000 ? `${Math.floor(toolCount / 1000)}k+` : 'thousands of'} founders, developers, and buyers actively comparing solutions.</p>
+                <p className="text-sm text-background/60 mt-1">Put your tool in front of {toolCount >= 1000 ? `${Math.floor(toolCount / 1000)}k+` : 'thousands of'} founders, developers, and buyers actively comparing solutions.</p>
               </div>
-              <div className="relative group self-start w-full lg:w-auto mt-2">
-                <div className="absolute inset-0 rounded-sm bg-[#FFD100] border border-black transition-transform duration-150 z-[1]"></div>
-                <div className="absolute inset-0 rounded-sm bg-[#FF4F00] border border-black transition-transform duration-150 group-hover:translate-x-2 group-hover:translate-y-2 z-[0]"></div>
-                <Link 
-                  href="/submit" 
-                  className="relative inline-flex rounded-sm no-underline items-center justify-center border border-black transition-all duration-150 group-hover:-translate-x-2 group-hover:-translate-y-2 z-[2] w-full lg:w-auto cursor-pointer h-14 px-8 text-xl lg:h-16 lg:px-10 lg:text-xl bg-black text-white shadow-none"
-                >
-                  Submit Your Tool Free <ArrowRight className="h-5 w-5 ml-2" />
-                </Link>
-              </div>
+              <Link
+                href="/submit"
+                className="self-start inline-flex items-center gap-2 h-11 px-6 rounded-lg text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors mt-2"
+              >
+                Submit Your Tool Free <ArrowRight className="h-4 w-4" />
+              </Link>
             </div>
           </div>
         </section>
