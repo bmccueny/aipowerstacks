@@ -227,7 +227,7 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
                   const pricingColor = PRICING_BADGE_COLORS[tool.pricing_model] ?? PRICING_BADGE_COLORS.unknown
                   const pricingLabel = PRICING_LABELS[tool.pricing_model] ?? 'Unknown'
                   return (
-                    <div key={tool.id} className="glass-card rounded-xl overflow-hidden group">
+                    <div key={tool.id} className="rounded-xl overflow-hidden group bg-card shadow-sm">
                       <div className="flex items-start gap-4 p-4 sm:p-5">
                         {/* Number */}
                         <span className="text-xs font-black text-muted-foreground/25 w-5 shrink-0 text-right tabular-nums select-none pt-1">

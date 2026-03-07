@@ -261,7 +261,6 @@ export function AiMatchmaker({ initialQuery }: { initialQuery?: string } = {}) {
                   onChange={(e) => setChatMessage(e.target.value)}
                   placeholder="Tell me your goal..."
                   className="w-full bg-background border-2 border-foreground rounded-md h-14 pl-12 pr-32 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all font-bold text-sm sm:text-base"
-                  autoFocus
                 />
                 <div className="absolute inset-y-0 right-2 flex items-center">
                   <Button type="submit" disabled={!chatMessage.trim() || loading} className="h-10 px-6 gap-2">

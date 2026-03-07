@@ -58,7 +58,7 @@ function SortableToolRow({ tool, index, collectionId, onRemove }: {
     <div
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
-      className={`glass-card rounded-md group ${isDragging ? 'opacity-50 shadow-2xl z-50' : ''}`}
+      className={`rounded-md group bg-card shadow-sm ${isDragging ? 'opacity-50 shadow-2xl z-50' : ''}`}
     >
       <div className="flex items-start gap-4 p-5">
         <button

@@ -13,6 +13,7 @@ import { getAllCategories } from '@/lib/supabase/queries/categories'
 import { getLatestAINews } from '@/lib/supabase/queries/news'
 import { getLatestTools, getSuperTools, getSiteStats } from '@/lib/supabase/queries/tools'
 import { getLatestBriefings } from '@/lib/supabase/queries/blog'
+import { AiMatchmaker } from '@/components/home/AiMatchmaker'
 import { CompareTray } from '@/components/tools/CompareTray'
 import { SITE_URL } from '@/lib/constants/site'
 import { createClient } from '@/lib/supabase/server'
@@ -210,6 +211,11 @@ export default async function HomePage() {
             </div>
           </section>
         )}
+
+        {/* AI Matchmaker */}
+        <section className="px-4 max-w-4xl mx-auto w-full">
+          <AiMatchmaker />
+        </section>
 
         {/* New Tools */}
         <section className="px-4 max-w-7xl mx-auto w-full">
