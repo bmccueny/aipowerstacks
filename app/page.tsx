@@ -7,7 +7,6 @@ import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { NewsletterBanner } from '@/components/layout/NewsletterBanner'
 import { HeroSearch } from '@/components/home/HeroSearch'
-import { AiMatchmaker } from '@/components/home/AiMatchmaker'
 import { ToolCard } from '@/components/tools/ToolCard'
 import { CategoryIcon } from '@/components/ui/CategoryIcon'
 import { getAllCategories } from '@/lib/supabase/queries/categories'
@@ -212,11 +211,6 @@ export default async function HomePage() {
           </section>
         )}
 
-        {/* AI Matchmaker — discovery aid, after above-fold directory */}
-        <section className="px-4 max-w-4xl mx-auto w-full">
-          <AiMatchmaker />
-        </section>
-
         {/* New Tools */}
         <section className="px-4 max-w-7xl mx-auto w-full">
           <div className="flex items-center justify-between mb-6">
@@ -296,8 +290,8 @@ export default async function HomePage() {
             </div>
             <div className="p-8 sm:p-10 flex flex-col justify-center gap-4 bg-foreground text-background md:border-l border-t md:border-t-0 border-foreground">
               <div>
-                <h2 className="text-xl font-bold">Built an AI tool? Get discovered.</h2>
-                <p className="text-sm text-background/60 mt-1">Put your tool in front of {toolCount >= 1000 ? `${Math.floor(toolCount / 1000)}k+` : 'thousands of'} founders, developers, and buyers actively comparing solutions.</p>
+                <h2 className="text-xl font-bold text-background">Built an AI tool? Get discovered.</h2>
+                <p className="text-sm text-background opacity-60 mt-1">Put your tool in front of {toolCount >= 1000 ? `${Math.floor(toolCount / 1000)}k+` : 'thousands of'} founders, developers, and buyers actively comparing solutions.</p>
               </div>
               <Link
                 href="/submit"
