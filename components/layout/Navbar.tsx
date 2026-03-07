@@ -3,342 +3,264 @@
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
-import { LogOut, Moon, Sun, ChevronDown, Layers, Layout, ArrowLeftRight, Newspaper } from 'lucide-react'
+import { User, Settings, LogOut, Menu, X } from 'lucide-react'
 import { BrandMark } from '@/components/common/BrandMark'
 import { createClient } from '@/lib/supabase/client'
-import { NotificationBell } from './NotificationBell'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { cn } from '@/lib/utils'
 
 const navLinks = [
-  { href: '/tools', label: 'Tools' },
-  { href: '/compare', label: 'Compare', icon: ArrowLeftRight },
+  { href: '/tools', label: 'Browse' },
   { href: '/categories', label: 'Categories' },
-]
-
-const communityLinks = [
-  { href: '/stacks', label: 'Power Stacks', icon: Layers, desc: 'Curated community AI workflows' },
-  { href: '/blueprints', label: 'Blueprints', icon: Layout, desc: 'Ready-to-use AI recipes' },
-  { href: '/blog', label: 'News & Analysis', icon: Newspaper, desc: 'Latest AI industry updates' },
+  { href: '/compare', label: 'Compare' },
+  { href: '/stacks', label: 'Stacks' },
+  { href: '/blog', label: 'Blog' },
 ]
 
 export function Navbar() {
-  const router = useRouter()
   const pathname = usePathname()
-  const [user, setUser] = useState<{
-    id: string
-    email?: string | null
-    role?: string
-    avatar_url?: string | null
-    username?: string | null
-    display_name?: string | null
-  } | null>(null)
+  const router = useRouter()
+  const supabase = createClient()
+
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [theme, setTheme] = useState<'light' | 'dark'>('light')
+  const [user, setUser] = useState<any>(null)
+  const [profile, setProfile] = useState<any>(null)
 
   useEffect(() => {
-    const saved = localStorage.getItem('theme') as 'light' | 'dark' | null
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-    setTheme(saved ?? (prefersDark ? 'dark' : 'light'))
-  }, [])
-
-  useEffect(() => {
-    const supabase = createClient()
-    const loadUser = async () => {
+    const getUser = async () => {
       const { data: { user } } = await supabase.auth.getUser()
-      if (!user) { setUser(null); return }
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('role, avatar_url, username, display_name')
-        .eq('id', user.id)
-        .maybeSingle()
-      const p = profile as any
-      setUser({
-        id: user.id,
-        email: user.email,
-        role: p?.role ?? 'user',
-        avatar_url: p?.avatar_url,
-        username: p?.username,
-        display_name: p?.display_name || user.email?.split('@')[0],
-      })
+      setUser(user)
+      
+      if (user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('avatar_url, display_name')
+          .eq('id', user.id)
+          .maybeSingle()
+        setProfile(profile)
+      }
     }
+    getUser()
 
-    loadUser()
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => { loadUser() })
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        setUser(session?.user ?? null)
+        if (!session?.user) {
+          setProfile(null)
+        } else {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('avatar_url, display_name')
+            .eq('id', session.user.id)
+            .maybeSingle()
+          setProfile(profile)
+        }
+      }
+    )
+
     return () => subscription.unsubscribe()
-  }, [])
+  }, [supabase])
 
-  useEffect(() => {
-    setMobileOpen(false)
-  }, [pathname])
-
-  const handleSignOut = async () => {
-    setMobileOpen(false)
-    const supabase = createClient()
+  const signOut = async () => {
     await supabase.auth.signOut()
-    try {
-      Object.keys(localStorage).forEach((key) => {
-        if (key.startsWith('tool_vote_')) localStorage.removeItem(key)
-      })
-    } catch (e) {
-      console.error('Failed to clear vote state:', e)
-    }
-    router.push('/')
     router.refresh()
   }
 
-  const toggleTheme = () => {
-    const next = theme === 'light' ? 'dark' : 'light'
-    setTheme(next)
-    localStorage.setItem('theme', next)
-    document.documentElement.classList.toggle('dark', next === 'dark')
-  }
-
-  const isAdmin = user?.role === 'admin' || user?.role === 'editor'
-
-  const isActive = (href: string) => {
-    const [path] = href.split('?')
-    return pathname === path || (path !== '/' && pathname.startsWith(path))
-  }
-
-  const communityActive = communityLinks.some((l) => pathname.startsWith(l.href))
-
-  const pillLink = (active: boolean) =>
-    cn(
-      'flex items-center justify-center whitespace-nowrap rounded-full border px-3 xl:px-5 py-2.5 text-sm xl:text-base font-medium no-underline transition-all duration-200',
-      active
-        ? 'border-foreground bg-foreground text-background dark:border-white dark:bg-white dark:text-black'
-        : 'border-transparent bg-transparent text-foreground hover:border-foreground dark:text-white dark:hover:border-white/60'
-    )
-
   return (
-    <header className="sticky top-0 z-[100] bg-background border-b border-foreground dark:border-white/35">
-      <div className="flex h-20 items-center justify-between pl-4 pr-4 lg:pl-6 xl:pl-8 lg:pr-0">
-
-        <div className="flex items-center gap-3 shrink-0">
-          <Link href="/" className="flex items-center gap-3">
-            <BrandMark className="h-9 w-9 xl:h-10 xl:w-10" />
-            <span className="font-display font-black text-[1.25rem] xl:text-[1.5rem] tracking-[-0.035em]">
-              <span className="text-primary">AI</span>PowerStacks
-            </span>
-          </Link>
-        </div>
-
-        <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1 px-2 xl:px-6">
-          {navLinks.map((link) => (
-            <Link key={link.href} href={link.href} className={pillLink(isActive(link.href))}>
-              {link.label}
-            </Link>
-          ))}
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className={cn(pillLink(communityActive), 'gap-1 cursor-pointer')}>
-                Community <ChevronDown className="h-4 w-4" />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-64 p-2">
-              {communityLinks.map((link) => (
-                <DropdownMenuItem key={link.href} asChild>
-                  <Link href={link.href} className="flex items-start gap-3 p-3 cursor-pointer">
-                    <div className="h-8 w-8 rounded bg-primary/5 flex items-center justify-center shrink-0 text-primary">
-                      <link.icon className="h-4 w-4" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-bold leading-none mb-1">{link.label}</p>
-                      <p className="text-[10px] text-muted-foreground leading-tight">{link.desc}</p>
-                    </div>
-                  </Link>
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          {user && isAdmin && (
-            <Link href="/admin" className={pillLink(pathname.startsWith('/admin'))}>
-              Admin
-            </Link>
-          )}
-          <Link href="/submit" className={pillLink(isActive('/submit'))}>
-            Submit
-          </Link>
-        </nav>
-
-        <div className="hidden lg:flex items-stretch h-20 border-l border-foreground dark:border-white/35">
-          <div className="flex items-center gap-0.5 xl:gap-1 px-2 xl:px-4 border-r border-foreground/20 dark:border-white/20">
-            <NotificationBell />
-            <button
-              type="button"
-              onClick={toggleTheme}
-              aria-label="Toggle dark mode"
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-transparent text-foreground hover:border-foreground transition-all duration-200 dark:text-white dark:hover:border-white/60"
-            >
-              {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-            </button>
-          </div>
-
-          {user ? (
-            <>
-              <Link
-                href="/dashboard"
-                aria-label="Go to Dashboard"
-                className="flex items-center px-3 xl:px-6 border-r border-foreground bg-background hover:bg-primary/5 transition-colors duration-200 dark:border-white/35"
-              >
-                <Avatar className="h-11 w-11 xl:h-12 xl:w-12 border-2 border-foreground/10 dark:border-white/20">
-                  <AvatarImage src={user.avatar_url ?? undefined} />
-                  <AvatarFallback className="bg-primary/10 text-primary text-base xl:text-lg font-black">
-                    {(user.display_name || user.username || 'U')[0].toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-              </Link>
-              <button
-                type="button"
-                onClick={handleSignOut}
-                className="flex items-center gap-1.5 xl:gap-2 px-3 xl:px-6 text-sm xl:text-base font-medium bg-primary text-black hover:bg-white transition-colors duration-200"
-              >
-                <LogOut className="h-4 w-4" />
-                <span className="hidden xl:inline">Sign Out</span>
-                <span className="xl:hidden">Logout</span>
-              </button>
-            </>
-          ) : (
-            <>
-              <Link
-                href="/login"
-                className="px-4 xl:px-6 flex items-center text-sm xl:text-base font-medium border-r border-foreground bg-background text-foreground hover:bg-primary hover:text-foreground transition-colors duration-200 dark:border-white/35 dark:text-white"
-              >
-                Log in
-              </Link>
-              <Link
-                href="/register"
-                className="px-4 xl:px-6 flex items-center text-sm xl:text-base font-medium bg-foreground text-background hover:bg-primary hover:text-foreground transition-colors duration-200"
-              >
-                Sign up
-              </Link>
-            </>
-          )}
-        </div>
-
-        <button
-          type="button"
-          aria-label="Toggle navigation menu"
-          className="relative flex h-8 w-8 flex-col items-center justify-center lg:hidden focus-visible:outline-none"
-          onClick={() => setMobileOpen((prev) => !prev)}
-        >
-          <span
-            className={cn(
-              'mb-1 h-0.5 w-8 origin-center bg-foreground transition-transform duration-200',
-              mobileOpen ? 'translate-y-1.5 rotate-45' : ''
-            )}
-          />
-          <span
-            className={cn(
-              'mt-1 h-0.5 w-8 origin-center bg-foreground transition-transform duration-200',
-              mobileOpen ? '-translate-y-1.5 -rotate-45' : ''
-            )}
-          />
-        </button>
-      </div>
-
-      <div
-        className={cn(
-          'fixed top-20 left-0 right-0 z-[100] flex-col border-b border-foreground bg-foreground text-background lg:hidden dark:border-white/35',
-          mobileOpen ? 'flex' : 'hidden'
-        )}
+    <>
+      {/* Main Navbar */}
+      <nav
+        className="fixed top-0 w-screen z-50 bg-white dark:bg-gray-900 backdrop-blur-md border-b border-gray-200 dark:border-gray-700"
+        style={{ left: 0, right: 0, width: '100vw' }}
       >
-        {navLinks.map((link) => (
-          <Link
-            key={`mobile-${link.href}`}
-            href={link.href}
-            onClick={() => setMobileOpen(false)}
-            className={cn(
-              'px-6 py-4 text-lg font-medium border-b border-background/20 transition-colors text-center',
-              isActive(link.href) ? 'bg-primary text-foreground' : 'hover:bg-primary hover:text-foreground'
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" style={{ width: '100%', maxWidth: '80rem' }}>
+          <div className="flex items-center justify-between h-16 min-w-0">
+            {/* Logo */}
+            <div className="flex items-center">
+              <Link href="/" className="flex items-center gap-3 group relative">
+                <div className="relative">
+                  <BrandMark className="h-8 w-8 transition-transform duration-200 group-hover:scale-110" />
+                </div>
+                <span className="text-xl font-bold tracking-tight text-gray-900 dark:text-white hover:text-gray-700 dark:hover:text-gray-200 transition-colors duration-200">
+                  <span className="text-primary">AI</span>PowerStacks
+                </span>
+              </Link>
+            </div>
+
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-1">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={cn(
+                    'px-4 py-2 text-sm font-semibold rounded-lg transition-all duration-200 hover:scale-105',
+                    pathname === link.href || pathname.startsWith(link.href + '/')
+                      ? 'text-primary bg-primary/10'
+                      : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800'
+                  )}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+
+            {/* Right Side */}
+            <div className="flex items-center gap-3">
+
+              {/* User Menu */}
+              {user ? (
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button className="flex items-center gap-2 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 w-11 h-11 flex-shrink-0 relative z-10">
+                      <Avatar className="h-9 w-9 ring-2 ring-gray-200 dark:ring-gray-700 ring-offset-1 transition-transform duration-200 hover:scale-110">
+                        <AvatarImage
+                          src={
+                            profile?.avatar_url ||
+                            user.user_metadata?.avatar_url ||
+                            user.user_metadata?.picture ||
+                            user.user_metadata?.avatar ||
+                            user.user_metadata?.photoURL ||
+                            user.user_metadata?.image ||
+                            user.user_metadata?.profile_image ||
+                            user.user_metadata?.profile_picture ||
+                            user?.avatar_url ||
+                            user?.picture
+                          }
+                          alt={user.user_metadata?.full_name || user.user_metadata?.name || 'User'}
+                        />
+                        <AvatarFallback className="text-sm font-bold bg-gradient-to-br from-primary via-primary/90 to-primary/80 text-white ring-2 ring-primary/20">
+                          {profile?.display_name?.split(' ').map((n: string) => n[0]).join('').toUpperCase() ||
+                           user.user_metadata?.full_name?.split(' ').map((n: string) => n[0]).join('').toUpperCase() ||
+                           user.user_metadata?.name?.[0]?.toUpperCase() ||
+                           user.email?.[0]?.toUpperCase() ||
+                           'U'}
+                        </AvatarFallback>
+                      </Avatar>
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    align="end"
+                    className="w-64 shadow-xl border-gray-200 dark:border-gray-700 z-[60]"
+                    sideOffset={8}
+                    alignOffset={0}
+                    avoidCollisions={true}
+                    collisionPadding={{ top: 16, right: 16, bottom: 16, left: 16 }}
+                  >
+                    <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 rounded-t-lg">
+                      <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                        {profile?.display_name || user.user_metadata?.full_name || 'User'}
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">{user.email}</p>
+                    </div>
+                    <DropdownMenuItem asChild>
+                      <Link href="/dashboard" className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md mx-1">
+                        <User className="h-4 w-4 mr-3" />
+                        <span className="font-medium">Dashboard</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/settings" className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md mx-1">
+                        <Settings className="h-4 w-4 mr-3" />
+                        <span className="font-medium">Settings</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator className="mx-1" />
+                    <DropdownMenuItem onClick={signOut} className="cursor-pointer text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md mx-1">
+                      <LogOut className="h-4 w-4 mr-3" />
+                      <span className="font-medium">Sign Out</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <div className="hidden sm:flex items-center gap-3">
+                  <Link
+                    href="/login"
+                    className="px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all duration-200"
+                  >
+                    Log in
+                  </Link>
+                  <Link
+                    href="/register"
+                    className="px-5 py-2 text-sm font-semibold bg-primary text-white rounded-full hover:bg-primary/90 transition-all duration-200 hover:scale-105"
+                  >
+                    Sign up
+                  </Link>
+                </div>
+              )}
+
+              {/* Mobile Menu Button */}
+              <button
+                onClick={() => setMobileOpen(!mobileOpen)}
+                className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
+              >
+                {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              </button>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* Mobile Menu */}
+      <div className={cn(
+        'fixed inset-0 z-40 md:hidden transition-all duration-300',
+        mobileOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
+      )}>
+        <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
+
+        <div className={cn(
+          'absolute top-16 left-0 right-0 bg-white dark:bg-gray-900 transform transition-transform duration-300 max-h-[calc(100vh-4rem)] overflow-y-auto',
+          mobileOpen ? 'translate-y-0' : '-translate-y-full'
+        )}>
+          <div className="px-4 py-6">
+            {/* Mobile Navigation */}
+            <nav className="space-y-1">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMobileOpen(false)}
+                  className={cn(
+                    'block px-4 py-3 text-base font-medium rounded-lg transition-colors duration-200',
+                    pathname === link.href || pathname.startsWith(link.href + '/')
+                      ? 'text-primary bg-primary/10'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                  )}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+
+            {/* Mobile Auth */}
+            {!user && (
+              <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700 space-y-3">
+                <Link
+                  href="/login"
+                  onClick={() => setMobileOpen(false)}
+                  className="block w-full px-6 py-3 text-center font-semibold text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 rounded-full hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-200 hover:scale-105"
+                >
+                  Log in
+                </Link>
+                <Link
+                  href="/register"
+                  onClick={() => setMobileOpen(false)}
+                  className="block w-full px-6 py-3 text-center font-semibold bg-primary text-white rounded-full hover:bg-primary/90 hover:shadow-md transition-all duration-200 hover:scale-105"
+                >
+                  Sign up
+                </Link>
+              </div>
             )}
-          >
-            {link.label}
-          </Link>
-        ))}
-        {communityLinks.map((link) => (
-          <Link
-            key={`mobile-community-${link.href}`}
-            href={link.href}
-            onClick={() => setMobileOpen(false)}
-            className={cn(
-              'px-6 py-4 text-lg font-medium border-b border-background/20 transition-colors text-center',
-              isActive(link.href) ? 'bg-primary text-foreground' : 'hover:bg-primary hover:text-foreground'
-            )}
-          >
-            {link.label}
-          </Link>
-        ))}
-        <Link
-          href="/submit"
-          onClick={() => setMobileOpen(false)}
-          className={cn(
-            'px-6 py-4 text-lg font-medium border-b border-background/20 transition-colors text-center',
-            isActive('/submit') ? 'bg-primary text-foreground' : 'hover:bg-primary hover:text-foreground'
-          )}
-        >
-          Submit Tool
-        </Link>
-        <button
-          type="button"
-          onClick={() => { toggleTheme(); setMobileOpen(false) }}
-          className="flex items-center justify-center gap-2 px-6 py-4 text-lg font-medium border-b border-background/20 hover:bg-primary hover:text-foreground transition-colors"
-        >
-          {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-          {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
-        </button>
-        {user ? (
-          <>
-            <Link
-              href="/dashboard"
-              onClick={() => setMobileOpen(false)}
-              className="px-6 py-4 text-lg font-medium border-b border-background/20 hover:bg-primary hover:text-foreground transition-colors text-center flex items-center justify-center gap-3"
-            >
-              <Avatar className="h-10 w-10 border border-background/20">
-                <AvatarImage src={user.avatar_url ?? undefined} />
-                <AvatarFallback className="text-sm font-black">
-                  {(user.display_name || user.username || 'U')[0].toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
-              Dashboard
-            </Link>
-            <button
-              type="button"
-              onClick={handleSignOut}
-              className="flex items-center justify-center gap-2 px-6 py-4 text-lg font-medium bg-primary text-black hover:bg-white transition-colors"
-            >
-              <LogOut className="h-4 w-4" />
-              Sign Out
-            </button>
-          </>
-        ) : (
-          <>
-            <Link
-              href="/login"
-              onClick={() => setMobileOpen(false)}
-              className="px-6 py-4 text-lg font-medium border-b border-background/20 hover:bg-primary hover:text-foreground transition-colors text-center"
-            >
-              Log in
-            </Link>
-            <Link
-              href="/register"
-              onClick={() => setMobileOpen(false)}
-              className="px-6 py-4 text-lg font-medium bg-primary text-foreground hover:bg-primary/90 transition-colors text-center"
-            >
-              Sign up
-            </Link>
-          </>
-        )}
+          </div>
+        </div>
       </div>
-    </header>
+    </>
   )
 }

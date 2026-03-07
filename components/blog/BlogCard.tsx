@@ -43,7 +43,7 @@ export function BlogCard({ post, featured = false }: { post: BlogPostSummary; fe
           )}
           <div className="p-7 flex flex-col justify-center">
             <div className="flex items-center gap-3 mb-4">
-              <div className="h-6 w-6 rounded-full border border-black/10 bg-primary/10 flex items-center justify-center overflow-hidden relative">
+              <div className="h-6 w-6 rounded-full glass-card border border-border/30 bg-primary/5 flex items-center justify-center overflow-hidden relative">
                 {post.author?.avatar_url ? (
                   <Image src={post.author.avatar_url} alt={post.author.display_name ?? ''} fill className="object-cover" />
                 ) : (
@@ -86,7 +86,7 @@ export function BlogCard({ post, featured = false }: { post: BlogPostSummary; fe
         )}
         <div className="p-5 flex flex-col flex-1">
           <div className="flex items-center gap-2 mb-3">
-            <div className="h-5 w-5 rounded-full border border-black/10 bg-primary/10 flex items-center justify-center overflow-hidden relative">
+            <div className="h-5 w-5 rounded-full glass-card border border-border/30 bg-primary/5 flex items-center justify-center overflow-hidden relative">
               {post.author?.avatar_url ? (
                 <Image src={post.author.avatar_url} alt={post.author.display_name ?? ''} fill className="object-cover" />
               ) : (
@@ -102,7 +102,7 @@ export function BlogCard({ post, featured = false }: { post: BlogPostSummary; fe
           )}
           <h3 className="font-semibold text-[16px] mb-2 pb-0.5 transition-colors line-clamp-2 flex-1 leading-[1.3]">{post.title}</h3>
           <p className="text-[13px] text-muted-foreground line-clamp-2 mb-3 pb-0.5 leading-[1.5]">{post.excerpt}</p>
-          <div className="flex items-center gap-3 text-[12px] text-muted-foreground border-t border-black/10 pt-3 mt-auto">
+          <div className="flex items-center gap-3 text-[12px] text-muted-foreground border-t border-border/30 pt-3 mt-auto">
             {date && <span>{date}</span>}
             {post.reading_time_min && <span>{post.reading_time_min} min read</span>}
           </div>

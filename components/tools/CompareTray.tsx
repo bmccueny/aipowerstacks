@@ -17,7 +17,7 @@ export function CompareTray() {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50">
-      <div className="border-t-2 border-black bg-[#0a0a0a] text-white px-4 py-3 flex items-center gap-3 shadow-[0_-4px_24px_rgba(0,0,0,0.4)]">
+      <div className="border-t border-border/50 glass-card backdrop-blur-xl px-4 py-4 flex items-center gap-3 shadow-[0_-8px_32px_rgba(0,0,0,0.2)]">
         <ArrowLeftRight className="h-4 w-4 shrink-0 text-white/50" />
         <span className="text-xs font-black uppercase tracking-widest text-white/50 shrink-0 hidden sm:block">
           Compare
@@ -27,7 +27,7 @@ export function CompareTray() {
           {items.map(item => (
             <span
               key={item.slug}
-              className="flex items-center gap-1.5 bg-white/10 border border-white/20 rounded-sm px-2.5 py-1 text-sm font-bold whitespace-nowrap shrink-0"
+              className="flex items-center gap-1.5 glass-card border border-border/30 rounded-xl px-3 py-1.5 text-sm font-bold whitespace-nowrap shrink-0 hover:scale-105 transition-all duration-300"
             >
               {item.name}
               <button

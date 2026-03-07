@@ -70,7 +70,7 @@ export function ToolSearch() {
           value={value}
           onChange={(e) => setValue(e.target.value)}
           placeholder="Search 5,000+ AI tools..."
-          className="pl-9 pr-9 bg-background border-black/20 focus:border-primary/50"
+          className="pl-9 pr-9 glass-card border-border/50 focus:ring-2 focus:ring-primary/50 focus:border-primary/60"
         />
         {value && (
           <button

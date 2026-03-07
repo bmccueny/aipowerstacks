@@ -15,22 +15,27 @@ export function HeroSearch({ toolCount }: { toolCount: number }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="relative mt-10 w-full max-w-3xl group">
-      <input
-        type="text"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder={`Search ${toolCount}+ tools ...`}
-        className="w-full h-14 lg:h-16 px-8 rounded-lg border border-black/20 bg-white text-xl outline-none focus:ring-1 focus:ring-black focus:border-black/60 transition-all dark:bg-zinc-900 dark:border-white/20 dark:text-white dark:focus:ring-white/40 dark:focus:border-white/60"
-        style={{ paddingLeft: '2rem', paddingRight: '5rem' }}
-      />
-      <button
-        type="submit"
-        aria-label="Search"
-        className="absolute right-3 top-1/2 -translate-y-1/2 h-10 w-10 lg:h-12 lg:w-12 inline-flex items-center justify-center rounded-md bg-black text-white hover:bg-primary transition-colors z-10"
-      >
-        <Search className="h-5 w-5 lg:h-6 lg:w-6" />
-      </button>
+    <form onSubmit={handleSubmit} className="relative w-full group">
+      <div className="relative">
+        {/* Enhanced background glow */}
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-purple-500/10 to-cyan-500/10 rounded-3xl blur-xl scale-105 opacity-60" />
+
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder={`Search ${toolCount}+ AI tools...`}
+          className="relative w-full h-20 px-8 pr-20 rounded-3xl border-2 border-gray-200/50 dark:border-gray-700/50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl text-xl font-medium outline-none focus:ring-4 focus:ring-primary/20 focus:border-primary/50 transition-all duration-300 placeholder:text-gray-500 dark:placeholder:text-gray-400 shadow-xl hover:shadow-2xl"
+        />
+
+        <button
+          type="submit"
+          aria-label="Search"
+          className="absolute right-3 top-1/2 -translate-y-1/2 h-14 w-14 inline-flex items-center justify-center rounded-2xl bg-primary text-white hover:bg-primary/90 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2"
+        >
+          <Search className="h-6 w-6" />
+        </button>
+      </div>
     </form>
   )
 }

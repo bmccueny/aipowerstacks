@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { PRICING_MODELS } from '@/lib/constants'
@@ -87,7 +88,7 @@ export function SubmitToolForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="glass-card rounded-xl p-6 space-y-5">
+    <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-900 rounded-xl p-6 space-y-5 border border-gray-200 dark:border-gray-700 shadow-lg">
       {mode && mode !== 'submit' && (
         <div className="rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-xs text-muted-foreground">
           {mode === 'claim'
@@ -98,17 +99,17 @@ export function SubmitToolForm({
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="text-sm font-medium mb-1.5 block">Tool Name *</label>
-          <Input value={form.name} onChange={set('name')} placeholder="e.g. ChatGPT" required className="bg-background border-black/20" />
+          <Input value={form.name} onChange={set('name')} placeholder="e.g. ChatGPT" required className="bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-primary focus:border-primary" />
         </div>
         <div>
           <label className="text-sm font-medium mb-1.5 block">Website URL *</label>
-          <Input value={form.website_url} onChange={set('website_url')} placeholder="https://..." type="url" required className="bg-background border-black/20" />
+          <Input value={form.website_url} onChange={set('website_url')} placeholder="https://..." type="url" required className="bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-primary focus:border-primary" />
         </div>
       </div>
 
       <div>
         <label className="text-sm font-medium mb-1.5 block">Tagline *</label>
-        <Input value={form.tagline} onChange={set('tagline')} placeholder="One-line description (max 150 chars)" required maxLength={150} className="bg-background border-black/20" />
+        <Input value={form.tagline} onChange={set('tagline')} placeholder="One-line description (max 150 chars)" required maxLength={150} className="bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-primary focus:border-primary" />
       </div>
 
       <div>
@@ -119,14 +120,14 @@ export function SubmitToolForm({
           placeholder="Describe what the tool does, its key features, and who it's for..."
           required
           maxLength={2000}
-          className="w-full bg-background border border-black/20 rounded-lg px-3 py-2 text-sm resize-none h-28 focus:outline-none focus:border-primary/50"
+          className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-2xl px-4 py-3 text-sm resize-none h-32 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
         />
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="text-sm font-medium mb-1.5 block">Category</label>
-          <select value={form.category_id} onChange={set('category_id')} className="w-full bg-background border border-black/20 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary/50">
+          <select value={form.category_id} onChange={set('category_id')} className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-2xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
             <option value="">Select category...</option>
             {categories.map((c) => (
               <option key={c.id} value={c.id}>{c.name}</option>
@@ -135,7 +136,7 @@ export function SubmitToolForm({
         </div>
         <div>
           <label className="text-sm font-medium mb-1.5 block">Pricing Model</label>
-          <select value={form.pricing_model} onChange={set('pricing_model')} className="w-full bg-background border border-black/20 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary/50">
+          <select value={form.pricing_model} onChange={set('pricing_model')} className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-2xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
             <option value="">Select pricing...</option>
             {PRICING_MODELS.map((p) => (
               <option key={p.value} value={p.value}>{p.label}</option>
@@ -146,12 +147,12 @@ export function SubmitToolForm({
 
       <div>
         <label className="text-sm font-medium mb-1.5 block">Logo URL</label>
-        <Input value={form.logo_url} onChange={set('logo_url')} placeholder="https://... (direct image link)" type="url" className="bg-background border-black/20" />
+        <Input value={form.logo_url} onChange={set('logo_url')} placeholder="https://... (direct image link)" type="url" className="bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-primary focus:border-primary" />
       </div>
 
       <div>
         <label className="text-sm font-medium mb-1.5 block">Your Email</label>
-        <Input value={form.submitter_email} onChange={set('submitter_email')} placeholder="For submission updates (optional)" type="email" className="bg-background border-black/20" />
+        <Input value={form.submitter_email} onChange={set('submitter_email')} placeholder="For submission updates (optional)" type="email" className="bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-primary focus:border-primary" />
       </div>
 
       <div>
@@ -161,14 +162,33 @@ export function SubmitToolForm({
           onChange={set('notes')}
           placeholder="Anything else you'd like us to know..."
           maxLength={500}
-          className="w-full bg-background border border-black/20 rounded-lg px-3 py-2 text-sm resize-none h-20 focus:outline-none focus:border-primary/50"
+          className="w-full glass-card border border-border/50 rounded-2xl px-4 py-3 text-sm resize-none h-24 focus:outline-none focus:ring-2 focus:ring-primary/50"
         />
       </div>
 
       {error && <p className="text-sm text-destructive">{error}</p>}
 
-      <Button type="submit" disabled={loading} className="w-full">
-        {loading ? 'Submitting...' : 'Submit Tool for Review'}
+      <Button
+        type="submit"
+        disabled={loading}
+        className="w-full relative overflow-hidden group"
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-purple-500/20 to-pink-500/20 backdrop-blur-sm" />
+        <div className="absolute inset-0 glass-card border border-primary/30" />
+        <span className="relative flex items-center justify-center gap-2 font-semibold text-gray-900 dark:text-white">
+          {loading ? (
+            <>
+              <div className="w-4 h-4 border-2 border-gray-400/30 border-t-gray-400 rounded-full animate-spin"></div>
+              Submitting...
+            </>
+          ) : (
+            <>
+              <Sparkles className="w-5 h-5 text-primary animate-pulse" />
+              <span>Submit Tool for Review</span>
+              <Sparkles className="w-5 h-5 text-primary animate-pulse" />
+            </>
+          )}
+        </span>
       </Button>
 
       <p className="text-xs text-muted-foreground text-center">

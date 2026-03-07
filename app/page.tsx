@@ -113,94 +113,63 @@ export default async function HomePage() {
       <Navbar />
       <main className="min-h-screen flex flex-col gap-16 md:gap-20 pb-24">
 
-        {/* Hero */}
-        <section className="relative px-4 pt-20 pb-10 text-center max-w-5xl mx-auto w-full hero-float-group">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass text-sm text-muted-foreground mb-6">
-            <Sparkles className="h-3.5 w-3.5 text-primary" />
-            <span>{toolCount.toLocaleString()}+ Verified AI Tools. Updated Daily.</span>
+        {/* Primary Search Section */}
+        <section className="px-4 max-w-4xl mx-auto w-full pt-16 pb-8">
+          <div className="text-center mb-8">
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+              Find the Perfect AI Tool
+            </h1>
+            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+              Search through {toolCount.toLocaleString()}+ verified AI tools across {categoryCount}+ categories
+            </p>
           </div>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight mb-4">
-            Compare{' '}
-            <span className="bg-gradient-to-r from-primary to-rose-400 bg-clip-text text-transparent">
-              AI Tools
-            </span>
-            <br />Pick the Right One in Minutes
-          </h1>
-          <p className="text-lg leading-relaxed text-muted-foreground max-w-2xl mx-auto mb-6">
-            Filter by use case, pricing, integrations, and team size. Shortlist faster with side-by-side comparisons, real user reviews, and verified listings.
-          </p>
-          <div className="grid grid-cols-3 gap-6 max-w-md mx-auto mb-10">
-            {/* Updated Daily */}
-            <div className="flex flex-col items-center gap-1.5 text-center group">
-              <div
-                className="p-3.5 rounded-xl glass shadow-[0_12px_24px_-8px_rgba(0,0,0,0.18)] dark:shadow-[0_12px_24px_-8px_rgba(0,0,0,0.5)] animate-delicate-float"
-                style={{ animationDelay: '0s' }}
-              >
-                <Zap className="h-6 w-6 text-primary" />
-              </div>
-              <span className="text-xs font-bold tracking-tight text-foreground/80 mt-1">Updated Daily</span>
-              <span className="text-[10px] leading-relaxed text-muted-foreground/60 max-w-[10rem] group-hover:text-muted-foreground transition-colors">New tools added and listings refreshed every 24 hours.</span>
-            </div>
 
-            {/* Editorially Verified — premium treatment */}
-            <div className="flex flex-col items-center gap-1.5 text-center group">
-              <div
-                className="relative p-3.5 rounded-xl animate-delicate-float overflow-hidden"
-                style={{ animationDelay: '1.2s' }}
-              >
-                {/* Pink gradient background */}
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-primary/30 via-rose-200/15 to-rose-500/25" />
-                {/* Fine pink border */}
-                <div className="absolute inset-0 rounded-xl border border-primary/50 dark:border-primary/30" />
-                {/* Top gloss line — the luxury touch */}
-                <div className="absolute inset-x-3 top-0 h-px bg-gradient-to-r from-transparent via-rose-100/90 to-transparent" />
-                {/* Warm shadow ring */}
-                <div className="absolute inset-0 rounded-xl shadow-[0_12px_28px_-6px_rgba(255,0,0,0.15),0_0_0_1px_rgba(255,0,0,0.05),inset_0_1px_0_rgba(255,255,255,0.25)] dark:shadow-[0_12px_28px_-6px_rgba(255,0,0,0.3)]" />
-                {/* Icon */}
-                <ShieldCheck
-                  className="relative h-6 w-6 text-primary dark:text-primary"
-                  style={{ filter: 'drop-shadow(0 1px 6px rgba(255,0,0,0.3))' }}
-                />
-              </div>
-              <span className="text-xs font-black tracking-tight text-primary mt-1 uppercase">Verified</span>
-              <span className="text-[10px] leading-relaxed text-muted-foreground/60 max-w-[10rem] group-hover:text-muted-foreground transition-colors">Pricing, features, and links checked by our team before publishing.</span>
-            </div>
-
-            {/* Community Rated */}
-            <div className="flex flex-col items-center gap-1.5 text-center group">
-              <div
-                className="p-3.5 rounded-xl glass shadow-[0_12px_24px_-8px_rgba(0,0,0,0.18)] dark:shadow-[0_12px_24px_-8px_rgba(0,0,0,0.5)] animate-delicate-float"
-                style={{ animationDelay: '2.4s' }}
-              >
-                <TrendingUp className="h-6 w-6 text-primary" />
-              </div>
-              <span className="text-xs font-bold tracking-tight text-foreground/80 mt-1">Community Rated</span>
-              <span className="text-[10px] leading-relaxed text-muted-foreground/60 max-w-[10rem] group-hover:text-muted-foreground transition-colors">Rankings powered by real user reviews, not paid placement.</span>
-            </div>
+          {/* Prominent Search Bar */}
+          <div className="max-w-2xl mx-auto mb-12">
+            <HeroSearch toolCount={siteStats.toolCount} />
           </div>
-          <div className="flex justify-center">
-            <HeroSearch toolCount={toolCount} />
-          </div>
-          <p className="mt-3 text-xs text-muted-foreground">
-            Try &quot;best AI writing tool&quot; or &quot;free image generators&quot; to get started.
-          </p>
 
-          <div className="mt-16 flex flex-wrap items-center justify-center gap-6 text-sm text-muted-foreground">
-            <span><strong className="text-foreground">{toolCount.toLocaleString()}+</strong> tools</span>
-            <span className="text-foreground/20">|</span>
-            <span><strong className="text-foreground">{reviewCount.toLocaleString()}+</strong> reviews</span>
-            <span className="text-foreground/20">|</span>
-            <span><strong className="text-foreground">{categoryCount}+</strong> categories</span>
+          {/* Quick Actions */}
+          <div className="flex flex-wrap justify-center gap-4 mb-8">
+            <Link
+              href="/tools"
+              className="px-6 py-3 bg-primary text-white rounded-full font-semibold hover:bg-primary/90 transition-colors flex items-center gap-2"
+            >
+              Browse All Tools
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              href="/tools?pricing=free"
+              className="px-6 py-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-700 rounded-full font-semibold hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            >
+              Free Tools Only
+            </Link>
+          </div>
+
+          {/* Quick Stats */}
+          <div className="grid grid-cols-3 gap-8 max-w-md mx-auto">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-primary mb-1">{toolCount.toLocaleString()}+</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">Tools</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-primary mb-1">{reviewCount.toLocaleString()}+</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">Reviews</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-primary mb-1">{categoryCount}+</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">Categories</div>
+            </div>
           </div>
         </section>
 
-          {/* Categories — directory entry point, above the fold */}
+        {/* Categories Section */}
         {featuredCategories.length > 0 && (
-          <section className="px-4 max-w-7xl mx-auto w-full -mt-8">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold">Browse AI Tools by Category</h2>
-              <Link href="/categories" className="text-sm font-bold text-foreground hover:underline flex items-center gap-1">
-                View all <ArrowRight className="h-3.5 w-3.5" />
+          <section className="px-4 max-w-7xl mx-auto w-full">
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Popular Categories</h2>
+              <Link href="/categories" className="text-sm font-semibold text-primary hover:text-primary/80 flex items-center gap-1 transition-colors">
+                View all categories <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">

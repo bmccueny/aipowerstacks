@@ -151,7 +151,7 @@ export function BlogPostForm({ post }: BlogPostFormProps) {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="sticky top-0 z-20 bg-background border-b-2 border-black flex items-center justify-between gap-4 px-4 sm:px-6 h-14">
+      <header className="sticky top-0 z-20 glass-card backdrop-blur-xl border-b border-border/50 flex items-center justify-between gap-4 px-4 sm:px-6 h-14">
         <div className="flex items-center gap-3 min-w-0">
           <Link href="/admin/blog" className="flex items-center gap-1.5 text-sm font-semibold text-foreground/60 hover:text-foreground transition-colors shrink-0">
             <ArrowLeft className="h-4 w-4" />
@@ -185,7 +185,7 @@ export function BlogPostForm({ post }: BlogPostFormProps) {
             variant="outline"
             size="sm"
             onClick={() => submit('draft')}
-            className="border-2 border-black text-xs font-bold uppercase tracking-wide"
+            className="glass-card border border-border/50 text-xs font-bold uppercase tracking-wide hover:scale-105 transition-all duration-300"
           >
             Save draft
           </Button>
@@ -250,10 +250,10 @@ export function BlogPostForm({ post }: BlogPostFormProps) {
                     key={s}
                     type="button"
                     onClick={() => setField('status', s)}
-                    className={`px-3 py-1 text-xs font-bold uppercase tracking-wide border-2 rounded-full transition-colors ${
+                    className={`px-4 py-2 text-xs font-bold uppercase tracking-wide border rounded-2xl transition-all duration-300 ${
                       form.status === s
-                        ? 'border-foreground bg-foreground text-background'
-                        : 'border-black/20 hover:border-black/40'
+                        ? 'btn-primary'
+                        : 'glass-card border-border/30 hover:border-border/50 hover:scale-105'
                     }`}
                   >
                     {s}
@@ -265,7 +265,7 @@ export function BlogPostForm({ post }: BlogPostFormProps) {
             <label className="flex items-center gap-2 cursor-pointer group">
               <div
                 onClick={() => setField('is_featured', !form.is_featured)}
-                className={`h-5 w-9 rounded-full border-2 border-black transition-colors relative cursor-pointer ${form.is_featured ? 'bg-foreground' : 'bg-background'}`}
+                className={`h-6 w-10 rounded-full border-2 border-border/50 transition-all duration-300 relative cursor-pointer ${form.is_featured ? 'bg-primary border-primary' : 'glass-card'}`}
               >
                 <span className={`absolute top-0.5 h-3 w-3 rounded-full transition-all ${form.is_featured ? 'bg-background left-[18px]' : 'bg-foreground/30 left-0.5'}`} />
               </div>
@@ -299,7 +299,7 @@ export function BlogPostForm({ post }: BlogPostFormProps) {
                 className="text-sm"
               />
               {form.cover_image_url && (
-                <div className="mt-2 relative h-28 rounded-lg overflow-hidden border-2 border-black/10">
+                <div className="mt-2 relative h-28 rounded-2xl overflow-hidden glass-card border border-border/30">
                   <Image
                     src={form.cover_image_url}
                     alt="Cover preview"
@@ -311,7 +311,7 @@ export function BlogPostForm({ post }: BlogPostFormProps) {
                   <button
                     type="button"
                     onClick={() => setField('cover_image_url', '')}
-                    className="absolute top-1 right-1 p-1 bg-black/50 text-white rounded-full hover:bg-black/70 transition-colors"
+                    className="absolute top-2 right-2 p-2 glass-card border border-border/30 rounded-2xl hover:scale-105 transition-all duration-300"
                   >
                     <X className="h-3 w-3" />
                   </button>
@@ -349,7 +349,7 @@ export function BlogPostForm({ post }: BlogPostFormProps) {
                   className="text-sm"
                   onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addTag() } }}
                 />
-                <Button type="button" variant="outline" size="sm" onClick={addTag} className="shrink-0 border-2 border-black">
+                <Button type="button" variant="outline" size="sm" onClick={addTag} className="shrink-0 glass-card border border-border/50 hover:scale-105 transition-all duration-300">
                   Add
                 </Button>
               </div>

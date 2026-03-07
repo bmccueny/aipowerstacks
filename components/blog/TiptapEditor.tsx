@@ -145,11 +145,11 @@ export function TiptapEditor({ content, onChange, onWordCount }: TiptapEditorPro
   }
 
   return (
-    <div className="border-2 border-black rounded-xl overflow-visible bg-white flex flex-col">
+    <div className="glass-card border border-border/50 rounded-3xl overflow-visible flex flex-col">
       {editor && (
         <BubbleMenu
           editor={editor}
-          className="flex items-center gap-0.5 bg-foreground rounded-lg px-1.5 py-1 shadow-lg"
+          className="flex items-center gap-0.5 glass-card rounded-2xl px-2 py-1.5 shadow-2xl border border-border/50"
         >
           {[
             { fn: () => editor.chain().focus().toggleBold().run(), active: editor.isActive('bold'), icon: <Bold className="h-3.5 w-3.5" /> },
@@ -162,7 +162,7 @@ export function TiptapEditor({ content, onChange, onWordCount }: TiptapEditorPro
               key={i}
               type="button"
               onMouseDown={(e) => { e.preventDefault(); fn() }}
-              className={`p-1 rounded transition-colors ${active ? 'bg-white/20 text-white' : 'text-white/65 hover:text-white'}`}
+              className={`p-2 rounded-lg transition-all duration-200 ${active ? 'glass-card border border-border/50 scale-105' : 'hover:scale-105 hover:bg-primary/10'}`}
             >
               {icon}
             </button>

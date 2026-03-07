@@ -79,7 +79,7 @@ export function ReviewForm({ toolId, onSuccess }: ReviewFormProps) {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Brief summary"
-          className="bg-background border-black/20"
+          className="glass-card border-border/50 focus:ring-2 focus:ring-primary/50"
           maxLength={100}
         />
       </div>
@@ -89,7 +89,7 @@ export function ReviewForm({ toolId, onSuccess }: ReviewFormProps) {
           value={body}
           onChange={(e) => setBody(e.target.value)}
           placeholder="Share your experience..."
-          className="w-full bg-background border border-black/20 rounded-lg px-3 py-2 text-sm resize-none h-24 focus:outline-none focus:border-primary/50"
+          className="w-full glass-card border border-border/50 rounded-2xl px-4 py-3 text-sm resize-none h-28 focus:outline-none focus:ring-2 focus:ring-primary/50"
           maxLength={1000}
         />
       </div>

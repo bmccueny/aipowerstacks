@@ -104,7 +104,7 @@ export function CompareSearch({ currentSlugs }: { currentSlugs: string[] }) {
                     onClick={() => addTool(tool.slug)}
                     className="w-full flex items-center gap-4 p-3 hover:bg-primary/5 transition-all text-left group rounded-xl"
                   >
-                    <div className="h-10 w-10 rounded-lg bg-white overflow-hidden flex items-center justify-center shrink-0 border border-foreground/5 shadow-sm group-hover:border-primary/20 transition-colors">
+                    <div className="h-10 w-10 rounded-2xl glass-card overflow-hidden flex items-center justify-center shrink-0 border border-border/30 shadow-lg group-hover:border-primary/40 transition-all duration-300 group-hover:scale-105">
                       {tool.logo_url ? (
                         <img src={tool.logo_url} alt={tool.name} className="object-contain p-1" />
                       ) : (

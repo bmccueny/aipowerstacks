@@ -113,23 +113,26 @@ export function ToolCard({ tool, view = 'grid', cardStyle = 'default', compact =
       <div
         onMouseEnter={() => setHasBeenHovered(true)}
         className={cn(
-          "card-directory relative flex flex-col group h-full",
-          compact ? "p-4 min-h-[200px] items-center text-center" : "p-5 min-h-[260px]"
+          "card-directory relative flex flex-col group h-full hover:shadow-[0_20px_40px_-8px_rgba(0,0,0,0.15)] transition-all duration-300",
+          compact ? "p-5 min-h-[220px] items-center text-center" : "p-6 min-h-[280px]"
         )}
       >
         {compact ? (
           <div className="flex flex-col items-center justify-center flex-1 w-full gap-4">
             {tool.is_verified && (
-              <div className="absolute top-3 right-3 z-20 glass rounded-lg p-1.5 shadow-[0_4px_10px_-2px_rgba(0,0,0,0.14)]">
+              <div className="absolute top-4 right-4 z-20 glass-card rounded-xl p-2 shadow-[0_8px_20px_-4px_rgba(0,0,0,0.12)] border border-primary/20">
                 <VerifiedBadge size="sm" />
               </div>
             )}
-            <div className="h-20 w-20 rounded-2xl border border-foreground/15 bg-background shadow-md overflow-hidden flex items-center justify-center relative z-10 transition-transform group-hover:scale-110">
-              {renderLogo(80)}
+            <div className="relative">
+              <div className="absolute inset-0 glass-card rounded-3xl blur-sm scale-110 opacity-60" />
+              <div className="relative h-20 w-20 rounded-3xl border border-foreground/20 bg-background/80 backdrop-blur-sm shadow-[0_8px_24px_-4px_rgba(0,0,0,0.12)] overflow-hidden flex items-center justify-center z-10 transition-all duration-300 group-hover:scale-110 group-hover:shadow-[0_12px_32px_-4px_rgba(0,0,0,0.18)]">
+                {renderLogo(80)}
+              </div>
             </div>
             <div className="min-w-0 px-2">
               <div className="flex items-center justify-center gap-1.5 mb-1">
-                <Link href={`/tools/${tool.slug}`} className="font-black tracking-tight text-[16px] leading-tight line-clamp-1 after:absolute after:inset-0 after:z-0">
+                <Link href={`/tools/${tool.slug}`} className="font-black tracking-tight text-xl leading-tight line-clamp-1 after:absolute after:inset-0 after:z-0">
                   {tool.name}
                 </Link>
               </div>
@@ -145,7 +148,7 @@ export function ToolCard({ tool, view = 'grid', cardStyle = 'default', compact =
                 <div className="flex items-start gap-1.5">
                   <Link
                     href={`/tools/${tool.slug}`}
-                    className="font-semibold text-[18px] leading-[1.3] line-clamp-2 flex-1 after:absolute after:inset-0 after:z-0"
+                    className="font-black text-xl leading-[1.3] line-clamp-2 flex-1 after:absolute after:inset-0 after:z-0"
                   >
                     {tool.name}
                   </Link>
@@ -176,7 +179,7 @@ export function ToolCard({ tool, view = 'grid', cardStyle = 'default', compact =
                 </div>
               </div>
             </div>
-            <p className="mt-3 pb-0.5 text-[15px] leading-[1.5] text-muted-foreground line-clamp-2 relative z-10">{tool.tagline}</p>
+            <p className="mt-3 pb-0.5 text-base leading-[1.5] font-medium text-muted-foreground line-clamp-2 relative z-10">{tool.tagline}</p>
           </>
         )}
         
@@ -288,7 +291,7 @@ export function ToolCard({ tool, view = 'grid', cardStyle = 'default', compact =
         {/* Footer: Stack + Compare — always visible, equal weight */}
         <div className="flex items-center gap-2 mt-auto pt-3 border-t border-foreground/10 relative z-10" onClick={(e) => e.stopPropagation()}>
           <AddToStackButton toolId={tool.id} toolName={tool.name} className="flex-1" />
-          <AddToCompareButton slug={tool.slug} iconOnly />
+          <AddToCompareButton slug={tool.slug} name={tool.name} iconOnly />
         </div>
       </div>
     </div>

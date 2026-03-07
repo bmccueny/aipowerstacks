@@ -136,7 +136,7 @@ export function ReviewCard({ review, currentUserId }: ReviewCardProps) {
               value={editTitle}
               onChange={(e) => setEditTitle(e.target.value)}
               placeholder="Brief summary"
-              className="bg-background border-black/10 h-9 text-sm"
+              className="glass-card border-border/30 h-10 text-sm focus:ring-2 focus:ring-primary/50"
               maxLength={100}
             />
           </div>
@@ -147,7 +147,7 @@ export function ReviewCard({ review, currentUserId }: ReviewCardProps) {
               value={editBody}
               onChange={(e) => setEditBody(e.target.value)}
               placeholder="Share your experience..."
-              className="w-full bg-background border border-black/10 rounded-md px-3 py-2 text-sm resize-none h-24 focus:outline-none focus:border-primary/30"
+              className="w-full glass-card border border-border/30 rounded-2xl px-4 py-3 text-sm resize-none h-28 focus:outline-none focus:ring-2 focus:ring-primary/50"
               maxLength={1000}
             />
           </div>

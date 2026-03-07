@@ -105,7 +105,7 @@ export function ToolForm({ categories, tool }: ToolFormProps) {
     }
   }
 
-  const inputCls = 'bg-white/5 border-white/10'
+  const inputCls = 'glass-card border-border/30 focus:ring-2 focus:ring-primary/50'
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5 max-w-2xl">

@@ -42,8 +42,8 @@ export function NewsletterBanner({
   if (done) {
     return (
       <div className={cn(
-        'rounded-xl p-6 text-center',
-        isDark ? 'border border-white/20 bg-white/5 text-white' : 'glass-card'
+        'rounded-2xl p-6 text-center',
+        isDark ? 'glass-card border border-border/30' : 'glass-card'
       )}>
         <Mail className={cn('h-8 w-8 mx-auto mb-2', isDark ? 'text-white' : 'text-primary')} />
         <p className="font-semibold">Welcome aboard.</p>
@@ -56,19 +56,29 @@ export function NewsletterBanner({
 
   return (
     <div className={cn(
-      'rounded-xl p-6',
-      isDark ? 'border border-white/20 bg-white/5 text-white' : 'glass-card'
+      'rounded-2xl p-6 border',
+      isDark
+        ? 'bg-gray-800 border-gray-700'
+        : 'bg-gray-50 border-gray-200'
     )}>
-      <div className="flex items-center gap-3 mb-3">
-        <Mail className={cn('h-5 w-5 shrink-0', isDark ? 'text-white' : 'text-primary')} />
+      <div className="flex items-center gap-3 mb-4">
+        <Mail className="h-5 w-5 shrink-0 text-primary" />
         <div>
-          <p className="font-semibold text-sm">5 vetted AI tools, every Friday</p>
-          <p className={cn('text-xs', isDark ? 'text-white/75' : 'text-muted-foreground')}>
+          <p className={cn(
+            'font-semibold text-sm',
+            isDark ? 'text-white' : 'text-gray-900'
+          )}>
+            5 vetted AI tools, every Friday
+          </p>
+          <p className={cn(
+            'text-xs mt-1',
+            isDark ? 'text-gray-300' : 'text-gray-600'
+          )}>
             Tested and ranked so you skip the hype. Join 2,000+ readers.
           </p>
         </div>
       </div>
-      <form onSubmit={handleSubmit} className="flex gap-2">
+      <form onSubmit={handleSubmit} className="flex gap-3">
         <Input
           type="email"
           value={email}
@@ -76,25 +86,25 @@ export function NewsletterBanner({
           placeholder="your@email.com"
           required
           className={cn(
-            'flex-1',
+            'flex-1 focus:ring-2 focus:ring-primary focus:border-primary',
             isDark
-              ? 'bg-black/30 border-white/30 text-white placeholder:text-white/50 focus:border-white/60'
-              : 'bg-background border-black/20'
+              ? 'bg-gray-700 border-gray-600 text-white placeholder:text-gray-400'
+              : 'bg-white border-gray-300 text-gray-900 placeholder:text-gray-500'
           )}
         />
         <Button
           type="submit"
           disabled={loading}
           size="sm"
-          variant={isDark ? 'outline' : 'default'}
-          className={cn(
-            isDark ? 'border-white/35 bg-white/10 text-white hover:bg-white hover:text-black' : ''
-          )}
+          className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50"
         >
-          {loading ? '...' : 'Get the List'}
+          {loading ? '...' : 'Subscribe'}
         </Button>
       </form>
-      {error && <p className={cn('text-xs mt-2', isDark ? 'text-red-300' : 'text-destructive')}>{error}</p>}
+      {error && <p className={cn(
+        'text-xs mt-2',
+        isDark ? 'text-red-400' : 'text-red-600'
+      )}>{error}</p>}
     </div>
   )
 }

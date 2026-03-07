@@ -50,40 +50,51 @@ export default function RegisterPage() {
 
   if (success) {
     return (
-      <div className="flex min-h-screen bg-[#f4f4f0] text-black font-sans selection:bg-primary/30">
+      <div className="flex min-h-screen bg-background text-foreground font-sans selection:bg-primary/30">
         <div className="flex-1 flex flex-col justify-center items-center p-8 text-center max-w-2xl mx-auto">
-          <div className="h-24 w-24 bg-white border-4 border-black rounded-full flex items-center justify-center mb-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-            <span className="text-5xl">✉️</span>
+          <div className="relative mb-8">
+            <div className="absolute inset-0 glass-card rounded-full blur-2xl scale-125 opacity-60" />
+            <div className="relative h-24 w-24 glass-card rounded-full flex items-center justify-center border border-primary/30 shadow-2xl">
+              <span className="text-4xl">✉️</span>
+            </div>
           </div>
-          <h2 className="text-4xl font-black tracking-tight mb-4 uppercase italic">Check your email</h2>
-          <p className="text-xl font-bold opacity-60 mb-12 max-w-md">
-            We sent a confirmation link to <strong className="text-black">{email}</strong>. Click it to activate your account and start building.
-          </p>
-          <Link
-            href="/login"
-            className="h-16 px-12 bg-black text-white font-black text-xl uppercase tracking-widest flex items-center justify-center hover:bg-primary transition-all shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]"
-          >
-            Back to Sign In
-          </Link>
+          <div className="relative mb-12">
+            <div className="absolute inset-0 glass-card rounded-3xl blur-xl scale-110 opacity-40" />
+            <div className="relative glass-card rounded-3xl p-8 border border-border/50">
+              <h2 className="text-4xl font-black tracking-tight mb-4 uppercase italic">Check your email</h2>
+              <p className="text-xl font-bold text-muted-foreground max-w-md">
+                We sent a confirmation link to <strong className="text-foreground">{email}</strong>. Click it to activate your account and start building.
+              </p>
+            </div>
+          </div>
+          <div className="relative">
+            <div className="absolute inset-0 glass-card rounded-3xl blur-lg scale-105 opacity-60" />
+            <Link
+              href="/login"
+              className="relative h-16 px-12 btn-primary rounded-3xl shadow-2xl"
+            >
+              Back to Sign In
+            </Link>
+          </div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="flex min-h-screen bg-[#f4f4f0] text-black font-sans selection:bg-primary/30">
+    <div className="flex min-h-screen bg-background text-foreground font-sans selection:bg-primary/30">
       {/* Left Side: Content */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Header */}
-        <header className="p-8 lg:p-12 flex items-center justify-between border-b border-black">
+        <header className="p-8 lg:p-12 flex items-center justify-between border-b border-border">
           <Link href="/" className="flex items-center gap-3">
              <BrandMark className="h-10 w-10" />
              <span className="text-2xl font-black tracking-[-0.035em] leading-none">
                 <span className="text-primary">AI</span>PowerStacks
              </span>
           </Link>
-          <Link 
-            href="/login" 
+          <Link
+            href="/login"
             className="text-sm font-bold underline underline-offset-4 hover:text-primary transition-colors"
           >
             Log in
@@ -92,39 +103,41 @@ export default function RegisterPage() {
 
         {/* Main Content Area */}
         <main className="flex-1 flex flex-col justify-center p-8 lg:p-24 max-w-2xl mx-auto w-full">
-          <div className="mb-12">
-            <h1 className="text-4xl lg:text-6xl font-black tracking-tight mb-4">Join Us</h1>
-            <p className="text-lg font-medium opacity-60">Start saving your favorite AI tools today.</p>
+          <div className="relative mb-12">
+            <div className="absolute inset-0 glass-card rounded-3xl blur-2xl scale-110 opacity-40" />
+            <div className="relative glass-card rounded-3xl p-8 border border-border/50">
+              <h1 className="text-4xl lg:text-6xl font-black tracking-tight mb-4">Join Us</h1>
+              <p className="text-lg font-medium text-muted-foreground">Start saving your favorite AI tools today.</p>
+            </div>
           </div>
 
           <div className="space-y-8">
             {/* Social Auth */}
-            <button 
-              onClick={handleGoogle}
-              className="w-full flex items-center justify-center gap-4 py-4 px-6 bg-white border-2 border-black rounded-sm font-bold text-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all active:translate-x-[0px] active:translate-y-[0px] active:shadow-none"
-            >
-               <svg className="h-6 w-6" viewBox="0 0 24 24">
-                <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-                <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-              </svg>
-              Sign up with Google
-            </button>
+            <div className="relative">
+              <div className="absolute inset-0 glass-card rounded-3xl blur-lg scale-105 opacity-60" />
+              <button
+                onClick={handleGoogle}
+                className="relative w-full flex items-center justify-center gap-4 py-5 px-6 glass-card border border-border/50 rounded-3xl font-bold text-lg hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
+              >
+                Sign up with Google
+              </button>
+            </div>
 
             {/* Separator */}
-            <div className="relative py-4 flex items-center justify-center">
+            <div className="relative py-6 flex items-center justify-center">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t-2 border-black/10" />
+                <div className="w-full border-t border-border/30" />
               </div>
-              <span className="relative z-10 bg-[#f5f4f0] px-6 text-sm font-black uppercase tracking-widest text-black/40">
-                or with email
-              </span>
+              <div className="relative glass-card rounded-full px-6 py-2 border border-border/30">
+                <span className="text-sm font-black uppercase tracking-widest text-muted-foreground/70">
+                  or with email
+                </span>
+              </div>
             </div>
 
             {error && (
-              <div className="bg-[#dc341e]/10 border-2 border-[#dc341e] text-[#dc341e] text-sm font-bold p-4 rounded-sm flex items-center gap-2">
-                <div className="h-2 w-2 rounded-full bg-[#dc341e] animate-pulse" />
+              <div className="glass-card border border-destructive/30 bg-destructive/5 text-destructive text-sm font-bold p-5 rounded-2xl flex items-center gap-3 shadow-lg">
+                <div className="h-2 w-2 rounded-full bg-destructive animate-pulse" />
                 {error}
               </div>
             )}
@@ -132,59 +145,63 @@ export default function RegisterPage() {
             {/* Form */}
             <form onSubmit={handleRegister} className="space-y-8">
               <fieldset className="group">
-                <legend className="w-full mb-3 flex items-center justify-between">
-                  <span className="text-sm font-black uppercase tracking-widest opacity-60">Full Name</span>
+                <legend className="w-full mb-4 flex items-center justify-between">
+                  <span className="text-sm font-black uppercase tracking-widest text-muted-foreground">Full Name</span>
                 </legend>
-                <div className="bg-white border-2 border-black rounded-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all focus-within:translate-x-[-2px] focus-within:translate-y-[-2px] focus-within:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+                <div className="relative">
+                  <div className="absolute inset-0 glass-card rounded-2xl blur-sm scale-105 opacity-50" />
                   <input
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Your name"
                     required
-                    className="w-full h-14 px-6 bg-transparent font-bold text-lg focus:outline-none placeholder:opacity-30"
+                    className="relative w-full h-16 px-6 glass-card border border-border/50 rounded-2xl font-bold text-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/60 placeholder:text-muted-foreground/50 transition-all duration-300"
                   />
                 </div>
               </fieldset>
 
               <fieldset className="group">
-                <legend className="w-full mb-3 flex items-center justify-between">
-                  <span className="text-sm font-black uppercase tracking-widest opacity-60">Username</span>
+                <legend className="w-full mb-4 flex items-center justify-between">
+                  <span className="text-sm font-black uppercase tracking-widest text-muted-foreground">Username</span>
                 </legend>
-                <div className="relative bg-white border-2 border-black rounded-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all focus-within:translate-x-[-2px] focus-within:translate-y-[-2px] focus-within:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
-                  <span className="absolute left-6 top-1/2 -translate-y-1/2 text-lg font-bold opacity-30">@</span>
+                <div className="relative">
+                  <div className="absolute inset-0 glass-card rounded-2xl blur-sm scale-105 opacity-50" />
+                  <span className="absolute left-6 top-1/2 -translate-y-1/2 text-lg font-bold text-muted-foreground/50 z-10">@</span>
                   <input
                     type="text"
                     value={username}
                     onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
                     placeholder="username"
                     required
-                    className="w-full h-14 pl-12 pr-6 bg-transparent font-bold text-lg focus:outline-none placeholder:opacity-30"
+                    className="relative w-full h-16 pl-12 pr-6 glass-card border border-border/50 rounded-2xl font-bold text-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/60 placeholder:text-muted-foreground/50 transition-all duration-300"
                   />
                 </div>
               </fieldset>
 
               <fieldset className="group">
-                <legend className="w-full mb-3 flex items-center justify-between">
-                  <span className="text-sm font-black uppercase tracking-widest opacity-60">Email</span>
+                <legend className="w-full mb-4 flex items-center justify-between">
+                  <span className="text-sm font-black uppercase tracking-widest text-muted-foreground">Email</span>
                 </legend>
-                <div className="bg-white border-2 border-black rounded-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all focus-within:translate-x-[-2px] focus-within:translate-y-[-2px] focus-within:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+                <div className="relative">
+                  <div className="absolute inset-0 glass-card rounded-2xl blur-sm scale-105 opacity-50" />
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@example.com"
                     required
-                    className="w-full h-14 px-6 bg-transparent font-bold text-lg focus:outline-none placeholder:opacity-30"
+                    className="relative w-full h-16 px-6 glass-card border border-border/50 rounded-2xl font-bold text-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/60 placeholder:text-muted-foreground/50 transition-all duration-300"
                   />
                 </div>
               </fieldset>
 
               <fieldset className="group">
-                <legend className="w-full mb-3 flex items-center justify-between">
-                  <span className="text-sm font-black uppercase tracking-widest opacity-60">Password</span>
+                <legend className="w-full mb-4 flex items-center justify-between">
+                  <span className="text-sm font-black uppercase tracking-widest text-muted-foreground">Password</span>
                 </legend>
-                <div className="relative bg-white border-2 border-black rounded-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all focus-within:translate-x-[-2px] focus-within:translate-y-[-2px] focus-within:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+                <div className="relative">
+                  <div className="absolute inset-0 glass-card rounded-2xl blur-sm scale-105 opacity-50" />
                   <input
                     type={showPass ? 'text' : 'password'}
                     value={password}
@@ -192,52 +209,63 @@ export default function RegisterPage() {
                     placeholder="Min 8 characters"
                     required
                     minLength={8}
-                    className="w-full h-14 px-6 bg-transparent font-bold text-lg focus:outline-none placeholder:opacity-30 pr-14"
+                    className="relative w-full h-16 px-6 pr-14 glass-card border border-border/50 rounded-2xl font-bold text-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/60 placeholder:text-muted-foreground/50 transition-all duration-300"
                   />
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     onClick={() => setShowPass(!showPass)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-black/40 hover:text-black transition-colors"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground/60 hover:text-foreground transition-colors"
                   >
                     {showPass ? <EyeOff className="h-6 w-6" /> : <Eye className="h-6 w-6" />}
                   </button>
                 </div>
               </fieldset>
 
-              <button 
-                type="submit" 
-                disabled={loading}
-                className="w-full h-16 bg-black text-white font-black text-xl uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-primary transition-all disabled:opacity-50 group"
-              >
-                {loading ? (
-                  <Loader2 className="h-8 w-8 animate-spin" />
-                ) : (
-                  <>
-                    Create Account
-                    <ArrowRight className="h-6 w-6 group-hover:translate-x-1 transition-transform" />
-                  </>
-                )}
-              </button>
+              <div className="relative">
+                <div className="absolute inset-0 glass-card rounded-3xl blur-lg scale-105 opacity-60" />
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="relative w-full h-16 btn-primary rounded-3xl disabled:opacity-50 group shadow-2xl"
+                >
+                  {loading ? (
+                    <Loader2 className="h-8 w-8 animate-spin" />
+                  ) : (
+                    <>
+                      Create Account
+                      <ArrowRight className="h-6 w-6 group-hover:translate-x-1 transition-transform" />
+                    </>
+                  )}
+                </button>
+              </div>
             </form>
           </div>
         </main>
 
-        <footer className="p-8 lg:p-12 border-t border-black flex flex-wrap gap-8 text-xs font-bold uppercase tracking-widest opacity-40">
-           <Link href="/terms" className="hover:opacity-100">Terms of Service</Link>
-           <Link href="/privacy" className="hover:opacity-100">Privacy Policy</Link>
+        <footer className="p-8 lg:p-12 border-t border-border flex flex-wrap gap-8 text-xs font-bold uppercase tracking-widest text-muted-foreground/60">
+           <Link href="/terms" className="hover:text-foreground transition-colors">Terms of Service</Link>
+           <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</Link>
            <span className="ml-auto">© 2026 AIPowerStacks</span>
         </footer>
       </div>
 
       {/* Right Side: Visual Image */}
-      <div className="hidden lg:block w-[40vw] border-l-2 border-black relative overflow-hidden bg-[#ffc900]">
+      <div className="hidden lg:block w-[40vw] border-l border-border relative overflow-hidden bg-gradient-to-br from-primary/5 via-background to-primary/10">
          <div className="absolute inset-0 flex items-center justify-center p-20 text-center">
-            <div className="space-y-6">
-               <div className="h-32 w-32 mx-auto flex items-center justify-center shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] rounded-[1.2rem]">
-                  <BrandMark className="h-32 w-32" />
+            <div className="space-y-8">
+               <div className="relative">
+                 <div className="absolute inset-0 glass-card rounded-3xl blur-2xl scale-125 opacity-30" />
+                 <div className="relative h-32 w-32 mx-auto flex items-center justify-center glass-card rounded-3xl border border-border/30 shadow-2xl">
+                   <BrandMark className="h-24 w-24" />
+                 </div>
                </div>
-               <h2 className="text-5xl font-black tracking-tight leading-none mt-12">Built by creators, for creators.</h2>
-               <p className="text-xl font-bold opacity-80 max-w-sm mx-auto">Discover the perfect stack for your next big AI project.</p>
+               <div className="relative">
+                 <div className="absolute inset-0 glass-card rounded-3xl blur-xl scale-110 opacity-40" />
+                 <div className="relative glass-card rounded-3xl p-8 border border-border/30">
+                   <h2 className="text-4xl font-black tracking-tight leading-tight mb-4">Built by creators, for creators.</h2>
+                   <p className="text-lg font-semibold text-muted-foreground max-w-sm mx-auto">Discover the perfect stack for your next big AI project.</p>
+                 </div>
+               </div>
             </div>
          </div>
       </div>
