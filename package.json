@@ -7,7 +7,10 @@
     "build": "next build",
     "start": "next start",
     "backfill:compare:dry": "node scripts/backfill-tool-compare-metadata.mjs",
-    "backfill:compare:apply": "node scripts/backfill-tool-compare-metadata.mjs --apply"
+    "backfill:compare:apply": "node scripts/backfill-tool-compare-metadata.mjs --apply",
+    "discover:dry": "node scripts/discover-and-enrich.mjs",
+    "discover:submit": "node scripts/discover-and-enrich.mjs --submit",
+    "discover:submit:more": "node scripts/discover-and-enrich.mjs --submit --limit=25"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",
