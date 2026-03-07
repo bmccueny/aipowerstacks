@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { 
   Sparkles, 
   ChevronRight, 
@@ -64,10 +64,10 @@ const REQUIREMENTS = [
   { id: 'needsOpenSource', label: 'Open Source', icon: Github, desc: 'Community built' },
 ]
 
-export function AiMatchmaker() {
+export function AiMatchmaker({ initialQuery }: { initialQuery?: string } = {}) {
   const [mode, setMode] = useState<Mode>('chat')
   const [step, setStep] = useState<Step>('goal')
-  const [chatMessage, setChatMessage] = useState('')
+  const [chatMessage, setChatMessage] = useState(initialQuery ?? '')
   const [chatExplanation, setChatExplanation] = useState('')
   const [selections, setSelections] = useState({
     useCase: '',
@@ -83,6 +83,34 @@ export function AiMatchmaker() {
   const [stackRoles, setStackRoles] = useState<Record<string, string>>({})
   const [processingModel, setProcessingModel] = useState('')
   const [loading, setLoading] = useState(false)
+
+  // Auto-submit when arriving from hero search with a pre-filled query
+  useEffect(() => {
+    if (initialQuery?.trim()) {
+      setMode('chat')
+      setLoading(true)
+      setStep('results')
+      fetch('/api/matchmaker', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: initialQuery.trim() })
+      })
+        .then(r => r.json())
+        .then(data => {
+          setResults(data.tools ?? [])
+          setChatExplanation(data.explanation ?? '')
+          setProcessingModel('Claude Haiku')
+          const rolesMap: Record<string, string> = {}
+          data.roles?.forEach(({ toolId, role }: { toolId: string; role: string }) => {
+            rolesMap[toolId] = role
+          })
+          setStackRoles(rolesMap)
+        })
+        .catch(err => console.error('Auto matchmaker failed:', err))
+        .finally(() => setLoading(false))
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const handleGoalSelect = (id: string) => {
     setSelections(prev => ({ ...prev, useCase: id }))

@@ -60,10 +60,23 @@ export function HeroSearch({ toolCount }: { toolCount: number }) {
     setIsPaused(true)
   }, [displayed, isDeleting, isPaused, promptIndex, query])
 
+  const isNaturalLanguage = (q: string) => {
+    // Route to matchmaker if query looks like a sentence/question rather than a keyword
+    const words = q.trim().split(/\s+/)
+    const naturalTriggers = /\b(i need|i want|help me|looking for|something that|tool that|tool to|can|that will|how to|find me|give me|show me|what|which|best way|for my|to help|to make|to build|to create|to write|to edit|to generate|to automate|to manage|to analyze)\b/i
+    return words.length >= 4 || naturalTriggers.test(q)
+  }
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     const q = query.trim()
-    router.push(q ? `/tools?q=${encodeURIComponent(q)}` : '/tools')
+    if (!q) {
+      router.push('/tools')
+    } else if (isNaturalLanguage(q)) {
+      router.push(`/matchmaker?q=${encodeURIComponent(q)}`)
+    } else {
+      router.push(`/tools?q=${encodeURIComponent(q)}`)
+    }
   }
 
   return (
@@ -104,11 +117,9 @@ export function HeroSearch({ toolCount }: { toolCount: number }) {
       </div>
 
       <p className="text-center text-xs text-muted-foreground mt-3">
-        {toolCount.toLocaleString()}+ tools across {' '}
-        <span className="text-primary font-medium">AI writing</span>,{' '}
-        <span className="text-primary font-medium">coding</span>,{' '}
-        <span className="text-primary font-medium">video</span>,{' '}
-        <span className="text-primary font-medium">automation</span> and more
+        Search by tool name, or{' '}
+        <span className="text-primary font-medium">describe your problem</span>{' '}
+        and our AI will match you with the right tool
       </p>
     </form>
   )

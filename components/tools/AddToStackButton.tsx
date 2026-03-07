@@ -194,6 +194,13 @@ export function AddToStackButton({
   const handleTriggerClick = async (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
+    // Check auth before opening — redirect immediately if not logged in
+    const supabase = createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+      redirectToLogin()
+      return
+    }
     setDropdownOpen(true)
   }
 
