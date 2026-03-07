@@ -8,7 +8,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useRouter } from 'next/navigation'
-import { Linkedin, Github, ShieldCheck, ExternalLink, Twitter, Youtube, Instagram, Globe, Plus, X } from 'lucide-react'
+import { Linkedin, Github, ShieldCheck, ExternalLink, Twitter, Youtube, Instagram, Globe, Plus, X, Sun, Moon, Monitor } from 'lucide-react'
+import { useTheme } from '@/hooks/useTheme'
 
 type SocialLink = { platform: string; url: string }
 
@@ -24,6 +25,7 @@ const PLATFORMS = [
 export default function SettingsPage() {
   const router = useRouter()
   const fileRef = useRef<HTMLInputElement>(null)
+  const { theme, setTheme } = useTheme()
 
   const [user, setUser] = useState<{ id: string; email?: string } | null>(null)
   const [displayName, setDisplayName] = useState('')
@@ -319,6 +321,34 @@ export default function SettingsPage() {
               <span className="text-xs font-bold text-emerald-500">Identity Verified</span>
             </div>
           )}
+        </div>
+
+        <div className="pt-4 border-t border-white/10 space-y-4">
+          <h2 className="text-base font-bold">Appearance</h2>
+          <p className="text-xs text-muted-foreground">
+            Choose your preferred color theme. System will follow your device setting.
+          </p>
+          <div className="grid grid-cols-3 gap-2">
+            {([
+              { value: 'light', label: 'Light', icon: Sun },
+              { value: 'dark',  label: 'Dark',  icon: Moon },
+              { value: 'system', label: 'System', icon: Monitor },
+            ] as const).map(({ value, label, icon: Icon }) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => setTheme(value)}
+                className={`flex flex-col items-center gap-2 p-3 rounded-md border text-sm font-medium transition-colors
+                  ${theme === value
+                    ? 'border-primary bg-primary/10 text-primary'
+                    : 'border-white/10 bg-white/5 text-muted-foreground hover:border-white/20 hover:text-foreground'
+                  }`}
+              >
+                <Icon className="h-4 w-4" />
+                {label}
+              </button>
+            ))}
+          </div>
         </div>
 
         {error && <p className="text-sm text-destructive">{error}</p>}
