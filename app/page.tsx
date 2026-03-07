@@ -294,10 +294,10 @@ export default async function HomePage() {
               </div>
               <NewsletterBanner source="homepage-mid" tone="light" />
             </div>
-            <div className="p-8 sm:p-10 flex flex-col justify-center gap-4 bg-foreground text-background md:border-l border-t md:border-t-0 border-foreground">
+            <div className="p-8 sm:p-10 flex flex-col justify-center gap-4 bg-zinc-900 md:border-l border-t md:border-t-0 border-foreground">
               <div>
-                <h2 className="text-xl font-bold text-background">Built an AI tool? Get discovered.</h2>
-                <p className="text-sm text-background opacity-60 mt-1">Put your tool in front of {toolCount >= 1000 ? `${Math.floor(toolCount / 1000)}k+` : 'thousands of'} founders, developers, and buyers actively comparing solutions.</p>
+                <h2 className="text-xl font-bold text-white">Built an AI tool? Get discovered.</h2>
+                <p className="text-sm text-white/60 mt-1">Put your tool in front of {toolCount >= 1000 ? `${Math.floor(toolCount / 1000)}k+` : 'thousands of'} founders, developers, and buyers actively comparing solutions.</p>
               </div>
               <Link
                 href="/submit"
