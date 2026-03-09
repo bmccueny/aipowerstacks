@@ -416,10 +416,20 @@ export async function getMatchedTools({
       .from('tools')
       .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, avg_rating, review_count, upvote_count, has_api, has_mobile_app, is_open_source, is_supertools, trains_on_data, has_sso, security_certifications')
       .eq('status', 'published')
-      .eq('is_supertools', true)
       .order('upvote_count', { ascending: false })
       .limit(limit)
     data = nuclear.data
+  }
+
+  // D. LAST RESORT: Get any published tools if supertools query failed
+  if (!data || data.length === 0) {
+    const lastResort = await supabase
+      .from('tools')
+      .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, avg_rating, review_count, upvote_count, has_api, has_mobile_app, is_open_source, is_supertools, trains_on_data, has_sso, security_certifications')
+      .eq('status', 'published')
+      .order('upvote_count', { ascending: false })
+      .limit(limit)
+    data = lastResort.data
   }
 
   return (data as any) ?? [] as ToolSearchResult[]
