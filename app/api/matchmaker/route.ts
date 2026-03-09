@@ -350,22 +350,34 @@ export async function POST(req: NextRequest) {
 
     const { data: pool, error: poolError } = await (supabase as any).rpc('match_tools_semantic', {
       query_embedding: vectorStr,
-      match_threshold: 0.2,
-      match_count: 25,
+      match_threshold: 0.1,
+      match_count: 30,
     })
 
-    if (poolError) throw poolError
+    if (poolError) {
+      console.error('Semantic search error:', poolError)
+    }
+    
+    // If no semantic results, fall back to popular published tools
+    let finalPool = pool
     if (!pool || pool.length === 0) {
-      return NextResponse.json({ tools: [], explanation: 'No matching tools found. Try describing your project differently.' })
+      console.log('No semantic matches, falling back to popular tools')
+      const { data: fallbackPool } = await supabase
+        .from('tools')
+        .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, avg_rating, review_count, upvote_count, is_supertools, use_case, description, has_api, is_open_source, trains_on_data')
+        .eq('status', 'published')
+        .order('upvote_count', { ascending: false })
+        .limit(30)
+      finalPool = fallbackPool || []
     }
 
     // 2. Claude path — real AI reasoning over the semantic pool
     if (process.env.ANTHROPIC_API_KEY) {
       try {
-        const { intro, stack: claudeStack } = await selectStackWithClaude(message, pool)
+        const { intro, stack: claudeStack } = await selectStackWithClaude(message, finalPool)
         const stack: StackEntry[] = claudeStack
           .map(({ id, role, reason }) => ({
-            tool: pool.find((t: any) => t.id === id),
+            tool: finalPool.find((t: any) => t.id === id),
             role,
             description: reason,
           }))
@@ -386,8 +398,8 @@ export async function POST(req: NextRequest) {
 
     // 3. Heuristic fallback — no API key or Claude failed
     const intent = analyzeIntent(message)
-    const stack = buildContextualStack(pool, intent.roles)
-    const results = stack.length >= 2 ? stack : pool.slice(0, 5).map((tool: any) => ({
+    const stack = buildContextualStack(finalPool, intent.roles)
+    const results = stack.length >= 2 ? stack : finalPool.slice(0, 5).map((tool: any) => ({
       tool,
       role: 'Recommended',
       description: tool.tagline || '',
