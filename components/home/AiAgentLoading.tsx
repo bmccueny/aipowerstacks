@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils'
 
 const STATUS_MESSAGES = [
   "Initializing neural pathways...",
-  "Scanning 5,000+ AI tools database...",
+  "Scanning AI tools database...",
   "Analyzing technical specifications...",
   "Cross-referencing pricing and API latency...",
   "Filtering for developer-grade capabilities...",

@@ -204,7 +204,7 @@ export default function LoginPage() {
                  <div className="absolute inset-0 glass-card rounded-3xl blur-xl scale-110 opacity-40" />
                  <div className="relative glass-card rounded-3xl p-8 border border-border/30">
                    <h2 className="text-4xl font-black tracking-tight leading-tight mb-4">Empowering the next generation of AI builders.</h2>
-                   <p className="text-lg font-semibold text-muted-foreground max-w-sm mx-auto">Join 10,000+ creators launching their AI stacks on AIPowerStacks.</p>
+                   <p className="text-lg font-semibold text-muted-foreground max-w-sm mx-auto">Join creators launching their AI stacks on AIPowerStacks.</p>
                  </div>
                </div>
             </div>

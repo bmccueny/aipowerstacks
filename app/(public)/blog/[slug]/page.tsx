@@ -208,7 +208,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                 Stop guessing. Start building.
               </h3>
               <p className="text-sm sm:text-lg mb-8 opacity-90 font-medium">
-                Join 5,000+ developers and founders getting the weekly AI signal. No hype, just the tools and insights you need.
+                Join developers and founders getting the weekly AI signal. No hype, just the tools and insights you need.
               </p>
               <div className="newsletter-invert">
                 <NewsletterBanner source="blog-post" />

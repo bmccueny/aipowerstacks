@@ -10,7 +10,10 @@
     "backfill:compare:apply": "node scripts/backfill-tool-compare-metadata.mjs --apply",
     "discover:dry": "node scripts/discover-and-enrich.mjs",
     "discover:submit": "node scripts/discover-and-enrich.mjs --submit",
-    "discover:submit:more": "node scripts/discover-and-enrich.mjs --submit --limit=25"
+    "discover:submit:more": "node scripts/discover-and-enrich.mjs --submit --limit=25",
+    "pipeline:dry": "node scripts/pipeline-100.mjs",
+    "pipeline:submit": "node scripts/pipeline-100.mjs --submit",
+    "pipeline:submit:50": "node scripts/pipeline-100.mjs --submit --limit=50"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",

@@ -21,7 +21,7 @@ export default function AboutPage() {
       <div className="prose dark:prose-invert max-w-none mb-16">
         <h2 className="text-2xl font-bold mb-4">What is AIPowerStacks?</h2>
         <p className="text-muted-foreground leading-relaxed mb-6">
-          AIPowerStacks is the most comprehensive and up-to-date AI tools directory on the web. We track 5,000+ AI tools across writing, coding, image generation, video, productivity, and more.
+          AIPowerStacks is a comprehensive and up-to-date AI tools directory. We track AI tools across writing, coding, image generation, video, productivity, and more.
         </p>
         <p className="text-muted-foreground leading-relaxed mb-6">
           The AI landscape is moving at breakneck speed. Every day, dozens of new tools are launched. Most are noise; some are transformative. Our goal is to help you identify the transformative ones quickly, so you can focus on building and creating.

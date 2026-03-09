@@ -50,8 +50,8 @@ function normalizeNewsImageUrl(imageUrl: string | null, articleUrl: string): str
 }
 
 export const metadata = {
-  title: 'AIPowerStacks | Compare 5,000+ AI Tools by Use Case',
-  description: 'Compare 5,000+ AI tools side-by-side. Filter by use case, pricing, and integrations. Verified listings, real user reviews, and daily updates.',
+  title: 'AIPowerStacks | Discover & Compare AI Tools',
+  description: 'Discover and compare AI tools side-by-side. Filter by use case, pricing, and integrations. Verified listings, real user reviews, and daily updates.',
   alternates: {
     canonical: '/',
   },

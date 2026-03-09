@@ -29,7 +29,7 @@ export function Footer() {
   const siteUrl = SITE_URL
   const encodedSiteUrl = encodeURIComponent(siteUrl)
   const shareLinks = {
-    x: `https://x.com/intent/tweet?url=${encodedSiteUrl}&text=${encodeURIComponent('Compare 5,000+ AI tools side-by-side on AIPowerStacks')}`,
+    x: `https://x.com/intent/tweet?url=${encodedSiteUrl}&text=${encodeURIComponent('Discover and compare AI tools side-by-side on AIPowerStacks')}`,
     linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedSiteUrl}`,
     facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedSiteUrl}`,
   }
@@ -66,7 +66,7 @@ export function Footer() {
               <div className="absolute -top-1 -right-1 w-1 h-1 bg-cyan-400 rounded-full opacity-0 group-hover:opacity-60 animate-ping" style={{ animationDuration: '1.5s' }}></div>
             </Link>
             <p className="text-sm text-muted-foreground max-w-xs leading-relaxed">
-              Compare 5,000+ AI tools by use case, pricing, and integrations. Verified listings and real user reviews, updated every day.
+              Discover and compare AI tools by use case, pricing, and integrations. Verified listings and real user reviews, updated every day.
             </p>
             <div className="mt-4 flex items-center gap-3">
               <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground/70">Share</span>
@@ -130,7 +130,7 @@ export function Footer() {
             © {new Date().getFullYear()} AIPowerStacks. All rights reserved.
           </p>
           <p className="text-sm text-muted-foreground">
-            5,000+ AI tools compared. New listings added daily.
+            New AI tool listings added daily.
           </p>
         </div>
       </div>

@@ -23,10 +23,10 @@ import './globals.css'
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: 'AIPowerStacks | Compare 5,000+ AI Tools by Use Case',
+    default: 'AIPowerStacks | Discover & Compare AI Tools',
     template: '%s | AIPowerStacks',
   },
-  description: 'Compare 5,000+ AI tools side-by-side. Filter by use case, pricing, and integrations. Verified listings, real user reviews, and daily updates.',
+  description: 'Discover and compare AI tools side-by-side. Filter by use case, pricing, and integrations. Verified listings, real user reviews, and daily updates.',
   alternates: {
     canonical: '/',
   },
@@ -56,13 +56,13 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     siteName: 'AIPowerStacks',
-    title: 'AIPowerStacks | Compare 5,000+ AI Tools by Use Case',
-    description: 'Find, compare, and shortlist AI tools in seconds. 5,000+ verified listings with real user reviews, updated daily.',
+    title: 'AIPowerStacks | Discover & Compare AI Tools',
+    description: 'Find, compare, and shortlist AI tools in seconds. Verified listings with real user reviews, updated daily.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'AIPowerStacks | Compare 5,000+ AI Tools by Use Case',
-    description: 'Find, compare, and shortlist AI tools in seconds. 5,000+ verified listings with real user reviews, updated daily.',
+    title: 'AIPowerStacks | Discover & Compare AI Tools',
+    description: 'Find, compare, and shortlist AI tools in seconds. Verified listings with real user reviews, updated daily.',
   },
   robots: {
     index: true,
