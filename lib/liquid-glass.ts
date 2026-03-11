@@ -227,6 +227,81 @@ export function buildLiquidGlassFilter(config: LiquidGlassConfig): LiquidGlassRe
   return { filterId: id, filterSvg }
 }
 
+// ─── Glass Mode ─────────────────────────────────────────────────────
+
+export type GlassMode = 'refraction' | 'turbulence'
+
+// ─── Turbulence Glass (feTurbulence-based, cross-browser) ───────────
+//
+// Inspired by lucasromerodb/liquid-glass-effect-macos.
+// Uses SVG feTurbulence + feSpecularLighting + feDisplacementMap to
+// produce an organic wavy/rippled distortion — no JS canvas needed,
+// works in all browsers that support SVG filters.
+
+export interface TurbulenceGlassConfig {
+  /** feTurbulence baseFrequency (both axes) — default 0.01 */
+  baseFrequency?: number
+  /** feTurbulence numOctaves — default 1 */
+  numOctaves?: number
+  /** feTurbulence seed — default 5 */
+  seed?: number
+  /** feDisplacementMap scale — default 150 */
+  displacementScale?: number
+  /** feSpecularLighting specularExponent — default 100 */
+  specularExponent?: number
+  /** feSpecularLighting surfaceScale — default 5 */
+  surfaceScale?: number
+  /** feGaussianBlur stdDeviation for softening the noise map — default 3 */
+  blurStdDeviation?: number
+  /** fePointLight position — defaults to { x: -200, y: -200, z: 300 } */
+  lightPosition?: { x: number; y: number; z: number }
+}
+
+export interface TurbulenceGlassResult {
+  filterId: string
+  filterSvg: string
+}
+
+export function buildTurbulenceGlassFilter(
+  config: TurbulenceGlassConfig = {}
+): TurbulenceGlassResult {
+  const {
+    baseFrequency = 0.01,
+    numOctaves = 1,
+    seed = 5,
+    displacementScale = 150,
+    specularExponent = 100,
+    surfaceScale = 5,
+    blurStdDeviation = 3,
+    lightPosition = { x: -200, y: -200, z: 300 },
+  } = config
+
+  const id = `lg-turb-${++_counter}`
+  const freq = `${baseFrequency} ${baseFrequency}`
+
+  const filterSvg = `<filter id="${id}" x="0%" y="0%" width="100%" height="100%" filterUnits="objectBoundingBox">
+      <feTurbulence type="fractalNoise" baseFrequency="${freq}"
+        numOctaves="${numOctaves}" seed="${seed}" result="turbulence" />
+      <feComponentTransfer in="turbulence" result="mapped">
+        <feFuncR type="gamma" amplitude="1" exponent="10" offset="0.5" />
+        <feFuncG type="gamma" amplitude="0" exponent="1" offset="0" />
+        <feFuncB type="gamma" amplitude="0" exponent="1" offset="0.5" />
+      </feComponentTransfer>
+      <feGaussianBlur in="turbulence" stdDeviation="${blurStdDeviation}" result="softMap" />
+      <feSpecularLighting in="softMap" surfaceScale="${surfaceScale}"
+        specularConstant="1" specularExponent="${specularExponent}"
+        lighting-color="white" result="specLight">
+        <fePointLight x="${lightPosition.x}" y="${lightPosition.y}" z="${lightPosition.z}" />
+      </feSpecularLighting>
+      <feComposite in="specLight" operator="arithmetic"
+        k1="0" k2="1" k3="1" k4="0" result="litImage" />
+      <feDisplacementMap in="SourceGraphic" in2="softMap"
+        scale="${displacementScale}" xChannelSelector="R" yChannelSelector="G" />
+    </filter>`
+
+  return { filterId: id, filterSvg }
+}
+
 // ─── Chromium Detection ─────────────────────────────────────────────
 
 export function isChromium(): boolean {

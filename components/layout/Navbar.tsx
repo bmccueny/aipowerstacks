@@ -15,7 +15,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { cn } from '@/lib/utils'
-import { useLiquidGlass } from '@/hooks/useLiquidGlass'
 
 const navLinks = [
   { href: '/tools', label: 'Browse' },
@@ -74,21 +73,10 @@ export function Navbar() {
     router.refresh()
   }
 
-  const navRef = useLiquidGlass<HTMLElement>({
-    radius: 0,
-    glassThickness: 80,
-    bezelWidth: 60,
-    ior: 3.0,
-    blur: 0.3,
-    specularOpacity: 0.5,
-    specularSaturation: 4,
-  })
-
   return (
     <>
       {/* Main Navbar */}
       <nav
-        ref={navRef}
         className="fixed top-0 w-screen z-50 liquid-glass border-b border-white/20 dark:border-white/10"
         style={{ left: 0, right: 0, width: '100vw' }}
       >

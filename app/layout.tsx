@@ -18,6 +18,7 @@ import { CompareProvider } from '@/lib/context/CompareContext'
 import { JsonLd } from '@/components/common/JsonLd'
 import { generateOrganizationJsonLd } from '@/lib/utils/seo'
 import { Toaster } from 'sonner'
+import TwinklingStars from '@/components/common/TwinklingStars'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -95,6 +96,7 @@ export default function RootLayout({
       <body className="antialiased">
         <div className="stars" aria-hidden="true" />
         <div className="nebula" aria-hidden="true" />
+        <TwinklingStars />
         <CompareProvider>
           <div className="relative z-[1]">
             {children}
