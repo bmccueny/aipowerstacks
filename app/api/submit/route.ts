@@ -12,6 +12,7 @@ const submitSchema = z.object({
   logo_url: z.string().url().optional().or(z.literal('')),
   submitter_email: z.string().email().optional().or(z.literal('')),
   notes: z.string().max(500).optional(),
+  model_provider: z.string().max(50).optional().or(z.literal('')),
 })
 
 export async function POST(request: Request) {
@@ -27,7 +28,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 })
   }
 
-  const { name, website_url, tagline, description, category_id, pricing_model, logo_url, submitter_email, notes } = parsed.data
+  const { name, website_url, tagline, description, category_id, pricing_model, logo_url, submitter_email, notes, model_provider } = parsed.data
 
   const { error } = await supabase
     .from('tool_submissions')
@@ -41,6 +42,7 @@ export async function POST(request: Request) {
       logo_url: logo_url || null,
       submitter_email: submitter_email || null,
       notes: notes || null,
+      model_provider: model_provider || null,
       submitted_by: user.id,
     })
 

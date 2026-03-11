@@ -129,6 +129,8 @@ export type Database = {
           has_sso: boolean
           security_certifications: string[] | null
           model_provider: string | null
+          is_api_wrapper: boolean
+          wrapper_details: string | null
           created_at: string
           updated_at: string
         }
@@ -166,6 +168,8 @@ export type Database = {
           has_sso?: boolean
           security_certifications?: string[] | null
           model_provider?: string | null
+          is_api_wrapper?: boolean
+          wrapper_details?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -201,6 +205,8 @@ export type Database = {
           has_sso?: boolean
           security_certifications?: string[] | null
           model_provider?: string | null
+          is_api_wrapper?: boolean
+          wrapper_details?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -292,6 +298,7 @@ export type Database = {
           pricing_model: string | null
           logo_url: string | null
           notes: string | null
+          model_provider: string | null
           status: 'pending' | 'approved' | 'rejected'
           reviewed_by: string | null
           reviewed_at: string | null
@@ -311,6 +318,7 @@ export type Database = {
           pricing_model?: string | null
           logo_url?: string | null
           notes?: string | null
+          model_provider?: string | null
           status?: 'pending' | 'approved' | 'rejected'
           created_at?: string
         }
@@ -801,6 +809,8 @@ export type Database = {
           verified_by_admin: boolean
           admin_review_video_url: string | null
           published_at: string | null
+          model_provider: string | null
+          is_api_wrapper: boolean
           rank: number
         }[]
       }

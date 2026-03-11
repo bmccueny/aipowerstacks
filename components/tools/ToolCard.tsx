@@ -6,7 +6,7 @@ import Image from 'next/image'
 import { Star, ExternalLink } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import type { ToolCardData } from '@/lib/types'
-import { PRICING_BADGE_COLORS, PRICING_LABELS } from '@/lib/constants'
+import { PRICING_BADGE_COLORS, PRICING_LABELS, MODEL_PROVIDER_LABELS } from '@/lib/constants'
 import { WellFavoredBadge } from './WellFavoredBadge'
 import { VerifiedBadge } from '@/components/ui/VerifiedBadge'
 import { AddToStackButton } from './AddToStackButton'
@@ -82,6 +82,11 @@ export function ToolCard({ tool, view = 'grid', cardStyle = 'default', compact =
             </div>
             {tool.has_api && <Badge variant="secondary" className="text-[10px] bg-blue-50 text-blue-700 border-blue-200">API</Badge>}
             {tool.is_open_source && <Badge variant="secondary" className="text-[10px] bg-emerald-50 text-emerald-700 border-emerald-200">Open Source</Badge>}
+            {tool.model_provider && tool.model_provider !== 'proprietary' && (
+              <Badge variant="secondary" className="text-[10px] bg-violet-50 text-violet-700 border-violet-200 dark:bg-violet-950 dark:text-violet-300 dark:border-violet-800">
+                {tool.is_api_wrapper ? '⚠ Wrapper' : 'Powered by'} {MODEL_PROVIDER_LABELS[tool.model_provider] ?? tool.model_provider}
+              </Badge>
+            )}
           </div>
         </div>
         <div className="w-full sm:w-auto sm:ml-auto flex items-center justify-end gap-2 sm:gap-3 shrink-0 relative z-10">
@@ -175,6 +180,11 @@ export function ToolCard({ tool, view = 'grid', cardStyle = 'default', compact =
                         {pricingLabel}
                       </span>
                     )}
+                    {tool.model_provider && tool.model_provider !== 'proprietary' && (
+                      <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-violet-50 text-violet-700 border border-violet-200 dark:bg-violet-950 dark:text-violet-300 dark:border-violet-800">
+                        {tool.is_api_wrapper ? '⚠' : '⚡'} {MODEL_PROVIDER_LABELS[tool.model_provider] ?? tool.model_provider}
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -241,8 +251,13 @@ export function ToolCard({ tool, view = 'grid', cardStyle = 'default', compact =
         </div>
       )}
 
-      {/* Top bar: pricing badge right-aligned */}
+      {/* Top bar: pricing badge + wrapper badge right-aligned */}
       <div className="px-5 pt-4 flex items-center justify-end gap-2 relative z-10">
+        {tool.model_provider && tool.model_provider !== 'proprietary' && (
+          <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full bg-violet-50 text-violet-700 border border-violet-200 dark:bg-violet-950 dark:text-violet-300 dark:border-violet-800">
+            {tool.is_api_wrapper ? '⚠ Wrapper' : '⚡'} {MODEL_PROVIDER_LABELS[tool.model_provider] ?? tool.model_provider}
+          </span>
+        )}
         {tool.pricing_tags && tool.pricing_tags.length > 0 ? (
           <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/20">
             {tool.pricing_tags[0]}

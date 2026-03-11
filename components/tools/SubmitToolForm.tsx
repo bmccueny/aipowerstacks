@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { PRICING_MODELS } from '@/lib/constants'
+import { PRICING_MODELS, MODEL_PROVIDER_OPTIONS } from '@/lib/constants'
 import { useLiquidGlass } from '@/hooks/useLiquidGlass'
 
 interface Category { id: string; name: string }
@@ -26,6 +26,7 @@ export function SubmitToolForm({
     logo_url: string
     submitter_email: string
     notes: string
+    model_provider: string
   }>
   mode?: 'submit' | 'claim' | 'suggest-edit'
 }) {
@@ -44,6 +45,7 @@ export function SubmitToolForm({
     logo_url: initialValues?.logo_url ?? '',
     submitter_email: initialValues?.submitter_email ?? '',
     notes: initialValues?.notes ?? '',
+    model_provider: initialValues?.model_provider ?? '',
   })
 
   const set = (k: keyof typeof form) =>
@@ -146,6 +148,17 @@ export function SubmitToolForm({
             ))}
           </select>
         </div>
+      </div>
+
+      <div>
+        <label className="text-sm font-medium mb-1.5 block">Underlying AI Model (optional)</label>
+        <select value={form.model_provider} onChange={set('model_provider')} className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-2xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
+          <option value="">Not sure / Proprietary</option>
+          {MODEL_PROVIDER_OPTIONS.map((p) => (
+            <option key={p.value} value={p.value}>{p.label}</option>
+          ))}
+        </select>
+        <p className="text-[11px] text-muted-foreground mt-1">If this tool is built on top of another AI model, select it here.</p>
       </div>
 
       <div>

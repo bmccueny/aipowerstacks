@@ -44,6 +44,36 @@ export const INTEGRATION_OPTIONS = [
   { value: 'figma', label: 'Figma' },
 ] as const
 
+export const MODEL_PROVIDER_OPTIONS = [
+  { value: 'openai', label: 'OpenAI (GPT-4, etc.)' },
+  { value: 'anthropic', label: 'Anthropic (Claude)' },
+  { value: 'google', label: 'Google (Gemini)' },
+  { value: 'meta', label: 'Meta (Llama)' },
+  { value: 'mistral', label: 'Mistral' },
+  { value: 'cohere', label: 'Cohere' },
+  { value: 'stability', label: 'Stability AI' },
+  { value: 'eleven-labs', label: 'ElevenLabs' },
+  { value: 'midjourney', label: 'Midjourney' },
+  { value: 'multiple', label: 'Multiple Providers' },
+  { value: 'proprietary', label: 'Proprietary Model' },
+  { value: 'other', label: 'Other' },
+] as const
+
+export const MODEL_PROVIDER_LABELS: Record<string, string> = {
+  openai: 'OpenAI',
+  anthropic: 'Anthropic',
+  google: 'Google',
+  meta: 'Meta',
+  mistral: 'Mistral',
+  cohere: 'Cohere',
+  stability: 'Stability AI',
+  'eleven-labs': 'ElevenLabs',
+  midjourney: 'Midjourney',
+  multiple: 'Multiple',
+  proprietary: 'Proprietary',
+  other: 'Other',
+}
+
 export const PRICING_BADGE_COLORS: Record<string, string> = {
   free: 'bg-emerald-100 text-emerald-800 border-emerald-300',
   freemium: 'bg-sky-100 text-sky-800 border-sky-300',

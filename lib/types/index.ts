@@ -21,12 +21,16 @@ export type CollectionItem = Tables['collection_items']['Row']
 export type ToolSearchResult = Database['public']['Functions']['search_tools']['Returns'][number] & {
   pricing_tags?: string[] | null
   pricing_details?: string | null
+  model_provider?: string | null
+  is_api_wrapper?: boolean
 }
 
 export type ToolCardData = ToolSearchResult & { 
   screenshot_urls?: string[] | null
   pricing_tags?: string[] | null
   pricing_details?: string | null
+  model_provider?: string | null
+  is_api_wrapper?: boolean
 }
 
 export type PricingModel = 'free' | 'freemium' | 'paid' | 'trial' | 'contact' | 'unknown'

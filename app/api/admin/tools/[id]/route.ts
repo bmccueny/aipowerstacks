@@ -21,6 +21,9 @@ const updateSchema = z.object({
   is_featured: z.boolean().optional(),
   is_supertools: z.boolean().optional(),
   is_editors_pick: z.boolean().optional(),
+  model_provider: z.string().max(50).nullable().optional(),
+  is_api_wrapper: z.boolean().optional(),
+  wrapper_details: z.string().max(500).nullable().optional(),
 })
 
 async function isAdmin(supabase: Awaited<ReturnType<typeof createClient>>, userId: string) {

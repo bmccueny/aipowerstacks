@@ -18,7 +18,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getToolBySlug, getRelatedToolsByCategory } from '@/lib/supabase/queries/tools'
 import { getReviewsByTool } from '@/lib/supabase/queries/reviews'
 import { generateFaqJsonLd, generateJsonLd, generateToolMetadata, generateBreadcrumbJsonLd } from '@/lib/utils/seo'
-import { PRICING_BADGE_COLORS, PRICING_LABELS } from '@/lib/constants'
+import { PRICING_BADGE_COLORS, PRICING_LABELS, MODEL_PROVIDER_LABELS } from '@/lib/constants'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -166,6 +166,11 @@ export default async function ToolDetailPage({ params }: Props) {
                     </Badge>
                   ))}
                 </div>
+                {tool.model_provider && tool.model_provider !== 'proprietary' && (
+                  <Badge variant="outline" className="bg-violet-100 text-violet-800 border-violet-300 dark:bg-violet-950 dark:text-violet-300 dark:border-violet-800">
+                    {tool.is_api_wrapper ? '⚠ Wrapper:' : 'Powered by'} {MODEL_PROVIDER_LABELS[tool.model_provider] ?? tool.model_provider}
+                  </Badge>
+                )}
                 {tool.is_supertools && (
                   <Badge variant="outline" className="bg-indigo-100 text-indigo-800 border-indigo-300">SuperTool</Badge>
                 )}
@@ -408,6 +413,26 @@ export default async function ToolDetailPage({ params }: Props) {
                   <dt className="text-muted-foreground">Open Source</dt>
                   <dd>{tool.is_open_source ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <X className="h-3.5 w-3.5 text-muted-foreground/30" />}</dd>
                 </div>
+                <div className="flex justify-between gap-3">
+                  <dt className="text-muted-foreground">API Wrapper</dt>
+                  <dd>{tool.is_api_wrapper ? <Check className="h-3.5 w-3.5 text-amber-500" /> : <X className="h-3.5 w-3.5 text-muted-foreground/30" />}</dd>
+                </div>
+                {tool.model_provider && (
+                  <div className="flex justify-between gap-3">
+                    <dt className="text-muted-foreground">Model Provider</dt>
+                    <dd>
+                      <Badge variant="outline" className="text-[10px] bg-violet-50 text-violet-700 border-violet-200 dark:bg-violet-950 dark:text-violet-300 dark:border-violet-800">
+                        {MODEL_PROVIDER_LABELS[tool.model_provider] ?? tool.model_provider}
+                      </Badge>
+                    </dd>
+                  </div>
+                )}
+                {tool.wrapper_details && (
+                  <div className="flex justify-between gap-3">
+                    <dt className="text-muted-foreground">Model Details</dt>
+                    <dd className="text-right text-xs max-w-36">{tool.wrapper_details}</dd>
+                  </div>
+                )}
                 {tool.has_api && (
                   <>
                     <div className="flex justify-between gap-3 pt-2 border-t border-foreground/5">

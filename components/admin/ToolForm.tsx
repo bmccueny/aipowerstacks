@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { INTEGRATION_OPTIONS, PRICING_MODELS, TEAM_SIZE_OPTIONS, USE_CASE_OPTIONS } from '@/lib/constants'
+import { INTEGRATION_OPTIONS, PRICING_MODELS, TEAM_SIZE_OPTIONS, USE_CASE_OPTIONS, MODEL_PROVIDER_OPTIONS } from '@/lib/constants'
 import { DeleteToolButton } from './DeleteToolButton'
 
 interface Category { id: string; name: string }
@@ -30,6 +30,9 @@ interface ToolFormProps {
     is_featured: boolean
     is_supertools: boolean
     is_editors_pick: boolean
+    model_provider: string | null
+    is_api_wrapper: boolean
+    wrapper_details: string | null
   }
 }
 
@@ -56,6 +59,9 @@ export function ToolForm({ categories, tool }: ToolFormProps) {
     is_featured: tool?.is_featured ?? false,
     is_supertools: tool?.is_supertools ?? false,
     is_editors_pick: tool?.is_editors_pick ?? false,
+    model_provider: tool?.model_provider ?? '',
+    is_api_wrapper: tool?.is_api_wrapper ?? false,
+    wrapper_details: tool?.wrapper_details ?? '',
   })
 
   const set = (k: keyof typeof form) =>
@@ -92,6 +98,8 @@ export function ToolForm({ categories, tool }: ToolFormProps) {
         integrations: form.integrations
           ? form.integrations.split(',').map((item) => item.trim()).filter(Boolean)
           : null,
+        model_provider: form.model_provider || null,
+        wrapper_details: form.wrapper_details || null,
       }),
     })
 
@@ -201,12 +209,28 @@ export function ToolForm({ categories, tool }: ToolFormProps) {
         />
       </div>
 
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label className="text-sm font-medium mb-1.5 block">Model Provider</label>
+          <select value={form.model_provider} onChange={set('model_provider')}
+            className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary/50">
+            <option value="">None / Unknown</option>
+            {MODEL_PROVIDER_OPTIONS.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
+          </select>
+        </div>
+        <div>
+          <label className="text-sm font-medium mb-1.5 block">Wrapper Details</label>
+          <Input value={form.wrapper_details} onChange={set('wrapper_details')} placeholder="e.g. Uses GPT-4 Turbo + Whisper" className={inputCls} />
+        </div>
+      </div>
+
       <div className="flex flex-wrap gap-4">
         {([
           ['is_verified', 'Verified'],
           ['is_featured', 'Featured'],
           ['is_supertools', 'Super Tool'],
           ['is_editors_pick', "Editor's Pick"],
+          ['is_api_wrapper', 'API Wrapper'],
         ] as const).map(([k, label]) => (
           <label key={k} className="flex items-center gap-2 cursor-pointer">
             <input type="checkbox" checked={form[k] as boolean} onChange={toggle(k)} className="rounded" />

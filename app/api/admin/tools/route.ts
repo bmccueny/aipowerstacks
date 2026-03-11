@@ -21,6 +21,9 @@ const toolSchema = z.object({
   is_featured: z.boolean().default(false),
   is_supertools: z.boolean().default(false),
   is_editors_pick: z.boolean().default(false),
+  model_provider: z.string().max(50).nullable().optional(),
+  is_api_wrapper: z.boolean().default(false),
+  wrapper_details: z.string().max(500).nullable().optional(),
 })
 
 async function isAdmin(supabase: Awaited<ReturnType<typeof createClient>>, userId: string) {
