@@ -288,7 +288,7 @@ export function AddToStackButton({
           onClick={(e) => {
             e.preventDefault()
             setPickerOpen(false)
-            setIsDialogOpen(true)
+            setTimeout(() => setIsDialogOpen(true), 350)
           }}
         >
           <div className="h-9 w-9 rounded-lg bg-primary/5 dark:bg-primary/10 flex items-center justify-center shrink-0 text-primary">
@@ -418,7 +418,7 @@ export function AddToStackButton({
                 onSelect={(e) => {
                   e.preventDefault()
                   setPickerOpen(false)
-                  setIsDialogOpen(true)
+                  setTimeout(() => setIsDialogOpen(true), 350)
                 }}
               >
                 <div className="h-8 w-8 rounded bg-primary/5 flex items-center justify-center shrink-0 text-primary">
