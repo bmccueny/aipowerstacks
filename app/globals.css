@@ -792,16 +792,20 @@
     inset 0 0 var(--lg-inner-shadow-blur) var(--lg-inner-shadow-spread) var(--lg-inner-shadow-color);
 }
 
-/* ── Add to Stack: burning crimson glow ── */
-.add-to-stack-btn {
+/* ── Burning crimson glow: shared tokens ── */
+.add-to-stack-btn,
+.burn-glow-card {
   --burn-color: oklch(0.62 0.23 22);
-  --burn-color-40: oklch(0.62 0.23 22 / 0.4);
   --burn-color-60: oklch(0.62 0.23 22 / 0.6);
+  --burn-color-40: oklch(0.62 0.23 22 / 0.4);
+  --burn-color-25: oklch(0.62 0.23 22 / 0.25);
   --burn-color-20: oklch(0.62 0.23 22 / 0.2);
+  --burn-color-12: oklch(0.62 0.23 22 / 0.12);
   --burn-color-10: oklch(0.62 0.23 22 / 0.1);
-  --burn-orange: oklch(0.72 0.19 50 / 0.35);
+  --burn-color-06: oklch(0.62 0.23 22 / 0.06);
 }
 
+/* ── Add to Stack button ── */
 .add-to-stack-btn:hover:not(:disabled) {
   border-color: var(--burn-color-40) !important;
   color: var(--burn-color);
@@ -840,6 +844,31 @@
     0 0 24px 6px var(--burn-color-40),
     0 0 48px 12px var(--burn-color-20),
     inset 0 0 14px 0 var(--burn-color-20);
+}
+
+/* ── Burn glow cards (articles, etc.) — slow ember, no movement ── */
+.burn-glow-card {
+  transition: box-shadow 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.burn-glow-card:hover {
+  border-color: var(--burn-color-25);
+  box-shadow:
+    0 0 10px 0 var(--burn-color-12),
+    0 0 24px 2px var(--burn-color-06),
+    0 4px 16px -4px var(--burn-color-10),
+    inset 0 0 var(--lg-inner-shadow-blur) var(--lg-inner-shadow-spread) var(--lg-inner-shadow-color);
+}
+
+.dark .burn-glow-card:hover {
+  border-color: var(--burn-color-40);
+  box-shadow:
+    0 0 14px 1px var(--burn-color-20),
+    0 0 32px 4px var(--burn-color-12),
+    0 0 56px 10px var(--burn-color-06),
+    0 4px 20px -4px var(--burn-color-12),
+    inset 0 0 var(--lg-inner-shadow-blur) var(--lg-inner-shadow-spread) var(--lg-inner-shadow-color);
 }
 
 .page-shell {

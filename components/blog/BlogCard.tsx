@@ -30,7 +30,7 @@ export function BlogCard({ post, featured = false }: { post: BlogPostSummary; fe
   if (featured) {
     return (
       <Link href={`/blog/${post.slug}`} className="block group">
-        <div className="override grid h-full overflow-hidden rounded-lg brutalist-card-effect no-underline lg:grid-cols-2">
+        <div className="override grid h-full overflow-hidden rounded-lg brutalist-card-effect burn-glow-card no-underline lg:grid-cols-2">
           {coverImageUrl ? (
             <div className="relative h-56 lg:h-auto lg:w-1/2 shrink-0">
               <Image src={coverImageUrl} alt={post.title} fill unoptimized className="object-cover" />
@@ -74,7 +74,7 @@ export function BlogCard({ post, featured = false }: { post: BlogPostSummary; fe
 
   return (
     <Link href={`/blog/${post.slug}`} className="block group h-full">
-      <div className="override grid h-full overflow-hidden rounded-lg brutalist-card-effect no-underline">
+      <div className="override grid h-full overflow-hidden rounded-lg brutalist-card-effect burn-glow-card no-underline">
         {coverImageUrl ? (
           <div className="relative h-44 shrink-0 overflow-hidden">
             <Image src={coverImageUrl} alt={post.title} fill unoptimized className="object-cover transition-transform duration-300" />
