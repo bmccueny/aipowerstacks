@@ -62,7 +62,7 @@ export default async function BlogPage({
                 href={item.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="override grid h-full overflow-hidden rounded-lg brutalist-card-effect no-underline group"
+                className="override grid h-full overflow-hidden rounded-lg brutalist-card-effect burn-glow-card no-underline group"
               >
                 <div className="h-full flex flex-col">
                   {item.image_url ? (

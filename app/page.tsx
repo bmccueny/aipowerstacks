@@ -320,7 +320,7 @@ export default async function HomePage() {
                     href={news.url}
                     target={news.kind === 'rss' ? "_blank" : "_self"}
                     rel={news.kind === 'rss' ? "noopener noreferrer" : undefined}
-                    className="override grid h-full overflow-hidden rounded-lg brutalist-card-effect no-underline group"
+                    className="override grid h-full overflow-hidden rounded-lg brutalist-card-effect burn-glow-card no-underline group"
                   >
                     {news.image_url && (
                       <div className="relative h-44 w-full overflow-hidden border-b border-foreground/10">
