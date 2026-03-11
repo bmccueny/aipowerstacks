@@ -69,7 +69,7 @@ export function ToolSearch() {
         <Input
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          placeholder="Search AI tools..."
+          placeholder="Search tools or describe what you need..."
           className="pl-9 pr-9 glass-card border-border/50 focus:ring-2 focus:ring-primary/50 focus:border-primary/60"
         />
         {value && (
