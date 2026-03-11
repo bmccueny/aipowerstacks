@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Layers, Plus, Check, Loader2, Sparkles } from 'lucide-react'
+import { Layers, Plus, Check, Loader2 } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,6 +11,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuLabel,
 } from '@/components/ui/dropdown-menu'
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from '@/components/ui/sheet'
 import {
   Dialog,
   DialogContent,
@@ -23,6 +30,7 @@ import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
 import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils'
+import { useMediaQuery } from '@/hooks/useMediaQuery'
 
 const STACK_ICONS = ['⚡', '🚀', '🧠', '🎯', '🔥', '💡', '🛠️', '📊', '✍️', '🎨', '📸', '🤖', '📱', '🌐', '🔐', '📈']
 
@@ -52,9 +60,10 @@ export function AddToStackButton({
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [newStackName, setNewStackName] = useState('')
   const [newStackIcon, setNewStackIcon] = useState('⚡')
-  const [dropdownOpen, setDropdownOpen] = useState(false)
+  const [pickerOpen, setPickerOpen] = useState(false)
   const [justAdded, setJustAdded] = useState(false)
   const addedAnimationTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const isMobile = useMediaQuery('(max-width: 767px)')
 
   const redirectToLogin = () => {
     const redirectTo = `${window.location.pathname}${window.location.search}`
@@ -142,7 +151,7 @@ export function AddToStackButton({
         toast.error(error.message || 'Failed to add to stack')
       } else {
         triggerAddedAnimation()
-        setDropdownOpen(false)
+        setPickerOpen(false)
         toast.success('Added to stack')
       }
     }
@@ -194,28 +203,26 @@ export function AddToStackButton({
   const handleTriggerClick = async (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
-    // Check auth before opening — redirect immediately if not logged in
     const supabase = createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) {
       redirectToLogin()
       return
     }
-    setDropdownOpen(true)
+    setPickerOpen(true)
   }
 
   useEffect(() => {
-    if (!dropdownOpen) return
+    if (!pickerOpen) return
     let active = true
     ;(async () => {
       const loaded = await fetchCollections()
-      if (active && !loaded) setDropdownOpen(false)
+      if (active && !loaded) setPickerOpen(false)
     })()
     return () => {
       active = false
     }
-    // Intentionally keyed by open state + current tool.
-  }, [dropdownOpen, toolId])
+  }, [pickerOpen, toolId])
 
   useEffect(() => {
     return () => {
@@ -237,112 +244,197 @@ export function AddToStackButton({
 
   const alreadyInAStack = Object.values(itemCounts).some(Boolean)
 
-   return (
+  /* ── Shared stack list content ── */
+  const stackListContent = (
     <>
-      {/* Full-screen blur overlay when dropdown is open */}
-      {dropdownOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm transition-opacity duration-300"
-          aria-hidden="true"
-          onClick={() => setDropdownOpen(false)}
-        />
-      )}
-      <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="outline"
-            size="sm"
-            className={cn(
-              "relative shrink-0 whitespace-nowrap gap-2 rounded-sm font-medium transition-all add-to-stack-btn",
-              iconOnly ? "w-9 h-9 p-0 flex items-center justify-center" : "w-auto max-w-full px-3 h-9 brutalist-card-effect",
-              alreadyInAStack ? 'text-primary border-primary/40' : '',
-              justAdded ? 'scale-[1.05] bg-primary/10 border-primary' : '',
-              className
-            )}
-            onClick={handleTriggerClick}
-            disabled={loading}
-          >
-            {justAdded && (
-              <span className="pointer-events-none absolute inset-0 rounded-md border border-primary/30 animate-stack-success-ring" />
-            )}
-            {loading ? (
-              <Loader2 className="h-5 w-5 animate-spin" />
-            ) : alreadyInAStack ? (
-              <Check className={cn("h-5 w-5 text-primary", justAdded ? 'animate-stack-success-icon' : '')} />
-            ) : (
-              <Layers className="h-5 w-5" />
-            )}
-            {!iconOnly && showLabel && (
-              <span className={justAdded ? '' : 'hidden sm:inline'}>
-                {justAdded ? 'Added!' : alreadyInAStack ? 'In Your Stack' : 'Add to Stack'}
-              </span>
-            )}
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent
-          align="end"
-          className="w-64 p-2"
-          onKeyDown={e => e.stopPropagation()}
-        >
-          <DropdownMenuLabel className="px-3 py-2 text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
-            Add {toolName} to a stack
-          </DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <div className="max-h-60 overflow-y-auto">
-            {fetching && collections.length === 0 ? (
-              <div className="p-4 flex justify-center"><Loader2 className="h-4 w-4 animate-spin text-primary" /></div>
-            ) : collections.length === 0 ? (
-              <div className="p-3 text-center">
-                <p className="text-sm font-medium text-muted-foreground">No stacks yet</p>
-                <p className="text-[11px] text-muted-foreground/70 mt-0.5">Create your first stack below.</p>
-              </div>
-            ) : (
-              collections.map((col) => (
-                <DropdownMenuItem
-                  key={col.id}
-                  className="flex items-center gap-3 p-3 cursor-pointer"
-                  onClick={(e) => {
-                    e.preventDefault()
-                    e.stopPropagation()
-                    toggleToolInCollection(col.id, !!itemCounts[col.id])
-                  }}
-                >
-                  <div className="h-8 w-8 rounded bg-primary/5 flex items-center justify-center shrink-0 text-lg">
-                    {col.icon || '⚡'}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold leading-none truncate">{col.name}</p>
-                    {itemCounts[col.id] && (
-                      <p className="text-[10px] text-primary mt-1 leading-tight">Added</p>
-                    )}
-                  </div>
-                  {itemCounts[col.id] && (
-                    <Check className="h-4 w-4 text-primary shrink-0" />
-                  )}
-                </DropdownMenuItem>
-              ))
-            )}
+      <div className="max-h-72 overflow-y-auto">
+        {fetching && collections.length === 0 ? (
+          <div className="p-6 flex justify-center"><Loader2 className="h-5 w-5 animate-spin text-primary" /></div>
+        ) : collections.length === 0 ? (
+          <div className="p-4 text-center">
+            <p className="text-sm font-medium text-muted-foreground">No stacks yet</p>
+            <p className="text-[11px] text-muted-foreground/70 mt-0.5">Create your first stack below.</p>
           </div>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            className="flex items-center gap-3 p-3 cursor-pointer text-primary"
-            onSelect={(e) => {
-              e.preventDefault()
-              setDropdownOpen(false)
-              setIsDialogOpen(true)
-            }}
-          >
-            <div className="h-8 w-8 rounded bg-primary/5 flex items-center justify-center shrink-0 text-primary">
-              <Plus className="h-4 w-4" />
-            </div>
-            <div>
-              <p className="text-sm font-bold leading-none">Create New Stack</p>
-              <p className="text-[10px] text-muted-foreground mt-1 leading-tight">Start a new workflow</p>
-            </div>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+        ) : (
+          collections.map((col) => (
+            <button
+              key={col.id}
+              className="w-full flex items-center gap-3 p-3 hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors rounded-lg cursor-pointer text-left"
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                toggleToolInCollection(col.id, !!itemCounts[col.id])
+              }}
+            >
+              <div className="h-9 w-9 rounded-lg bg-primary/5 dark:bg-primary/10 flex items-center justify-center shrink-0 text-lg">
+                {col.icon || '⚡'}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-bold leading-none truncate">{col.name}</p>
+                {itemCounts[col.id] && (
+                  <p className="text-[10px] text-primary mt-1 leading-tight">Added</p>
+                )}
+              </div>
+              {itemCounts[col.id] && (
+                <Check className="h-4 w-4 text-primary shrink-0" />
+              )}
+            </button>
+          ))
+        )}
+      </div>
+      <div className="border-t border-border/50 pt-1 mt-1">
+        <button
+          className="w-full flex items-center gap-3 p-3 hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors rounded-lg cursor-pointer text-primary text-left"
+          onClick={(e) => {
+            e.preventDefault()
+            setPickerOpen(false)
+            setIsDialogOpen(true)
+          }}
+        >
+          <div className="h-9 w-9 rounded-lg bg-primary/5 dark:bg-primary/10 flex items-center justify-center shrink-0 text-primary">
+            <Plus className="h-4 w-4" />
+          </div>
+          <div>
+            <p className="text-sm font-bold leading-none">Create New Stack</p>
+            <p className="text-[10px] text-muted-foreground mt-1 leading-tight">Start a new workflow</p>
+          </div>
+        </button>
+      </div>
+    </>
+  )
 
+  return (
+    <>
+      {/* ── Trigger button ── */}
+      <Button
+        variant="outline"
+        size="sm"
+        className={cn(
+          "relative shrink-0 whitespace-nowrap gap-2 rounded-sm font-medium transition-all add-to-stack-btn",
+          iconOnly ? "w-9 h-9 p-0 flex items-center justify-center" : "w-auto max-w-full px-3 h-9 brutalist-card-effect",
+          alreadyInAStack ? 'text-primary border-primary/40' : '',
+          justAdded ? 'scale-[1.05] bg-primary/10 border-primary' : '',
+          className
+        )}
+        onClick={handleTriggerClick}
+        disabled={loading}
+      >
+        {justAdded && (
+          <span className="pointer-events-none absolute inset-0 rounded-md border border-primary/30 animate-stack-success-ring" />
+        )}
+        {loading ? (
+          <Loader2 className="h-5 w-5 animate-spin" />
+        ) : alreadyInAStack ? (
+          <Check className={cn("h-5 w-5 text-primary", justAdded ? 'animate-stack-success-icon' : '')} />
+        ) : (
+          <Layers className="h-5 w-5" />
+        )}
+        {!iconOnly && showLabel && (
+          <span className={justAdded ? '' : 'hidden sm:inline'}>
+            {justAdded ? 'Added!' : alreadyInAStack ? 'In Your Stack' : 'Add to Stack'}
+          </span>
+        )}
+      </Button>
+
+      {/* ── Mobile: bottom sheet ── */}
+      {isMobile && (
+        <Sheet open={pickerOpen} onOpenChange={setPickerOpen}>
+          <SheetContent
+            side="bottom"
+            className="!bg-background/95 !backdrop-blur-2xl rounded-t-3xl px-4 pb-8 max-h-[80vh]"
+            showCloseButton
+          >
+            <SheetHeader className="pb-2">
+              <SheetTitle className="text-base font-black">Add to Stack</SheetTitle>
+              <SheetDescription className="text-xs text-muted-foreground">
+                Save <strong>{toolName}</strong> to one of your stacks.
+              </SheetDescription>
+            </SheetHeader>
+            {stackListContent}
+          </SheetContent>
+        </Sheet>
+      )}
+
+      {/* ── Desktop: dropdown with backdrop overlay ── */}
+      {!isMobile && (
+        <>
+          {pickerOpen && (
+            <div
+              className="fixed inset-0 z-[100] bg-black/25 backdrop-blur-md transition-opacity duration-300"
+              aria-hidden="true"
+              onClick={() => setPickerOpen(false)}
+            />
+          )}
+          <DropdownMenu open={pickerOpen} onOpenChange={setPickerOpen}>
+            <DropdownMenuTrigger className="sr-only" />
+            <DropdownMenuContent
+              align="end"
+              sideOffset={8}
+              className="w-72 p-2 !bg-background/95 dark:!bg-neutral-900/95 !backdrop-blur-2xl shadow-[0_25px_70px_rgba(0,0,0,0.3)] dark:shadow-[0_25px_70px_rgba(0,0,0,0.6)] border-border/60"
+              onKeyDown={e => e.stopPropagation()}
+            >
+              <DropdownMenuLabel className="px-3 py-2 text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
+                Add {toolName} to a stack
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <div className="max-h-60 overflow-y-auto">
+                {fetching && collections.length === 0 ? (
+                  <div className="p-4 flex justify-center"><Loader2 className="h-4 w-4 animate-spin text-primary" /></div>
+                ) : collections.length === 0 ? (
+                  <div className="p-3 text-center">
+                    <p className="text-sm font-medium text-muted-foreground">No stacks yet</p>
+                    <p className="text-[11px] text-muted-foreground/70 mt-0.5">Create your first stack below.</p>
+                  </div>
+                ) : (
+                  collections.map((col) => (
+                    <DropdownMenuItem
+                      key={col.id}
+                      className="flex items-center gap-3 p-3 cursor-pointer"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        toggleToolInCollection(col.id, !!itemCounts[col.id])
+                      }}
+                    >
+                      <div className="h-8 w-8 rounded bg-primary/5 flex items-center justify-center shrink-0 text-lg">
+                        {col.icon || '⚡'}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-bold leading-none truncate">{col.name}</p>
+                        {itemCounts[col.id] && (
+                          <p className="text-[10px] text-primary mt-1 leading-tight">Added</p>
+                        )}
+                      </div>
+                      {itemCounts[col.id] && (
+                        <Check className="h-4 w-4 text-primary shrink-0" />
+                      )}
+                    </DropdownMenuItem>
+                  ))
+                )}
+              </div>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="flex items-center gap-3 p-3 cursor-pointer text-primary"
+                onSelect={(e) => {
+                  e.preventDefault()
+                  setPickerOpen(false)
+                  setIsDialogOpen(true)
+                }}
+              >
+                <div className="h-8 w-8 rounded bg-primary/5 flex items-center justify-center shrink-0 text-primary">
+                  <Plus className="h-4 w-4" />
+                </div>
+                <div>
+                  <p className="text-sm font-bold leading-none">Create New Stack</p>
+                  <p className="text-[10px] text-muted-foreground mt-1 leading-tight">Start a new workflow</p>
+                </div>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </>
+      )}
+
+      {/* ── Create new stack dialog ── */}
       <Dialog open={isDialogOpen} onOpenChange={(open) => { setIsDialogOpen(open); if (!open) { setNewStackName(''); setNewStackIcon('⚡') } }}>
         <DialogContent className="sm:max-w-sm" onClick={e => e.stopPropagation()}>
           <DialogHeader>
