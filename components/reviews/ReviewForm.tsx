@@ -5,6 +5,7 @@ import { Star } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
+import { useLiquidGlass } from '@/hooks/useLiquidGlass'
 
 interface ReviewFormProps {
   toolId: string
@@ -50,8 +51,10 @@ export function ReviewForm({ toolId, onSuccess }: ReviewFormProps) {
     )
   }
 
+  const glassRef = useLiquidGlass<HTMLFormElement>({ radius: 16 })
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form ref={glassRef} onSubmit={handleSubmit} className="liquid-glass glass-card rounded-2xl p-5 space-y-4 border border-white/15">
       <div>
         <p className="text-sm font-medium mb-2">Your Rating</p>
         <div className="flex gap-1">

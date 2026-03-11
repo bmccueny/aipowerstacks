@@ -9,6 +9,7 @@ import { DeleteStackButton } from '@/components/tools/DeleteStackButton'
 import { CreateStackDialog } from '@/components/stacks/CreateStackDialog'
 import { UnsaveStackButton } from '@/components/stacks/UnsaveStackButton'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
+import { useLiquidGlass } from '@/hooks/useLiquidGlass'
 
 type Tool = { id: string; name: string; slug: string; logo_url: string | null }
 
@@ -54,10 +55,12 @@ export function DashboardTabs({
     { id: 'submissions', label: 'Submissions',  icon: Send,     count: submissions.length },
   ]
 
+  const glassRef = useLiquidGlass<HTMLDivElement>({ radius: 12 })
+
   return (
     <div>
       {/* Tab bar */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-1 mb-8">
+      <div ref={glassRef} className="liquid-glass glass-card rounded-xl p-1 grid grid-cols-2 sm:grid-cols-4 gap-1 mb-8 border border-white/15">
         {tabs.map(({ id, label, icon: Icon, count }) => (
           <button
             key={id}

@@ -6,6 +6,7 @@ import { Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { PRICING_MODELS } from '@/lib/constants'
+import { useLiquidGlass } from '@/hooks/useLiquidGlass'
 
 interface Category { id: string; name: string }
 
@@ -87,8 +88,10 @@ export function SubmitToolForm({
     )
   }
 
+  const glassRef = useLiquidGlass<HTMLFormElement>({ radius: 12 })
+
   return (
-    <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-900 rounded-xl p-6 space-y-5 border border-gray-200 dark:border-gray-700 shadow-lg">
+    <form ref={glassRef} onSubmit={handleSubmit} className="liquid-glass glass-card rounded-xl p-6 space-y-5 border border-white/15 shadow-lg">
       {mode && mode !== 'submit' && (
         <div className="rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-xs text-muted-foreground">
           {mode === 'claim'

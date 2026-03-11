@@ -10,6 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useRouter } from 'next/navigation'
 import { Linkedin, Github, ShieldCheck, ExternalLink, Twitter, Youtube, Instagram, Globe, Plus, X, Sun, Moon, Monitor } from 'lucide-react'
 import { useTheme } from '@/hooks/useTheme'
+import { useLiquidGlass } from '@/hooks/useLiquidGlass'
 
 type SocialLink = { platform: string; url: string }
 
@@ -135,6 +136,8 @@ export default function SettingsPage() {
     setSaving(false)
   }
 
+  const glassRef = useLiquidGlass<HTMLDivElement>({ radius: 12 })
+
   if (!user) return null
 
   const initials = (displayName || user.email || '?')[0].toUpperCase()
@@ -143,7 +146,7 @@ export default function SettingsPage() {
     <div className="max-w-lg">
       <h1 className="text-3xl font-bold mb-8">Account Settings</h1>
 
-      <div className="glass-card rounded-md p-6 space-y-6">
+      <div ref={glassRef} className="liquid-glass glass-card rounded-xl p-6 space-y-6 border border-white/15">
         <div>
           <p className="text-sm font-medium mb-3">Profile Photo</p>
           <div className="flex items-center gap-4">

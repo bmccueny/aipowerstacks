@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Mail } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useLiquidGlass } from '@/hooks/useLiquidGlass'
 
 export function NewsletterBanner({
   source = 'footer',
@@ -54,12 +55,11 @@ export function NewsletterBanner({
     )
   }
 
+  const glassRef = useLiquidGlass<HTMLDivElement>({ radius: 16 })
+
   return (
-    <div className={cn(
-      'rounded-2xl p-6 border',
-      isDark
-        ? 'bg-gray-800 border-gray-700'
-        : 'bg-gray-50 border-gray-200'
+    <div ref={glassRef} className={cn(
+      'liquid-glass glass-card rounded-2xl p-6 border border-white/15',
     )}>
       <div className="flex items-center gap-3 mb-4">
         <Mail className="h-5 w-5 shrink-0 text-primary" />
