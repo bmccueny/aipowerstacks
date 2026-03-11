@@ -3,14 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Layers, Plus, Check, Loader2 } from 'lucide-react'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-  DropdownMenuLabel,
-} from '@/components/ui/dropdown-menu'
+import { createPortal } from 'react-dom'
 import {
   Sheet,
   SheetContent,
@@ -63,6 +56,8 @@ export function AddToStackButton({
   const [pickerOpen, setPickerOpen] = useState(false)
   const [justAdded, setJustAdded] = useState(false)
   const addedAnimationTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
+  const dropdownRef = useRef<HTMLDivElement>(null)
   const isMobile = useMediaQuery('(max-width: 767px)')
 
   const redirectToLogin = () => {
@@ -224,6 +219,49 @@ export function AddToStackButton({
     }
   }, [pickerOpen, toolId])
 
+  // Position the desktop dropdown relative to the trigger button
+  useEffect(() => {
+    if (isMobile || !pickerOpen || !triggerRef.current || !dropdownRef.current) return
+
+    const trigger = triggerRef.current
+    const dropdown = dropdownRef.current
+    const rect = trigger.getBoundingClientRect()
+
+    // Position below-end of the button
+    const top = rect.bottom + 8
+    const right = window.innerWidth - rect.right
+
+    dropdown.style.position = 'fixed'
+    dropdown.style.top = `${top}px`
+    dropdown.style.right = `${right}px`
+    dropdown.style.left = 'auto'
+  }, [pickerOpen, isMobile])
+
+  // Close on outside click (desktop)
+  useEffect(() => {
+    if (isMobile || !pickerOpen) return
+    const handleClick = (e: MouseEvent) => {
+      if (
+        dropdownRef.current && !dropdownRef.current.contains(e.target as Node) &&
+        triggerRef.current && !triggerRef.current.contains(e.target as Node)
+      ) {
+        setPickerOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [pickerOpen, isMobile])
+
+  // Close on Escape
+  useEffect(() => {
+    if (!pickerOpen) return
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setPickerOpen(false)
+    }
+    document.addEventListener('keydown', handleKey)
+    return () => document.removeEventListener('keydown', handleKey)
+  }, [pickerOpen])
+
   useEffect(() => {
     return () => {
       if (addedAnimationTimeoutRef.current) {
@@ -307,6 +345,7 @@ export function AddToStackButton({
     <>
       {/* ── Trigger button ── */}
       <Button
+        ref={triggerRef}
         variant="outline"
         size="sm"
         className={cn(
@@ -355,83 +394,26 @@ export function AddToStackButton({
         </Sheet>
       )}
 
-      {/* ── Desktop: dropdown with backdrop overlay ── */}
-      {!isMobile && (
+      {/* ── Desktop: positioned dropdown with backdrop overlay ── */}
+      {!isMobile && pickerOpen && typeof document !== 'undefined' && createPortal(
         <>
-          {pickerOpen && (
-            <div
-              className="fixed inset-0 z-[100] bg-black/25 backdrop-blur-md transition-opacity duration-300"
-              aria-hidden="true"
-              onClick={() => setPickerOpen(false)}
-            />
-          )}
-          <DropdownMenu open={pickerOpen} onOpenChange={setPickerOpen}>
-            <DropdownMenuTrigger className="sr-only" />
-            <DropdownMenuContent
-              align="end"
-              sideOffset={8}
-              className="w-72 p-2 !bg-background/95 dark:!bg-neutral-900/95 !backdrop-blur-2xl shadow-[0_25px_70px_rgba(0,0,0,0.3)] dark:shadow-[0_25px_70px_rgba(0,0,0,0.6)] border-border/60"
-              onKeyDown={e => e.stopPropagation()}
-            >
-              <DropdownMenuLabel className="px-3 py-2 text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
-                Add {toolName} to a stack
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <div className="max-h-60 overflow-y-auto">
-                {fetching && collections.length === 0 ? (
-                  <div className="p-4 flex justify-center"><Loader2 className="h-4 w-4 animate-spin text-primary" /></div>
-                ) : collections.length === 0 ? (
-                  <div className="p-3 text-center">
-                    <p className="text-sm font-medium text-muted-foreground">No stacks yet</p>
-                    <p className="text-[11px] text-muted-foreground/70 mt-0.5">Create your first stack below.</p>
-                  </div>
-                ) : (
-                  collections.map((col) => (
-                    <DropdownMenuItem
-                      key={col.id}
-                      className="flex items-center gap-3 p-3 cursor-pointer"
-                      onClick={(e) => {
-                        e.preventDefault()
-                        e.stopPropagation()
-                        toggleToolInCollection(col.id, !!itemCounts[col.id])
-                      }}
-                    >
-                      <div className="h-8 w-8 rounded bg-primary/5 flex items-center justify-center shrink-0 text-lg">
-                        {col.icon || '⚡'}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-bold leading-none truncate">{col.name}</p>
-                        {itemCounts[col.id] && (
-                          <p className="text-[10px] text-primary mt-1 leading-tight">Added</p>
-                        )}
-                      </div>
-                      {itemCounts[col.id] && (
-                        <Check className="h-4 w-4 text-primary shrink-0" />
-                      )}
-                    </DropdownMenuItem>
-                  ))
-                )}
-              </div>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                className="flex items-center gap-3 p-3 cursor-pointer text-primary"
-                onSelect={(e) => {
-                  e.preventDefault()
-                  setPickerOpen(false)
-                  setTimeout(() => setIsDialogOpen(true), 350)
-                }}
-              >
-                <div className="h-8 w-8 rounded bg-primary/5 flex items-center justify-center shrink-0 text-primary">
-                  <Plus className="h-4 w-4" />
-                </div>
-                <div>
-                  <p className="text-sm font-bold leading-none">Create New Stack</p>
-                  <p className="text-[10px] text-muted-foreground mt-1 leading-tight">Start a new workflow</p>
-                </div>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </>
+          <div
+            className="fixed inset-0 z-[100] bg-black/25 backdrop-blur-md transition-opacity duration-300"
+            aria-hidden="true"
+            onClick={() => setPickerOpen(false)}
+          />
+          <div
+            ref={dropdownRef}
+            className="z-[101] w-72 p-2 rounded-lg border border-border/60 bg-background/95 dark:bg-neutral-900/95 backdrop-blur-2xl shadow-[0_25px_70px_rgba(0,0,0,0.3)] dark:shadow-[0_25px_70px_rgba(0,0,0,0.6)] animate-in fade-in-0 zoom-in-95 duration-150"
+          >
+            <p className="px-3 py-2 text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
+              Add {toolName} to a stack
+            </p>
+            <div className="h-px bg-border/50 my-1" />
+            {stackListContent}
+          </div>
+        </>,
+        document.body
       )}
 
       {/* ── Create new stack dialog ── */}

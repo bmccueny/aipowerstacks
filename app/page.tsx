@@ -345,7 +345,7 @@ export default async function HomePage() {
                           })}
                         </span>
                       </div>
-                      <h3 className="font-bold text-[16px] leading-tight mb-4 pb-0.5 transition-colors line-clamp-3 flex-1 group-hover:text-primary transition-colors">
+                      <h3 className="font-bold text-[16px] leading-tight mb-4 pb-0.5 transition-colors line-clamp-3 flex-1 group-hover:text-primary">
                         {news.title}
                       </h3>
                       <div className="mt-auto flex items-center text-xs font-bold text-foreground transition-colors gap-1 uppercase tracking-tighter">

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 
 const stripe = process.env.STRIPE_SECRET_KEY 
   ? new Stripe(process.env.STRIPE_SECRET_KEY, {
@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
     const toolSlug = session.metadata?.toolSlug
 
     if (toolSlug) {
-      const supabase = await createClient()
+      const supabase = createAdminClient()
       await supabase
         .from('tools')
         .update({ is_featured: true })
@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
     const toolSlug = subscription.metadata?.toolSlug
 
     if (toolSlug) {
-      const supabase = await createClient()
+      const supabase = createAdminClient()
       await supabase
         .from('tools')
         .update({ is_featured: false })

@@ -122,18 +122,7 @@ export function Navbar() {
                       <button className="flex items-center gap-2 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 w-11 h-11 flex-shrink-0 relative z-10">
                       <Avatar className="h-9 w-9 ring-2 ring-gray-200 dark:ring-gray-700 ring-offset-1 transition-transform duration-200 hover:scale-110">
                         <AvatarImage
-                          src={
-                            profile?.avatar_url ||
-                            user.user_metadata?.avatar_url ||
-                            user.user_metadata?.picture ||
-                            user.user_metadata?.avatar ||
-                            user.user_metadata?.photoURL ||
-                            user.user_metadata?.image ||
-                            user.user_metadata?.profile_image ||
-                            user.user_metadata?.profile_picture ||
-                            user?.avatar_url ||
-                            user?.picture
-                          }
+                          src={profile?.avatar_url || undefined}
                           alt={user.user_metadata?.full_name || user.user_metadata?.name || 'User'}
                         />
                         <AvatarFallback className="text-sm font-bold bg-gradient-to-br from-primary via-primary/90 to-primary/80 text-white ring-2 ring-primary/20">

@@ -51,7 +51,7 @@ export async function GET(request: Request) {
     }
 
     // A. Insert into HISTORY table
-    await (supabase as any)
+    await supabase
       .from('tool_benchmarks')
       .insert({
         tool_id: tool.id,
@@ -60,11 +60,11 @@ export async function GET(request: Request) {
       })
 
     // B. Calculate 30-day rolling uptime
-    const { data: uptimeData } = await (supabase as any).rpc('get_tool_uptime', { p_tool_id: tool.id })
+    const { data: uptimeData } = await supabase.rpc('get_tool_uptime', { p_tool_id: tool.id })
     const rollingUptime = uptimeData ?? (success ? 100.00 : 0.00)
 
     // C. Update the tool master record
-    await (supabase as any)
+    await supabase
       .from('tools')
       .update({
         api_latency: latency,

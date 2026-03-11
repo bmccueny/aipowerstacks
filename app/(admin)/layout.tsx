@@ -1,8 +1,10 @@
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
 import {
   LayoutDashboard, Wrench, InboxIcon, FolderOpen,
   FileText, Users, Sparkles, Star
 } from 'lucide-react'
+import { createClient } from '@/lib/supabase/server'
 
 const adminNavItems = [
   { href: '/admin', label: 'Overview', icon: LayoutDashboard },
@@ -15,7 +17,20 @@ const adminNavItems = [
   { href: '/admin/users', label: 'Users', icon: Users },
 ]
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) redirect('/login')
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single()
+
+  if (!profile || profile.role !== 'admin') redirect('/')
+
   return (
     <div className="flex min-h-screen">
       <aside className="w-64 shrink-0 border-r border-white/20 dark:border-white/10 glass-card flex flex-col">

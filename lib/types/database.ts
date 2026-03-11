@@ -129,6 +129,10 @@ export type Database = {
           has_sso: boolean
           security_certifications: string[] | null
           model_provider: string | null
+          target_audience: string | null
+          api_latency: number | null
+          api_uptime: number | null
+          last_benchmarked_at: string | null
           is_api_wrapper: boolean
           wrapper_details: string | null
           created_at: string
@@ -168,6 +172,10 @@ export type Database = {
           has_sso?: boolean
           security_certifications?: string[] | null
           model_provider?: string | null
+          target_audience?: string | null
+          api_latency?: number | null
+          api_uptime?: number | null
+          last_benchmarked_at?: string | null
           is_api_wrapper?: boolean
           wrapper_details?: string | null
           created_at?: string
@@ -205,9 +213,34 @@ export type Database = {
           has_sso?: boolean
           security_certifications?: string[] | null
           model_provider?: string | null
+          target_audience?: string | null
+          api_latency?: number | null
+          api_uptime?: number | null
+          last_benchmarked_at?: string | null
           is_api_wrapper?: boolean
           wrapper_details?: string | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      tool_benchmarks: {
+        Row: {
+          id: string
+          tool_id: string
+          latency: number
+          is_up: boolean
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          tool_id: string
+          latency: number
+          is_up: boolean
+          created_at?: string
+        }
+        Update: {
+          latency?: number
+          is_up?: boolean
         }
         Relationships: []
       }
@@ -812,6 +845,35 @@ export type Database = {
           model_provider: string | null
           is_api_wrapper: boolean
           rank: number
+        }[]
+      }
+      increment_view_count: {
+        Args: { tool_id: string }
+        Returns: void
+      }
+      get_tool_uptime: {
+        Args: { p_tool_id: string }
+        Returns: number
+      }
+      match_tools_semantic: {
+        Args: {
+          query_embedding: number[]
+          match_threshold?: number
+          match_count?: number
+        }
+        Returns: {
+          id: string
+          name: string
+          slug: string
+          tagline: string
+          logo_url: string | null
+          pricing_model: string
+          is_verified: boolean
+          avg_rating: number
+          review_count: number
+          upvote_count: number
+          category_id: string
+          similarity: number
         }[]
       }
       is_admin: {

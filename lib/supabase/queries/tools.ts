@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import type { ToolCardData, ToolSearchResult, ToolWithTags, PricingModel } from '@/lib/types'
 import { PAGE_SIZE } from '@/lib/constants'
 
@@ -19,6 +20,213 @@ async function rpcSearchTools(supabase: Awaited<ReturnType<typeof createClient>>
   const { data, error } = await (supabase as ReturnType<typeof supabase.rpc> extends never ? never : typeof supabase)
     .rpc('search_tools', args as never)
   return { data: data as ToolSearchResult[] | null, error }
+}
+
+// ── Semantic search helpers ───────────────────────────────────────────────────
+
+/** Heuristic: does this query look like natural language rather than a keyword? */
+function looksLikeNaturalLanguage(q: string): boolean {
+  const words = q.trim().split(/\s+/)
+  if (words.length < 3) return false
+
+  // Common NL indicators: pronouns, articles, prepositions, question words, verbs
+  const nlSignals = /\b(i |i'm|my |me |we |our |need|want|looking|find|help|can|how|what|which|best|recommend|suggest|tool to|app for|app that|something|anything)\b/i
+  if (nlSignals.test(q)) return true
+
+  // If 4+ words, likely natural language even without explicit signals
+  if (words.length >= 4) return true
+
+  return false
+}
+
+// ── Stop words to strip from natural language queries ──────────────────────
+const STOP_WORDS = new Set([
+  // Pronouns & determiners
+  'i', 'me', 'my', 'we', 'our', 'you', 'your', 'a', 'an', 'the',
+  // Be/have/do verbs
+  'is', 'am', 'are', 'was', 'were', 'be', 'been', 'being',
+  'have', 'has', 'had', 'do', 'does', 'did',
+  // Modals
+  'will', 'would', 'could', 'should', 'can', 'may', 'might',
+  // Intent verbs (user expressing desire, not describing a tool)
+  'need', 'want', 'looking', 'find', 'help', 'get', 'give', 'use', 'using',
+  'replace', 'switch', 'try', 'start', 'know', 'think', 'think',
+  'write', 'writes', 'run', 'runs', 'work', 'works',
+  // Relative/demonstrative
+  'that', 'which', 'who', 'whom', 'this', 'these', 'those',
+  // Pronouns & prepositions
+  'it', 'its', 'to', 'for', 'of', 'in', 'on', 'at', 'by', 'with',
+  'from', 'up', 'about', 'into', 'through', 'during', 'before', 'after',
+  // Conjunctions & adverbs
+  'and', 'but', 'or', 'nor', 'not', 'so', 'very', 'really', 'just',
+  'than', 'then', 'also', 'some', 'any', 'all', 'most', 'more',
+  'much', 'many', 'something', 'anything', 'thing', 'things',
+  'like', 'make', 'makes', 'made',
+  // Filler / hyperbole
+  'way', 'best', 'good', 'great', 'better', 'faster', 'slower',
+  'ever', 'never', 'always', 'every', 'still', 'even',
+  // Meta words (referring to tools generically)
+  'tool', 'tools', 'app', 'apps', 'software', 'platform', 'service',
+  'solution', 'product', 'program', 'website', 'site',
+  // Request words
+  'please', 'recommend', 'suggest', 'show', 'tell',
+])
+
+// Words that indicate a specific domain — these are the most important for search
+const DOMAIN_SIGNAL_WORDS = new Set([
+  'ai', 'code', 'coding', 'video', 'audio', 'image', 'design', 'write', 'writing',
+  'seo', 'marketing', 'data', 'api', 'mobile', 'agent', 'chat', 'bot', 'llm',
+  'music', 'voice', 'photo', 'edit', 'editing', 'generate', 'automate', 'automation',
+  'transcribe', 'transcription', 'translate', 'deploy', 'build', 'prototype',
+  'email', 'cms', 'crm', 'erp', 'database', 'sql', 'analytics', 'dashboard',
+  'podcast', 'blog', 'content', 'copy', 'copywriting', 'research',
+  'security', 'privacy', 'compliance', 'monitor', 'test', 'debug',
+  'ecommerce', 'shop', 'store', 'payment', 'checkout',
+  'free', 'open-source',
+])
+
+// Adjectives/qualifiers that are useful as modifiers but bad as primary search terms
+// These get included only when paired with a domain signal word
+const MODIFIER_WORDS = new Set([
+  'fast', 'speed', 'quick', 'realtime', 'real-time', 'cheap', 'simple',
+  'easy', 'powerful', 'advanced', 'smart', 'intelligent', 'modern',
+  'lightweight', 'scalable', 'secure', 'enterprise', 'professional',
+  'automated', 'instant', 'unlimited', 'accurate', 'creative',
+])
+
+/**
+ * Local keyword extraction from natural language queries.
+ * Strips stop words and filler, preserves domain-signal words and meaningful terms.
+ * Modifiers (fast, easy, etc.) are only included when there are domain signals present.
+ * Returns cleaned keywords as a string, or null if nothing useful remains.
+ *
+ * "ai that writes code faster than i can think" → "ai code"
+ * "i need a fast coding agent"                  → "coding agent"
+ * "help me find a tool to transcribe audio"     → "transcribe audio"
+ */
+function extractKeywordsLocal(query: string): string | null {
+  const words = query.toLowerCase().trim().split(/\s+/)
+
+  // First pass: extract domain signals and other meaningful words
+  const domainWords: string[] = []
+  const modifierWords: string[] = []
+  const otherWords: string[] = []
+
+  for (const w of words) {
+    if (DOMAIN_SIGNAL_WORDS.has(w)) {
+      domainWords.push(w)
+    } else if (MODIFIER_WORDS.has(w)) {
+      modifierWords.push(w)
+    } else if (!STOP_WORDS.has(w) && w.length >= 3) {
+      otherWords.push(w)
+    }
+  }
+
+  // Build the result: domain words are primary, others are secondary
+  // Only include modifiers if we already have domain words (to avoid over-constraining)
+  const result = [...domainWords, ...otherWords]
+
+  // If we have enough domain words (2+), skip modifiers to keep the query focused
+  // If only 1 domain word, include 1 modifier for context
+  if (result.length < 2 && modifierWords.length > 0) {
+    result.push(modifierWords[0])
+  }
+
+  if (result.length === 0) return null
+  return result.join(' ')
+}
+
+/**
+ * Extract search-friendly keywords from a natural language query.
+ * Tries xAI Grok for higher-quality extraction, falls back to local keyword extraction.
+ */
+async function extractSearchIntent(query: string): Promise<string | null> {
+  const localKeywords = extractKeywordsLocal(query)
+
+  // Try xAI Grok for higher-quality extraction if available
+  if (process.env.XAI_API_KEY) {
+    try {
+      const res = await fetch('https://api.x.ai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.XAI_API_KEY}`,
+        },
+        body: JSON.stringify({
+          model: 'grok-3-mini-fast',
+          max_tokens: 60,
+          temperature: 0,
+          messages: [
+            { role: 'system', content: 'Extract 3-5 precise search keywords/phrases from the user query that describe what kind of AI tool they want. Return ONLY the keywords separated by commas, nothing else. Focus on the functional intent, ignore filler words and hyperbole.' },
+            { role: 'user', content: query },
+          ],
+        }),
+      })
+
+      if (res.ok) {
+        const data = await res.json()
+        const text = (data.choices?.[0]?.message?.content ?? '').trim()
+        if (text) return text
+      }
+    } catch {
+      // xAI failed, fall through to local keywords
+    }
+  }
+
+  return localKeywords
+}
+
+const TOOL_SELECT_COLUMNS =
+  'id, name, slug, tagline, logo_url, pricing_model, pricing_details, is_verified, avg_rating, review_count, upvote_count, category_id, published_at, screenshot_urls, is_supertools, target_audience, has_api, has_mobile_app, is_open_source, trains_on_data, has_sso, security_certifications, model_provider'
+
+/**
+ * Server-side semantic search using pgvector.
+ * Generates an embedding for the query and finds similar tools.
+ * Returns null if semantic search is unavailable or returns no results.
+ */
+async function semanticSearch(
+  query: string,
+  limit: number
+): Promise<ToolSearchResult[] | null> {
+  try {
+    // Dynamic import to avoid loading the model when not needed
+    const { getQueryEmbedding } = await import('@/lib/ai/embeddings')
+    const embedding = await getQueryEmbedding(query)
+    const vectorStr = `[${embedding.join(',')}]`
+
+    const admin = createAdminClient()
+    const { data: hits, error } = await (admin as any).rpc('match_tools_semantic', {
+      query_embedding: vectorStr,
+      match_threshold: 0.15,
+      match_count: Math.min(limit, 50),
+    })
+
+    if (error || !hits || hits.length === 0) {
+      if (error) console.warn('Semantic search RPC error:', error.message)
+      return null
+    }
+
+    // Fetch full tool data to match ToolSearchResult shape
+    const ids = hits.map((h: any) => h.id)
+    const { data: fullTools } = await admin
+      .from('tools')
+      .select(TOOL_SELECT_COLUMNS)
+      .in('id', ids)
+      .eq('status', 'published')
+
+    if (!fullTools || fullTools.length === 0) return null
+
+    // Preserve semantic ranking order
+    const toolMap = new Map(fullTools.map((t: any) => [t.id, t]))
+    const ordered = ids
+      .map((id: string) => toolMap.get(id))
+      .filter(Boolean) as ToolSearchResult[]
+
+    return ordered.length > 0 ? ordered : null
+  } catch (err: any) {
+    console.warn('Semantic search failed:', err.message)
+    return null
+  }
 }
 
 export async function searchTools({
@@ -70,25 +278,81 @@ export async function searchTools({
   // Build a standard query for when persona/capabilities are involved
   let builder = supabase
     .from('tools')
-    .select('id, name, slug, tagline, logo_url, pricing_model, pricing_details, is_verified, avg_rating, review_count, upvote_count, category_id, published_at, screenshot_urls, is_supertools, target_audience, has_api, has_mobile_app, is_open_source, trains_on_data, has_sso, security_certifications, model_provider')
+    .select(TOOL_SELECT_COLUMNS)
     .eq('status', 'published')
 
-  // If search query exists, try RPC first, fall back to ilike
+  // If search query exists, try intent extraction → semantic → RPC → ilike fallback
   if (query) {
-    const { data: rpcData, error: rpcError } = await rpcSearchTools(supabase, {
-      search_query: query || null,
-      p_category: categoryId || null,
-      p_pricing: pricing || null,
-      p_verified: verified ?? null,
-      p_use_case: useCase || null,
-      p_team_size: teamSize || null,
-      p_integration: integration || null,
-      p_sort: sort,
-      p_limit: PAGE_SIZE,
-      p_offset: offset,
-    })
+    const isNL = looksLikeNaturalLanguage(query)
 
-    if (!rpcError && rpcData && rpcData.length > 0) {
+    // Intent extraction: convert NL to search keywords
+    let searchKeywords: string | null = null
+    if (isNL) {
+      searchKeywords = await extractSearchIntent(query)
+    }
+
+    // The effective query for text/semantic search — use extracted keywords if available
+    const effectiveQuery = searchKeywords || query
+
+    // ── Tier 0: Semantic search for natural language queries ──────────────
+    if (isNL) {
+      const semanticResults = await semanticSearch(effectiveQuery, PAGE_SIZE)
+      if (semanticResults && semanticResults.length > 0) {
+        // Apply client-side filters to semantic results
+        let filtered = semanticResults
+        if (categoryId) filtered = filtered.filter(t => (t as any).category_id === categoryId)
+        if (pricing) filtered = filtered.filter(t => (t as any).pricing_model === pricing)
+        if (verified) filtered = filtered.filter(t => (t as any).is_verified === true)
+        if (hasApi) filtered = filtered.filter(t => (t as any).has_api === true)
+        if (hasMobile) filtered = filtered.filter(t => (t as any).has_mobile_app === true)
+        if (isOpenSource) filtered = filtered.filter(t => (t as any).is_open_source === true)
+        if (audience) filtered = filtered.filter(t => (t as Record<string, unknown>).target_audience === audience)
+
+        if (filtered.length > 0) {
+          return { tools: filtered.slice(0, PAGE_SIZE), total: filtered.length }
+        }
+        // If filters eliminated all semantic results, fall through to text search
+      }
+    }
+
+    // ── Tier 1: Full-text search via RPC (uses search_vector with A/B/C weighting) ──
+    // For NL queries, use extracted keywords for better tsquery matching.
+    // If 3+ keywords return 0 results, progressively drop trailing keywords
+    // (websearch_to_tsquery requires ALL terms to match, so fewer terms = broader match).
+    const rpcQuery = isNL && searchKeywords ? searchKeywords : query
+    const rpcKeywords = rpcQuery.split(/\s+/).filter(w => w.length >= 2)
+
+    let rpcData: ToolSearchResult[] | null = null
+    let rpcError: any = null
+
+    // Try full query first, then progressively reduce keywords
+    for (let len = rpcKeywords.length; len >= Math.min(2, rpcKeywords.length); len--) {
+      const attempt = rpcKeywords.slice(0, len).join(' ')
+      const { data, error } = await rpcSearchTools(supabase, {
+        search_query: attempt || null,
+        p_category: categoryId || null,
+        p_pricing: pricing || null,
+        p_verified: verified ?? null,
+        p_use_case: useCase || null,
+        p_team_size: teamSize || null,
+        p_integration: integration || null,
+        p_sort: sort,
+        p_limit: PAGE_SIZE,
+        p_offset: offset,
+      })
+
+      if (error) {
+        rpcError = error
+        break // RPC itself is broken, skip to fallback
+      }
+
+      if (data && data.length > 0) {
+        rpcData = data
+        break // Found results
+      }
+    }
+
+    if (rpcData && rpcData.length > 0) {
       return { tools: rpcData, total: rpcData.length }
     }
 
@@ -96,17 +360,45 @@ export async function searchTools({
       console.warn('search_tools RPC unavailable, falling back to ilike search:', rpcError.message)
     }
 
-    // ilike fallback: search name, tagline, description
-    const term = `%${query}%`
+    // ── Tier 2: ILIKE fallback — search name, tagline, description ────────
+    // For NL queries with extracted keywords, build OR clauses for each keyword
+    let ilikeOrClause: string
+    if (isNL && searchKeywords) {
+      // Split on comma (Claude format) or spaces (local format), take meaningful terms
+      const keywords = searchKeywords.includes(',')
+        ? searchKeywords.split(',').map(k => k.trim()).filter(Boolean)
+        : searchKeywords.split(/\s+/).filter(w => w.length >= 3)
+
+      // Build OR clause: match any keyword in name, tagline, or description
+      const clauses = keywords.slice(0, 5).flatMap(k => [
+        `name.ilike.%${k}%`,
+        `tagline.ilike.%${k}%`,
+        `description.ilike.%${k}%`,
+      ])
+      ilikeOrClause = clauses.join(',')
+    } else {
+      const term = `%${query}%`
+      ilikeOrClause = `name.ilike.${term},tagline.ilike.${term},description.ilike.${term}`
+    }
+
     let fallback = supabase
       .from('tools')
-      .select('id, name, slug, tagline, logo_url, pricing_model, pricing_details, is_verified, avg_rating, review_count, upvote_count, category_id, published_at, screenshot_urls, is_supertools, target_audience, has_api, has_mobile_app, is_open_source, trains_on_data, has_sso, security_certifications, model_provider')
+      .select(TOOL_SELECT_COLUMNS)
       .eq('status', 'published')
-      .or(`name.ilike.${term},tagline.ilike.${term},description.ilike.${term}`)
+      .or(ilikeOrClause)
 
+    // Apply ALL filters (fixing previous filter leakage)
     if (categoryId) fallback = fallback.eq('category_id', categoryId as any)
     if (pricing)    fallback = fallback.eq('pricing_model', pricing as any)
     if (verified)   fallback = fallback.eq('is_verified', true)
+    if (useCase)    fallback = fallback.eq('use_case', useCase as any)
+    if (teamSize)   fallback = fallback.eq('team_size', teamSize as any)
+    if (audience)   fallback = fallback.eq('target_audience', audience)
+    if (hasApi)     fallback = fallback.eq('has_api', true)
+    if (hasMobile)  fallback = fallback.eq('has_mobile_app', true)
+    if (isOpenSource) fallback = fallback.eq('is_open_source', true)
+    if (privacyFirst) fallback = fallback.eq('trains_on_data', false)
+    if (enterpriseReady) fallback = fallback.eq('has_sso', true)
 
     if (sort === 'rating') {
       fallback = fallback.order('avg_rating', { ascending: false }).order('review_count', { ascending: false })
@@ -127,6 +419,14 @@ export async function searchTools({
       return { tools: [], total: 0 }
     }
 
+    // ── Tier 3: If text search found nothing and we haven't tried semantic yet, try it ──
+    if ((!fallbackData || fallbackData.length === 0) && !isNL) {
+      const semanticResults = await semanticSearch(query, PAGE_SIZE)
+      if (semanticResults && semanticResults.length > 0) {
+        return { tools: semanticResults.slice(0, PAGE_SIZE), total: semanticResults.length }
+      }
+    }
+
     return { tools: (fallbackData as any) ?? [], total: fallbackData?.length ?? 0 }
   }
 
@@ -136,7 +436,7 @@ export async function searchTools({
   if (verified) builder = builder.eq('is_verified', true)
   if (useCase) builder = builder.eq('use_case', useCase as any)
   if (teamSize) builder = builder.eq('team_size', teamSize as any)
-  if (audience) builder = builder.eq('target_audience', audience as any)
+  if (audience) builder = builder.eq('target_audience', audience)
   if (hasApi) builder = builder.eq('has_api', true)
   if (hasMobile) builder = builder.eq('has_mobile_app', true)
   if (isOpenSource) builder = builder.eq('is_open_source', true)
@@ -250,45 +550,8 @@ export async function getSimilarTools(slugs: string[], limit = 4): Promise<ToolS
   return (data ?? []) as unknown as ToolSearchResult[]
 }
 
-export async function getFeaturedTools(limit = 6): Promise<ToolSearchResult[]> {
-  const supabase = await createClient()
-
-  const { data } = await supabase
-    .from('tools')
-    .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, is_featured, avg_rating, review_count, upvote_count, category_id, published_at, model_provider')
-    .eq('status', 'published')
-    .eq('is_featured', true)
-    .order('avg_rating', { ascending: false })
-    .limit(limit)
-
-  return (data ?? []) as unknown as ToolSearchResult[]
-}
-
 export async function getToolsByCategory(categorySlug: string, page = 1): Promise<{ tools: ToolSearchResult[]; total: number }> {
   return searchTools({ category: categorySlug, sort: 'rating', page })
-}
-
-export async function getTopToolsByCategory(categorySlug: string, limit = 10): Promise<ToolSearchResult[]> {
-  const supabase = await createClient()
-
-  const { data: cat } = await supabase
-    .from('categories')
-    .select('id')
-    .eq('slug', categorySlug)
-    .single()
-
-  if (!cat) return []
-  const catId = (cat as { id: string }).id
-
-  const { data } = await supabase
-    .from('tools')
-    .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, is_featured, avg_rating, review_count, upvote_count, category_id, published_at, model_provider')
-    .eq('status', 'published')
-    .eq('category_id', catId)
-    .order('avg_rating', { ascending: false })
-    .limit(limit)
-
-  return (data ?? []) as unknown as ToolSearchResult[]
 }
 
 export async function getRelatedToolsByCategory({

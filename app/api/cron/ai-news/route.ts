@@ -24,17 +24,6 @@ function isAiRelated(title: string, summary: string | null) {
   })
 }
 
-function getSimilarity(s1: string, s2: string) {
-  const n1 = s1.toLowerCase().replace(/[^a-z0-9]/g, '')
-  const n2 = s2.toLowerCase().replace(/[^a-z0-9]/g, '')
-  if (n1 === n2) return 1
-  
-  const set1 = new Set(n1.split(''))
-  const set2 = new Set(n2.split(''))
-  const intersection = new Set([...set1].filter(x => set2.has(x)))
-  return (2 * intersection.size) / (set1.size + set2.size)
-}
-
 function areTooSimilar(t1: string, t2: string) {
   // Simple word-based overlap is better for titles
   const w1 = new Set(t1.toLowerCase().split(/\W+/).filter(w => w.length > 3))

@@ -58,7 +58,7 @@ begin
     new.id,
     coalesce(new.raw_user_meta_data->>'full_name', new.raw_user_meta_data->>'name', final_username),
     final_username,
-    coalesce(new.raw_user_meta_data->>'avatar_url', random_avatar)
+    random_avatar
   );
   return new;
 end;

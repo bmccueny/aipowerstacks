@@ -7,6 +7,6 @@ export async function POST(
 ) {
   const { id } = await params
   const admin = createAdminClient()
-  await admin.rpc('increment_view_count' as never, { tool_id: id } as never)
+  await admin.rpc('increment_view_count', { tool_id: id })
   return NextResponse.json({ success: true })
 }
