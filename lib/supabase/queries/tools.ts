@@ -199,7 +199,7 @@ export async function getLatestTools(limit = 8): Promise<ToolCardData[]> {
 
   const { data } = await supabase
     .from('tools')
-    .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, is_featured, avg_rating, review_count, upvote_count, category_id, published_at, screenshot_urls, model_provider, is_api_wrapper')
+    .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, is_featured, avg_rating, review_count, upvote_count, category_id, published_at, screenshot_urls, model_provider')
     .eq('status', 'published')
     .order('published_at', { ascending: false })
     .limit(limit)
@@ -212,7 +212,7 @@ export async function getSuperTools(limit = 8): Promise<ToolSearchResult[]> {
 
   const { data } = await supabase
     .from('tools')
-    .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, is_featured, avg_rating, review_count, upvote_count, category_id, published_at, screenshot_urls, model_provider, is_api_wrapper')
+    .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, is_featured, avg_rating, review_count, upvote_count, category_id, published_at, screenshot_urls, model_provider')
     .eq('status', 'published')
     .eq('is_supertools', true)
     .order('upvote_count', { ascending: false })
@@ -240,7 +240,7 @@ export async function getSimilarTools(slugs: string[], limit = 4): Promise<ToolS
   // 2. Find other tools in those categories
   const { data } = await supabase
     .from('tools')
-    .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, is_featured, avg_rating, review_count, upvote_count, category_id, published_at, model_provider, is_api_wrapper')
+    .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, is_featured, avg_rating, review_count, upvote_count, category_id, published_at, model_provider')
     .in('category_id', categoryIds)
     .not('slug', 'in', `(${slugs.join(',')})`)
     .eq('status', 'published')
@@ -255,7 +255,7 @@ export async function getFeaturedTools(limit = 6): Promise<ToolSearchResult[]> {
 
   const { data } = await supabase
     .from('tools')
-    .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, is_featured, avg_rating, review_count, upvote_count, category_id, published_at, model_provider, is_api_wrapper')
+    .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, is_featured, avg_rating, review_count, upvote_count, category_id, published_at, model_provider')
     .eq('status', 'published')
     .eq('is_featured', true)
     .order('avg_rating', { ascending: false })
@@ -282,7 +282,7 @@ export async function getTopToolsByCategory(categorySlug: string, limit = 10): P
 
   const { data } = await supabase
     .from('tools')
-    .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, is_featured, avg_rating, review_count, upvote_count, category_id, published_at, model_provider, is_api_wrapper')
+    .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, is_featured, avg_rating, review_count, upvote_count, category_id, published_at, model_provider')
     .eq('status', 'published')
     .eq('category_id', catId)
     .order('avg_rating', { ascending: false })
@@ -304,7 +304,7 @@ export async function getRelatedToolsByCategory({
 
   const { data } = await supabase
     .from('tools')
-    .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, is_featured, avg_rating, review_count, upvote_count, category_id, published_at, model_provider, is_api_wrapper')
+    .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, is_featured, avg_rating, review_count, upvote_count, category_id, published_at, model_provider')
     .eq('status', 'published')
     .eq('category_id', categoryId)
     .neq('id', excludeToolId)
@@ -321,7 +321,7 @@ export async function getToolsBySlugs(slugs: string[]): Promise<ToolSearchResult
   const supabase = await createClient()
   const { data } = await supabase
     .from('tools')
-    .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, is_featured, avg_rating, review_count, category_id, published_at, website_url, pricing_details, use_case, team_size, integrations, model_provider, is_api_wrapper')
+    .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, is_featured, avg_rating, review_count, category_id, published_at, website_url, pricing_details, use_case, team_size, integrations, model_provider')
     .in('slug', slugs)
     .eq('status', 'published')
 
