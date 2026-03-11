@@ -270,7 +270,7 @@ export default async function ComparePage({
                     <p className={cn("font-bold text-sm group-hover:text-primary transition-colors", activePreset?.title === preset.title ? "text-primary" : "text-foreground")}>{preset.title}</p>
                   </div>
                   <p className="text-[11px] text-muted-foreground leading-snug">{preset.description}</p>
-                  <div className="mt-3 flex items-center gap-1 text-[9px] font-black uppercase tracking-wider text-primary opacity-0 group-hover:opacity-100 transform translate-x-[-4px] group-hover:translate-x-0 transition-all">
+                  <div className="mt-3 flex items-center gap-1 text-[9px] font-black uppercase tracking-wider text-primary opacity-0 group-hover:opacity-100 transition-all">
                     {activePreset?.title === preset.title ? 'Active' : 'Compare Now'}
                   </div>
                 </Link>

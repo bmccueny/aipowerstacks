@@ -665,7 +665,6 @@
 }
 
 .category-card:hover {
-  transform: translateY(-8px) scale(1.02);
   box-shadow:
     0px 8px calc(var(--lg-outer-shadow-blur) * 1.5) rgba(0, 0, 0, 0.16),
     inset 0 0 var(--lg-inner-shadow-blur) var(--lg-inner-shadow-spread) var(--lg-inner-shadow-color);
@@ -694,7 +693,6 @@
 .category-pill:hover {
   border-color: var(--primary);
   color: var(--foreground);
-  transform: translateY(-4px);
   box-shadow: 0 8px 24px oklch(0.62 0.23 22 / 0.15);
 }
 
@@ -761,7 +759,6 @@
   box-shadow:
     0px 8px calc(var(--lg-outer-shadow-blur) * 1.5) rgba(0, 0, 0, 0.18),
     inset 0 0 var(--lg-inner-shadow-blur) var(--lg-inner-shadow-spread) var(--lg-inner-shadow-color);
-  transform: translateY(-4px) scale(1.02);
   border-color: oklch(1 0 0 / 0.2);
 }
 
@@ -769,7 +766,6 @@
   box-shadow:
     0px 2px 12px rgba(0, 0, 0, 0.1),
     inset 0 0 var(--lg-inner-shadow-blur) var(--lg-inner-shadow-spread) var(--lg-inner-shadow-color);
-  transform: translateY(-2px) scale(1.01);
 }
 
 .dark .brutalist-card-effect {
@@ -794,7 +790,56 @@
   box-shadow:
     0px 2px 12px rgba(0, 0, 0, 0.2),
     inset 0 0 var(--lg-inner-shadow-blur) var(--lg-inner-shadow-spread) var(--lg-inner-shadow-color);
-  transform: translateY(-2px) scale(1.01);
+}
+
+/* ── Add to Stack: burning crimson glow ── */
+.add-to-stack-btn {
+  --burn-color: oklch(0.62 0.23 22);
+  --burn-color-40: oklch(0.62 0.23 22 / 0.4);
+  --burn-color-60: oklch(0.62 0.23 22 / 0.6);
+  --burn-color-20: oklch(0.62 0.23 22 / 0.2);
+  --burn-color-10: oklch(0.62 0.23 22 / 0.1);
+  --burn-orange: oklch(0.72 0.19 50 / 0.35);
+}
+
+.add-to-stack-btn:hover:not(:disabled) {
+  border-color: var(--burn-color-40) !important;
+  color: var(--burn-color);
+  transform: translateY(-2px) scale(1.04);
+  box-shadow:
+    0 0 12px 2px var(--burn-color-40),
+    0 0 28px 6px var(--burn-color-20),
+    0 4px 20px -2px var(--burn-color-20),
+    inset 0 0 8px 0 var(--burn-color-10);
+}
+
+.add-to-stack-btn:active:not(:disabled) {
+  transform: translateY(0px) scale(0.98);
+  box-shadow:
+    0 0 8px 1px var(--burn-color-60),
+    0 0 20px 4px var(--burn-color-40),
+    inset 0 0 12px 0 var(--burn-color-20);
+}
+
+.dark .add-to-stack-btn:hover:not(:disabled) {
+  border-color: var(--burn-color-60) !important;
+  color: oklch(0.82 0.18 22);
+  transform: translateY(-2px) scale(1.04);
+  box-shadow:
+    0 0 14px 3px var(--burn-color-40),
+    0 0 36px 8px var(--burn-color-20),
+    0 0 60px 16px var(--burn-color-10),
+    0 4px 24px -2px var(--burn-color-20),
+    inset 0 0 10px 0 var(--burn-color-10);
+}
+
+.dark .add-to-stack-btn:active:not(:disabled) {
+  transform: translateY(0px) scale(0.98);
+  box-shadow:
+    0 0 10px 2px var(--burn-color-60),
+    0 0 24px 6px var(--burn-color-40),
+    0 0 48px 12px var(--burn-color-20),
+    inset 0 0 14px 0 var(--burn-color-20);
 }
 
 .page-shell {
@@ -874,7 +919,6 @@
 
 .social-icon-btn:hover {
   border-color: oklch(0.24 0.01 80 / 0.7);
-  transform: translateY(-1px);
 }
 
 .newsletter-invert .glass-card {
@@ -1030,7 +1074,6 @@
   box-shadow:
     0px 8px calc(var(--lg-outer-shadow-blur) * 1.5) rgba(0, 0, 0, 0.18),
     inset 0 0 var(--lg-inner-shadow-blur) var(--lg-inner-shadow-spread) var(--lg-inner-shadow-color);
-  transform: translateY(-6px) scale(1.02);
   border-color: oklch(1 0 0 / 0.2);
 }
 
@@ -1064,7 +1107,6 @@
   box-shadow:
     0px 8px 24px rgba(0, 0, 0, 0.12),
     inset 0 0 var(--lg-inner-shadow-blur) var(--lg-inner-shadow-spread) var(--lg-inner-shadow-color);
-  transform: translateY(-2px);
 }
 
 .dark .card-content {
@@ -1117,14 +1159,12 @@
   box-shadow:
     0px 8px calc(var(--lg-outer-shadow-blur) * 1.5) rgba(0, 0, 0, 0.22),
     inset 0 0 var(--lg-inner-shadow-blur) var(--lg-inner-shadow-spread) rgba(255, 255, 255, 0.45);
-  transform: translateY(-3px) scale(1.02);
 }
 
 .btn-primary:active:not(:disabled) {
   box-shadow:
     0px 2px 12px rgba(0, 0, 0, 0.12),
     inset 0 0 var(--lg-inner-shadow-blur) var(--lg-inner-shadow-spread) rgba(255, 255, 255, 0.25);
-  transform: translateY(-1px) scale(1.01);
 }
 
 .btn-secondary {
@@ -1157,7 +1197,6 @@
   box-shadow:
     0px 8px calc(var(--lg-outer-shadow-blur) * 1.5) rgba(0, 0, 0, 0.18),
     inset 0 0 var(--lg-inner-shadow-blur) var(--lg-inner-shadow-spread) var(--lg-inner-shadow-color);
-  transform: translateY(-3px) scale(1.02);
   border-color: oklch(1 0 0 / 0.2);
 }
 
@@ -1165,7 +1204,6 @@
   box-shadow:
     0px 2px 12px rgba(0, 0, 0, 0.08),
     inset 0 0 var(--lg-inner-shadow-blur) var(--lg-inner-shadow-spread) var(--lg-inner-shadow-color);
-  transform: translateY(-1px) scale(1.01);
 }
 
 .dark .btn-secondary {
@@ -1215,7 +1253,6 @@
   box-shadow:
     0px 4px 16px rgba(0, 0, 0, 0.08),
     inset 0 0 12px -4px var(--lg-inner-shadow-color);
-  transform: translateY(-2px);
 }
 
 .dark .btn-ghost {

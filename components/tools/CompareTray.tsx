@@ -38,7 +38,7 @@ export function CompareTray() {
           {items.map(item => (
             <span
               key={item.slug}
-              className="flex items-center gap-1.5 glass-card border border-border/30 rounded-xl px-3 py-1.5 text-sm font-bold whitespace-nowrap shrink-0 hover:scale-105 transition-all duration-300"
+              className="flex items-center gap-1.5 glass-card border border-border/30 rounded-xl px-3 py-1.5 text-sm font-bold whitespace-nowrap shrink-0 transition-all duration-300"
             >
               {item.name}
               <button

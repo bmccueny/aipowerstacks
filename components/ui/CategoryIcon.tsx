@@ -121,7 +121,7 @@ export function CategoryIcon({ slug, emoji, className, size = 'default' }: Categ
     return (
       <div className={[
         'p-2 rounded-lg transition-all duration-300',
-        'group-hover:scale-110 group-hover:-rotate-3',
+        '',
         bg,
         color,
         // On hover, flip to primary bg + white icon
@@ -143,7 +143,7 @@ export function CategoryIcon({ slug, emoji, className, size = 'default' }: Categ
   }
 
   return (
-    <div className={`text-2xl leading-none grayscale group-hover:grayscale-0 group-hover:scale-125 group-hover:rotate-12 transition-all duration-300 ${className ?? ''}`}>
+    <div className={`text-2xl leading-none grayscale group-hover:grayscale-0 transition-all duration-300 ${className ?? ''}`}>
       {emoji || '🤖'}
     </div>
   )

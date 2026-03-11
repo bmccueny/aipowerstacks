@@ -126,7 +126,7 @@ export function ToolCard({ tool, view = 'grid', cardStyle = 'default', compact =
             )}
             <div className="relative">
               <div className="absolute inset-0 glass-card rounded-3xl blur-sm scale-110 opacity-60" />
-              <div className="relative h-20 w-20 rounded-3xl border border-foreground/20 bg-background/80 backdrop-blur-sm shadow-[0_8px_24px_-4px_rgba(0,0,0,0.12)] overflow-hidden flex items-center justify-center z-10 transition-all duration-300 group-hover:scale-110 group-hover:shadow-[0_12px_32px_-4px_rgba(0,0,0,0.18)]">
+              <div className="relative h-20 w-20 rounded-3xl border border-foreground/20 bg-background/80 backdrop-blur-sm shadow-[0_8px_24px_-4px_rgba(0,0,0,0.12)] overflow-hidden flex items-center justify-center z-10 transition-all duration-300 group-hover:shadow-[0_12px_32px_-4px_rgba(0,0,0,0.18)]">
                 {renderLogo(80)}
               </div>
             </div>
