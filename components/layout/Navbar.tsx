@@ -34,33 +34,33 @@ export function Navbar() {
   const [profile, setProfile] = useState<any>(null)
 
   useEffect(() => {
+    const fetchProfile = async (userId: string) => {
+      const { data } = await supabase
+        .from('profiles')
+        .select('avatar_url, display_name')
+        .eq('id', userId)
+        .maybeSingle()
+      setProfile(data)
+    }
+
     const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user }, error } = await supabase.auth.getUser()
+      if (error) return
       setUser(user)
-      
-      if (user) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('avatar_url, display_name')
-          .eq('id', user.id)
-          .maybeSingle()
-        setProfile(profile)
-      }
+      if (user) fetchProfile(user.id)
     }
     getUser()
 
+    // IMPORTANT: this callback must NOT be async — calling Supabase client
+    // methods inside an async onAuthStateChange callback causes a deadlock
+    // because the callback runs inside the auth lock.
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      (event, session) => {
         setUser(session?.user ?? null)
-        if (!session?.user) {
-          setProfile(null)
+        if (session?.user) {
+          fetchProfile(session.user.id)
         } else {
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('avatar_url, display_name')
-            .eq('id', session.user.id)
-            .maybeSingle()
-          setProfile(profile)
+          setProfile(null)
         }
       }
     )

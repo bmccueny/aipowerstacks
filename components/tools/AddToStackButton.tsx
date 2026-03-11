@@ -219,22 +219,19 @@ export function AddToStackButton({
     }
   }, [pickerOpen, toolId])
 
-  // Position the desktop dropdown relative to the trigger button
+  // Compute dropdown position from trigger button
+  const [dropdownPos, setDropdownPos] = useState<{ top: number; right: number } | null>(null)
+
   useEffect(() => {
-    if (isMobile || !pickerOpen || !triggerRef.current || !dropdownRef.current) return
-
-    const trigger = triggerRef.current
-    const dropdown = dropdownRef.current
-    const rect = trigger.getBoundingClientRect()
-
-    // Position below-end of the button
-    const top = rect.bottom + 8
-    const right = window.innerWidth - rect.right
-
-    dropdown.style.position = 'fixed'
-    dropdown.style.top = `${top}px`
-    dropdown.style.right = `${right}px`
-    dropdown.style.left = 'auto'
+    if (isMobile || !pickerOpen || !triggerRef.current) {
+      setDropdownPos(null)
+      return
+    }
+    const rect = triggerRef.current.getBoundingClientRect()
+    setDropdownPos({
+      top: rect.bottom + 8,
+      right: window.innerWidth - rect.right,
+    })
   }, [pickerOpen, isMobile])
 
   // Close on outside click (desktop)
@@ -395,7 +392,7 @@ export function AddToStackButton({
       )}
 
       {/* ── Desktop: positioned dropdown with backdrop overlay ── */}
-      {!isMobile && pickerOpen && typeof document !== 'undefined' && createPortal(
+      {!isMobile && pickerOpen && dropdownPos && typeof document !== 'undefined' && createPortal(
         <>
           <div
             className="fixed inset-0 z-[100] bg-black/25 backdrop-blur-md transition-opacity duration-300"
@@ -404,6 +401,11 @@ export function AddToStackButton({
           />
           <div
             ref={dropdownRef}
+            style={{
+              position: 'fixed',
+              top: dropdownPos.top,
+              right: dropdownPos.right,
+            }}
             className="z-[101] w-72 p-2 rounded-lg border border-border/60 bg-background/95 dark:bg-neutral-900/95 backdrop-blur-2xl shadow-[0_25px_70px_rgba(0,0,0,0.3)] dark:shadow-[0_25px_70px_rgba(0,0,0,0.6)] animate-in fade-in-0 zoom-in-95 duration-150"
           >
             <p className="px-3 py-2 text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
