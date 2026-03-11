@@ -95,9 +95,11 @@ interface CategoryIconProps {
   slug: string
   emoji?: string | null
   className?: string
+  /** 'sm' renders a bare icon at 16px for pill layouts; default renders the full padded box */
+  size?: 'default' | 'sm'
 }
 
-export function CategoryIcon({ slug, emoji, className }: CategoryIconProps) {
+export function CategoryIcon({ slug, emoji, className, size = 'default' }: CategoryIconProps) {
   const normalized =
     ICON_MAP[slug] ??
     ICON_MAP[slug.replace('-tools', '')] ??
@@ -106,6 +108,16 @@ export function CategoryIcon({ slug, emoji, className }: CategoryIconProps) {
 
   if (normalized) {
     const [icon, bg, color] = normalized
+
+    // Small variant: bare icon for pill layouts (no background box)
+    if (size === 'sm') {
+      return (
+        <span className={[color, 'flex-shrink-0 transition-colors duration-200 [&>svg]:h-4 [&>svg]:w-4', className].filter(Boolean).join(' ')}>
+          {icon}
+        </span>
+      )
+    }
+
     return (
       <div className={[
         'p-2 rounded-lg transition-all duration-300',
@@ -122,6 +134,14 @@ export function CategoryIcon({ slug, emoji, className }: CategoryIconProps) {
   }
 
   // Fallback to emoji
+  if (size === 'sm') {
+    return (
+      <span className={`text-sm leading-none flex-shrink-0 ${className ?? ''}`}>
+        {emoji || '🤖'}
+      </span>
+    )
+  }
+
   return (
     <div className={`text-2xl leading-none grayscale group-hover:grayscale-0 group-hover:scale-125 group-hover:rotate-12 transition-all duration-300 ${className ?? ''}`}>
       {emoji || '🤖'}

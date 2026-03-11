@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { Search } from 'lucide-react'
+import { useLiquidGlass } from '@/hooks/useLiquidGlass'
 
 // Specific, high-intent prompts — research-backed: concrete examples outperform generic placeholders
 const PROMPTS = [
@@ -26,6 +27,15 @@ export function HeroSearch({ toolCount }: { toolCount: number }) {
   const [isDeleting, setIsDeleting] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
+  const searchBarRef = useLiquidGlass<HTMLInputElement>({
+    radius: 24,
+    glassThickness: 80,
+    bezelWidth: 60,
+    ior: 3.0,
+    blur: 0.3,
+    specularOpacity: 0.5,
+    specularSaturation: 4,
+  })
 
   // Typewriter effect
   useEffect(() => {
@@ -60,20 +70,11 @@ export function HeroSearch({ toolCount }: { toolCount: number }) {
     setIsPaused(true)
   }, [displayed, isDeleting, isPaused, promptIndex, query])
 
-  const isNaturalLanguage = (q: string) => {
-    // Route to matchmaker if query looks like a sentence/question rather than a keyword
-    const words = q.trim().split(/\s+/)
-    const naturalTriggers = /\b(i need|i want|help me|looking for|something that|tool that|tool to|can|that will|how to|find me|give me|show me|what|which|best way|for my|to help|to make|to build|to create|to write|to edit|to generate|to automate|to manage|to analyze)\b/i
-    return words.length >= 4 || naturalTriggers.test(q)
-  }
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     const q = query.trim()
     if (!q) {
       router.push('/tools')
-    } else if (isNaturalLanguage(q)) {
-      router.push(`/matchmaker?q=${encodeURIComponent(q)}`)
     } else {
       router.push(`/tools?q=${encodeURIComponent(q)}`)
     }
@@ -87,12 +88,16 @@ export function HeroSearch({ toolCount }: { toolCount: number }) {
 
         <div className="relative flex items-center">
           <input
-            ref={inputRef}
+            ref={(el) => {
+              // Merge refs
+              (inputRef as any).current = el
+              ;(searchBarRef as any).current = el
+            }}
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder={query ? '' : displayed || ' '}
-            className="w-full h-20 px-8 pr-20 rounded-3xl border-2 border-gray-200/50 dark:border-gray-700/50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl text-xl font-medium outline-none focus:ring-4 focus:ring-primary/20 focus:border-primary/50 transition-all duration-300 placeholder:text-gray-400 dark:placeholder:text-gray-500 placeholder:font-normal shadow-xl hover:shadow-2xl"
+            placeholder=" "
+            className="w-full h-20 px-8 pr-20 rounded-3xl border-2 border-white/20 dark:border-white/10 liquid-glass glass-card text-xl font-medium outline-none focus:ring-4 focus:ring-primary/20 focus:border-primary/50 transition-all duration-300 placeholder:text-transparent"
           />
 
           {/* Animated cursor in placeholder when empty */}
@@ -117,9 +122,8 @@ export function HeroSearch({ toolCount }: { toolCount: number }) {
       </div>
 
       <p className="text-center text-xs text-muted-foreground mt-3">
-        Search by tool name, or{' '}
-        <span className="text-primary font-medium">describe your problem</span>{' '}
-        and our AI will match you with the right tool
+        Search by tool name, category, or{' '}
+        <span className="text-primary font-medium">describe what you need</span>
       </p>
     </form>
   )

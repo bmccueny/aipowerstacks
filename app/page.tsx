@@ -167,24 +167,32 @@ export default async function HomePage() {
 
         {/* Categories Section */}
         {featuredCategories.length > 0 && (
-          <section className="px-4 max-w-7xl mx-auto w-full">
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Popular Categories</h2>
-              <Link href="/categories" className="text-sm font-semibold text-primary hover:text-primary/80 flex items-center gap-1 transition-colors">
-                View all categories <ArrowRight className="h-3.5 w-3.5" />
-              </Link>
+          <section className="px-4 max-w-[860px] mx-auto w-full">
+            <div className="flex items-center justify-center mb-6">
+              <h2 className="text-lg font-semibold text-foreground flex items-center gap-2.5">
+                <span className="text-primary font-bold">&#x27E9;</span> Popular Categories
+              </h2>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+            <div className="flex flex-wrap justify-center gap-2.5 mb-4">
               {featuredCategories.map((cat) => (
                 <Link
                   key={cat.id}
                   href={`/categories/${cat.slug}`}
-                  className="category-card rounded-md p-3 flex flex-col items-center justify-center gap-2 group min-h-[100px]"
+                  className="category-pill group"
                 >
-                  <CategoryIcon slug={cat.slug} emoji={cat.icon} />
-                  <span className="text-[13px] leading-[1.35] font-medium text-center transition-colors">{cat.name}</span>
+                  <CategoryIcon slug={cat.slug} emoji={cat.icon} size="sm" />
+                  <span>{cat.name}</span>
                 </Link>
               ))}
+            </div>
+            <div className="flex justify-center items-center gap-3 flex-wrap">
+              <Link href="/categories" className="text-sm font-medium text-primary hover:text-primary/80 transition-colors">
+                View all categories →
+              </Link>
+              <span className="text-muted-foreground text-sm">·</span>
+              <Link href="/tools" className="text-sm font-medium text-primary hover:text-primary/80 transition-colors">
+                Browse all tools →
+              </Link>
             </div>
           </section>
         )}
@@ -192,14 +200,10 @@ export default async function HomePage() {
         {/* Top Rated — highest authority content */}
         {superTools.length > 0 && (
           <section className="px-4 max-w-7xl mx-auto w-full">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="text-2xl font-bold">Highest-Rated AI Tools</h2>
-                <p className="text-sm text-muted-foreground mt-1">Top-scored by the community and verified by our editors</p>
-              </div>
-              <Link href="/tools?sort=rating" className="text-sm font-bold text-foreground hover:underline flex items-center gap-1">
-                View all <ArrowRight className="h-3.5 w-3.5" />
-              </Link>
+            <div className="flex items-center justify-center mb-6">
+              <h2 className="text-lg font-semibold text-foreground flex items-center gap-2.5">
+                <span className="text-primary font-bold">&#x27E9;</span> Highest-Rated AI Tools
+              </h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {superTools.map((tool, idx) => (
@@ -213,14 +217,10 @@ export default async function HomePage() {
 
         {/* New Tools */}
         <section className="px-4 max-w-7xl mx-auto w-full">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h2 className="text-2xl font-bold">Newly Added AI Tools</h2>
-              <p className="text-sm text-muted-foreground mt-1">Just listed this week — be the first to review them</p>
-            </div>
-            <Link href="/tools?sort=newest" className="text-sm font-bold text-foreground hover:underline flex items-center gap-1">
-              View all <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
+          <div className="flex items-center justify-center mb-6">
+            <h2 className="text-lg font-semibold text-foreground flex items-center gap-2.5">
+              <span className="text-primary font-bold">&#x27E9;</span> Newly Added AI Tools
+            </h2>
           </div>
           {latestTools.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -306,14 +306,10 @@ export default async function HomePage() {
         {/* News */}
         <section className="border-y-[1px] border-foreground bg-background">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-2">
-                <Newspaper className="h-5 w-5" />
-                <h2 className="text-2xl sm:text-3xl font-black">AI Industry News & Analysis</h2>
-              </div>
-            <Link href="/blog" className="text-sm font-bold text-foreground hover:underline flex items-center gap-1">
-              Read all <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
+            <div className="flex items-center justify-center mb-6">
+              <h2 className="text-lg font-semibold text-foreground flex items-center gap-2.5">
+                <span className="text-primary font-bold">&#x27E9;</span> AI Industry News & Analysis
+              </h2>
             </div>
 
             {combinedNews.length > 0 ? (

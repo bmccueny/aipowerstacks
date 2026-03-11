@@ -18,7 +18,7 @@ const adminNavItems = [
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen">
-      <aside className="w-64 shrink-0 border-r border-white/10 glass flex flex-col">
+      <aside className="w-64 shrink-0 border-r border-white/20 dark:border-white/10 glass-card flex flex-col">
         <div className="p-4 border-b border-white/10">
           <Link href="/admin" className="flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-primary" />

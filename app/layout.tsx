@@ -93,8 +93,12 @@ export default function RootLayout({
         <JsonLd data={generateOrganizationJsonLd()} />
       </head>
       <body className="antialiased">
+        <div className="stars" aria-hidden="true" />
+        <div className="nebula" aria-hidden="true" />
         <CompareProvider>
-          {children}
+          <div className="relative z-[1]">
+            {children}
+          </div>
           <Toaster richColors position="bottom-right" />
         </CompareProvider>
       </body>

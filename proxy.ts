@@ -27,6 +27,13 @@ export async function proxy(request: NextRequest) {
 
   const path = request.nextUrl.pathname
 
+  // Redirect authenticated users away from auth pages
+  if (user && (path === '/login' || path === '/register')) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/dashboard'
+    return NextResponse.redirect(url)
+  }
+
   if (path.startsWith('/dashboard') || path.startsWith('/settings')) {
     if (!user) {
       const url = request.nextUrl.clone()

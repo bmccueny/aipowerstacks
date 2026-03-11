@@ -35,7 +35,7 @@ export function Footer() {
   }
 
   return (
-    <footer className="border-t border-border/50 bg-gradient-to-b from-background/80 to-background backdrop-blur-xl relative overflow-hidden">
+    <footer className="border-t border-white/20 dark:border-white/10 glass-card relative overflow-hidden">
       {/* Decorative background elements */}
       <div className="absolute inset-0 opacity-5">
         <svg viewBox="0 0 1200 200" className="w-full h-full">

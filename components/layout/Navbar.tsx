@@ -15,6 +15,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { cn } from '@/lib/utils'
+import { useLiquidGlass } from '@/hooks/useLiquidGlass'
 
 const navLinks = [
   { href: '/tools', label: 'Browse' },
@@ -73,11 +74,22 @@ export function Navbar() {
     router.refresh()
   }
 
+  const navRef = useLiquidGlass<HTMLElement>({
+    radius: 0,
+    glassThickness: 80,
+    bezelWidth: 60,
+    ior: 3.0,
+    blur: 0.3,
+    specularOpacity: 0.5,
+    specularSaturation: 4,
+  })
+
   return (
     <>
       {/* Main Navbar */}
       <nav
-        className="fixed top-0 w-screen z-50 bg-white dark:bg-gray-900 backdrop-blur-md border-b border-gray-200 dark:border-gray-700"
+        ref={navRef}
+        className="fixed top-0 w-screen z-50 liquid-glass border-b border-white/20 dark:border-white/10"
         style={{ left: 0, right: 0, width: '100vw' }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" style={{ width: '100%', maxWidth: '80rem' }}>
@@ -216,7 +228,7 @@ export function Navbar() {
         <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
 
         <div className={cn(
-          'absolute top-16 left-0 right-0 bg-white dark:bg-gray-900 transform transition-transform duration-300 max-h-[calc(100vh-4rem)] overflow-y-auto',
+          'absolute top-16 left-0 right-0 glass-card border-b border-white/20 transform transition-transform duration-300 max-h-[calc(100vh-4rem)] overflow-y-auto',
           mobileOpen ? 'translate-y-0' : '-translate-y-full'
         )}>
           <div className="px-4 py-6">
