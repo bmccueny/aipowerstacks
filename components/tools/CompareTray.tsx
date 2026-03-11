@@ -28,7 +28,13 @@ export function CompareTray() {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50">
-      <div ref={trayRef} className="border-t border-white/20 liquid-glass px-4 py-4 flex items-center gap-3">
+      {/* Blur backdrop behind compare tray */}
+      <div
+        className="absolute inset-x-0 bottom-0 h-[calc(100%+2rem)] bg-black/15 backdrop-blur-md pointer-events-none"
+        style={{ maskImage: 'linear-gradient(to bottom, transparent 0%, black 2rem)', WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 2rem)' }}
+        aria-hidden="true"
+      />
+      <div ref={trayRef} className="relative border-t border-white/20 liquid-glass px-4 py-4 flex items-center gap-3">
         <ArrowLeftRight className="h-4 w-4 shrink-0 text-white/50" />
         <span className="text-xs font-black uppercase tracking-widest text-white/50 shrink-0 hidden sm:block">
           Compare

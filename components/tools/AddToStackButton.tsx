@@ -237,8 +237,16 @@ export function AddToStackButton({
 
   const alreadyInAStack = Object.values(itemCounts).some(Boolean)
 
-  return (
+   return (
     <>
+      {/* Full-screen blur overlay when dropdown is open */}
+      {dropdownOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm transition-opacity duration-300"
+          aria-hidden="true"
+          onClick={() => setDropdownOpen(false)}
+        />
+      )}
       <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
         <DropdownMenuTrigger asChild>
           <Button
