@@ -1,17 +1,26 @@
 import type { Metadata } from 'next'
-import Image from 'next/image'
 import { notFound } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
+import { PRICING_LABELS } from '@/lib/constants'
+import { SITE_URL } from '@/lib/constants/site'
 
 export const metadata: Metadata = {
   robots: { index: false, follow: false },
 }
-import { Layers, ExternalLink } from 'lucide-react'
-import { PRICING_BADGE_COLORS, PRICING_LABELS } from '@/lib/constants'
+
+// Inline CSS color values for pricing badges (Tailwind classes don't work in standalone embed HTML)
+const EMBED_BADGE_STYLES: Record<string, { bg: string; color: string; border: string }> = {
+  free:     { bg: '#d1fae5', color: '#065f46', border: '#6ee7b7' },
+  freemium: { bg: '#e0f2fe', color: '#075985', border: '#7dd3fc' },
+  paid:     { bg: '#fef3c7', color: '#92400e', border: '#fcd34d' },
+  trial:    { bg: '#e0e7ff', color: '#3730a3', border: '#a5b4fc' },
+  contact:  { bg: '#f5f5f4', color: '#44403c', border: '#d6d3d1' },
+  unknown:  { bg: '#f5f5f4', color: '#44403c', border: '#d6d3d1' },
+}
 
 export default async function StackEmbedPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const { data: collection } = await supabase
     .from('collections')
@@ -33,7 +42,6 @@ export default async function StackEmbedPage({ params }: { params: Promise<{ slu
     .limit(10)
 
   const tools = (items?.map(i => ({ ...(i.tools as any), _note: i.note })) ?? []).filter(t => t?.id)
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL
 
   return (
     <html>
@@ -59,7 +67,7 @@ export default async function StackEmbedPage({ params }: { params: Promise<{ slu
           .tool-name { font-size: 13px; font-weight: 700; color: #fff; }
           .tool-tagline { font-size: 11px; color: #666; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
           .tool-note { font-size: 11px; color: #e879a0; font-style: italic; margin-top: 2px; }
-          .badge { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 999px; border: 1px solid; flex-shrink: 0; }
+          .badge { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 999px; flex-shrink: 0; }
           .footer { background: #0d0d0d; padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.06); }
           .footer-brand { font-size: 11px; color: #555; }
           .footer-link { font-size: 11px; color: #e879a0; text-decoration: none; font-weight: 600; }
@@ -79,12 +87,12 @@ export default async function StackEmbedPage({ params }: { params: Promise<{ slu
           </div>
 
           {tools.map((tool: any) => {
-            const pricingColor = PRICING_BADGE_COLORS[tool.pricing_model]
+            const badgeStyle = EMBED_BADGE_STYLES[tool.pricing_model] ?? EMBED_BADGE_STYLES.unknown
             const pricingLabel = PRICING_LABELS[tool.pricing_model] ?? 'Unknown'
             return (
               <a
                 key={tool.id}
-                href={`${siteUrl}/tools/${tool.slug}`}
+                href={`${SITE_URL}/tools/${tool.slug}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="tool"
@@ -101,8 +109,17 @@ export default async function StackEmbedPage({ params }: { params: Promise<{ slu
                   <div className="tool-tagline">{tool.tagline}</div>
                   {tool._note && <div className="tool-note">"{tool._note}"</div>}
                 </div>
-                {pricingColor && (
-                  <span className={`badge ${pricingColor}`}>{pricingLabel}</span>
+                {badgeStyle && (
+                  <span
+                    className="badge"
+                    style={{
+                      backgroundColor: badgeStyle.bg,
+                      color: badgeStyle.color,
+                      border: `1px solid ${badgeStyle.border}`,
+                    }}
+                  >
+                    {pricingLabel}
+                  </span>
                 )}
               </a>
             )
@@ -111,7 +128,7 @@ export default async function StackEmbedPage({ params }: { params: Promise<{ slu
           <div className="footer">
             <span className="footer-brand">AIPowerStacks</span>
             <a
-              href={`${siteUrl}/stacks/${slug}`}
+              href={`${SITE_URL}/stacks/${slug}`}
               target="_blank"
               rel="noopener noreferrer"
               className="footer-link"

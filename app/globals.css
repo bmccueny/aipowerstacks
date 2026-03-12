@@ -1127,6 +1127,7 @@
 .card-directory {
   position: relative;
   isolation: isolate;
+  cursor: pointer;
   background: rgba(var(--lg-tint-color), var(--lg-tint-opacity));
   backdrop-filter: blur(18px) saturate(180%);
   -webkit-backdrop-filter: blur(18px) saturate(180%);

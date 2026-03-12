@@ -119,7 +119,7 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
     tools.map(t => t.categories).filter(Boolean).map((c: any) => [c.slug, c])
   ).values()] as any[]
 
-  const shareUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/stacks/${slug}`
+  const shareUrl = `${SITE_URL}/stacks/${slug}`
   const creator = (collection as any).profiles
   const isSavedStack = !!collection.source_collection_id
   const sourceCollection = (collection as any).source

@@ -49,7 +49,7 @@ export function ToolCard({ tool, view = 'grid', cardStyle = 'default', compact =
     return (
       <div 
         onMouseEnter={() => setHasBeenHovered(true)}
-        className="glass-card rounded-xl px-5 py-4 flex flex-wrap sm:flex-nowrap items-center gap-4 group relative"
+        className="glass-card rounded-xl px-5 py-4 flex flex-wrap sm:flex-nowrap items-center gap-4 group relative cursor-pointer"
       >
         <div className="h-12 w-12 shrink-0 rounded-md bg-muted overflow-hidden flex items-center justify-center">
           {renderLogo(48)}
