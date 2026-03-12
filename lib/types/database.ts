@@ -570,6 +570,7 @@ export type Database = {
           view_count: number
           source_collection_id: string | null
           template_id: string | null
+          featured_at: string | null
           created_at: string
           updated_at: string
         }
@@ -585,6 +586,7 @@ export type Database = {
           view_count?: number
           source_collection_id?: string | null
           template_id?: string | null
+          featured_at?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -598,6 +600,7 @@ export type Database = {
           view_count?: number
           source_collection_id?: string | null
           template_id?: string | null
+          featured_at?: string | null
           updated_at?: string
         }
         Relationships: [

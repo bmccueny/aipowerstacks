@@ -15,7 +15,7 @@ import { AddToCompareButton } from '@/components/tools/AddToCompareButton'
 import { NewsletterBanner } from '@/components/layout/NewsletterBanner'
 import { AdminReviewPanel } from '@/components/admin/AdminReviewPanel'
 import { createClient } from '@/lib/supabase/server'
-import { getToolBySlug, getRelatedToolsByCategory } from '@/lib/supabase/queries/tools'
+import { getToolBySlug, getRelatedToolsByCategory, getPopularToolsExcluding } from '@/lib/supabase/queries/tools'
 import { getReviewsByTool } from '@/lib/supabase/queries/reviews'
 import { generateFaqJsonLd, generateJsonLd, generateToolMetadata, generateBreadcrumbJsonLd } from '@/lib/utils/seo'
 import { PRICING_BADGE_COLORS, PRICING_LABELS, MODEL_PROVIDER_LABELS } from '@/lib/constants'
@@ -55,13 +55,14 @@ export default async function ToolDetailPage({ params }: Props) {
 
   if (!tool) notFound()
 
-  const [reviews, alternatives] = await Promise.all([
+  const [reviews, alternatives, youMightLike] = await Promise.all([
     getReviewsByTool(tool.id, user?.id),
     getRelatedToolsByCategory({
       categoryId: tool.category_id,
       excludeToolId: tool.id,
       limit: 3,
     }),
+    getPopularToolsExcluding([tool.id], 4),
   ])
 
   const screenshots = Array.isArray(tool.screenshot_urls) ? tool.screenshot_urls as string[] : []
@@ -326,6 +327,33 @@ export default async function ToolDetailPage({ params }: Props) {
               </div>
             )}
 
+            {youMightLike.length > 0 && (
+              <div className="glass-card rounded-md p-6">
+                <h2 className="text-lg font-semibold mb-3">You Might Also Like</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {youMightLike.map((rec: any) => (
+                    <Link
+                      key={rec.id}
+                      href={`/tools/${rec.slug}`}
+                      className="border border-foreground/10 rounded-md p-3 flex items-center gap-3 hover:border-primary/30 transition-all group"
+                    >
+                      <div className="h-9 w-9 shrink-0 rounded-lg bg-muted overflow-hidden flex items-center justify-center">
+                        {rec.logo_url ? (
+                          <img src={rec.logo_url} alt={rec.name} width={36} height={36} className="object-cover" />
+                        ) : (
+                          <span className="text-sm font-bold text-primary">{rec.name[0]}</span>
+                        )}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="font-medium text-sm group-hover:text-primary transition-colors truncate">{rec.name}</p>
+                        <p className="text-xs text-muted-foreground truncate">{rec.tagline}</p>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {screenshots.length > 0 && (
               <div className="glass-card rounded-md p-6">
                 <h2 className="text-lg font-semibold mb-3">Screenshots</h2>
@@ -546,6 +574,9 @@ export default async function ToolDetailPage({ params }: Props) {
                     <Button variant="outline" size="sm" className="w-full border-foreground/25 text-xs">Suggest edit</Button>
                   </Link>
                 </div>
+                <Link href={`/tools/${tool.slug}/badge`} className="text-xs text-muted-foreground hover:text-primary transition-colors">
+                  Get embed badge
+                </Link>
               </div>
             </div>
 

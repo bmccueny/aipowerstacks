@@ -697,3 +697,56 @@ export async function getMatchedTools({
 
   return (data as any) ?? [] as ToolSearchResult[]
 }
+
+export async function getPopularToolsExcluding(excludeIds: string[], limit = 4): Promise<ToolSearchResult[]> {
+  const supabase = createAdminClient()
+
+  const { data } = await supabase
+    .from('tools')
+    .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, is_featured, avg_rating, review_count, upvote_count, category_id, published_at, model_provider, is_api_wrapper, has_api, is_open_source')
+    .eq('status', 'published')
+    .order('avg_rating', { ascending: false })
+    .order('review_count', { ascending: false })
+    .limit(limit + excludeIds.length + 5)
+
+  // Filter out excluded IDs in JS and take the limit
+  const filtered = (data ?? []).filter(t => !excludeIds.includes(t.id))
+  return filtered.slice(0, limit) as unknown as ToolSearchResult[]
+}
+
+export async function getFeaturedStack() {
+  const supabase = createAdminClient()
+
+  // Get the most recently featured public stack
+  const { data: collection } = await supabase
+    .from('collections')
+    .select('id, name, description, icon, share_slug, featured_at, user_id, view_count, save_count')
+    .eq('is_public', true)
+    .not('featured_at', 'is', null)
+    .order('featured_at', { ascending: false })
+    .limit(1)
+    .single()
+
+  if (!collection) return null
+
+  // Get tools in this stack
+  const { data: items } = await supabase
+    .from('collection_items')
+    .select('tools:tool_id (id, name, slug, logo_url, tagline, pricing_model)')
+    .eq('collection_id', collection.id)
+    .order('sort_order', { ascending: true })
+    .limit(5)
+
+  // Get creator profile
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('username, display_name, avatar_url')
+    .eq('id', collection.user_id)
+    .single()
+
+  return {
+    ...collection,
+    tools: (items?.map(i => i.tools).filter(Boolean) ?? []) as Array<{id: string; name: string; slug: string; logo_url: string | null; tagline: string; pricing_model: string}>,
+    creator: profile,
+  }
+}

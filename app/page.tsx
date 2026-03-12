@@ -7,6 +7,7 @@ import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { NewsletterBanner } from '@/components/layout/NewsletterBanner'
 import { HeroSearch } from '@/components/home/HeroSearch'
+import { DiscoverFeed } from '@/components/home/DiscoverFeed'
 import { ToolCard } from '@/components/tools/ToolCard'
 import { CategoryIcon } from '@/components/ui/CategoryIcon'
 import { getAllCategories } from '@/lib/supabase/queries/categories'
@@ -217,6 +218,8 @@ export default async function HomePage() {
             </div>
           </section>
         )}
+
+        <DiscoverFeed />
 
         {/* Top Rated — highest authority content */}
         {superTools.length > 0 && (
