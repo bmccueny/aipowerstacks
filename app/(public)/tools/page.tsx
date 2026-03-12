@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { searchTools } from '@/lib/supabase/queries/tools'
 import { getAllCategories } from '@/lib/supabase/queries/categories'
 import { ToolGrid } from '@/components/tools/ToolGrid'
+import { ToolGridTransition } from '@/components/tools/ToolGridTransition'
 import { ToolFilters } from '@/components/tools/ToolFilters'
 import { ToolSearch } from '@/components/tools/ToolSearch'
 import { ViewToggle } from '@/components/tools/ViewToggle'
@@ -117,7 +118,11 @@ export default async function ToolsPage({ searchParams }: ToolsPageProps) {
           : `Showing ${tools.length}${hasMore ? '+' : ''} tool${tools.length === 1 ? '' : 's'}${page > 1 ? ` · Page ${page}` : ''}`}
       </p>
 
-      <ToolGrid tools={tools} view={view} cardStyle="default" />
+      <Suspense>
+        <ToolGridTransition view={view}>
+          <ToolGrid tools={tools} view={view} cardStyle="default" />
+        </ToolGridTransition>
+      </Suspense>
 
       <Suspense>
         <Pagination page={page} hasMore={hasMore} />
