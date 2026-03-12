@@ -27,11 +27,25 @@ export async function proxy(request: NextRequest) {
 
   const path = request.nextUrl.pathname
 
+  // Helper: redirect while preserving refreshed auth cookies
+  function redirectWithCookies(url: URL) {
+    const redirectResponse = NextResponse.redirect(url)
+    supabaseResponse.cookies.getAll().forEach((cookie) => {
+      redirectResponse.cookies.set(cookie.name, cookie.value, {
+        path: '/',
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+      })
+    })
+    return redirectResponse
+  }
+
   // Redirect authenticated users away from auth pages
   if (user && (path === '/login' || path === '/register')) {
     const url = request.nextUrl.clone()
     url.pathname = '/dashboard'
-    return NextResponse.redirect(url)
+    return redirectWithCookies(url)
   }
 
   if (path.startsWith('/dashboard') || path.startsWith('/settings')) {
@@ -39,7 +53,7 @@ export async function proxy(request: NextRequest) {
       const url = request.nextUrl.clone()
       url.pathname = '/login'
       url.searchParams.set('redirectTo', path)
-      return NextResponse.redirect(url)
+      return redirectWithCookies(url)
     }
   }
 
@@ -48,7 +62,7 @@ export async function proxy(request: NextRequest) {
       const url = request.nextUrl.clone()
       url.pathname = '/login'
       url.searchParams.set('redirectTo', path)
-      return NextResponse.redirect(url)
+      return redirectWithCookies(url)
     }
 
     const { data: profile } = await supabase
@@ -60,7 +74,7 @@ export async function proxy(request: NextRequest) {
     if (!profile || profile.role !== 'admin') {
       const url = request.nextUrl.clone()
       url.pathname = '/'
-      return NextResponse.redirect(url)
+      return redirectWithCookies(url)
     }
   }
 

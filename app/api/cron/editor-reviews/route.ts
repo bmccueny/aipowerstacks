@@ -147,15 +147,18 @@ YOUR VOICE: ${voice}
 
 ${toolContext}
 
-Write a review of this tool (3–5 sentences, ~80–150 words). Be specific and opinionated.
-Also provide a rating from 1–5 (integer).
+Write a review of this tool (3 to 5 sentences, roughly 80 to 150 words). Be specific and opinionated.
+Also provide a rating from 1 to 5 (integer).
 
 IMPORTANT:
 - Write as if you've actually used the tool.
-- Be honest — not every tool is a 5. Most are 3–4.
+- Be honest, not every tool is a 5. Most are 3 to 4.
 - Match your unique voice and perspective.
-- Do NOT start with "I" — vary your openings.
+- Do NOT start with "I", vary your openings.
 - No markdown formatting. Plain text only.
+- NEVER use em dashes, en dashes, or spaced hyphens. No \u2014 \u2013 or " - " anywhere. Use commas, periods, or colons instead.
+- Hyphens are ONLY allowed inside compound words (e.g. "open-source", "real-time"). Never as punctuation between clauses.
+- NEVER use semicolons. Use periods or commas instead.
 
 Respond in EXACTLY this JSON format (no extra text):
 {"rating": <number>, "body": "<review text>"}`,
