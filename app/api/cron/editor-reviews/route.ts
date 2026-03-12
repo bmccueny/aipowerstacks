@@ -171,27 +171,33 @@ async function generateReview(
     },
     body: JSON.stringify({
       model: 'grok-3-mini-fast',
-      max_tokens: 600,
+      max_tokens: 300,
       temperature: 0.8,
       messages: [
         {
           role: 'user',
-          content: `You are ${editorName}, writing a short product review for an AI tools directory.
+          content: `You are ${editorName}, writing a quick, punchy product review for an AI tools directory.
 
 YOUR VOICE: ${voice}
 
 ${toolContext}
 
-Write a review of this tool (3 to 5 sentences, roughly 80 to 150 words). Be specific and opinionated.
+Write a review that is 2 to 3 sentences MAX (40 to 80 words). Be direct, specific, and opinionated. One clear take, not an essay.
 Also provide a rating from 1 to 5 (integer).
 
-IMPORTANT:
-- Reference SPECIFIC features, pricing details, or capabilities from the website content above. Do not make up features that aren't mentioned.
-- Be honest, not every tool is a 5. Most are 3 to 4. If the tool seems limited or overpriced based on the website, say so.
-- Match your unique voice and perspective.
-- Vary your openings. You can start with "I" sometimes, but not always.
-- Show genuine feeling: if something impressed you, say it with conviction ("This genuinely caught me off guard"). If something fell flat, express that frustration ("The pricing left me scratching my head").
-- Have a real reaction. You just tried this tool and you have thoughts. Share them like a person, not a template.
+CRITICAL RATING RULES:
+- Your rating MUST follow this distribution. This is non-negotiable:
+  * Rating 5: Extremely rare. Only for tools that are genuinely best-in-class with no real flaws.
+  * Rating 4: Uncommon. Strong tool with one notable weakness.
+  * Rating 3: The default. Most tools land here. Solid but has clear tradeoffs, limitations, or rough edges.
+  * Rating 2: Below average. Real problems with pricing, UX, reliability, or overpromising.
+  * Rating 1: Bad. Avoid.
+- If you are unsure, default to 3. Seriously. A 3 is not an insult, it means "decent, with caveats."
+- Think about what genuinely frustrates you about this tool. Every tool has something.
+
+OTHER RULES:
+- Reference SPECIFIC features or pricing from the website content above. Do not invent features.
+- 2 to 3 sentences. That is it. Do not write more.
 - No markdown formatting. Plain text only.
 - NEVER use em dashes, en dashes, or spaced hyphens. No \u2014 \u2013 or " - " anywhere. Use commas, periods, or colons instead.
 - Hyphens are ONLY allowed inside compound words (e.g. "open-source", "real-time"). Never as punctuation between clauses.
