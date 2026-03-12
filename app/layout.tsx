@@ -14,7 +14,6 @@ const redditSans = Reddit_Sans({
   variable: '--font-reddit',
 })
 
-import { CompareProvider } from '@/lib/context/CompareContext'
 import { JsonLd } from '@/components/common/JsonLd'
 import { generateOrganizationJsonLd } from '@/lib/utils/seo'
 import { Toaster } from 'sonner'
@@ -124,12 +123,10 @@ export default function RootLayout({
         <div className="stars" aria-hidden="true" />
         <div className="nebula" aria-hidden="true" />
         <TwinklingStars />
-        <CompareProvider>
-          <div className="relative z-[1]">
-            {children}
-          </div>
-          <Toaster richColors position="top-center" />
-        </CompareProvider>
+        <div className="relative z-[1]">
+          {children}
+        </div>
+        <Toaster richColors position="top-center" />
       </body>
     </html>
   )

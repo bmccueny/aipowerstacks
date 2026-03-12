@@ -13,7 +13,7 @@ import { getAllCategories } from '@/lib/supabase/queries/categories'
 import { getLatestAINews } from '@/lib/supabase/queries/news'
 import { getLatestTools, getSuperTools, getSiteStats } from '@/lib/supabase/queries/tools'
 import { getLatestPosts } from '@/lib/supabase/queries/blog'
-import { CompareTray } from '@/components/tools/CompareTray'
+
 import { JsonLd } from '@/components/common/JsonLd'
 import { SITE_URL } from '@/lib/constants/site'
 import { createClient } from '@/lib/supabase/server'
@@ -444,7 +444,6 @@ export default async function HomePage() {
         </section>
       </main>
       <Footer />
-      <CompareTray />
     </>
   )
 }
