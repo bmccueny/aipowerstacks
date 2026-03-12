@@ -248,7 +248,7 @@ export default async function DashboardPage() {
                     >
                       <div className="h-10 w-10 rounded bg-muted flex items-center justify-center shrink-0">
                         {b.tools.logo_url ? (
-                          <Image src={b.tools.logo_url} alt="" width={24} height={24} className="object-contain" />
+                          <Image src={b.tools.logo_url} alt={`${b.tools.name} logo`} width={24} height={24} className="object-contain" />
                         ) : (
                           <span className="text-xs font-black text-primary">{b.tools.name[0]}</span>
                         )}

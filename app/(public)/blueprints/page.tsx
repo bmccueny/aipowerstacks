@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -9,9 +10,10 @@ import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { AdoptBlueprintButton } from '@/components/blueprints/AdoptBlueprintButton'
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Project Blueprints | AIPowerStacks',
   description: 'Proven AI tool recipes for high-impact workflows. One-click adopt expert stacks.',
+  alternates: { canonical: '/blueprints' },
 }
 
 export default async function BlueprintsPage() {
@@ -82,7 +84,7 @@ export default async function BlueprintsPage() {
                           <div className="flex items-center gap-3">
                             <div className="h-8 w-8 rounded bg-background flex items-center justify-center shrink-0 border border-foreground/10">
                               {bt.tools.logo_url ? (
-                                <img src={bt.tools.logo_url} alt="" className="h-6 w-6 object-contain" />
+                                <img src={bt.tools.logo_url} alt={`${bt.tools.name} logo`} className="h-6 w-6 object-contain" />
                               ) : (
                                 <span className="text-[10px] font-black text-primary">{bt.tools.name[0]}</span>
                               )}

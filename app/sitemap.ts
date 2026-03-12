@@ -7,15 +7,17 @@ const BASE_URL = SITE_URL
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const supabase = await createClient()
 
-  const [toolsRes, categoriesRes, postsRes] = await Promise.all([
+  const [toolsRes, categoriesRes, postsRes, stacksRes] = await Promise.all([
     supabase.from('tools').select('slug, updated_at').eq('status', 'published').limit(5000),
     supabase.from('categories').select('slug, created_at'),
     supabase.from('blog_posts').select('slug, updated_at').eq('status', 'published').limit(1000),
+    supabase.from('collections').select('share_slug, updated_at').eq('is_public', true).limit(2000),
   ])
 
   const tools = (toolsRes.data ?? []) as { slug: string; updated_at: string }[]
   const categories = (categoriesRes.data ?? []) as { slug: string; created_at: string }[]
   const posts = (postsRes.data ?? []) as { slug: string; updated_at: string }[]
+  const stacks = (stacksRes.data ?? []) as { share_slug: string; updated_at: string }[]
 
   const toolUrls: MetadataRoute.Sitemap = tools.map((t) => ({
     url: `${BASE_URL}/tools/${t.slug}`,
@@ -38,14 +40,28 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.5,
   }))
 
+  const stackUrls: MetadataRoute.Sitemap = stacks.map((s) => ({
+    url: `${BASE_URL}/stacks/${s.share_slug}`,
+    lastModified: s.updated_at,
+    changeFrequency: 'weekly' as const,
+    priority: 0.5,
+  }))
+
   return [
     { url: BASE_URL, lastModified: new Date(), changeFrequency: 'daily' as const, priority: 1 },
     { url: `${BASE_URL}/tools`, lastModified: new Date(), changeFrequency: 'daily' as const, priority: 0.9 },
     { url: `${BASE_URL}/categories`, lastModified: new Date(), changeFrequency: 'weekly' as const, priority: 0.8 },
     { url: `${BASE_URL}/blog`, lastModified: new Date(), changeFrequency: 'daily' as const, priority: 0.8 },
+    { url: `${BASE_URL}/stacks`, lastModified: new Date(), changeFrequency: 'daily' as const, priority: 0.7 },
+    { url: `${BASE_URL}/compare`, lastModified: new Date(), changeFrequency: 'weekly' as const, priority: 0.6 },
     { url: `${BASE_URL}/submit`, lastModified: new Date(), changeFrequency: 'monthly' as const, priority: 0.5 },
+    { url: `${BASE_URL}/about`, lastModified: new Date(), changeFrequency: 'monthly' as const, priority: 0.4 },
+    { url: `${BASE_URL}/matchmaker`, lastModified: new Date(), changeFrequency: 'monthly' as const, priority: 0.5 },
+    { url: `${BASE_URL}/blueprints`, lastModified: new Date(), changeFrequency: 'monthly' as const, priority: 0.5 },
+    { url: `${BASE_URL}/advertise`, lastModified: new Date(), changeFrequency: 'monthly' as const, priority: 0.3 },
     ...toolUrls,
     ...categoryUrls,
     ...blogUrls,
+    ...stackUrls,
   ]
 }

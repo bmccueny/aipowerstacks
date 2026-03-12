@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 import type { Metadata } from 'next'
+import { SITE_URL } from '@/lib/constants/site'
 import { getCategoryBySlug } from '@/lib/supabase/queries/categories'
 import { getToolsByCategory } from '@/lib/supabase/queries/tools'
 import { ToolGrid } from '@/components/tools/ToolGrid'
@@ -16,11 +17,25 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const category = await getCategoryBySlug(slug)
   if (!category) return {}
+
+  const title = `Best ${category.name} AI Tools`
+  const description = category.description ?? `Discover the best ${category.name} AI tools. Browse and compare ${category.tool_count}+ tools.`
+
   return {
-    title: `Best ${category.name} AI Tools`,
-    description: category.description ?? `Discover the best ${category.name} AI tools. Browse and compare ${category.tool_count}+ tools.`,
+    title,
+    description,
     alternates: {
       canonical: `/categories/${category.slug}`,
+    },
+    openGraph: {
+      title,
+      description,
+      url: `${SITE_URL}/categories/${category.slug}`,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
     },
   }
 }

@@ -4,8 +4,9 @@ import { BadgeCheck, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 export const metadata: Metadata = {
-  title: 'You\'re Featured! — AIPowerStacks',
+  title: 'You\'re Featured! - AIPowerStacks',
   description: 'Your AI tool is now featured on AIPowerStacks.',
+  robots: { index: false, follow: false },
 }
 
 export default function AdvertiseSuccessPage() {

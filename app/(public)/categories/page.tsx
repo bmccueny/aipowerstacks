@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { SITE_URL } from '@/lib/constants/site'
 import { getAllCategories } from '@/lib/supabase/queries/categories'
 import { Sparkles } from 'lucide-react'
 import { CategoryIcon } from '@/components/ui/CategoryIcon'
@@ -9,6 +10,16 @@ export const metadata: Metadata = {
   description: 'Browse AI tool categories and discover the best tools for each workflow.',
   alternates: {
     canonical: '/categories',
+  },
+  openGraph: {
+    title: 'AI Tool Categories',
+    description: 'Browse AI tool categories and discover the best tools for each workflow.',
+    url: `${SITE_URL}/categories`,
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'AI Tool Categories',
+    description: 'Browse AI tool categories and discover the best tools for each workflow.',
   },
 }
 

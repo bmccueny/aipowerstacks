@@ -81,6 +81,23 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     image: coverImageUrl,
     datePublished: post.published_at,
     dateModified: post.updated_at,
+    url: `${SITE_URL}/blog/${post.slug}`,
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `${SITE_URL}/blog/${post.slug}`,
+    },
+    author: {
+      '@type': 'Person',
+      name: post.author?.display_name || 'AIPowerStacks Team',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'AIPowerStacks',
+      logo: {
+        '@type': 'ImageObject',
+        url: `${SITE_URL}/logo.png`,
+      },
+    },
   }
 
   return (

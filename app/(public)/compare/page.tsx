@@ -303,7 +303,7 @@ export default async function ComparePage({
                   <Badge variant="outline" className="h-8 border-foreground/10 hover:border-primary/40 hover:bg-primary/5 transition-all bg-background cursor-pointer gap-2 pr-3">
                     <div className="h-4 w-4 rounded bg-white overflow-hidden border border-foreground/5 shrink-0 flex items-center justify-center">
                       {rec.logo_url ? (
-                        <img src={rec.logo_url} alt="" className="object-contain" />
+                        <img src={rec.logo_url} alt={`${rec.name} logo`} className="object-contain" />
                       ) : (
                         <span className="text-[8px] font-black text-primary">{rec.name[0]}</span>
                       )}

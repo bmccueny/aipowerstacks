@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import type { Metadata } from 'next'
+import { SITE_URL } from '@/lib/constants/site'
 import { createClient } from '@/lib/supabase/server'
 import { Layers, Zap, Users, Eye, Bookmark, Trophy } from 'lucide-react'
 import { SaveStackButton } from '@/components/stacks/SaveStackButton'
@@ -11,6 +12,17 @@ export const revalidate = 0
 export const metadata: Metadata = {
   title: 'Power Stacks | AIPowerStacks',
   description: 'Browse community-curated collections of AI tools. Find the perfect stack for your workflow.',
+  alternates: { canonical: '/stacks' },
+  openGraph: {
+    title: 'Power Stacks | AIPowerStacks',
+    description: 'Browse community-curated collections of AI tools. Find the perfect stack for your workflow.',
+    url: `${SITE_URL}/stacks`,
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Power Stacks | AIPowerStacks',
+    description: 'Browse community-curated collections of AI tools. Find the perfect stack for your workflow.',
+  },
 }
 
 export default async function StacksPage() {

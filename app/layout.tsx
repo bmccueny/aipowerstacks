@@ -51,8 +51,14 @@ export const metadata: Metadata = {
   authors: [{ name: 'AIPowerStacks' }],
   creator: 'AIPowerStacks',
   icons: {
-    icon: '/icon.svg',
+    icon: [
+      { url: '/icon.svg', type: 'image/svg+xml' },
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+    ],
+    apple: '/apple-touch-icon.png',
   },
+  manifest: '/site.webmanifest',
   openGraph: {
     type: 'website',
     locale: 'en_US',
@@ -86,12 +92,29 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${GeistSans.variable} ${spaceGrotesk.variable} ${redditSans.variable}`} suppressHydrationWarning>
       <head>
+        <meta name="theme-color" content="#0a0a0f" media="(prefers-color-scheme: dark)" />
+        <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+        <link rel="alternate" type="application/rss+xml" title="AIPowerStacks Blog RSS" href="/api/rss" />
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme: dark)').matches)){document.documentElement.classList.add('dark')}}catch(e){}})()`,
           }}
         />
         <JsonLd data={generateOrganizationJsonLd()} />
+        <JsonLd data={{
+          '@context': 'https://schema.org',
+          '@type': 'WebSite',
+          name: 'AIPowerStacks',
+          url: SITE_URL,
+          potentialAction: {
+            '@type': 'SearchAction',
+            target: {
+              '@type': 'EntryPoint',
+              urlTemplate: `${SITE_URL}/tools?q={search_term_string}`,
+            },
+            'query-input': 'required name=search_term_string',
+          },
+        }} />
       </head>
       <body className="antialiased">
         <div className="stars" aria-hidden="true" />

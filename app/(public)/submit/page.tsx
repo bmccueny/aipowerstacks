@@ -6,7 +6,10 @@ import { createClient } from '@/lib/supabase/server'
 import type { Metadata } from 'next'
 import { Sparkles } from 'lucide-react'
 
-export const metadata: Metadata = { title: 'Submit Your AI Tool for Free | AIPowerStacks' }
+export const metadata: Metadata = {
+  title: 'Submit Your AI Tool for Free | AIPowerStacks',
+  alternates: { canonical: '/submit' },
+}
 
 export default async function SubmitPage({
   searchParams,

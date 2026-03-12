@@ -1,5 +1,6 @@
 import { Suspense } from 'react'
 import type { Metadata } from 'next'
+import { SITE_URL } from '@/lib/constants/site'
 import { searchTools } from '@/lib/supabase/queries/tools'
 import { getAllCategories } from '@/lib/supabase/queries/categories'
 import { ToolGrid } from '@/components/tools/ToolGrid'
@@ -55,13 +56,26 @@ export async function generateMetadata({ searchParams }: ToolsPageProps): Promis
       ? `/tools?page=${page}`
       : '/tools'
 
+  const title = 'AI Tools Directory - Browse & Compare AI Tools'
+  const description = 'Search and compare AI tools by category, pricing, use case, team size, and integrations.'
+
   return {
-    title: 'AI Tools Directory — Browse & Compare AI Tools',
-    description: 'Search and compare AI tools by category, pricing, use case, team size, and integrations.',
+    title,
+    description,
     alternates: { canonical },
     robots: hasNoisyParams
       ? { index: false, follow: true }
       : { index: true, follow: true },
+    openGraph: {
+      title,
+      description,
+      url: `${SITE_URL}/tools`,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+    },
   }
 }
 

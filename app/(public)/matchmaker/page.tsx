@@ -3,8 +3,9 @@ import { Sparkles } from 'lucide-react'
 import { AiMatchmaker } from '@/components/home/AiMatchmaker'
 
 export const metadata: Metadata = {
-  title: 'AI Tool Matchmaker — Find the Right Tool for Your Need',
+  title: 'AI Tool Matchmaker - Find the Right Tool for Your Need',
   description: 'Describe what you need in plain English and our AI will match you with the best tools for the job.',
+  alternates: { canonical: '/matchmaker' },
 }
 
 interface MatchmakerPageProps {

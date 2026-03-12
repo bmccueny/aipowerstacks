@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import { SITE_URL } from '@/lib/constants/site'
 import { getPublishedPosts, getFeaturedPost } from '@/lib/supabase/queries/blog'
 import { getLatestAINews } from '@/lib/supabase/queries/news'
 import { BlogCard } from '@/components/blog/BlogCard'
@@ -137,11 +138,23 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { page: pageStr } = await searchParams
   const page = Math.max(1, parseInt(pageStr ?? '1'))
+  const title = 'AI News & Briefings'
+  const description = 'Daily AI news and briefings for builders: what changed, why it matters, and what to do next.'
+  const canonical = page > 1 ? `/blog?page=${page}` : '/blog'
+
   return {
-    title: 'AI News & Briefings',
-    description: 'Daily AI news and briefings for builders: what changed, why it matters, and what to do next.',
-    alternates: {
-      canonical: page > 1 ? `/blog?page=${page}` : '/blog',
+    title,
+    description,
+    alternates: { canonical },
+    openGraph: {
+      title,
+      description,
+      url: `${SITE_URL}${canonical}`,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
     },
   }
 }

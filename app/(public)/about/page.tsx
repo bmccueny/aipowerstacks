@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 export const metadata: Metadata = {
   title: 'About AIPowerStacks',
   description: 'Learn about AIPowerStacks and our mission to help you discover and compare the best AI tools on the market.',
+  alternates: { canonical: '/about' },
 }
 
 export default function AboutPage() {

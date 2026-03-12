@@ -157,13 +157,13 @@ export function CompareTable({ tools }: CompareTableProps) {
               <DropdownMenuLabel className="text-[10px] font-black uppercase tracking-widest opacity-50">Save to Notes</DropdownMenuLabel>
               <DropdownMenuItem onClick={shareNotion} className="gap-3 cursor-pointer">
                 <div className="h-4 w-4 shrink-0 rounded-lg overflow-hidden flex items-center justify-center glass-card border border-border/30">
-                  <img src="https://www.google.com/s2/favicons?domain=notion.so&sz=32" alt="" className="h-full w-full object-contain" />
+                  <img src="https://www.google.com/s2/favicons?domain=notion.so&sz=32" alt="Notion logo" className="h-full w-full object-contain" />
                 </div>
                 <span className="font-bold">Copy for Notion</span>
               </DropdownMenuItem>
               <DropdownMenuItem onClick={shareObsidian} className="gap-3 cursor-pointer">
                 <div className="h-4 w-4 shrink-0 rounded-lg overflow-hidden flex items-center justify-center glass-card border border-border/30">
-                  <img src="https://www.google.com/s2/favicons?domain=obsidian.md&sz=32" alt="" className="h-full w-full object-contain" />
+                  <img src="https://www.google.com/s2/favicons?domain=obsidian.md&sz=32" alt="Obsidian logo" className="h-full w-full object-contain" />
                 </div>
                 <span className="font-bold">Add to Obsidian</span>
               </DropdownMenuItem>

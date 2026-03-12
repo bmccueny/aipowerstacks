@@ -1,6 +1,11 @@
+import type { Metadata } from 'next'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+}
 import { Layers, ExternalLink } from 'lucide-react'
 import { PRICING_BADGE_COLORS, PRICING_LABELS } from '@/lib/constants'
 

@@ -133,7 +133,7 @@ export function DashboardTabs({
                             {tools.slice(0, 4).map((tool, i) => (
                               <div key={i} className="h-7 w-7 rounded-full bg-muted border-2 border-background overflow-hidden flex items-center justify-center shrink-0">
                                 {tool.logo_url
-                                  ? <Image src={tool.logo_url} alt="" width={20} height={20} className="object-contain" />
+                                  ? <Image src={tool.logo_url} alt={`${tool.name} logo`} width={20} height={20} className="object-contain" />
                                   : <span className="text-[10px] font-black text-primary">{tool.name[0]}</span>
                                 }
                               </div>
@@ -208,7 +208,7 @@ export function DashboardTabs({
                           {tools.slice(0, 4).map((tool, i) => (
                             <div key={i} className="h-7 w-7 rounded-full bg-muted border-2 border-background overflow-hidden flex items-center justify-center shrink-0">
                               {tool.logo_url
-                                ? <Image src={tool.logo_url} alt="" width={20} height={20} className="object-contain" />
+                                ? <Image src={tool.logo_url} alt={`${tool.name} logo`} width={20} height={20} className="object-contain" />
                                 : <span className="text-[10px] font-black text-primary">{tool.name[0]}</span>
                               }
                             </div>

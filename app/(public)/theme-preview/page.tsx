@@ -1,5 +1,10 @@
+import type { Metadata } from 'next'
 import { BrandMark } from '@/components/common/BrandMark'
 import { ArrowRight } from 'lucide-react'
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+}
 
 const themes = [
   {

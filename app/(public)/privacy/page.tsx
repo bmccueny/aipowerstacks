@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Privacy Policy',
   description: 'Learn how AIPowerStacks collects, uses, and protects your data.',
+  alternates: { canonical: '/privacy' },
 }
 
 export default function PrivacyPage() {

@@ -7,6 +7,7 @@ import { FeaturedCheckout } from '@/components/advertise/FeaturedCheckout'
 export const metadata: Metadata = {
   title: 'Featured Listings for AI Tools | AIPowerStacks',
   description: 'Put your AI tool in front of buyers actively comparing solutions. Featured placement starts at $99/mo with instant activation.',
+  alternates: { canonical: '/advertise' },
 }
 
 const perks = [

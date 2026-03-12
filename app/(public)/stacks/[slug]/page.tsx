@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
+import { SITE_URL } from '@/lib/constants/site'
 import { createClient } from '@/lib/supabase/server'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -31,9 +32,23 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
   if (!collection) return { title: 'Stack Not Found' }
 
+  const title = `${collection.name} | AI Power Stack`
+  const description = collection.description || `A curated AI Power Stack on AIPowerStacks.`
+
   return {
-    title: `${collection.name} | AI Power Stack`,
-    description: collection.description || `A curated AI Power Stack on AIPowerStacks.`,
+    title,
+    description,
+    alternates: { canonical: `/stacks/${slug}` },
+    openGraph: {
+      title,
+      description,
+      url: `${SITE_URL}/stacks/${slug}`,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+    },
   }
 }
 
