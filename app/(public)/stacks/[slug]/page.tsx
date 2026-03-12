@@ -157,8 +157,8 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
             {isOwner ? 'Back to Dashboard' : 'Discover Power Stacks'}
           </Link>
 
-          <div className="flex items-center gap-5">
-            <div className="h-20 w-20 rounded-md bg-primary/15 border border-primary/20 shrink-0 flex items-center justify-center text-4xl">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-5">
+            <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-md bg-primary/15 border border-primary/20 shrink-0 flex items-center justify-center text-3xl sm:text-4xl">
               {collection.icon || '⚡'}
             </div>
             <div className="min-w-0">
@@ -250,7 +250,7 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
                         </span>
 
                         {/* Logo */}
-                        <div className="h-12 w-12 shrink-0 rounded-xl bg-muted border border-foreground/10 overflow-hidden flex items-center justify-center shadow-sm">
+                        <div className="h-12 w-12 shrink-0 rounded-xl bg-muted overflow-hidden flex items-center justify-center shadow-sm">
                           {tool.logo_url ? (
                             <Image src={tool.logo_url} alt={tool.name} width={48} height={48} className="object-contain" />
                           ) : (

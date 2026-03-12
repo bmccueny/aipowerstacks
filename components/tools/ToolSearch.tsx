@@ -75,7 +75,7 @@ export function ToolSearch() {
         {value && (
           <button
             onClick={() => setValue('')}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+            className="absolute right-3 top-1/2 -translate-y-1/2 h-8 w-8 flex items-center justify-center text-muted-foreground hover:text-foreground"
           >
             <X className="h-3.5 w-3.5" />
           </button>
@@ -88,7 +88,7 @@ export function ToolSearch() {
               key={term}
               type="button"
               onClick={() => applyRecent(term)}
-              className="rounded-full border border-black/25 px-2.5 py-1 text-[11px] text-muted-foreground hover:text-foreground hover:border-black/45 transition-colors"
+              className="rounded-full border border-black/25 px-3 py-2 text-[11px] text-muted-foreground hover:text-foreground hover:border-black/45 transition-colors"
             >
               {term}
             </button>

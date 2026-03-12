@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { SITE_URL } from '@/lib/constants/site'
 import { Sparkles } from 'lucide-react'
 import { AiMatchmaker } from '@/components/home/AiMatchmaker'
 
@@ -6,6 +7,16 @@ export const metadata: Metadata = {
   title: 'AI Tool Matchmaker - Find the Right Tool for Your Need',
   description: 'Describe what you need in plain English and our AI will match you with the best tools for the job.',
   alternates: { canonical: '/matchmaker' },
+  openGraph: {
+    title: 'AI Tool Matchmaker',
+    description: 'Describe what you need in plain English and our AI will match you with the best tools for the job.',
+    url: `${SITE_URL}/matchmaker`,
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'AI Tool Matchmaker',
+    description: 'Describe what you need in plain English and our AI will match you with the best tools for the job.',
+  },
 }
 
 interface MatchmakerPageProps {

@@ -922,6 +922,15 @@
     inset 0 0 var(--lg-inner-shadow-blur) var(--lg-inner-shadow-spread) var(--lg-inner-shadow-color);
 }
 
+@media (max-width: 639px) {
+  .page-shell {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 2.5rem;
+    padding-bottom: 2.5rem;
+  }
+}
+
 @media (min-width: 1024px) {
   .page-shell {
     padding-left: 4rem;

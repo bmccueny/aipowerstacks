@@ -77,7 +77,7 @@ export function Navbar() {
     <>
       {/* Main Navbar */}
       <nav
-        className="fixed top-0 w-screen z-50 liquid-glass border-b border-white/20 dark:border-white/10"
+        className="fixed top-0 w-screen z-50 bg-background border-b border-border/40 md:bg-background/80 md:backdrop-blur-xl md:saturate-150 md:border-white/15 md:dark:border-white/10 md:shadow-sm"
         style={{ left: 0, right: 0, width: '100vw' }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" style={{ width: '100%', maxWidth: '80rem' }}>
@@ -205,7 +205,7 @@ export function Navbar() {
         <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
 
         <div className={cn(
-          'absolute top-16 left-0 right-0 glass-card border-b border-white/20 transform transition-transform duration-300 max-h-[calc(100vh-4rem)] overflow-y-auto',
+          'absolute top-16 left-0 right-0 bg-background border-b border-border/40 shadow-lg transform transition-transform duration-300 max-h-[calc(100vh-4rem)] overflow-y-auto pb-[env(safe-area-inset-bottom)]',
           mobileOpen ? 'translate-y-0' : '-translate-y-full'
         )}>
           <div className="px-4 py-6">

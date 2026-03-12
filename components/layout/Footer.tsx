@@ -76,7 +76,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Share on X"
-                  className="group relative p-2 glass-card rounded-lg border border-border/30 hover:border-cyan-400/50 transition-all duration-300 hover:scale-110"
+                  className="group relative p-3 glass-card rounded-lg border border-border/30 hover:border-cyan-400/50 transition-all duration-300 hover:scale-110"
                 >
                   <XIcon className="h-4 w-4 text-muted-foreground group-hover:text-cyan-400 transition-colors duration-300" />
                   <div className="absolute inset-0 bg-cyan-400/10 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -86,7 +86,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Share on LinkedIn"
-                  className="group relative p-2 glass-card rounded-lg border border-border/30 hover:border-purple-400/50 transition-all duration-300 hover:scale-110"
+                  className="group relative p-3 glass-card rounded-lg border border-border/30 hover:border-purple-400/50 transition-all duration-300 hover:scale-110"
                 >
                   <LinkedInIcon className="h-4 w-4 text-muted-foreground group-hover:text-purple-400 transition-colors duration-300" />
                   <div className="absolute inset-0 bg-purple-400/10 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -96,7 +96,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Share on Facebook"
-                  className="group relative p-2 glass-card rounded-lg border border-border/30 hover:border-pink-400/50 transition-all duration-300 hover:scale-110"
+                  className="group relative p-3 glass-card rounded-lg border border-border/30 hover:border-pink-400/50 transition-all duration-300 hover:scale-110"
                 >
                   <FacebookIcon className="h-4 w-4 text-muted-foreground group-hover:text-pink-400 transition-colors duration-300" />
                   <div className="absolute inset-0 bg-pink-400/10 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>

@@ -110,7 +110,7 @@ export default async function HomePage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen flex flex-col gap-16 md:gap-20 pb-24">
+      <main className="min-h-screen pt-20 flex flex-col gap-16 md:gap-20 pb-24">
 
         {/* Hero Section */}
         <section className="px-4 max-w-4xl mx-auto w-full pt-20 pb-8">
@@ -151,15 +151,15 @@ export default async function HomePage() {
           {/* Stats */}
           <div className="grid grid-cols-3 divide-x divide-border border border-border rounded-xl max-w-sm mx-auto overflow-hidden">
             <div className="text-center py-4 px-2">
-              <div className="text-xl font-bold text-foreground">{toolCount.toLocaleString()}+</div>
+              <div className="text-lg sm:text-xl font-bold text-foreground">{toolCount.toLocaleString()}+</div>
               <div className="text-xs text-muted-foreground mt-0.5">Tools</div>
             </div>
             <div className="text-center py-4 px-2">
-              <div className="text-xl font-bold text-foreground">{reviewCount.toLocaleString()}+</div>
+              <div className="text-lg sm:text-xl font-bold text-foreground">{reviewCount.toLocaleString()}+</div>
               <div className="text-xs text-muted-foreground mt-0.5">Reviews</div>
             </div>
             <div className="text-center py-4 px-2">
-              <div className="text-xl font-bold text-foreground">{categoryCount}+</div>
+              <div className="text-lg sm:text-xl font-bold text-foreground">{categoryCount}+</div>
               <div className="text-xs text-muted-foreground mt-0.5">Categories</div>
             </div>
           </div>
@@ -283,8 +283,8 @@ export default async function HomePage() {
             <div className="gum-card p-8 sm:p-10 flex flex-col gap-6">
               <div>
                 <p className="text-xs font-bold uppercase tracking-widest text-primary mb-2">The AI Stack Report</p>
-                <h2 className="text-xl font-bold mb-1">5 high-signal AI tools, every Friday morning</h2>
-                <p className="text-sm text-muted-foreground">Tested, vetted, and ranked so you skip the noise and ship faster.</p>
+                <h2 className="text-xl font-bold mb-1">The AI briefing your feed algorithm won't show you</h2>
+                <p className="text-sm text-muted-foreground">Weekly updates on cutting-edge models, breakthrough tools, and what matters for builders and buyers.</p>
               </div>
               <NewsletterBanner source="homepage-mid" tone="light" />
             </div>

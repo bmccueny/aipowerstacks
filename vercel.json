@@ -5,12 +5,24 @@
       "schedule": "0 20 * * *"
     },
     {
-      "path": "/api/cron/cleanup-news",
-      "schedule": "5 20 * * *"
-    },
-    {
       "path": "/api/cron/editor-reviews",
       "schedule": "0 14 * * *"
+    },
+    {
+      "path": "/api/cron/blog-posts",
+      "schedule": "0 7 * * *"
+    },
+    {
+      "path": "/api/cron/github-trending",
+      "schedule": "0 18 * * *"
+    },
+    {
+      "path": "/api/cron/benchmarks",
+      "schedule": "0 10 * * *"
+    },
+    {
+      "path": "/api/cron/newsletter",
+      "schedule": "0 14 * * 5"
     }
   ]
 }

@@ -10,17 +10,17 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 export const revalidate = 0
 
 export const metadata: Metadata = {
-  title: 'Power Stacks | AIPowerStacks',
+  title: 'Power Stacks',
   description: 'Browse community-curated collections of AI tools. Find the perfect stack for your workflow.',
   alternates: { canonical: '/stacks' },
   openGraph: {
-    title: 'Power Stacks | AIPowerStacks',
+    title: 'Power Stacks',
     description: 'Browse community-curated collections of AI tools. Find the perfect stack for your workflow.',
     url: `${SITE_URL}/stacks`,
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Power Stacks | AIPowerStacks',
+    title: 'Power Stacks',
     description: 'Browse community-curated collections of AI tools. Find the perfect stack for your workflow.',
   },
 }

@@ -6,6 +6,8 @@ import { getCategoryBySlug } from '@/lib/supabase/queries/categories'
 import { getToolsByCategory } from '@/lib/supabase/queries/tools'
 import { ToolGrid } from '@/components/tools/ToolGrid'
 import { Pagination } from '@/components/common/Pagination'
+import { JsonLd } from '@/components/common/JsonLd'
+import { generateItemListJsonLd, generateBreadcrumbJsonLd } from '@/lib/utils/seo'
 import { PAGE_SIZE } from '@/lib/constants'
 
 interface Props {
@@ -54,8 +56,21 @@ export default async function CategoryPage({ params, searchParams }: Props) {
 
   const hasMore = tools.length === PAGE_SIZE
 
+  const categoryToolsJsonLd = generateItemListJsonLd(
+    tools.map((t) => ({ name: t.name, url: `/tools/${t.slug}` })),
+    `Best ${category.name} AI Tools`,
+    `/categories/${category.slug}`,
+  )
+  const breadcrumbJsonLd = generateBreadcrumbJsonLd([
+    { name: 'Home', url: '/' },
+    { name: 'Categories', url: '/categories' },
+    { name: category.name, url: `/categories/${category.slug}` },
+  ])
+
   return (
     <div className="page-shell">
+      <JsonLd data={categoryToolsJsonLd} />
+      <JsonLd data={breadcrumbJsonLd} />
       <div className="page-hero flex flex-col items-start sm:flex-row sm:items-center gap-4">
         <span className="text-5xl">{category.icon ?? '🤖'}</span>
         <div>

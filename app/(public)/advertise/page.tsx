@@ -1,13 +1,24 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { SITE_URL } from '@/lib/constants/site'
 import { ArrowRight, BadgeCheck, BarChart3, Star, TrendingUp, Zap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { FeaturedCheckout } from '@/components/advertise/FeaturedCheckout'
 
 export const metadata: Metadata = {
-  title: 'Featured Listings for AI Tools | AIPowerStacks',
+  title: 'Featured Listings for AI Tools',
   description: 'Put your AI tool in front of buyers actively comparing solutions. Featured placement starts at $99/mo with instant activation.',
   alternates: { canonical: '/advertise' },
+  openGraph: {
+    title: 'Featured Listings for AI Tools',
+    description: 'Put your AI tool in front of buyers actively comparing solutions. Featured placement starts at $99/mo with instant activation.',
+    url: `${SITE_URL}/advertise`,
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Featured Listings for AI Tools',
+    description: 'Put your AI tool in front of buyers actively comparing solutions. Featured placement starts at $99/mo with instant activation.',
+  },
 }
 
 const perks = [

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { SITE_URL } from '@/lib/constants/site'
 import { Sparkles, ShieldCheck, Zap, TrendingUp } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
@@ -7,6 +8,16 @@ export const metadata: Metadata = {
   title: 'About AIPowerStacks',
   description: 'Learn about AIPowerStacks and our mission to help you discover and compare the best AI tools on the market.',
   alternates: { canonical: '/about' },
+  openGraph: {
+    title: 'About AIPowerStacks',
+    description: 'Learn about AIPowerStacks and our mission to help you discover and compare the best AI tools on the market.',
+    url: `${SITE_URL}/about`,
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'About AIPowerStacks',
+    description: 'Learn about AIPowerStacks and our mission to help you discover and compare the best AI tools on the market.',
+  },
 }
 
 export default function AboutPage() {

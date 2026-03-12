@@ -5,7 +5,7 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
   return (
     <>
       <Navbar />
-      <main className="min-h-screen page-shell">
+      <main className="min-h-screen pt-20 page-shell">
         {children}
       </main>
       <Footer />

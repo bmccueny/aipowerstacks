@@ -1,19 +1,28 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import { SITE_URL } from '@/lib/constants/site'
 import { createClient } from '@/lib/supabase/server'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { 
   Zap, Clock, BarChart3, ChevronRight, Layout, Sparkles
 } from 'lucide-react'
-import { Navbar } from '@/components/layout/Navbar'
-import { Footer } from '@/components/layout/Footer'
 import { AdoptBlueprintButton } from '@/components/blueprints/AdoptBlueprintButton'
 
 export const metadata: Metadata = {
-  title: 'Project Blueprints | AIPowerStacks',
+  title: 'Project Blueprints',
   description: 'Proven AI tool recipes for high-impact workflows. One-click adopt expert stacks.',
   alternates: { canonical: '/blueprints' },
+  openGraph: {
+    title: 'Project Blueprints',
+    description: 'Proven AI tool recipes for high-impact workflows. One-click adopt expert stacks.',
+    url: `${SITE_URL}/blueprints`,
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Project Blueprints',
+    description: 'Proven AI tool recipes for high-impact workflows. One-click adopt expert stacks.',
+  },
 }
 
 export default async function BlueprintsPage() {
@@ -31,7 +40,7 @@ export default async function BlueprintsPage() {
     .order('created_at', { ascending: false })
 
   return (
-    <main className="min-h-screen page-shell pb-24">
+    <div className="page-shell pb-24">
         {/* Hero */}
         <section className="page-hero text-center mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass text-sm text-muted-foreground mb-6">
@@ -94,7 +103,7 @@ export default async function BlueprintsPage() {
                               <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-tight">{bt.role}</p>
                             </div>
                           </div>
-                          <Link href={`/tools/${bt.tools.slug}`} className="opacity-0 group-hover/tool:opacity-100 transition-opacity">
+                          <Link href={`/tools/${bt.tools.slug}`} className="opacity-100 sm:opacity-0 sm:group-hover/tool:opacity-100 transition-opacity">
                             <ChevronRight className="h-4 w-4 text-primary" />
                           </Link>
                         </div>
@@ -118,6 +127,6 @@ export default async function BlueprintsPage() {
             )
           })}
         </div>
-      </main>
+      </div>
   )
 }

@@ -56,7 +56,7 @@ export function CompareSearch({ currentSlugs }: { currentSlugs: string[] }) {
   }, [query, currentSlugs.join(',')])
 
   const addTool = (slug: string) => {
-    const newSlugs = [...currentSlugs, slug].slice(0, 3)
+    const newSlugs = [...currentSlugs, slug].slice(0, 4)
     const params = new URLSearchParams(searchParams.toString())
     params.set('tools', newSlugs.join(','))
     router.push(`/compare?${params.toString()}`)
@@ -104,7 +104,7 @@ export function CompareSearch({ currentSlugs }: { currentSlugs: string[] }) {
                     onClick={() => addTool(tool.slug)}
                     className="w-full flex items-center gap-4 p-3 hover:bg-primary/5 transition-all text-left group rounded-xl"
                   >
-                    <div className="h-10 w-10 rounded-2xl glass-card overflow-hidden flex items-center justify-center shrink-0 border border-border/30 shadow-lg group-hover:border-primary/40 transition-all duration-300">
+                    <div className="h-10 w-10 rounded-2xl glass-card overflow-hidden flex items-center justify-center shrink-0 shadow-lg transition-all duration-300">
                       {tool.logo_url ? (
                         <img src={tool.logo_url} alt={tool.name} className="object-contain p-1" />
                       ) : (

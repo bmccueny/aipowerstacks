@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import DOMPurify from 'isomorphic-dompurify'
+import sanitizeHtml from 'sanitize-html'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { Calendar, Clock } from 'lucide-react'
@@ -35,7 +35,6 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params
   const post = await getBlogPostBySlug(slug)
   if (!post) return {}
-  const coverImageUrl = normalizeThumUrl(post.cover_image_url)
   return {
     title: post.title,
     description: post.excerpt,
@@ -43,7 +42,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       title: post.title,
       description: post.excerpt,
       url: `${SITE_URL}/blog/${post.slug}`,
-      images: coverImageUrl ? [coverImageUrl] : [],
+      type: 'article',
+      publishedTime: post.published_at ?? undefined,
+      modifiedTime: post.updated_at ?? undefined,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: post.excerpt,
     },
     alternates: {
       canonical: `/blog/${post.slug}`,
@@ -68,7 +74,19 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedPostUrl}`,
   }
 
-  const safeContent = DOMPurify.sanitize(post.content)
+  const safeContent = sanitizeHtml(post.content, {
+    allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'iframe', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'figure', 'figcaption', 'video', 'source', 'picture']),
+    allowedAttributes: {
+      ...sanitizeHtml.defaults.allowedAttributes,
+      '*': ['class', 'id', 'style'],
+      img: ['src', 'alt', 'width', 'height', 'loading'],
+      iframe: ['src', 'width', 'height', 'allow', 'allowfullscreen', 'title', 'frameborder'],
+      a: ['href', 'target', 'rel'],
+      source: ['src', 'type'],
+      video: ['src', 'controls', 'width', 'height'],
+    },
+    allowedIframeHostnames: ['www.youtube.com', 'youtube.com', 'player.vimeo.com', 'www.loom.com'],
+  })
   const date = post.published_at
     ? new Date(post.published_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
     : null
@@ -104,7 +122,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     <>
       <JsonLd data={jsonLd} />
       <article className="page-shell max-w-4xl mx-auto">
-        <div className="bg-background border-2 border-foreground dark:border-white rounded-3xl overflow-hidden shadow-[8px_8px_0_0_#000] dark:shadow-[8px_8px_0_0_var(--primary)] mb-12">
+        <div className="bg-background border-2 border-foreground dark:border-white rounded-3xl overflow-hidden shadow-[4px_4px_0_0_#000] sm:shadow-[8px_8px_0_0_#000] dark:shadow-[4px_4px_0_0_var(--primary)] sm:dark:shadow-[8px_8px_0_0_var(--primary)] mb-12">
           {/* Header Section */}
           <div className="p-8 sm:p-12 border-b-2 border-foreground dark:border-white">
             <div className="flex flex-wrap items-center gap-3 mb-6">
@@ -120,7 +138,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
               )}
             </div>
             
-            <h1 className="text-4xl sm:text-6xl font-black mb-6 leading-[1.1] tracking-tight">
+            <h1 className="text-2xl sm:text-4xl lg:text-6xl font-black mb-6 leading-[1.1] tracking-tight">
               {post.title}
             </h1>
 
@@ -204,13 +222,13 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
               <div className="flex items-center gap-4">
                 <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Share Post</span>
                 <div className="flex gap-2">
-                  <a href={shareLinks.x} target="_blank" rel="noopener noreferrer" className="h-10 w-10 flex items-center justify-center rounded-full border-2 border-black hover:bg-primary transition-all hover:-translate-y-1 active:translate-y-0">
+                  <a href={shareLinks.x} target="_blank" rel="noopener noreferrer" className="h-11 w-11 flex items-center justify-center rounded-full border-2 border-black hover:bg-primary transition-all hover:-translate-y-1 active:translate-y-0">
                     <XIcon className="h-4 w-4" />
                   </a>
-                  <a href={shareLinks.linkedin} target="_blank" rel="noopener noreferrer" className="h-10 w-10 flex items-center justify-center rounded-full border-2 border-black hover:bg-primary transition-all hover:-translate-y-1 active:translate-y-0">
+                  <a href={shareLinks.linkedin} target="_blank" rel="noopener noreferrer" className="h-11 w-11 flex items-center justify-center rounded-full border-2 border-black hover:bg-primary transition-all hover:-translate-y-1 active:translate-y-0">
                     <LinkedInIcon className="h-4 w-4" />
                   </a>
-                  <a href={shareLinks.facebook} target="_blank" rel="noopener noreferrer" className="h-10 w-10 flex items-center justify-center rounded-full border-2 border-black hover:bg-primary transition-all hover:-translate-y-1 active:translate-y-0">
+                  <a href={shareLinks.facebook} target="_blank" rel="noopener noreferrer" className="h-11 w-11 flex items-center justify-center rounded-full border-2 border-black hover:bg-primary transition-all hover:-translate-y-1 active:translate-y-0">
                     <FacebookIcon className="h-4 w-4" />
                   </a>
                 </div>
@@ -222,10 +240,10 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           <div className="bg-foreground text-background dark:bg-primary dark:text-black p-8 sm:p-12">
             <div className="max-w-2xl">
               <h3 className="text-2xl sm:text-3xl font-black mb-4 leading-tight">
-                Stop guessing. Start building.
+                The AI briefing your feed algorithm won't show you
               </h3>
               <p className="text-sm sm:text-lg mb-8 opacity-90 font-medium">
-                Join developers and founders getting the weekly AI signal. No hype, just the tools and insights you need.
+                Weekly updates on cutting-edge models, breakthrough tools, and what matters for builders and buyers.
               </p>
               <div className="newsletter-invert">
                 <NewsletterBanner source="blog-post" />
@@ -240,7 +258,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         {relatedPosts.length > 0 && (
           <section className="mb-20">
             <h2 className="text-2xl font-black mb-8 uppercase tracking-tight">More from AI Briefing</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
               {relatedPosts.map((related) => (
                 <BlogCard key={related.id} post={related} />
               ))}

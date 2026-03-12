@@ -68,7 +68,7 @@ export function ToolFilters({ categories }: ToolFiltersProps) {
         </Select>
 
         <Select value={pricing || 'all'} onValueChange={(v) => updateParam('pricing', v)}>
-          <SelectTrigger className="w-36 bg-background border-foreground/20">
+          <SelectTrigger className="w-32 sm:w-36 bg-background border-foreground/20">
             <SelectValue placeholder="All Pricing" />
           </SelectTrigger>
           <SelectContent>
@@ -80,7 +80,7 @@ export function ToolFilters({ categories }: ToolFiltersProps) {
         </Select>
 
         <Select value={sort} onValueChange={(v) => updateParam('sort', v)}>
-          <SelectTrigger className="w-36 bg-background border-foreground/20">
+          <SelectTrigger className="w-32 sm:w-36 bg-background border-foreground/20">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
           <SelectContent>
@@ -116,7 +116,7 @@ export function ToolFilters({ categories }: ToolFiltersProps) {
           </Select>
 
           <Select value={teamSize || 'all'} onValueChange={(v) => updateParam('team_size', v)}>
-            <SelectTrigger className="w-44 bg-background border-foreground/20">
+          <SelectTrigger className="w-36 sm:w-44 bg-background border-foreground/20">
               <SelectValue placeholder="Team Size" />
             </SelectTrigger>
             <SelectContent>

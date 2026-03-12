@@ -2,6 +2,38 @@ import type { Metadata } from 'next'
 import type { ToolWithTags } from '@/lib/types'
 import { SITE_URL } from '@/lib/constants/site'
 
+/** Truncate text at the nearest word boundary without cutting mid-word */
+function truncateAtWord(text: string, maxLen: number): string {
+  if (text.length <= maxLen) return text
+  const truncated = text.slice(0, maxLen)
+  const lastSpace = truncated.lastIndexOf(' ')
+  return lastSpace > 0 ? truncated.slice(0, lastSpace) : truncated
+}
+
+/** Map tool category slugs to Schema.org applicationCategory values */
+const CATEGORY_MAP: Record<string, string> = {
+  'ai-coding': 'DeveloperApplication',
+  'ai-writing': 'BusinessApplication',
+  'ai-image-generation': 'MultimediaApplication',
+  'ai-video': 'MultimediaApplication',
+  'ai-audio': 'MultimediaApplication',
+  'ai-music': 'MultimediaApplication',
+  'ai-design': 'DesignApplication',
+  'ai-productivity': 'BusinessApplication',
+  'ai-marketing': 'BusinessApplication',
+  'ai-sales': 'BusinessApplication',
+  'ai-customer-support': 'BusinessApplication',
+  'ai-education': 'EducationalApplication',
+  'ai-research': 'ReferenceApplication',
+  'ai-data-analysis': 'BusinessApplication',
+  'ai-finance': 'FinanceApplication',
+  'ai-healthcare': 'HealthApplication',
+  'ai-security': 'SecurityApplication',
+  'ai-chatbots': 'SocialNetworkingApplication',
+  'ai-search': 'ReferenceApplication',
+  'ai-automation': 'UtilitiesApplication',
+}
+
 export function generateOrganizationJsonLd() {
   return {
     '@context': 'https://schema.org',
@@ -30,9 +62,9 @@ export function generateBreadcrumbJsonLd(items: { name: string; url: string }[])
 }
 
 export function generateToolMetadata(tool: ToolWithTags): Metadata {
-  const shortDescription = tool.description.slice(0, 155)
+  const shortDescription = truncateAtWord(tool.description, 155)
   const title = `${tool.name} Review, Pricing & Alternatives`
-  const description = `${tool.tagline} ${tool.review_count > 0 ? `Rated ${tool.avg_rating.toFixed(1)}/5 by ${tool.review_count} users.` : ''}`.slice(0, 160)
+  const description = truncateAtWord(`${tool.tagline} ${tool.review_count > 0 ? `Rated ${tool.avg_rating.toFixed(1)}/5 by ${tool.review_count} users.` : ''}`, 160)
   const canonicalPath = `/tools/${tool.slug}`
   const canonicalUrl = `${SITE_URL}${canonicalPath}`
 
@@ -68,14 +100,16 @@ export function generateJsonLd(tool: ToolWithTags) {
     description: tool.description,
     url: canonicalUrl,
     image: tool.logo_url,
-    applicationCategory: 'BusinessApplication',
+    applicationCategory: (tool as any).category_slug ? (CATEGORY_MAP[(tool as any).category_slug] ?? 'BusinessApplication') : 'BusinessApplication',
     operatingSystem: 'Any',
-    offers: {
-      '@type': 'Offer',
-      price: tool.pricing_model === 'free' ? '0' : undefined,
-      priceCurrency: 'USD',
-      availability: 'https://schema.org/InStock',
-    },
+    ...(tool.pricing_model === 'free' ? {
+      offers: {
+        '@type': 'Offer',
+        price: '0',
+        priceCurrency: 'USD',
+        availability: 'https://schema.org/InStock',
+      },
+    } : {}),
     aggregateRating: tool.review_count > 0 ? {
       '@type': 'AggregateRating',
       ratingValue: tool.avg_rating,
@@ -83,6 +117,55 @@ export function generateJsonLd(tool: ToolWithTags) {
       bestRating: 5,
       worstRating: 1,
     } : undefined,
+  }
+}
+
+/** Generate CollectionPage + ItemList JSON-LD for directory listing pages */
+export function generateItemListJsonLd(
+  items: { name: string; url: string; position?: number }[],
+  listName: string,
+  listUrl: string,
+) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: listName,
+    url: listUrl.startsWith('http') ? listUrl : `${SITE_URL}${listUrl}`,
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: items.length,
+      itemListElement: items.map((item, index) => ({
+        '@type': 'ListItem',
+        position: item.position ?? index + 1,
+        name: item.name,
+        url: item.url.startsWith('http') ? item.url : `${SITE_URL}${item.url}`,
+      })),
+    },
+  }
+}
+
+/** Generate Blog JSON-LD for the blog index page */
+export function generateBlogJsonLd(
+  posts: { title: string; slug: string; excerpt?: string | null; published_at?: string | null }[],
+) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Blog',
+    name: 'AIPowerStacks AI News & Briefings',
+    url: `${SITE_URL}/blog`,
+    description: 'Daily AI news and briefings for builders: what changed, why it matters, and what to do next.',
+    publisher: {
+      '@type': 'Organization',
+      name: 'AIPowerStacks',
+      logo: { '@type': 'ImageObject', url: `${SITE_URL}/logo.png` },
+    },
+    blogPost: posts.slice(0, 10).map((post) => ({
+      '@type': 'BlogPosting',
+      headline: post.title,
+      url: `${SITE_URL}/blog/${post.slug}`,
+      ...(post.excerpt ? { description: post.excerpt } : {}),
+      ...(post.published_at ? { datePublished: post.published_at } : {}),
+    })),
   }
 }
 

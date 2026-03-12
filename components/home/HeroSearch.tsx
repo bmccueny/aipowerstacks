@@ -97,13 +97,13 @@ export function HeroSearch({ toolCount }: { toolCount: number }) {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder=" "
-            className="w-full h-20 px-8 pr-20 rounded-3xl border-2 border-white/20 dark:border-white/10 liquid-glass glass-card text-xl font-medium outline-none focus:ring-4 focus:ring-primary/20 focus:border-primary/50 transition-all duration-300 placeholder:text-transparent"
+            className="w-full h-14 sm:h-20 px-6 sm:px-8 pr-16 sm:pr-20 rounded-2xl sm:rounded-3xl border-2 border-white/20 dark:border-white/10 liquid-glass glass-card text-base sm:text-xl font-medium outline-none focus:ring-4 focus:ring-primary/20 focus:border-primary/50 transition-all duration-300 placeholder:text-transparent"
           />
 
           {/* Animated cursor in placeholder when empty */}
           {!query && (
             <span
-              className="pointer-events-none absolute left-8 top-1/2 -translate-y-1/2 text-xl text-gray-400 dark:text-gray-500 font-normal select-none"
+              className="pointer-events-none absolute left-6 sm:left-8 top-1/2 -translate-y-1/2 text-base sm:text-xl text-gray-400 dark:text-gray-500 font-normal select-none"
               aria-hidden
             >
               {displayed}
@@ -115,7 +115,7 @@ export function HeroSearch({ toolCount }: { toolCount: number }) {
         <button
           type="submit"
           aria-label="Search"
-          className="absolute right-3 top-1/2 -translate-y-1/2 h-14 w-14 inline-flex items-center justify-center rounded-2xl bg-primary text-white hover:bg-primary/90 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2"
+          className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 h-10 w-10 sm:h-14 sm:w-14 inline-flex items-center justify-center rounded-xl sm:rounded-2xl bg-primary text-white hover:bg-primary/90 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2"
         >
           <Search className="h-6 w-6" />
         </button>

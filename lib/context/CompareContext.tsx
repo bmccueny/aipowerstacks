@@ -34,7 +34,7 @@ function readStored(): CompareItem[] {
 
 function writeStored(items: CompareItem[]) {
   if (typeof window === 'undefined') return
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(items.slice(0, 3)))
+  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(items.slice(0, 4)))
 }
 
 export function CompareProvider({ children }: { children: React.ReactNode }) {
@@ -46,7 +46,7 @@ export function CompareProvider({ children }: { children: React.ReactNode }) {
 
   const add = useCallback((slug: string, name: string) => {
     setItems(prev => {
-      const next = [{ slug, name }, ...prev.filter(i => i.slug !== slug)].slice(0, 3)
+      const next = [{ slug, name }, ...prev.filter(i => i.slug !== slug)].slice(0, 4)
       writeStored(next)
       return next
     })

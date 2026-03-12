@@ -4,11 +4,23 @@ import { SubmitToolForm } from '@/components/tools/SubmitToolForm'
 import { Button } from '@/components/ui/button'
 import { createClient } from '@/lib/supabase/server'
 import type { Metadata } from 'next'
+import { SITE_URL } from '@/lib/constants/site'
 import { Sparkles } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Submit Your AI Tool for Free | AIPowerStacks',
+  title: 'Submit Your AI Tool for Free',
+  description: 'List your AI tool on AIPowerStacks for free. Approved tools go live within 24 hours with full category placement and comparison features.',
   alternates: { canonical: '/submit' },
+  openGraph: {
+    title: 'Submit Your AI Tool for Free',
+    description: 'List your AI tool on AIPowerStacks for free. Approved tools go live within 24 hours with full category placement and comparison features.',
+    url: `${SITE_URL}/submit`,
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Submit Your AI Tool for Free',
+    description: 'List your AI tool on AIPowerStacks for free. Approved tools go live within 24 hours.',
+  },
 }
 
 export default async function SubmitPage({

@@ -3,9 +3,8 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Mail } from 'lucide-react'
+import { Zap } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { useLiquidGlass } from '@/hooks/useLiquidGlass'
 
 export function NewsletterBanner({
   source = 'footer',
@@ -25,17 +24,22 @@ export function NewsletterBanner({
     setLoading(true)
     setError('')
 
-    const res = await fetch('/api/newsletter', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, source }),
-    })
+    try {
+      const res = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, source }),
+      })
 
-    if (res.ok) {
-      setDone(true)
-    } else {
-      const data = await res.json()
-      setError(data.error ?? 'Something went wrong')
+      if (res.ok) {
+        setDone(true)
+      } else {
+        const data = await res.json()
+        setError(data.error ?? 'Something went wrong')
+        setLoading(false)
+      }
+    } catch (err) {
+      setError('Failed to subscribe. Please try again.')
       setLoading(false)
     }
   }
@@ -46,57 +50,40 @@ export function NewsletterBanner({
         'rounded-2xl p-6 text-center',
         isDark ? 'glass-card border border-border/30' : 'glass-card'
       )}>
-        <Mail className={cn('h-8 w-8 mx-auto mb-2', isDark ? 'text-white' : 'text-primary')} />
-        <p className="font-semibold">Welcome aboard.</p>
+        <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-3">
+          <Zap className={cn('h-6 w-6', isDark ? 'text-white' : 'text-primary')} />
+        </div>
+        <p className="font-bold text-lg">You're in.</p>
         <p className={cn('text-sm mt-1', isDark ? 'text-white/75' : 'text-muted-foreground')}>
-          Your first stack report drops this Friday.
+          See you Friday.
         </p>
       </div>
     )
   }
 
-  const glassRef = useLiquidGlass<HTMLDivElement>({ radius: 16 })
-
   return (
-    <div ref={glassRef} className={cn(
-      'liquid-glass glass-card rounded-2xl p-6 border border-white/15',
+    <div className={cn(
+      'glass-card rounded-2xl p-5',
+      isDark ? 'bg-zinc-900/80' : 'bg-white/80'
     )}>
-      <div className="flex items-center gap-3 mb-4">
-        <Mail className="h-5 w-5 shrink-0 text-primary" />
-        <div>
-          <p className={cn(
-            'font-semibold text-sm',
-            isDark ? 'text-white' : 'text-gray-900'
-          )}>
-            5 vetted AI tools, every Friday
-          </p>
-          <p className={cn(
-            'text-xs mt-1',
-            isDark ? 'text-gray-300' : 'text-gray-600'
-          )}>
-            Tested and ranked so you skip the hype. Join 2,000+ readers.
-          </p>
-        </div>
-      </div>
-      <form onSubmit={handleSubmit} className="flex gap-3">
+      <form onSubmit={handleSubmit} className="flex gap-2">
         <Input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="your@email.com"
+          placeholder="Enter your email"
           required
           className={cn(
-            'flex-1 focus:ring-2 focus:ring-primary focus:border-primary',
+            'flex-1 focus:ring-2 focus:ring-primary focus:border-primary h-11',
             isDark
-              ? 'bg-gray-700 border-gray-600 text-white placeholder:text-gray-400'
-              : 'bg-white border-gray-300 text-gray-900 placeholder:text-gray-500'
+              ? 'bg-gray-800 border-gray-600 text-white placeholder:text-gray-400'
+              : 'bg-gray-100 border-gray-300 text-gray-900 placeholder:text-gray-500'
           )}
         />
         <Button
           type="submit"
           disabled={loading}
-          size="sm"
-          className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50"
+          className="bg-primary hover:bg-primary/90 text-white px-5 h-11 rounded-lg font-semibold transition-colors disabled:opacity-50"
         >
           {loading ? '...' : 'Subscribe'}
         </Button>

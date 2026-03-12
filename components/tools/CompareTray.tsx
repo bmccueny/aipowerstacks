@@ -45,7 +45,7 @@ export function CompareTray() {
               </button>
             </span>
           ))}
-          {Array.from({ length: 3 - items.length }).map((_, i) => (
+          {Array.from({ length: 4 - items.length }).map((_, i) => (
             <span
               key={`empty-${i}`}
               className={cn(

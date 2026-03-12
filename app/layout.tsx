@@ -52,6 +52,7 @@ export const metadata: Metadata = {
   creator: 'AIPowerStacks',
   icons: {
     icon: [
+      { url: '/favicon.ico', sizes: '48x48' },
       { url: '/icon.svg', type: 'image/svg+xml' },
       { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
       { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
@@ -65,11 +66,14 @@ export const metadata: Metadata = {
     siteName: 'AIPowerStacks',
     title: 'AIPowerStacks | Discover & Compare AI Tools',
     description: 'Find, compare, and shortlist AI tools in seconds. Verified listings with real user reviews, updated daily.',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'AIPowerStacks - Discover & Compare AI Tools' }],
   },
   twitter: {
     card: 'summary_large_image',
+    site: '@aipowerstacks',
     title: 'AIPowerStacks | Discover & Compare AI Tools',
     description: 'Find, compare, and shortlist AI tools in seconds. Verified listings with real user reviews, updated daily.',
+    images: ['/og-image.png'],
   },
   robots: {
     index: true,
@@ -124,7 +128,7 @@ export default function RootLayout({
           <div className="relative z-[1]">
             {children}
           </div>
-          <Toaster richColors position="bottom-right" />
+          <Toaster richColors position="top-center" />
         </CompareProvider>
       </body>
     </html>

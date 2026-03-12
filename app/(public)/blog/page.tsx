@@ -7,6 +7,8 @@ import { NewsletterBanner } from '@/components/layout/NewsletterBanner'
 import { Pagination } from '@/components/common/Pagination'
 import type { Metadata } from 'next'
 import { ExternalLink, Sparkles } from 'lucide-react'
+import { JsonLd } from '@/components/common/JsonLd'
+import { generateBlogJsonLd } from '@/lib/utils/seo'
 
 export default async function BlogPage({
   searchParams,
@@ -25,8 +27,12 @@ export default async function BlogPage({
   const totalPages = Math.ceil(total / 24)
   const regularPosts = featured ? posts.filter((p) => p.id !== featured.id) : posts
 
+  const allPosts = featured ? [featured, ...regularPosts] : regularPosts
+  const blogJsonLd = generateBlogJsonLd(allPosts)
+
   return (
     <div className="page-shell">
+      <JsonLd data={blogJsonLd} />
       <div className="page-hero text-center">
         <div className="inline-flex items-center gap-2 gum-pill px-3 py-1 text-xs font-semibold uppercase tracking-wide mb-4">
           <Sparkles className="h-3.5 w-3.5" />
@@ -118,9 +124,9 @@ export default async function BlogPage({
             <Sparkles className="h-4 w-4 text-primary" />
             <span className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">Newsletter</span>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-black mb-2">Get the next briefing in your inbox.</h2>
+          <h2 className="text-2xl sm:text-3xl font-black mb-2">The AI briefing your feed algorithm won't show you</h2>
           <p className="text-sm text-muted-foreground mb-5 max-w-2xl">
-            Weekly signal on model launches, product shifts, and practical moves for teams shipping with AI.
+            Weekly updates on cutting-edge models, breakthrough tools, and what matters for builders and buyers.
           </p>
           <div className="max-w-xl">
             <NewsletterBanner source="blog-page" />

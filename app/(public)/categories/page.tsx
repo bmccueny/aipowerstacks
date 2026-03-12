@@ -4,6 +4,8 @@ import { SITE_URL } from '@/lib/constants/site'
 import { getAllCategories } from '@/lib/supabase/queries/categories'
 import { Sparkles } from 'lucide-react'
 import { CategoryIcon } from '@/components/ui/CategoryIcon'
+import { JsonLd } from '@/components/common/JsonLd'
+import { generateItemListJsonLd } from '@/lib/utils/seo'
 
 export const metadata: Metadata = {
   title: 'AI Tool Categories',
@@ -28,8 +30,15 @@ export default async function CategoriesPage() {
 
   const featured = categories.filter((c) => c.sort_order > 0).slice(0, 38)
 
+  const categoriesJsonLd = generateItemListJsonLd(
+    featured.map((c) => ({ name: c.name, url: `/categories/${c.slug}` })),
+    'AI Tool Categories',
+    '/categories',
+  )
+
   return (
     <div className="page-shell">
+      <JsonLd data={categoriesJsonLd} />
       <div className="page-hero text-center">
         <div className="inline-flex items-center gap-2 gum-pill px-3 py-1 text-xs font-semibold uppercase tracking-wide mb-4">
           <Sparkles className="h-3.5 w-3.5" />

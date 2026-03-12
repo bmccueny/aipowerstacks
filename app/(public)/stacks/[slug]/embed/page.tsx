@@ -52,7 +52,7 @@ export default async function StackEmbedPage({ params }: { params: Promise<{ slu
           .tool { display: flex; align-items: center; gap: 12px; padding: 12px 20px; border-bottom: 1px solid rgba(255,255,255,0.04); text-decoration: none; color: inherit; transition: background 0.15s; }
           .tool:hover { background: rgba(255,255,255,0.03); }
           .tool:last-child { border-bottom: none; }
-          .logo { width: 36px; height: 36px; border-radius: 8px; background: #1e1e1e; border: 1px solid rgba(255,255,255,0.08); overflow: hidden; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+          .logo { width: 36px; height: 36px; border-radius: 8px; background: #1e1e1e; overflow: hidden; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
           .logo img { width: 36px; height: 36px; object-fit: contain; }
           .logo-initial { font-size: 14px; font-weight: 900; color: #e879a0; }
           .tool-info { flex: 1; min-width: 0; }

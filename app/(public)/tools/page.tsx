@@ -11,6 +11,8 @@ import { ViewToggle } from '@/components/tools/ViewToggle'
 import { Pagination } from '@/components/common/Pagination'
 import { PAGE_SIZE } from '@/lib/constants'
 import { Sparkles } from 'lucide-react'
+import { JsonLd } from '@/components/common/JsonLd'
+import { generateItemListJsonLd } from '@/lib/utils/seo'
 import type { PricingModel } from '@/lib/types'
 
 interface ToolsPageProps {
@@ -105,8 +107,15 @@ export default async function ToolsPage({ searchParams }: ToolsPageProps) {
 
   const hasMore = tools.length === PAGE_SIZE
 
+  const toolListJsonLd = generateItemListJsonLd(
+    tools.map((t, i) => ({ name: t.name, url: `/tools/${t.slug}`, position: (page - 1) * PAGE_SIZE + i + 1 })),
+    'AI Tools Directory',
+    '/tools',
+  )
+
   return (
     <div className="page-shell space-y-5 sm:space-y-6">
+      <JsonLd data={toolListJsonLd} />
       <section className="page-hero text-center">
         <div className="inline-flex items-center gap-2 gum-pill px-3 py-1 text-xs font-semibold uppercase tracking-wide mb-4">
           <Sparkles className="h-3.5 w-3.5" />
