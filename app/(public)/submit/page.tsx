@@ -34,7 +34,13 @@ export default async function SubmitPage({
 }) {
   const params = await searchParams
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  let user = null
+  try {
+    const { data } = await supabase.auth.getUser()
+    user = data?.user ?? null
+  } catch {
+    // Corrupted auth cookie
+  }
   const mode = params.mode === 'claim' || params.mode === 'suggest-edit' ? params.mode : 'submit'
 
   const intro = mode === 'claim'

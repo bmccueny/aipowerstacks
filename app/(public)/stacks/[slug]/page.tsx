@@ -72,7 +72,13 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
   if (error || !collectionRaw) notFound()
   const collection = collectionRaw as any
 
-  const { data: { user } } = await supabase.auth.getUser()
+  let user = null
+  try {
+    const { data } = await supabase.auth.getUser()
+    user = data?.user ?? null
+  } catch {
+    // Corrupted auth cookie
+  }
   const isOwner = user?.id === collection.user_id
 
   if (!collection.is_public && !isOwner) {

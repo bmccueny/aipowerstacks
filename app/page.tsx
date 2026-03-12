@@ -59,7 +59,13 @@ export const metadata = {
 
 export default async function HomePage() {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  let user = null
+  try {
+    const { data } = await supabase.auth.getUser()
+    user = data?.user ?? null
+  } catch {
+    // Corrupted auth cookie
+  }
 
   const [categories, latestTools, superTools, latestNews, latestBriefings, siteStats, stacksResult] = await Promise.all([
     getAllCategories(),

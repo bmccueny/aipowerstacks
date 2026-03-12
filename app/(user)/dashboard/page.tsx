@@ -14,7 +14,13 @@ export const revalidate = 0
 
 export default async function DashboardPage() {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  let user = null
+  try {
+    const { data } = await supabase.auth.getUser()
+    user = data?.user ?? null
+  } catch {
+    // Corrupted auth cookie
+  }
 
   if (!user) redirect('/login')
 

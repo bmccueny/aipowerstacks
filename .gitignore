@@ -5,3 +5,4 @@ node_modules/
 .vercel
 .tmp/
 scripts/.review-backup.json
+.env.vercel.check

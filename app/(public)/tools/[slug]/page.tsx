@@ -42,7 +42,13 @@ function labelize(value: string | null | undefined) {
 export default async function ToolDetailPage({ params }: Props) {
   const { slug } = await params
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  let user = null
+  try {
+    const { data } = await supabase.auth.getUser()
+    user = data?.user ?? null
+  } catch {
+    // Corrupted auth cookie
+  }
   const { data: profile } = user ? await supabase.from('profiles').select('role').eq('id', user.id).single() : { data: null }
   const isAdmin = profile?.role === 'admin'
   const tool = await getToolBySlug(slug)

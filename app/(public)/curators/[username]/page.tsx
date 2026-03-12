@@ -79,7 +79,13 @@ export default async function CuratorPage({
 
   if (!profile) notFound()
 
-  const { data: { user } } = await supabase.auth.getUser()
+  let user = null
+  try {
+    const { data } = await supabase.auth.getUser()
+    user = data?.user ?? null
+  } catch {
+    // Corrupted auth cookie
+  }
   const isOwner = user?.id === profile.id
 
   const [stacksRes, followerRes, followingRes, isFollowingRes, followerListRes, followingListRes, reviewsRes] = await Promise.all([

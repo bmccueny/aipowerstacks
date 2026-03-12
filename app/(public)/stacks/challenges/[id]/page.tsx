@@ -56,7 +56,13 @@ export default async function ChallengePage({
 
   if (!challenge) notFound()
 
-  const { data: { user } } = await supabase.auth.getUser()
+  let user = null
+  try {
+    const { data } = await supabase.auth.getUser()
+    user = data?.user ?? null
+  } catch {
+    // Corrupted auth cookie
+  }
   const now = new Date().toISOString()
   const isLive = challenge.is_active && challenge.starts_at <= now && challenge.ends_at >= now
 
