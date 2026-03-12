@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import Anthropic from '@anthropic-ai/sdk'
 
 /* ── Editor personas ──────────────────────────────────────────────────────── */
 
@@ -72,7 +71,7 @@ const EDITORS: Record<string, { id: string; voice: string }> = {
 
 /* ── Helpers ───────────────────────────────────────────────────────────────── */
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+const XAI_BASE_URL = 'https://api.x.ai/v1'
 
 interface ToolRow {
   id: string
@@ -135,13 +134,20 @@ async function generateReview(
     .filter(Boolean)
     .join('\n')
 
-  const msg = await anthropic.messages.create({
-    model: 'claude-haiku-4-5-20251001',
-    max_tokens: 600,
-    messages: [
-      {
-        role: 'user',
-        content: `You are ${editorName}, writing a short product review for an AI tools directory.
+  const res = await fetch(`${XAI_BASE_URL}/chat/completions`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${process.env.XAI_API_KEY}`,
+    },
+    body: JSON.stringify({
+      model: 'grok-3-mini-fast',
+      max_tokens: 600,
+      temperature: 0.8,
+      messages: [
+        {
+          role: 'user',
+          content: `You are ${editorName}, writing a short product review for an AI tools directory.
 
 YOUR VOICE: ${voice}
 
@@ -162,12 +168,18 @@ IMPORTANT:
 
 Respond in EXACTLY this JSON format (no extra text):
 {"rating": <number>, "body": "<review text>"}`,
-      },
-    ],
+        },
+      ],
+    }),
   })
 
-  const text =
-    msg.content[0].type === 'text' ? msg.content[0].text.trim() : ''
+  if (!res.ok) {
+    const errText = await res.text()
+    throw new Error(`${res.status} ${errText}`)
+  }
+
+  const data = await res.json()
+  const text = (data.choices?.[0]?.message?.content ?? '').trim()
 
   try {
     const parsed = JSON.parse(text)
