@@ -118,18 +118,47 @@ async function pickUnreviewedTool(
 }
 
 /**
- * Generate a review using Claude in the editor's voice.
+ * Scrape a tool's website via Jina Reader for real product context.
+ * Returns the scraped text (truncated to ~4000 chars) or null on failure.
+ */
+async function scrapeToolWebsite(url: string): Promise<string | null> {
+  try {
+    const jinaUrl = `https://r.jina.ai/${url}`
+    const res = await fetch(jinaUrl, {
+      headers: { Accept: 'text/plain' },
+      signal: AbortSignal.timeout(10_000),
+    })
+    if (!res.ok) return null
+    const text = await res.text()
+    // Truncate to keep prompt size reasonable
+    return text.slice(0, 4000)
+  } catch {
+    return null
+  }
+}
+
+/**
+ * Generate a review using Grok in the editor's voice,
+ * enriched with real website content.
  */
 async function generateReview(
   editorName: string,
   voice: string,
   tool: ToolRow,
 ): Promise<{ rating: number; body: string }> {
+  // Scrape the tool's website for real product details
+  const websiteContent = tool.website_url
+    ? await scrapeToolWebsite(tool.website_url)
+    : null
+
   const toolContext = [
     `Tool: ${tool.name}`,
     tool.tagline ? `Tagline: ${tool.tagline}` : null,
     tool.description ? `Description: ${tool.description}` : null,
     tool.website_url ? `Website: ${tool.website_url}` : null,
+    websiteContent
+      ? `\nACTUAL WEBSITE CONTENT (use this for specific details, features, and pricing):\n${websiteContent}`
+      : null,
   ]
     .filter(Boolean)
     .join('\n')
@@ -157,8 +186,8 @@ Write a review of this tool (3 to 5 sentences, roughly 80 to 150 words). Be spec
 Also provide a rating from 1 to 5 (integer).
 
 IMPORTANT:
-- Write as if you've actually used the tool.
-- Be honest, not every tool is a 5. Most are 3 to 4.
+- Reference SPECIFIC features, pricing details, or capabilities from the website content above. Do not make up features that aren't mentioned.
+- Be honest, not every tool is a 5. Most are 3 to 4. If the tool seems limited or overpriced based on the website, say so.
 - Match your unique voice and perspective.
 - Do NOT start with "I", vary your openings.
 - No markdown formatting. Plain text only.
