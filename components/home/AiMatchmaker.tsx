@@ -16,6 +16,7 @@ import {
   Users,
   Building2,
   RotateCcw,
+  Share2,
   Cpu,
   Smartphone,
   Github,
@@ -452,9 +453,26 @@ export function AiMatchmaker({ initialQuery }: { initialQuery?: string } = {}) {
                     <p className="text-muted-foreground text-sm">Based on your specific project goals.</p>
                   )}
                 </div>
-                <Button variant="outline" size="sm" onClick={reset} className="gap-2 text-primary border-primary/20 hover:bg-primary hover:text-primary-foreground font-black uppercase tracking-widest text-[10px] h-10 px-4">
-                  <RotateCcw className="h-3.5 w-3.5" /> Start Over
-                </Button>
+                <div className="flex items-center gap-2">
+                  {results.length > 0 && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        const slugs = results.map((t: any) => t.slug).join(',')
+                        const shareUrl = `${window.location.origin}/matchmaker/results?tools=${slugs}${chatMessage ? `&q=${encodeURIComponent(chatMessage)}` : ''}`
+                        navigator.clipboard.writeText(shareUrl)
+                        alert('Share link copied!')
+                      }}
+                      className="gap-2 text-primary border-primary/20 hover:bg-primary hover:text-primary-foreground font-black uppercase tracking-widest text-[10px] h-10 px-4"
+                    >
+                      <Share2 className="h-3.5 w-3.5" /> Share Stack
+                    </Button>
+                  )}
+                  <Button variant="outline" size="sm" onClick={reset} className="gap-2 text-primary border-primary/20 hover:bg-primary hover:text-primary-foreground font-black uppercase tracking-widest text-[10px] h-10 px-4">
+                    <RotateCcw className="h-3.5 w-3.5" /> Start Over
+                  </Button>
+                </div>
               </div>
 
               {loading ? (

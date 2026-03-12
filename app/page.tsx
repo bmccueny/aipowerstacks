@@ -12,7 +12,7 @@ import { ToolCard } from '@/components/tools/ToolCard'
 import { CategoryIcon } from '@/components/ui/CategoryIcon'
 import { getAllCategories } from '@/lib/supabase/queries/categories'
 import { getLatestAINews } from '@/lib/supabase/queries/news'
-import { getLatestTools, getSuperTools, getSiteStats } from '@/lib/supabase/queries/tools'
+import { getLatestTools, getSuperTools, getSiteStats, getFeaturedStack } from '@/lib/supabase/queries/tools'
 import { getLatestPosts } from '@/lib/supabase/queries/blog'
 
 import { JsonLd } from '@/components/common/JsonLd'
@@ -68,7 +68,7 @@ export default async function HomePage() {
     // Corrupted auth cookie
   }
 
-  const [categories, latestTools, superTools, latestNews, latestPosts, siteStats, stacksResult] = await Promise.all([
+  const [categories, latestTools, superTools, latestNews, latestPosts, siteStats, stacksResult, featuredStack] = await Promise.all([
     getAllCategories(),
     getLatestTools(6),
     getSuperTools(6),
@@ -78,6 +78,7 @@ export default async function HomePage() {
     user
       ? supabase.from('collections').select('id', { count: 'exact', head: true }).eq('user_id', user.id)
       : Promise.resolve({ count: 0 }),
+    getFeaturedStack(),
   ])
 
   const hasStacks = (stacksResult.count ?? 0) > 0
@@ -262,6 +263,55 @@ export default async function HomePage() {
             </div>
           )}
         </section>
+
+        {/* Stack of the Day */}
+        {featuredStack && (
+          <section className="px-4 max-w-4xl mx-auto w-full">
+            <div className="flex items-center justify-center mb-6">
+              <h2 className="text-lg font-semibold text-foreground flex items-center gap-2.5">
+                <span className="text-primary font-bold">&#x27E9;</span> Stack of the Day
+              </h2>
+            </div>
+            <Link href={`/stacks/${featuredStack.share_slug}`} className="block">
+              <div className="glass-card rounded-xl p-6 sm:p-8 hover:border-primary/30 transition-all group">
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="text-3xl">{featuredStack.icon || '⚡'}</span>
+                  <div>
+                    <h3 className="text-xl font-bold group-hover:text-primary transition-colors">{featuredStack.name}</h3>
+                    {featuredStack.creator && (
+                      <p className="text-xs text-muted-foreground">
+                        by {featuredStack.creator.display_name || featuredStack.creator.username}
+                      </p>
+                    )}
+                  </div>
+                </div>
+                {featuredStack.description && (
+                  <p className="text-sm text-muted-foreground mb-5 line-clamp-2">{featuredStack.description}</p>
+                )}
+                <div className="flex items-center gap-3 overflow-hidden">
+                  {featuredStack.tools.map((tool) => (
+                    <div key={tool.id} className="flex items-center gap-2 shrink-0 bg-muted/50 rounded-lg px-3 py-2">
+                      <div className="h-7 w-7 rounded-md bg-background overflow-hidden flex items-center justify-center">
+                        {tool.logo_url ? (
+                          /* eslint-disable-next-line @next/next/no-img-element */
+                          <img src={tool.logo_url} alt={tool.name} width={28} height={28} className="object-contain" />
+                        ) : (
+                          <span className="text-xs font-bold text-primary">{tool.name[0]}</span>
+                        )}
+                      </div>
+                      <span className="text-sm font-medium">{tool.name}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-5 flex items-center gap-4 text-xs text-muted-foreground">
+                  <span>{featuredStack.view_count ?? 0} views</span>
+                  <span>{featuredStack.save_count ?? 0} saves</span>
+                  <span className="ml-auto text-primary font-semibold group-hover:underline">View Stack →</span>
+                </div>
+              </div>
+            </Link>
+          </section>
+        )}
 
         {/* Power Stacks CTA — community bridge, shown after directory content */}
         {!hasStacks && <section className="px-4 max-w-7xl mx-auto w-full">

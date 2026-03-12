@@ -100,6 +100,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/stacks/challenges`, lastModified: new Date(), changeFrequency: 'weekly' as const, priority: 0.4 },
     { url: `${BASE_URL}/stacks/compare`, lastModified: new Date(), changeFrequency: 'monthly' as const, priority: 0.3 },
     { url: `${BASE_URL}/compare/versus`, lastModified: new Date(), changeFrequency: 'weekly' as const, priority: 0.5 },
+    { url: `${BASE_URL}/changelog`, lastModified: new Date(), changeFrequency: 'weekly' as const, priority: 0.6 },
     ...toolUrls,
     ...categoryUrls,
     ...blogUrls,

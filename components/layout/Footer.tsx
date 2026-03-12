@@ -16,6 +16,7 @@ const footerLinks = {
   Content: [
     { href: '/blog', label: 'AI News' },
     { href: '/blog?featured=true', label: 'Featured Articles' },
+    { href: '/changelog', label: 'Changelog' },
   ],
   Company: [
     { href: '/about', label: 'About' },
