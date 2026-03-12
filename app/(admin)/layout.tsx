@@ -77,7 +77,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       </aside>
 
       {/* Mobile navigation */}
-      <AdminMobileNav items={adminNavItems} />
+      <AdminMobileNav items={adminNavItems.map(({ href, label }) => ({ href, label }))} />
 
       {/* Main content */}
       <div className="flex-1 overflow-auto">

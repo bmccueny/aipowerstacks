@@ -3,25 +3,38 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Menu, X, Sparkles } from 'lucide-react'
+import {
+  Menu, X, Sparkles, LayoutDashboard, Wrench, InboxIcon,
+  FolderOpen, FileText, Users, Star, Trophy, MessageSquare,
+} from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
+
+const ICON_MAP: Record<string, LucideIcon> = {
+  '/admin': LayoutDashboard,
+  '/admin/control-center': LayoutDashboard,
+  '/admin/tools': Wrench,
+  '/admin/submissions': InboxIcon,
+  '/admin/reviews': Star,
+  '/admin/categories': FolderOpen,
+  '/admin/blog': FileText,
+  '/admin/challenges': Trophy,
+  '/admin/social': MessageSquare,
+  '/admin/users': Users,
+}
 
 interface NavItem {
   href: string
   label: string
-  icon: LucideIcon
 }
 
 export function AdminMobileNav({ items }: { items: NavItem[] }) {
   const [open, setOpen] = useState(false)
   const pathname = usePathname()
 
-  // Close drawer on navigation
   useEffect(() => {
     setOpen(false)
   }, [pathname])
 
-  // Prevent body scroll when drawer is open
   useEffect(() => {
     if (open) {
       document.body.style.overflow = 'hidden'
@@ -36,7 +49,7 @@ export function AdminMobileNav({ items }: { items: NavItem[] }) {
       {/* Mobile top bar */}
       <div className="fixed top-0 left-0 right-0 h-14 z-40 bg-background border-b border-border/50 flex items-center justify-between px-4 lg:hidden">
         <Link href="/admin" className="flex items-center gap-2">
-          <Sparkles className="h-4.5 w-4.5 text-primary" />
+          <Sparkles className="h-4 w-4 text-primary" />
           <span className="font-semibold text-sm">Admin</span>
         </Link>
         <button
@@ -70,7 +83,8 @@ export function AdminMobileNav({ items }: { items: NavItem[] }) {
         </div>
 
         <nav className="flex-1 overflow-y-auto py-2 px-2">
-          {items.map(({ href, label, icon: Icon }) => {
+          {items.map(({ href, label }) => {
+            const Icon = ICON_MAP[href] ?? LayoutDashboard
             const isActive = pathname === href || (href !== '/admin' && pathname.startsWith(href + '/'))
             return (
               <Link
@@ -82,7 +96,7 @@ export function AdminMobileNav({ items }: { items: NavItem[] }) {
                     : 'text-muted-foreground hover:text-foreground hover:bg-muted/40'
                 }`}
               >
-                <Icon className="h-4.5 w-4.5 shrink-0" />
+                <Icon className="h-4 w-4 shrink-0" />
                 {label}
               </Link>
             )
