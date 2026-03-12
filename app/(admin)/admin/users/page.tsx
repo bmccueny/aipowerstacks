@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import type { Metadata } from 'next'
 import { Badge } from '@/components/ui/badge'
 import { UserRoleActions } from '@/components/admin/UserRoleActions'
@@ -8,7 +8,7 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 export const metadata: Metadata = { title: 'Manage Users' }
 
 export default async function AdminUsersPage() {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
   const { data } = await supabase
     .from('profiles')
     .select('id, display_name, username, role, avatar_url, created_at')

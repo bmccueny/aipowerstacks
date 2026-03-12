@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { getAllCategories } from '@/lib/supabase/queries/categories'
 import { ToolForm } from '@/components/admin/ToolForm'
 import { notFound } from 'next/navigation'
@@ -8,7 +8,7 @@ export const metadata: Metadata = { title: 'Edit Tool' }
 
 export default async function EditToolPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const { data } = await supabase
     .from('tools')

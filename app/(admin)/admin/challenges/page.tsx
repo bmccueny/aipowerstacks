@@ -1,13 +1,13 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { Button } from '@/components/ui/button'
 import { Plus, Trophy } from 'lucide-react'
 
 export const metadata: Metadata = { title: 'Challenges Admin' }
 
 export default async function AdminChallengesPage() {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const { data: challenges } = await supabase
     .from('stack_challenges')

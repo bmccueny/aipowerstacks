@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { Badge } from '@/components/ui/badge'
@@ -18,7 +18,7 @@ export default async function AdminToolsPage({
   const limit = 25
   const offset = (page - 1) * limit
 
-  const supabase = await createClient()
+  const supabase = createAdminClient()
   let query = supabase
     .from('tools')
     .select('id, name, slug, status, pricing_model, review_count, avg_rating, created_at', { count: 'exact' })

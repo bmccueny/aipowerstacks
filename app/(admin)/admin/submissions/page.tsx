@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import type { Metadata } from 'next'
 import { Badge } from '@/components/ui/badge'
 import { SubmissionActions } from '@/components/admin/SubmissionActions'
@@ -6,7 +6,7 @@ import { SubmissionActions } from '@/components/admin/SubmissionActions'
 export const metadata: Metadata = { title: 'Tool Submissions' }
 
 export default async function AdminSubmissionsPage() {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
   const { data } = await supabase
     .from('tool_submissions')
     .select('*')

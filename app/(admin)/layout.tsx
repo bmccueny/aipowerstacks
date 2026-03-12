@@ -21,23 +21,27 @@ const adminNavItems = [
 ]
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  const supabase = await createClient()
   let user = null
+  let profile = null
+
   try {
+    const supabase = await createClient()
     const { data } = await supabase.auth.getUser()
     user = data?.user ?? null
+
+    if (user) {
+      const { data: p } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single()
+      profile = p
+    }
   } catch {
-    // Corrupted auth cookie
+    // Corrupted auth cookie or session recovery failure
   }
 
   if (!user) redirect('/login')
-
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .single()
-
   if (!profile || profile.role !== 'admin') redirect('/')
 
   return (

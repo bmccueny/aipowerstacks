@@ -1,11 +1,11 @@
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import type { Metadata } from 'next'
 import { CategoryManager } from '@/components/admin/CategoryManager'
 
 export const metadata: Metadata = { title: 'Manage Categories' }
 
 export default async function AdminCategoriesPage() {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
   const { data } = await supabase
     .from('categories')
     .select('id, name, slug, icon, description, color, tool_count, sort_order')

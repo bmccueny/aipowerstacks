@@ -12,7 +12,7 @@ import { CategoryIcon } from '@/components/ui/CategoryIcon'
 import { getAllCategories } from '@/lib/supabase/queries/categories'
 import { getLatestAINews } from '@/lib/supabase/queries/news'
 import { getLatestTools, getSuperTools, getSiteStats } from '@/lib/supabase/queries/tools'
-import { getLatestBriefings } from '@/lib/supabase/queries/blog'
+import { getLatestPosts } from '@/lib/supabase/queries/blog'
 import { CompareTray } from '@/components/tools/CompareTray'
 import { JsonLd } from '@/components/common/JsonLd'
 import { SITE_URL } from '@/lib/constants/site'
@@ -67,12 +67,12 @@ export default async function HomePage() {
     // Corrupted auth cookie
   }
 
-  const [categories, latestTools, superTools, latestNews, latestBriefings, siteStats, stacksResult] = await Promise.all([
+  const [categories, latestTools, superTools, latestNews, latestPosts, siteStats, stacksResult] = await Promise.all([
     getAllCategories(),
     getLatestTools(6),
     getSuperTools(6),
     getLatestAINews(6),
-    getLatestBriefings(6),
+    getLatestPosts(3),
     getSiteStats(),
     user
       ? supabase.from('collections').select('id', { count: 'exact', head: true }).eq('user_id', user.id)
@@ -83,15 +83,14 @@ export default async function HomePage() {
 
   const featuredCategories = categories.filter((c) => c.sort_order > 0).slice(0, 12)
 
-  const briefingItems: CombinedNewsItem[] = latestBriefings
+  const briefingItems: CombinedNewsItem[] = latestPosts
     .filter((post) => post.published_at)
-    .slice(0, 3)
     .map((post) => ({
       id: `briefing-${post.id}`,
       title: post.title,
       url: `/blog/${post.slug}`,
       summary: post.excerpt,
-      source_name: 'AI briefing',
+      source_name: post.author?.display_name ?? 'AIPowerStacks',
       source_url: null,
       image_url: post.cover_image_url,
       published_at: post.published_at ?? new Date().toISOString(),

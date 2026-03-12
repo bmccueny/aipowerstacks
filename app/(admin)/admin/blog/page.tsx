@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { Badge } from '@/components/ui/badge'
@@ -8,7 +8,7 @@ import { Plus, ExternalLink } from 'lucide-react'
 export const metadata: Metadata = { title: 'Manage Blog' }
 
 export default async function AdminBlogPage() {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
   const { data } = await supabase
     .from('blog_posts')
     .select('id, title, slug, status, is_featured, published_at, view_count')

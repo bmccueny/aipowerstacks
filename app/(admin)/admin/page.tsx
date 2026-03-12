@@ -1,11 +1,11 @@
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import type { Metadata } from 'next'
 import { Wrench, InboxIcon, Star, Users } from 'lucide-react'
 
 export const metadata: Metadata = { title: 'Admin Overview' }
 
 export default async function AdminDashboardPage() {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const [toolsRes, submissionsRes, reviewsRes, usersRes] = await Promise.all([
     supabase.from('tools').select('id', { count: 'exact', head: true }).eq('status', 'published'),

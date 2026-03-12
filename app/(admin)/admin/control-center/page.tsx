@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { CategoryManager } from '@/components/admin/CategoryManager'
@@ -11,7 +11,7 @@ import { ExternalLink, Plus } from 'lucide-react'
 export const metadata: Metadata = { title: 'Control Center' }
 
 export default async function AdminControlCenterPage() {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const [toolsRes, submissionsRes, usersRes, categoriesRes] = await Promise.all([
     supabase

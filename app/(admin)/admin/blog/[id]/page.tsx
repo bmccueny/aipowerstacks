@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { BlogPostForm } from '@/components/blog/BlogPostForm'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
@@ -7,7 +7,7 @@ export const metadata: Metadata = { title: 'Edit Post — AIPowerStacks Admin' }
 
 export default async function EditBlogPostPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const { data } = await supabase
     .from('blog_posts')

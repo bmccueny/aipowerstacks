@@ -116,6 +116,37 @@ export async function getFeaturedPost() {
   return { ...post, author: author || null } as BlogPostSummary
 }
 
+export async function getLatestPosts(limit = 3): Promise<BlogPostSummary[]> {
+  const supabase = await createClient()
+
+  const { data: dataRaw } = await supabase
+    .from('blog_posts')
+    .select('id, title, slug, excerpt, cover_image_url, tags, reading_time_min, published_at, author_id')
+    .eq('status', 'published')
+    .order('published_at', { ascending: false })
+    .limit(limit)
+
+  if (!dataRaw) return []
+  const posts = dataRaw.map(p => ({ ...p, author: null })) as BlogPostSummary[]
+
+  const authorIds = Array.from(new Set(posts.map(p => p.author_id).filter(Boolean)))
+  if (authorIds.length > 0) {
+    const { data: authors } = await supabase
+      .from('profiles')
+      .select('id, display_name, username, avatar_url')
+      .in('id', authorIds)
+
+    if (authors) {
+      const authorMap = new Map(authors.map(a => [a.id, a]))
+      posts.forEach(p => {
+        p.author = authorMap.get(p.author_id) || null
+      })
+    }
+  }
+
+  return posts
+}
+
 export async function getLatestBriefings(limit = 3): Promise<BlogPostSummary[]> {
   const supabase = await createClient()
   const { data: categories } = await supabase
