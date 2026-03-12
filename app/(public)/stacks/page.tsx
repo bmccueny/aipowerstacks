@@ -10,18 +10,23 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 export const revalidate = 0
 
 export const metadata: Metadata = {
-  title: 'Power Stacks',
-  description: 'Browse community-curated collections of AI tools. Find the perfect stack for your workflow.',
+  title: 'Power Stacks - Curated AI Tool Collections',
+  description: 'Browse community-curated collections of AI tools organized by workflow. Find proven tool stacks for development, content creation, marketing, research, and more.',
   alternates: { canonical: '/stacks' },
   openGraph: {
-    title: 'Power Stacks',
-    description: 'Browse community-curated collections of AI tools. Find the perfect stack for your workflow.',
+    title: 'Power Stacks - Curated AI Tool Collections',
+    description: 'Browse community-curated collections of AI tools organized by workflow. Find proven tool stacks for development, content creation, marketing, research, and more.',
     url: `${SITE_URL}/stacks`,
+    type: 'website',
+    siteName: 'AIPowerStacks',
+    images: [{ url: `${SITE_URL}/og-image.png`, width: 1200, height: 630, alt: 'AIPowerStacks Power Stacks' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Power Stacks',
-    description: 'Browse community-curated collections of AI tools. Find the perfect stack for your workflow.',
+    site: '@aipowerstacks',
+    title: 'Power Stacks - Curated AI Tool Collections',
+    description: 'Browse community-curated collections of AI tools organized by workflow. Find proven tool stacks for development, content creation, marketing, research, and more.',
+    images: [`${SITE_URL}/og-image.png`],
   },
 }
 

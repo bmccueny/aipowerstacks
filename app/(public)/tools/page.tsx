@@ -59,7 +59,7 @@ export async function generateMetadata({ searchParams }: ToolsPageProps): Promis
       : '/tools'
 
   const title = 'AI Tools Directory - Browse & Compare AI Tools'
-  const description = 'Search and compare AI tools by category, pricing, use case, team size, and integrations.'
+  const description = 'Search and compare 300+ AI tools by category, pricing, use case, team size, and integrations. Real user reviews, verified listings, and side-by-side comparisons updated daily.'
 
   return {
     title,
@@ -72,11 +72,16 @@ export async function generateMetadata({ searchParams }: ToolsPageProps): Promis
       title,
       description,
       url: `${SITE_URL}/tools`,
+      type: 'website',
+      siteName: 'AIPowerStacks',
+      images: [{ url: `${SITE_URL}/og-image.png`, width: 1200, height: 630, alt: 'AIPowerStacks AI Tools Directory' }],
     },
     twitter: {
       card: 'summary_large_image',
+      site: '@aipowerstacks',
       title,
       description,
+      images: [`${SITE_URL}/og-image.png`],
     },
   }
 }

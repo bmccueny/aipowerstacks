@@ -15,9 +15,26 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id } = await params
   const supabase = await createClient()
-  const { data } = await supabase.from('stack_challenges').select('title').eq('id', id).single()
+  const { data } = await supabase.from('stack_challenges').select('title, description').eq('id', id).single()
+  const title = data ? `${data.title} | Stack Challenge` : 'Stack Challenge'
+  const description = data?.description
+    ? `${data.description.slice(0, 150)}${data.description.length > 150 ? '...' : ''}`
+    : 'Build the best AI workflow and get voted to the top.'
   return {
-    title: data ? `${data.title} | Stack Challenge` : 'Stack Challenge',
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: 'website',
+      siteName: 'AIPowerStacks',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      site: '@aipowerstacks',
+      title,
+      description,
+    },
   }
 }
 

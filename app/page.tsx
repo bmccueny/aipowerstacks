@@ -14,6 +14,7 @@ import { getLatestAINews } from '@/lib/supabase/queries/news'
 import { getLatestTools, getSuperTools, getSiteStats } from '@/lib/supabase/queries/tools'
 import { getLatestBriefings } from '@/lib/supabase/queries/blog'
 import { CompareTray } from '@/components/tools/CompareTray'
+import { JsonLd } from '@/components/common/JsonLd'
 import { SITE_URL } from '@/lib/constants/site'
 import { createClient } from '@/lib/supabase/server'
 
@@ -111,6 +112,23 @@ export default async function HomePage() {
     <>
       <Navbar />
       <main className="min-h-screen pt-20 flex flex-col gap-16 md:gap-20 pb-24">
+        <JsonLd data={{
+          '@context': 'https://schema.org',
+          '@type': 'WebPage',
+          name: 'AIPowerStacks - Discover & Compare AI Tools',
+          description: 'Discover and compare AI tools side-by-side. Filter by use case, pricing, and integrations.',
+          url: SITE_URL,
+          mainEntity: {
+            '@type': 'ItemList',
+            numberOfItems: superTools.length + latestTools.length,
+            itemListElement: [...superTools, ...latestTools].map((tool, i) => ({
+              '@type': 'ListItem',
+              position: i + 1,
+              name: tool.name,
+              url: `${SITE_URL}/tools/${tool.slug}`,
+            })),
+          },
+        }} />
 
         {/* Hero Section */}
         <section className="px-4 max-w-4xl mx-auto w-full pt-20 pb-8">

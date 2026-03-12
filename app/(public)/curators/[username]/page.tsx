@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import type { Metadata } from 'next'
+import { SITE_URL } from '@/lib/constants/site'
 import { createClient } from '@/lib/supabase/server'
 import { SaveStackButton } from '@/components/stacks/SaveStackButton'
 import { FollowButton } from '@/components/stacks/FollowButton'
@@ -27,9 +28,38 @@ export async function generateMetadata({
   params: Promise<{ username: string }>
 }): Promise<Metadata> {
   const { username } = await params
+  const supabase = await createClient()
+  const { data: profile } = await (supabase as any)
+    .from('profiles')
+    .select('display_name, bio, avatar_url')
+    .eq('username', username)
+    .single()
+
+  const displayName = profile?.display_name || `@${username}`
+  const title = `${displayName} (@${username}) - AI Tool Curator`
+  const description = profile?.bio
+    ? `${profile.bio.slice(0, 120)}${profile.bio.length > 120 ? '...' : ''} Browse Power Stacks curated by ${displayName}.`
+    : `Browse AI Power Stacks and tool reviews curated by ${displayName} on AIPowerStacks.`
+
   return {
-    title: `@${username} | AIPowerStacks`,
-    description: `View Power Stacks curated by @${username}.`,
+    title,
+    description,
+    alternates: { canonical: `/curators/${username}` },
+    openGraph: {
+      title,
+      description,
+      url: `${SITE_URL}/curators/${username}`,
+      type: 'profile',
+      siteName: 'AIPowerStacks',
+      ...(profile?.avatar_url ? { images: [{ url: profile.avatar_url, width: 200, height: 200, alt: displayName }] } : { images: [{ url: `${SITE_URL}/og-image.png`, width: 1200, height: 630, alt: 'AIPowerStacks' }] }),
+    },
+    twitter: {
+      card: 'summary',
+      site: '@aipowerstacks',
+      title,
+      description,
+      ...(profile?.avatar_url ? { images: [profile.avatar_url] } : {}),
+    },
   }
 }
 

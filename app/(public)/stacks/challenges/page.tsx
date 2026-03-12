@@ -4,8 +4,21 @@ import { createClient } from '@/lib/supabase/server'
 import { Trophy, Clock, Layers } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Stack Challenges | AIPowerStacks',
-  description: 'Compete in Stack Challenges — build the best AI workflow for the prompt and get voted to the top.',
+  title: 'Stack Challenges',
+  description: 'Compete in Stack Challenges. Build the best AI workflow for the prompt and get voted to the top by the community.',
+  alternates: { canonical: '/stacks/challenges' },
+  openGraph: {
+    title: 'Stack Challenges',
+    description: 'Compete in Stack Challenges. Build the best AI workflow for the prompt and get voted to the top by the community.',
+    type: 'website',
+    siteName: 'AIPowerStacks',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    site: '@aipowerstacks',
+    title: 'Stack Challenges',
+    description: 'Compete in Stack Challenges. Build the best AI workflow for the prompt and get voted to the top by the community.',
+  },
 }
 
 export const revalidate = 60

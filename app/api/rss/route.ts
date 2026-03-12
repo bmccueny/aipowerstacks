@@ -24,13 +24,25 @@ export async function GET() {
       ${post.tags?.map((t) => `<category>${t}</category>`).join('') ?? ''}
     </item>`).join('')
 
+  const lastBuildDate = posts.length > 0 && posts[0].published_at
+    ? new Date(posts[0].published_at).toUTCString()
+    : new Date().toUTCString()
+
   const rss = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>AIPowerStacks Blog</title>
     <link>${siteUrl}/blog</link>
-    <description>Latest AI news, guides, and insights</description>
+    <description>Daily AI news and briefings for builders: what changed, why it matters, and what to do next.</description>
     <language>en-us</language>
+    <lastBuildDate>${lastBuildDate}</lastBuildDate>
+    <image>
+      <url>${siteUrl}/og-image.png</url>
+      <title>AIPowerStacks Blog</title>
+      <link>${siteUrl}/blog</link>
+      <width>144</width>
+      <height>144</height>
+    </image>
     <atom:link href="${siteUrl}/api/rss" rel="self" type="application/rss+xml" />
     ${items}
   </channel>

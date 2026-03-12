@@ -10,8 +10,21 @@ import { Layers, ArrowLeft, Check, X, Eye, Bookmark } from 'lucide-react'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 
 export const metadata: Metadata = {
-  title: 'Compare Power Stacks | AIPowerStacks',
-  description: 'Compare two Power Stacks side-by-side to see shared tools and differences.',
+  title: 'Compare Power Stacks',
+  description: 'Compare two AI Power Stacks side-by-side. See shared tools, unique tools, and differences at a glance to pick the right workflow for your needs.',
+  alternates: { canonical: '/stacks/compare' },
+  openGraph: {
+    title: 'Compare Power Stacks',
+    description: 'Compare two AI Power Stacks side-by-side. See shared tools, unique tools, and differences at a glance.',
+    type: 'website',
+    siteName: 'AIPowerStacks',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    site: '@aipowerstacks',
+    title: 'Compare Power Stacks',
+    description: 'Compare two AI Power Stacks side-by-side. See shared tools, unique tools, and differences at a glance.',
+  },
 }
 
 async function fetchStack(supabase: Awaited<ReturnType<typeof createClient>>, slug: string) {

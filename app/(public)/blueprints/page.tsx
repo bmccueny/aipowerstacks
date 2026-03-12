@@ -10,18 +10,23 @@ import {
 import { AdoptBlueprintButton } from '@/components/blueprints/AdoptBlueprintButton'
 
 export const metadata: Metadata = {
-  title: 'Project Blueprints',
-  description: 'Proven AI tool recipes for high-impact workflows. One-click adopt expert stacks.',
+  title: 'Project Blueprints - AI Workflow Recipes',
+  description: 'Pre-built AI tool recipes for high-impact workflows. One-click adopt expert stacks for content creation, development, marketing, data analysis, and more.',
   alternates: { canonical: '/blueprints' },
   openGraph: {
-    title: 'Project Blueprints',
-    description: 'Proven AI tool recipes for high-impact workflows. One-click adopt expert stacks.',
+    title: 'Project Blueprints - AI Workflow Recipes',
+    description: 'Pre-built AI tool recipes for high-impact workflows. One-click adopt expert stacks for content creation, development, marketing, data analysis, and more.',
     url: `${SITE_URL}/blueprints`,
+    type: 'website',
+    siteName: 'AIPowerStacks',
+    images: [{ url: `${SITE_URL}/og-image.png`, width: 1200, height: 630, alt: 'AIPowerStacks Project Blueprints' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Project Blueprints',
-    description: 'Proven AI tool recipes for high-impact workflows. One-click adopt expert stacks.',
+    site: '@aipowerstacks',
+    title: 'Project Blueprints - AI Workflow Recipes',
+    description: 'Pre-built AI tool recipes for high-impact workflows. One-click adopt expert stacks for content creation, development, marketing, data analysis, and more.',
+    images: [`${SITE_URL}/og-image.png`],
   },
 }
 

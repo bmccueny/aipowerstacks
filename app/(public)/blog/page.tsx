@@ -145,7 +145,7 @@ export async function generateMetadata({
   const { page: pageStr } = await searchParams
   const page = Math.max(1, parseInt(pageStr ?? '1'))
   const title = 'AI News & Briefings'
-  const description = 'Daily AI news and briefings for builders: what changed, why it matters, and what to do next.'
+  const description = 'Daily AI news and briefings for builders and buyers. Model releases, tool updates, funding rounds, and actionable insights on what changed, why it matters, and what to do next.'
   const canonical = page > 1 ? `/blog?page=${page}` : '/blog'
 
   return {
@@ -156,11 +156,16 @@ export async function generateMetadata({
       title,
       description,
       url: `${SITE_URL}${canonical}`,
+      type: 'website',
+      siteName: 'AIPowerStacks',
+      images: [{ url: `${SITE_URL}/og-image.png`, width: 1200, height: 630, alt: 'AIPowerStacks AI News & Briefings' }],
     },
     twitter: {
       card: 'summary_large_image',
+      site: '@aipowerstacks',
       title,
       description,
+      images: [`${SITE_URL}/og-image.png`],
     },
   }
 }
