@@ -50,7 +50,7 @@ export function DeleteToolButton({ toolId, toolName }: DeleteToolButtonProps) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="ghost" size="sm" className="text-red-400 hover:text-red-300 hover:bg-red-500/10 h-8 w-8 p-0">
+        <Button variant="ghost" size="sm" className="text-red-400 hover:text-red-300 hover:bg-red-500/10 h-9 w-9 p-0">
           <Trash2 className="h-4 w-4" />
         </Button>
       </AlertDialogTrigger>

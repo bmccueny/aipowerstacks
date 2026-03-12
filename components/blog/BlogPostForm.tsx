@@ -201,7 +201,7 @@ export function BlogPostForm({ post }: BlogPostFormProps) {
         </div>
       </header>
 
-      <div className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 py-8 grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-8">
+      <div className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 py-4 sm:py-6 lg:py-8 grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-8">
         <div className="space-y-4 min-w-0">
           <textarea
             value={form.title}

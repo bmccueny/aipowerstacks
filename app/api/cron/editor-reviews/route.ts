@@ -189,7 +189,9 @@ IMPORTANT:
 - Reference SPECIFIC features, pricing details, or capabilities from the website content above. Do not make up features that aren't mentioned.
 - Be honest, not every tool is a 5. Most are 3 to 4. If the tool seems limited or overpriced based on the website, say so.
 - Match your unique voice and perspective.
-- Do NOT start with "I", vary your openings.
+- Vary your openings. You can start with "I" sometimes, but not always.
+- Show genuine feeling: if something impressed you, say it with conviction ("This genuinely caught me off guard"). If something fell flat, express that frustration ("The pricing left me scratching my head").
+- Have a real reaction. You just tried this tool and you have thoughts. Share them like a person, not a template.
 - No markdown formatting. Plain text only.
 - NEVER use em dashes, en dashes, or spaced hyphens. No \u2014 \u2013 or " - " anywhere. Use commas, periods, or colons instead.
 - Hyphens are ONLY allowed inside compound words (e.g. "open-source", "real-time"). Never as punctuation between clauses.

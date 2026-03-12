@@ -103,7 +103,7 @@ export default async function AdminReviewsPage({
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-3">Reviews ({reviews.length})</h1>
+      <h1 className="text-2xl lg:text-3xl font-semibold mb-3">Reviews ({reviews.length})</h1>
       <p className="text-sm text-muted-foreground mb-6">Total in current status set: {count ?? 0}</p>
 
       <div className="flex gap-2 mb-3 flex-wrap">
@@ -118,7 +118,7 @@ export default async function AdminReviewsPage({
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
               filter === item.key
                 ? 'bg-primary text-white'
-                : 'glass-card text-muted-foreground hover:text-foreground'
+                : 'bg-transparent border border-border/50 text-muted-foreground hover:bg-muted/50 hover:text-foreground'
             }`}
           >
             {item.label}
@@ -139,7 +139,7 @@ export default async function AdminReviewsPage({
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
               status === item.key
                 ? 'bg-primary text-white'
-                : 'glass-card text-muted-foreground hover:text-foreground'
+                : 'bg-transparent border border-border/50 text-muted-foreground hover:bg-muted/50 hover:text-foreground'
             }`}
           >
             {item.label}
@@ -148,11 +148,11 @@ export default async function AdminReviewsPage({
       </div>
 
       {reviews.length === 0 ? (
-        <div className="glass-card rounded-xl p-8 text-center text-muted-foreground">No reviews found for this filter.</div>
+        <div className="bg-card/50 border border-border/50 rounded-lg p-8 text-center text-muted-foreground">No reviews found for this filter.</div>
       ) : (
         <div className="space-y-4">
           {reviews.map((review) => (
-            <div key={review.id} className="glass-card rounded-xl p-5">
+            <div key={review.id} className="bg-card/50 border border-border/50 rounded-lg p-4 sm:p-5">
               <div className="flex items-start justify-between gap-4 flex-wrap">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-3 mb-2 flex-wrap">

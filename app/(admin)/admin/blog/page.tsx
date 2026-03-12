@@ -25,39 +25,39 @@ export default async function AdminBlogPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="text-3xl font-bold">Blog Posts ({posts.length})</h1>
+      <div className="flex items-center justify-between mb-6 gap-3 flex-wrap">
+        <h1 className="text-2xl lg:text-3xl font-semibold">Blog Posts ({posts.length})</h1>
         <Link href="/admin/blog/new">
           <Button size="sm"><Plus className="h-4 w-4 mr-1.5" /> New Post</Button>
         </Link>
       </div>
 
-      <div className="glass-card rounded-xl overflow-hidden">
-        <table className="w-full text-sm">
+      <div className="bg-card/50 border border-border/50 rounded-lg overflow-x-auto">
+        <table className="w-full text-sm min-w-[550px]">
           <thead>
-            <tr className="border-b border-white/10">
-              <th className="text-left p-3 font-medium text-muted-foreground">Title</th>
-              <th className="text-left p-3 font-medium text-muted-foreground">Status</th>
-              <th className="text-left p-3 font-medium text-muted-foreground">Published</th>
-              <th className="text-left p-3 font-medium text-muted-foreground">Views</th>
-              <th className="p-3"></th>
+            <tr className="border-b border-border/50">
+              <th className="text-left px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Title</th>
+              <th className="text-left px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Status</th>
+              <th className="text-left px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Published</th>
+              <th className="text-left px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Views</th>
+              <th className="px-4 py-3"></th>
             </tr>
           </thead>
           <tbody>
             {posts.map((post) => (
-              <tr key={post.id} className="border-b border-white/5 hover:bg-white/[0.03] transition-colors">
-                <td className="p-3">
-                  <span className="font-medium">{post.title}</span>
+              <tr key={post.id} className="border-b border-border/50 hover:bg-muted/50 transition-colors">
+                <td className="px-4 py-3">
+                  <span className="font-medium line-clamp-1">{post.title}</span>
                   {post.is_featured && <Badge variant="outline" className="ml-2 text-xs bg-primary/10 text-primary border-primary/30">Featured</Badge>}
                 </td>
-                <td className="p-3">
+                <td className="px-4 py-3">
                   <Badge variant="outline" className={`text-xs ${statusColors[post.status] ?? ''}`}>{post.status}</Badge>
                 </td>
-                <td className="p-3 text-muted-foreground">
+                <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">
                   {post.published_at ? new Date(post.published_at).toLocaleDateString() : '—'}
                 </td>
-                <td className="p-3 text-muted-foreground">{post.view_count}</td>
-                <td className="p-3">
+                <td className="px-4 py-3 text-muted-foreground">{post.view_count}</td>
+                <td className="px-4 py-3">
                   <div className="flex items-center gap-2 justify-end">
                     <Link href={`/admin/blog/${post.id}`}>
                       <Button variant="ghost" size="sm">Edit</Button>
@@ -74,7 +74,7 @@ export default async function AdminBlogPage() {
           </tbody>
         </table>
         {posts.length === 0 && (
-          <div className="p-8 text-center text-muted-foreground">No posts yet. Create your first post!</div>
+          <div className="p-8 text-center text-sm text-muted-foreground">No posts yet. Create your first post!</div>
         )}
       </div>
     </div>

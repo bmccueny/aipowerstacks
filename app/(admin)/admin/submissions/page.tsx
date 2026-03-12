@@ -27,14 +27,14 @@ export default async function AdminSubmissionsPage() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-8">Tool Submissions</h1>
+      <h1 className="text-2xl lg:text-3xl font-semibold mb-6">Tool Submissions</h1>
 
       {submissions.length === 0 ? (
-        <div className="glass-card rounded-xl p-8 text-center text-muted-foreground">No submissions yet.</div>
+        <div className="bg-card/50 border border-border/50 rounded-lg p-8 text-center text-sm text-muted-foreground">No submissions yet.</div>
       ) : (
         <div className="space-y-4">
           {submissions.map((sub) => (
-            <div key={sub.id} className="glass-card rounded-xl p-5">
+            <div key={sub.id} className="bg-card/50 border border-border/50 rounded-lg p-4 sm:p-5">
               <div className="flex items-start justify-between gap-4 flex-wrap">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-3 mb-1 flex-wrap">

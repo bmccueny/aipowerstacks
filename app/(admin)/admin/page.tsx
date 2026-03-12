@@ -23,16 +23,16 @@ export default async function AdminDashboardPage() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-8">Admin Overview</h1>
+      <h1 className="text-2xl lg:text-3xl font-semibold mb-6">Admin Overview</h1>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
         {stats.map(({ label, count, icon: Icon, color }) => (
-          <div key={label} className="glass-card rounded-xl p-5">
+          <div key={label} className="bg-card/50 border border-border/50 rounded-lg p-4">
             <div className="flex items-center justify-between mb-3">
-              <p className="text-sm text-muted-foreground">{label}</p>
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{label}</p>
               <Icon className={`h-4 w-4 ${color}`} />
             </div>
-            <p className="text-3xl font-bold">{count.toLocaleString()}</p>
+            <p className="text-2xl lg:text-3xl font-semibold">{count.toLocaleString()}</p>
           </div>
         ))}
       </div>

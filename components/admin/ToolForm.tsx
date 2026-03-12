@@ -241,7 +241,7 @@ export function ToolForm({ categories, tool }: ToolFormProps) {
 
       {error && <p className="text-sm text-destructive">{error}</p>}
 
-      <div className="flex items-center justify-between pt-6 border-t border-white/5">
+      <div className="flex items-center justify-between pt-6 border-t border-border/50 flex-wrap gap-3">
         <div className="flex gap-3">
           <Button type="submit" disabled={loading}>
             {loading ? 'Saving...' : tool ? 'Update Tool' : 'Create Tool'}

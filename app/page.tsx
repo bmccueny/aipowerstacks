@@ -79,6 +79,7 @@ export default async function HomePage() {
 
   const briefingItems: CombinedNewsItem[] = latestBriefings
     .filter((post) => post.published_at)
+    .slice(0, 3)
     .map((post) => ({
       id: `briefing-${post.id}`,
       title: post.title,
@@ -91,7 +92,7 @@ export default async function HomePage() {
       kind: 'briefing',
     }))
 
-  const rssItems: CombinedNewsItem[] = latestNews.map((item) => {
+  const rssItems: CombinedNewsItem[] = latestNews.slice(0, 3).map((item) => {
     const articleUrl = toAbsoluteUrl(item.url)
     return {
       ...item,
@@ -100,9 +101,6 @@ export default async function HomePage() {
       kind: 'rss',
     }
   })
-
-  const combinedNews = [...briefingItems, ...rssItems]
-    .sort((a, b) => new Date(b.published_at).getTime() - new Date(a.published_at).getTime())
 
   const toolCount = siteStats.toolCount
   const reviewCount = siteStats.reviewCount
@@ -324,58 +322,119 @@ export default async function HomePage() {
         {/* News */}
         <section className="border-y-[1px] border-foreground bg-background">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div className="flex items-center justify-center mb-6">
+            <div className="flex items-center justify-center mb-8">
               <h2 className="text-lg font-semibold text-foreground flex items-center gap-2.5">
                 <span className="text-primary font-bold">&#x27E9;</span> AI Industry News & Analysis
               </h2>
             </div>
 
-            {combinedNews.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {combinedNews.slice(0, 6).map((news) => (
-                  <a
-                    key={news.id}
-                    href={news.url}
-                    target={news.kind === 'rss' ? "_blank" : "_self"}
-                    rel={news.kind === 'rss' ? "noopener noreferrer" : undefined}
-                    className="override grid h-full overflow-hidden rounded-lg brutalist-card-effect burn-glow-card no-underline group"
-                  >
-                    {news.image_url && (
-                      <div className="relative h-44 w-full overflow-hidden border-b border-foreground/10">
-                        <Image
-                          src={news.image_url}
-                          alt={news.title}
-                          fill
-                          className="object-cover transition-transform duration-500"
-                        />
-                      </div>
-                    )}
-                    <div className="p-5 flex flex-col flex-1">
-                      <div className="flex items-center justify-between mb-3">
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-primary px-2 py-0.5 rounded-full bg-primary/10">
-                          {news.source_name}
-                        </span>
-                        <span className="text-[14px] font-reddit font-semibold text-muted-foreground">
-                          {new Date(news.published_at).toLocaleDateString('en-US', {
-                            month: 'long',
-                            day: 'numeric',
-                            year: 'numeric',
-                          })}
-                        </span>
-                      </div>
-                      <h3 className="font-bold text-[16px] leading-tight mb-4 pb-0.5 transition-colors line-clamp-3 flex-1 group-hover:text-primary">
-                        {news.title}
-                      </h3>
-                      <div className="mt-auto flex items-center text-xs font-bold text-foreground transition-colors gap-1 uppercase tracking-tighter">
-                        Read Story <ChevronRight className="h-3 w-3" />
-                      </div>
-                    </div>
-                  </a>
-                ))}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+              {/* Latest Blog Posts */}
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+                    <Newspaper className="h-4 w-4 text-primary" /> Latest Briefings
+                  </h3>
+                  <Link href="/blog" className="text-xs font-semibold text-primary hover:underline flex items-center gap-1">
+                    All posts <ChevronRight className="h-3 w-3" />
+                  </Link>
+                </div>
+                {briefingItems.length > 0 ? (
+                  <div className="space-y-4">
+                    {briefingItems.map((news) => (
+                      <Link
+                        key={news.id}
+                        href={news.url}
+                        className="override grid grid-cols-[100px_1fr] sm:grid-cols-[140px_1fr] h-full overflow-hidden rounded-lg brutalist-card-effect burn-glow-card no-underline group"
+                      >
+                        {news.image_url ? (
+                          <div className="relative h-full min-h-[88px] overflow-hidden border-r border-foreground/10">
+                            <Image
+                              src={news.image_url}
+                              alt={news.title}
+                              fill
+                              className="object-cover transition-transform duration-500"
+                            />
+                          </div>
+                        ) : (
+                          <div className="h-full min-h-[88px] bg-muted/30 border-r border-foreground/10" />
+                        )}
+                        <div className="p-3 sm:p-4 flex flex-col justify-center gap-1.5">
+                          <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
+                            {news.source_name}
+                          </span>
+                          <h4 className="font-bold text-sm leading-snug line-clamp-2 group-hover:text-primary transition-colors">
+                            {news.title}
+                          </h4>
+                          <span className="text-xs text-muted-foreground">
+                            {new Date(news.published_at).toLocaleDateString('en-US', {
+                              month: 'short',
+                              day: 'numeric',
+                            })}
+                          </span>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="rounded-lg border border-border/50 p-6 text-center text-sm text-muted-foreground">No briefings yet.</div>
+                )}
               </div>
-            ) : (
-              <div className="gum-card rounded-md p-8 text-center text-muted-foreground">No AI news yet.</div>
-            )}
+
+              {/* Latest News Articles */}
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+                    <Zap className="h-4 w-4 text-primary" /> News Wire
+                  </h3>
+                </div>
+                {rssItems.length > 0 ? (
+                  <div className="space-y-4">
+                    {rssItems.map((news) => (
+                      <a
+                        key={news.id}
+                        href={news.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="override grid grid-cols-[100px_1fr] sm:grid-cols-[140px_1fr] h-full overflow-hidden rounded-lg brutalist-card-effect burn-glow-card no-underline group"
+                      >
+                        {news.image_url ? (
+                          <div className="relative h-full min-h-[88px] overflow-hidden border-r border-foreground/10">
+                            <Image
+                              src={news.image_url}
+                              alt={news.title}
+                              fill
+                              className="object-cover transition-transform duration-500"
+                            />
+                          </div>
+                        ) : (
+                          <div className="h-full min-h-[88px] bg-muted/30 border-r border-foreground/10" />
+                        )}
+                        <div className="p-3 sm:p-4 flex flex-col justify-center gap-1.5">
+                          <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
+                            {news.source_name}
+                          </span>
+                          <h4 className="font-bold text-sm leading-snug line-clamp-2 group-hover:text-primary transition-colors">
+                            {news.title}
+                          </h4>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-muted-foreground">
+                              {new Date(news.published_at).toLocaleDateString('en-US', {
+                                month: 'short',
+                                day: 'numeric',
+                              })}
+                            </span>
+                            <ExternalLink className="h-3 w-3 text-muted-foreground/50" />
+                          </div>
+                        </div>
+                      </a>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="rounded-lg border border-border/50 p-6 text-center text-sm text-muted-foreground">No news yet.</div>
+                )}
+              </div>
+            </div>
           </div>
         </section>
       </main>

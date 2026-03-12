@@ -32,43 +32,43 @@ export default async function AdminUsersPage() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-8">Users ({users.length})</h1>
+      <h1 className="text-2xl lg:text-3xl font-semibold mb-6">Users ({users.length})</h1>
 
-      <div className="glass-card rounded-xl overflow-hidden">
-        <table className="w-full text-sm">
+      <div className="bg-card/50 border border-border/50 rounded-lg overflow-x-auto">
+        <table className="w-full text-sm min-w-[700px]">
           <thead>
-            <tr className="border-b border-white/10">
-              <th className="text-left p-3 font-medium text-muted-foreground">Name</th>
-              <th className="text-left p-3 font-medium text-muted-foreground">Username</th>
-              <th className="text-left p-3 font-medium text-muted-foreground">Role</th>
-              <th className="text-left p-3 font-medium text-muted-foreground">Change Role</th>
-              <th className="text-left p-3 font-medium text-muted-foreground">Joined</th>
-              <th className="text-right p-3 font-medium text-muted-foreground">Actions</th>
+            <tr className="border-b border-border/50">
+              <th className="text-left px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Name</th>
+              <th className="text-left px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Username</th>
+              <th className="text-left px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Role</th>
+              <th className="text-left px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Change Role</th>
+              <th className="text-left px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Joined</th>
+              <th className="text-right px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
           <tbody>
             {users.map((u) => (
-              <tr key={u.id} className="border-b border-white/5 hover:bg-white/[0.03] transition-colors">
-                <td className="p-3 font-medium">
+              <tr key={u.id} className="border-b border-border/50 hover:bg-muted/50 transition-colors">
+                <td className="px-4 py-3 font-medium">
                   <div className="flex items-center gap-3">
-                    <Avatar className="h-8 w-8 border border-white/10">
+                    <Avatar className="h-8 w-8 border border-border/50 shrink-0">
                       <AvatarImage src={u.avatar_url ?? undefined} />
                       <AvatarFallback className="text-[10px] font-black">
                         {(u.display_name || u.username || 'U')[0].toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
-                    <span>{u.display_name ?? 'Anonymous'}</span>
+                    <span className="truncate">{u.display_name ?? 'Anonymous'}</span>
                   </div>
                 </td>
-                <td className="p-3 text-muted-foreground">{u.username ?? '—'}</td>
-                <td className="p-3">
+                <td className="px-4 py-3 text-muted-foreground">{u.username ?? '—'}</td>
+                <td className="px-4 py-3">
                   <Badge variant="outline" className={`text-xs ${roleColors[u.role] ?? ''}`}>{u.role}</Badge>
                 </td>
-                <td className="p-3">
+                <td className="px-4 py-3">
                   <UserRoleActions userId={u.id} currentRole={u.role} />
                 </td>
-                <td className="p-3 text-muted-foreground">{new Date(u.created_at).toLocaleDateString()}</td>
-                <td className="p-3 text-right">
+                <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">{new Date(u.created_at).toLocaleDateString()}</td>
+                <td className="px-4 py-3 text-right">
                   <DeleteUserButton userId={u.id} userName={u.display_name || u.username || 'User'} />
                 </td>
               </tr>

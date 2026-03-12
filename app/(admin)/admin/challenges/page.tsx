@@ -18,8 +18,8 @@ export default async function AdminChallengesPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="text-3xl font-bold flex items-center gap-3">
+      <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
+        <h1 className="text-2xl lg:text-3xl font-semibold flex items-center gap-3">
           <Trophy className="h-7 w-7" /> Stack Challenges
         </h1>
         <Link href="/admin/challenges/new">
@@ -30,7 +30,7 @@ export default async function AdminChallengesPage() {
       </div>
 
       {(challenges ?? []).length === 0 ? (
-        <div className="glass-card rounded-xl p-12 text-center border-dashed">
+        <div className="bg-card/50 border border-border/50 rounded-lg p-12 text-center border-dashed">
           <p className="text-muted-foreground">No challenges yet. Create one to get started.</p>
         </div>
       ) : (
@@ -39,7 +39,7 @@ export default async function AdminChallengesPage() {
             const isLive = c.is_active && c.starts_at <= now && c.ends_at >= now
             const ended = c.ends_at < now
             return (
-              <div key={c.id} className="glass-card rounded-xl p-5 flex items-start justify-between gap-4">
+              <div key={c.id} className="bg-card/50 border border-border/50 rounded-lg p-4 sm:p-5 flex items-start justify-between gap-4 flex-wrap">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
                     <h3 className="font-semibold">{c.title}</h3>

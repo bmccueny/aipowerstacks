@@ -40,8 +40,8 @@ export default async function AdminToolsPage({
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="text-3xl font-bold">Tools ({count ?? 0})</h1>
+      <div className="flex items-center justify-between mb-6 gap-3 flex-wrap">
+        <h1 className="text-2xl lg:text-3xl font-semibold">Tools ({count ?? 0})</h1>
         <Link href="/admin/tools/new">
           <Button size="sm"><Plus className="h-4 w-4 mr-1.5" /> Add Tool</Button>
         </Link>
@@ -55,7 +55,7 @@ export default async function AdminToolsPage({
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
               (status ?? '') === s
                 ? 'bg-primary text-white'
-                : 'glass-card text-muted-foreground hover:text-foreground'
+                : 'bg-transparent border border-border/50 text-muted-foreground hover:text-foreground hover:bg-muted/50'
             }`}
           >
             {s || 'All'}
@@ -63,33 +63,33 @@ export default async function AdminToolsPage({
         ))}
       </div>
 
-      <div className="glass-card rounded-xl overflow-hidden">
-        <table className="w-full text-sm">
+      <div className="bg-card/50 border border-border/50 rounded-lg overflow-x-auto">
+        <table className="w-full text-sm min-w-[600px]">
           <thead>
-            <tr className="border-b border-white/10">
-              <th className="text-left p-3 font-medium text-muted-foreground">Name</th>
-              <th className="text-left p-3 font-medium text-muted-foreground">Status</th>
-              <th className="text-left p-3 font-medium text-muted-foreground">Pricing</th>
-              <th className="text-left p-3 font-medium text-muted-foreground">Reviews</th>
-              <th className="p-3"></th>
+            <tr className="border-b border-border/50">
+              <th className="text-left px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Name</th>
+              <th className="text-left px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Status</th>
+              <th className="text-left px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Pricing</th>
+              <th className="text-left px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Reviews</th>
+              <th className="px-4 py-3"></th>
             </tr>
           </thead>
           <tbody>
             {tools.map((tool) => (
-              <tr key={tool.id} className="border-b border-white/5 hover:bg-white/[0.03] transition-colors">
-                <td className="p-3 font-medium">{tool.name}</td>
-                <td className="p-3">
+              <tr key={tool.id} className="border-b border-border/50 hover:bg-muted/50 transition-colors">
+                <td className="px-4 py-3 font-medium">{tool.name}</td>
+                <td className="px-4 py-3">
                   <Badge variant="outline" className={`text-xs ${statusColors[tool.status] ?? ''}`}>{tool.status}</Badge>
                 </td>
-                <td className="p-3 text-muted-foreground">{tool.pricing_model}</td>
-                <td className="p-3 text-muted-foreground">{tool.review_count} ({tool.avg_rating.toFixed(1)}★)</td>
-                <td className="p-3">
+                <td className="px-4 py-3 text-muted-foreground">{tool.pricing_model}</td>
+                <td className="px-4 py-3 text-muted-foreground">{tool.review_count} ({tool.avg_rating.toFixed(1)}★)</td>
+                <td className="px-4 py-3">
                   <div className="flex items-center gap-2 justify-end">
                     <Link href={`/admin/tools/${tool.id}`}>
-                      <Button variant="ghost" size="sm" className="h-8">Edit</Button>
+                      <Button variant="ghost" size="sm" className="h-9">Edit</Button>
                     </Link>
                     <Link href={`/tools/${tool.slug}`} target="_blank">
-                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0"><ExternalLink className="h-3.5 w-3.5" /></Button>
+                      <Button variant="ghost" size="sm" className="h-9 w-9 p-0"><ExternalLink className="h-3.5 w-3.5" /></Button>
                     </Link>
                     <DeleteToolButton toolId={tool.id} toolName={tool.name} />
                   </div>

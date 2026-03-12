@@ -100,7 +100,7 @@ export default async function AdminControlCenterPage() {
     <div className="space-y-8">
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <div>
-          <h1 className="text-3xl font-bold">Control Center</h1>
+          <h1 className="text-2xl lg:text-3xl font-semibold">Control Center</h1>
           <p className="text-sm text-muted-foreground mt-1">Manage tools, submissions, users, and categories in one place.</p>
         </div>
         <div className="flex items-center gap-2">
@@ -113,22 +113,22 @@ export default async function AdminControlCenterPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
-        <div className="glass-card rounded-xl p-4">
-          <p className="text-xs text-muted-foreground mb-1">Total Tools</p>
-          <p className="text-2xl font-bold">{toolsRes.count ?? 0}</p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+        <div className="bg-card/50 border border-border/50 rounded-lg p-4">
+          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1">Total Tools</p>
+          <p className="text-2xl font-semibold">{toolsRes.count ?? 0}</p>
         </div>
-        <div className="glass-card rounded-xl p-4">
-          <p className="text-xs text-muted-foreground mb-1">Pending Submissions</p>
-          <p className="text-2xl font-bold">{pendingSubmissions}</p>
+        <div className="bg-card/50 border border-border/50 rounded-lg p-4">
+          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1">Pending Submissions</p>
+          <p className="text-2xl font-semibold">{pendingSubmissions}</p>
         </div>
-        <div className="glass-card rounded-xl p-4">
-          <p className="text-xs text-muted-foreground mb-1">Users</p>
-          <p className="text-2xl font-bold">{usersRes.count ?? 0}</p>
+        <div className="bg-card/50 border border-border/50 rounded-lg p-4">
+          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1">Users</p>
+          <p className="text-2xl font-semibold">{usersRes.count ?? 0}</p>
         </div>
-        <div className="glass-card rounded-xl p-4">
-          <p className="text-xs text-muted-foreground mb-1">Categories</p>
-          <p className="text-2xl font-bold">{categoriesRes.count ?? 0}</p>
+        <div className="bg-card/50 border border-border/50 rounded-lg p-4">
+          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1">Categories</p>
+          <p className="text-2xl font-semibold">{categoriesRes.count ?? 0}</p>
         </div>
       </div>
 
@@ -138,28 +138,28 @@ export default async function AdminControlCenterPage() {
             <h2 className="text-xl font-semibold">Recent Tools</h2>
             <Link href="/admin/tools" className="text-xs text-primary hover:underline">View all</Link>
           </div>
-          <div className="glass-card rounded-xl overflow-hidden">
-            <table className="w-full text-sm">
+          <div className="bg-card/50 border border-border/50 rounded-lg overflow-x-auto">
+            <table className="w-full text-sm min-w-[500px]">
               <thead>
-                <tr className="border-b border-white/10">
-                  <th className="text-left p-3 font-medium text-muted-foreground">Tool</th>
-                  <th className="text-left p-3 font-medium text-muted-foreground">Status</th>
-                  <th className="text-left p-3 font-medium text-muted-foreground">Reviews</th>
-                  <th className="p-3"></th>
+                <tr className="border-b border-border/50">
+                  <th className="text-left px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Tool</th>
+                  <th className="text-left px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Status</th>
+                  <th className="text-left px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Reviews</th>
+                  <th className="px-4 py-3"></th>
                 </tr>
               </thead>
               <tbody>
                 {tools.map((tool) => (
-                  <tr key={tool.id} className="border-b border-white/5">
-                    <td className="p-3">
+                  <tr key={tool.id} className="border-b border-border/50 hover:bg-muted/50 transition-colors">
+                    <td className="px-4 py-3">
                       <p className="font-medium">{tool.name}</p>
                       <p className="text-xs text-muted-foreground">{tool.pricing_model}</p>
                     </td>
-                    <td className="p-3">
+                    <td className="px-4 py-3">
                       <Badge variant="outline" className={`text-xs ${statusColors[tool.status] ?? ''}`}>{tool.status}</Badge>
                     </td>
-                    <td className="p-3 text-muted-foreground">{tool.review_count} ({tool.avg_rating.toFixed(1)}★)</td>
-                    <td className="p-3">
+                    <td className="px-4 py-3 text-muted-foreground">{tool.review_count} ({tool.avg_rating.toFixed(1)}★)</td>
+                    <td className="px-4 py-3">
                       <div className="flex justify-end gap-2">
                         <Link href={`/admin/tools/${tool.id}`}>
                           <Button size="sm" variant="ghost">Edit</Button>
@@ -184,7 +184,7 @@ export default async function AdminControlCenterPage() {
           </div>
           <div className="space-y-3 max-h-[520px] overflow-auto pr-1">
             {submissions.map((sub) => (
-              <div key={sub.id} className="glass-card rounded-xl p-4">
+              <div key={sub.id} className="bg-card/50 border border-border/50 rounded-lg p-4">
                 <div className="flex items-start justify-between gap-3 flex-wrap">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1 flex-wrap">
@@ -222,7 +222,7 @@ export default async function AdminControlCenterPage() {
               </div>
             ))}
             {submissions.length === 0 && (
-              <div className="glass-card rounded-xl p-6 text-center text-sm text-muted-foreground">No submissions yet.</div>
+              <div className="bg-card/50 border border-border/50 rounded-lg p-6 text-center text-sm text-muted-foreground">No submissions yet.</div>
             )}
           </div>
         </section>
@@ -233,29 +233,29 @@ export default async function AdminControlCenterPage() {
           <h2 className="text-xl font-semibold">User Roles</h2>
           <Link href="/admin/users" className="text-xs text-primary hover:underline">View users page</Link>
         </div>
-        <div className="glass-card rounded-xl overflow-hidden">
-          <table className="w-full text-sm">
+        <div className="bg-card/50 border border-border/50 rounded-lg overflow-x-auto">
+          <table className="w-full text-sm min-w-[650px]">
             <thead>
-              <tr className="border-b border-white/10">
-                <th className="text-left p-3 font-medium text-muted-foreground">Name</th>
-                <th className="text-left p-3 font-medium text-muted-foreground">Username</th>
-                <th className="text-left p-3 font-medium text-muted-foreground">Role</th>
-                <th className="text-left p-3 font-medium text-muted-foreground">Change Role</th>
-                <th className="text-left p-3 font-medium text-muted-foreground">Joined</th>
+              <tr className="border-b border-border/50">
+                <th className="text-left px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Name</th>
+                <th className="text-left px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Username</th>
+                <th className="text-left px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Role</th>
+                <th className="text-left px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Change Role</th>
+                <th className="text-left px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Joined</th>
               </tr>
             </thead>
             <tbody>
               {users.map((user) => (
-                <tr key={user.id} className="border-b border-white/5">
-                  <td className="p-3 font-medium">{user.display_name ?? 'Anonymous'}</td>
-                  <td className="p-3 text-muted-foreground">{user.username ?? '—'}</td>
-                  <td className="p-3">
+                <tr key={user.id} className="border-b border-border/50 hover:bg-muted/50 transition-colors">
+                  <td className="px-4 py-3 font-medium">{user.display_name ?? 'Anonymous'}</td>
+                  <td className="px-4 py-3 text-muted-foreground">{user.username ?? '—'}</td>
+                  <td className="px-4 py-3">
                     <Badge variant="outline" className={`text-xs ${roleColors[user.role] ?? ''}`}>{user.role}</Badge>
                   </td>
-                  <td className="p-3">
+                  <td className="px-4 py-3">
                     <UserRoleActions userId={user.id} currentRole={user.role} />
                   </td>
-                  <td className="p-3 text-muted-foreground">{new Date(user.created_at).toLocaleDateString()}</td>
+                  <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">{new Date(user.created_at).toLocaleDateString()}</td>
                 </tr>
               ))}
             </tbody>

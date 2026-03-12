@@ -482,6 +482,58 @@ export type Database = {
         }
         Relationships: []
       }
+      social_posts: {
+        Row: {
+          id: string
+          platform: string
+          post_type: string
+          content: string
+          hashtags: string[] | null
+          link_url: string | null
+          link_title: string | null
+          source_type: string | null
+          source_id: string | null
+          status: 'draft' | 'approved' | 'posted' | 'skipped'
+          scheduled_for: string | null
+          posted_at: string | null
+          notes: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          platform: string
+          post_type: string
+          content: string
+          hashtags?: string[] | null
+          link_url?: string | null
+          link_title?: string | null
+          source_type?: string | null
+          source_id?: string | null
+          status?: 'draft' | 'approved' | 'posted' | 'skipped'
+          scheduled_for?: string | null
+          posted_at?: string | null
+          notes?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          platform?: string
+          post_type?: string
+          content?: string
+          hashtags?: string[] | null
+          link_url?: string | null
+          link_title?: string | null
+          source_type?: string | null
+          source_id?: string | null
+          status?: 'draft' | 'approved' | 'posted' | 'skipped'
+          scheduled_for?: string | null
+          posted_at?: string | null
+          notes?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       newsletter_subscribers: {
         Row: {
           id: string

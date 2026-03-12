@@ -45,7 +45,7 @@ export function ChallengeForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="glass-card rounded-xl p-8 max-w-2xl space-y-5">
+    <form onSubmit={handleSubmit} className="bg-card/50 border border-border/50 rounded-lg p-4 sm:p-6 lg:p-8 max-w-2xl space-y-5">
       <div>
         <label className="text-sm font-semibold block mb-1.5">Title</label>
         <Input placeholder="e.g. Best Writing Stack" value={form.title} onChange={set('title')} required />
@@ -71,7 +71,7 @@ export function ChallengeForm() {
           className="w-full bg-background border border-input rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 resize-none"
         />
       </div>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="text-sm font-semibold block mb-1.5">Starts at</label>
           <Input type="datetime-local" value={form.starts_at} onChange={set('starts_at')} required />
