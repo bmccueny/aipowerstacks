@@ -74,8 +74,15 @@ export function CompareProvider({ children }: { children: React.ReactNode }) {
   )
 }
 
+const NOOP_CONTEXT: CompareContextValue = {
+  items: [],
+  add: () => {},
+  remove: () => {},
+  clear: () => {},
+  has: () => false,
+}
+
 export function useCompare() {
   const ctx = useContext(CompareContext)
-  if (!ctx) throw new Error('useCompare must be used within CompareProvider')
-  return ctx
+  return ctx ?? NOOP_CONTEXT
 }
