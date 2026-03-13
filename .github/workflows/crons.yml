@@ -1,0 +1,114 @@
+name: Cron Jobs
+
+on:
+  schedule:
+    # Daily at 6:00 AM UTC - Featured Stack
+    - cron: '0 6 * * *'
+    # Daily at 7:00 AM UTC - Blog Posts
+    - cron: '0 7 * * *'
+    # Daily at 10:00 AM UTC - Benchmarks
+    - cron: '0 10 * * *'
+    # Daily at 12:00 PM UTC - Social Posts
+    - cron: '0 12 * * *'
+    # Daily at 2:00 PM UTC - Editor Reviews
+    - cron: '0 14 * * *'
+    # Weekly Friday at 2:00 PM UTC - Newsletter
+    - cron: '0 14 * * 5'
+    # Daily at 6:00 PM UTC - GitHub Trending
+    - cron: '0 18 * * *'
+    # Daily at 8:00 PM UTC - AI News
+    - cron: '0 20 * * *'
+    # Daily at 4:00 AM UTC - Pricing Check (NEW)
+    - cron: '0 4 * * *'
+    # Daily at 8:30 AM UTC - Daily Stats (NEW)
+    - cron: '30 8 * * *'
+    # Weekly Sunday at 3:00 AM UTC - Broken Links (NEW)
+    - cron: '0 3 * * 0'
+    # Monthly on the 1st at 5:00 AM UTC - Stale Tools (NEW)
+    - cron: '0 5 1 * *'
+    # Every 6 hours - Review Spam (NEW)
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+env:
+  CRON_SECRET: ${{ secrets.CRON_SECRET }}
+  SITE_URL: https://www.aipowerstacks.com
+
+jobs:
+  featured-stack:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Featured Stack Cron
+        run: curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/featured-stack"
+
+  blog-posts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Blog Posts Cron
+        run: curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/blog-posts"
+
+  benchmarks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Benchmarks Cron
+        run: curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/benchmarks"
+
+  social-posts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Social Posts Cron
+        run: curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/social-posts"
+
+  editor-reviews:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Editor Reviews Cron
+        run: curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/editor-reviews"
+
+  newsletter:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Newsletter Cron
+        run: curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/newsletter"
+
+  github-trending:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call GitHub Trending Cron
+        run: curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/github-trending"
+
+  ai-news:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call AI News Cron
+        run: curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/ai-news"
+
+  pricing-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Pricing Check Cron
+        run: curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/pricing-check"
+
+  daily-stats:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Daily Stats Cron
+        run: curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/daily-stats"
+
+  broken-links:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Broken Links Cron
+        run: curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/health-check"
+
+  stale-tools:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Stale Tools Cron
+        run: curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/stale-tools"
+
+  review-spam:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Review Spam Cron
+        run: curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/review-spam"
