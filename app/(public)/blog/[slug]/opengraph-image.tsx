@@ -1,5 +1,5 @@
 import { ImageResponse } from 'next/og'
-import { getBlogPostBySlug } from '@/lib/supabase/queries/blog'
+import { createClient } from '@supabase/supabase-js'
 
 export const alt = 'Blog Post Preview'
 export const size = {
@@ -7,6 +7,38 @@ export const size = {
   height: 630,
 }
 export const contentType = 'image/png'
+export const dynamic = 'force-dynamic'
+
+async function getBlogPostBySlug(slug: string) {
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+      },
+    }
+  )
+
+  const { data: post } = await supabase
+    .from('blog_posts')
+    .select('*')
+    .eq('slug', slug)
+    .eq('status', 'published')
+    .single()
+
+  if (!post) return null
+
+  // Fetch author
+  const { data: author } = await supabase
+    .from('profiles')
+    .select('display_name, username, avatar_url')
+    .eq('id', post.author_id)
+    .single()
+
+  return { ...post, author: author || null }
+}
 
 export default async function Image({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
