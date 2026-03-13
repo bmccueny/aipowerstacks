@@ -18,7 +18,8 @@
     "check-images": "npx tsx scripts/check-images.ts",
     "check-missing-images": "npx tsx scripts/check-missing-images.ts",
     "check-visual-images": "npx tsx scripts/check-visual-images.ts",
-    "fix-broken-images": "npx tsx scripts/fix-broken-images.ts"
+    "fix-broken-images": "npx tsx scripts/fix-broken-images.ts",
+    "migrate-images-to-storage": "npx tsx scripts/migrate-images-to-storage.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",
