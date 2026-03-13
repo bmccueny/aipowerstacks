@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TireTech & Auto Hero Video Preview</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+        }
+
+        .scene {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .scene.active {
+            opacity: 1;
+        }
+
+        .scene.fade-in {
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .scene.fade-out {
+            animation: fadeOut 1s ease-in-out;
+        }
+
+        .scene.pan-right {
+            animation: panRight 4s ease-in-out;
+        }
+
+        .scene.zoom-in {
+            animation: zoomIn 3s ease-in-out;
+        }
+
+        .scene.slow-motion {
+            animation: slowMotion 8s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        @keyframes panRight {
+            from { background-position: 0% 50%; }
+            to { background-position: 100% 50%; }
+        }
+
+        @keyframes zoomIn {
+            from { background-size: 100%; }
+            to { background-size: 120%; }
+        }
+
+        @keyframes slowMotion {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1000;
+            color: white;
+            background: rgba(0,0,0,0.7);
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(255,255,255,0.3);
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: #f97316;
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        .scene-info {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            background: rgba(0,0,0,0.7);
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="video-container">
+        <!-- Scene 1: Shop Exterior -->
+        <div class="scene" id="scene1" data-duration="3000" data-transition="fade-in">
+            <div class="scene-info">
+                <strong>Scene 1:</strong> Shop Exterior<br>
+                Duration: 3s | Transition: Fade In
+            </div>
+        </div>
+
+        <!-- Scene 2: Service Bay Interior -->
+        <div class="scene" id="scene2" data-duration="4000" data-transition="pan-right">
+            <div class="scene-info">
+                <strong>Scene 2:</strong> Service Bay<br>
+                Duration: 4s | Transition: Pan Right
+            </div>
+        </div>
+
+        <!-- Scene 3: Tire Display -->
+        <div class="scene" id="scene3" data-duration="3000" data-transition="zoom-in">
+            <div class="scene-info">
+                <strong>Scene 3:</strong> Tire Brands<br>
+                Duration: 3s | Transition: Zoom In
+            </div>
+        </div>
+
+        <!-- Scene 4: Tire Technician -->
+        <div class="scene" id="scene4" data-duration="4000" data-transition="slow-motion">
+            <div class="scene-info">
+                <strong>Scene 4:</strong> Tire Service<br>
+                Duration: 4s | Transition: Slow Motion
+            </div>
+        </div>
+
+        <!-- Scene 5: Customer Service -->
+        <div class="scene" id="scene5" data-duration="3000" data-transition="fade-transition">
+            <div class="scene-info">
+                <strong>Scene 5:</strong> Customer Service<br>
+                Duration: 3s | Transition: Fade
+            </div>
+        </div>
+
+        <!-- Scene 6: Logo/Branding -->
+        <div class="scene" id="scene6" data-duration="3000" data-transition="fade-out">
+            <div class="scene-info">
+                <strong>Scene 6:</strong> Branding<br>
+                Duration: 3s | Transition: Fade Out
+            </div>
+        </div>
+
+        <div class="controls">
+            <button onclick="playVideo()">Play Video</button>
+            <button onclick="pauseVideo()">Pause</button>
+            <button onclick="resetVideo()">Reset</button>
+        </div>
+
+        <div class="progress">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+    </div>
+
+    <script>
+        // Scene data - in a real implementation, this would be loaded from the JSON files
+        const scenes = [
+            {
+                id: 'scene1',
+                duration: 3000,
+                transition: 'fade-in',
+                imageUrl: 'https://bynjsccnclkvcqulukij.supabase.co/storage/v1/object/public/blog-images/covers/tiretech-hero-scene-1-1773377049381.jpeg'
+            },
+            {
+                id: 'scene2',
+                duration: 4000,
+                transition: 'pan-right',
+                imageUrl: 'https://bynjsccnclkvcqulukij.supabase.co/storage/v1/object/public/blog-images/covers/tiretech-hero-scene-2-1773377073805.jpeg'
+            },
+            {
+                id: 'scene3',
+                duration: 3000,
+                transition: 'zoom-in',
+                imageUrl: 'https://bynjsccnclkvcqulukij.supabase.co/storage/v1/object/public/blog-images/covers/tiretech-hero-scene-3-1773377093258.jpeg'
+            },
+            {
+                id: 'scene4',
+                duration: 4000,
+                transition: 'slow-motion',
+                imageUrl: 'https://bynjsccnclkvcqulukij.supabase.co/storage/v1/object/public/blog-images/covers/tiretech-hero-scene-4-1773377113229.jpeg'
+            },
+            {
+                id: 'scene5',
+                duration: 3000,
+                transition: 'fade-transition',
+                imageUrl: 'https://bynjsccnclkvcqulukij.supabase.co/storage/v1/object/public/blog-images/covers/tiretech-hero-scene-5-1773377136131.jpeg'
+            },
+            {
+                id: 'scene6',
+                duration: 3000,
+                transition: 'fade-out',
+                imageUrl: '' // Placeholder for logo scene
+            }
+        ];
+
+        let currentSceneIndex = 0;
+        let isPlaying = false;
+        let startTime = 0;
+        let animationFrame = null;
+
+        function initScenes() {
+            scenes.forEach((scene, index) => {
+                const element = document.getElementById(scene.id);
+                if (element && scene.imageUrl) {
+                    element.style.backgroundImage = `url('${scene.imageUrl}')`;
+                }
+            });
+        }
+
+        function showScene(index) {
+            // Hide all scenes
+            document.querySelectorAll('.scene').forEach(scene => {
+                scene.classList.remove('active', 'fade-in', 'fade-out', 'pan-right', 'zoom-in', 'slow-motion');
+            });
+
+            if (index < scenes.length) {
+                const scene = scenes[index];
+                const element = document.getElementById(scene.id);
+                if (element) {
+                    element.classList.add('active');
+
+                    // Add transition class
+                    switch(scene.transition) {
+                        case 'fade-in':
+                            element.classList.add('fade-in');
+                            break;
+                        case 'fade-out':
+                            element.classList.add('fade-out');
+                            break;
+                        case 'pan-right':
+                            element.classList.add('pan-right');
+                            break;
+                        case 'zoom-in':
+                            element.classList.add('zoom-in');
+                            break;
+                        case 'slow-motion':
+                            element.classList.add('slow-motion');
+                            break;
+                    }
+                }
+            }
+        }
+
+        function updateProgress() {
+            if (!isPlaying) return;
+
+            const elapsed = Date.now() - startTime;
+            const totalDuration = scenes.reduce((sum, scene) => sum + scene.duration, 0);
+            const progress = Math.min((elapsed / totalDuration) * 100, 100);
+
+            document.getElementById('progressBar').style.width = progress + '%';
+
+            if (elapsed >= totalDuration) {
+                pauseVideo();
+                return;
+            }
+
+            // Calculate which scene should be active
+            let accumulatedTime = 0;
+            for (let i = 0; i < scenes.length; i++) {
+                accumulatedTime += scenes[i].duration;
+                if (elapsed < accumulatedTime) {
+                    if (currentSceneIndex !== i) {
+                        currentSceneIndex = i;
+                        showScene(i);
+                    }
+                    break;
+                }
+            }
+
+            animationFrame = requestAnimationFrame(updateProgress);
+        }
+
+        function playVideo() {
+            if (isPlaying) return;
+
+            isPlaying = true;
+            startTime = Date.now() - (currentSceneIndex > 0 ?
+                scenes.slice(0, currentSceneIndex).reduce((sum, scene) => sum + scene.duration, 0) : 0);
+
+            showScene(currentSceneIndex);
+            updateProgress();
+        }
+
+        function pauseVideo() {
+            isPlaying = false;
+            if (animationFrame) {
+                cancelAnimationFrame(animationFrame);
+            }
+        }
+
+        function resetVideo() {
+            pauseVideo();
+            currentSceneIndex = 0;
+            startTime = 0;
+            document.getElementById('progressBar').style.width = '0%';
+            showScene(0);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            initScenes();
+            showScene(0);
+        });
+
+        // Keyboard controls
+        document.addEventListener('keydown', function(e) {
+            switch(e.key) {
+                case ' ':
+                    e.preventDefault();
+                    if (isPlaying) pauseVideo(); else playVideo();
+                    break;
+                case 'r':
+                    resetVideo();
+                    break;
+                case 'ArrowRight':
+                    currentSceneIndex = (currentSceneIndex + 1) % scenes.length;
+                    showScene(currentSceneIndex);
+                    break;
+                case 'ArrowLeft':
+                    currentSceneIndex = currentSceneIndex > 0 ? currentSceneIndex - 1 : scenes.length - 1;
+                    showScene(currentSceneIndex);
+                    break;
+            }
+        });
+    </script>
+</body>
+</html>

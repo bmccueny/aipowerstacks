@@ -19,7 +19,11 @@
     "check-missing-images": "npx tsx scripts/check-missing-images.ts",
     "check-visual-images": "npx tsx scripts/check-visual-images.ts",
     "fix-broken-images": "npx tsx scripts/fix-broken-images.ts",
-    "migrate-images-to-storage": "npx tsx scripts/migrate-images-to-storage.ts"
+    "migrate-images-to-storage": "npx tsx scripts/migrate-images-to-storage.ts",
+    "scrape-tiretech-images": "npx tsx scripts/scrape-tiretech-images.ts",
+    "generate-tiretech-images": "npx tsx scripts/generate-tiretech-images.ts",
+    "analyze-tiretech-images": "npx tsx scripts/analyze-tiretech-images.ts",
+    "generate-tiretech-hero-video": "npx tsx scripts/generate-tiretech-hero-video.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",
@@ -42,6 +46,7 @@
     "@tiptap/starter-kit": "^3.20.0",
     "@types/sanitize-html": "^2.16.1",
     "@xenova/transformers": "^2.17.2",
+    "axios": "^1.13.6",
     "cheerio": "^1.2.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
