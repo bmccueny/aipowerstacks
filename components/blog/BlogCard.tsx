@@ -5,22 +5,33 @@ import type { BlogPostSummary } from '@/lib/supabase/queries/blog'
 
 function normalizeThumUrl(url: string | null): string | null {
   if (!url) return null
-  if (!url.startsWith('https://image.thum.io/get/')) return url
 
-  const marker = '/noanimate/'
-  const markerIndex = url.indexOf(marker)
-  if (markerIndex === -1) return url
+  // Ensure HTTPS
+  let normalizedUrl = url.replace(/^http:\/\//, 'https://')
 
-  try {
-    const parsed = new URL(url)
-    const articlePartRaw = parsed.pathname.slice(markerIndex + marker.length).replace(/^\/+/, '')
-    if (!articlePartRaw) return url
-
-    const articleUrl = decodeURIComponent(articlePartRaw) + (parsed.search || '')
-    return `${url.slice(0, markerIndex + marker.length)}${encodeURIComponent(articleUrl)}`
-  } catch {
-    return url
+  // Handle Thum.io URLs
+  if (normalizedUrl.startsWith('https://image.thum.io/get/')) {
+    const marker = '/noanimate/'
+    const markerIndex = normalizedUrl.indexOf(marker)
+    if (markerIndex !== -1) {
+      try {
+        const parsed = new URL(normalizedUrl)
+        const articlePartRaw = parsed.pathname.slice(markerIndex + marker.length).replace(/^\/+/, '')
+        if (articlePartRaw) {
+          // Decode once to handle any existing encoding
+          const decoded = decodeURIComponent(articlePartRaw)
+          // Re-encode properly
+          const articleUrl = encodeURIComponent(decoded) + (parsed.search || '')
+          normalizedUrl = `${normalizedUrl.slice(0, markerIndex + marker.length)}${articleUrl}`
+        }
+      } catch (error) {
+        console.error('Error normalizing Thum.io URL:', error, url)
+        // Return original URL if parsing fails
+      }
+    }
   }
+
+  return normalizedUrl
 }
 
 export function BlogCard({ post, featured = false }: { post: BlogPostSummary; featured?: boolean }) {
@@ -32,12 +43,11 @@ export function BlogCard({ post, featured = false }: { post: BlogPostSummary; fe
       <Link href={`/blog/${post.slug}`} className="block group">
         <div className="override grid h-full overflow-hidden rounded-lg brutalist-card-effect burn-glow-card no-underline lg:grid-cols-2">
           {coverImageUrl ? (
-            <div className="relative h-56 lg:h-auto lg:w-1/2 shrink-0">
+            <div className="relative aspect-[16/9] lg:aspect-auto lg:min-h-[320px] shrink-0">
               <Image src={coverImageUrl} alt={post.title} fill unoptimized className="object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent to-transparent" />
             </div>
           ) : (
-            <div className="h-56 lg:h-auto lg:w-1/2 shrink-0 bg-gradient-to-br from-primary/10 to-amber-100 flex items-center justify-center">
+            <div className="aspect-[16/9] lg:aspect-auto lg:min-h-[320px] shrink-0 bg-gradient-to-br from-primary/10 to-amber-100 flex items-center justify-center">
               <span className="text-6xl opacity-20">✦</span>
             </div>
           )}
