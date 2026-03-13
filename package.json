@@ -13,7 +13,9 @@
     "discover:submit:more": "node scripts/discover-and-enrich.mjs --submit --limit=25",
     "pipeline:dry": "node scripts/pipeline-100.mjs",
     "pipeline:submit": "node scripts/pipeline-100.mjs --submit",
-    "pipeline:submit:50": "node scripts/pipeline-100.mjs --submit --limit=50"
+    "pipeline:submit:50": "node scripts/pipeline-100.mjs --submit --limit=50",
+    "fix-blog-images": "npx tsx scripts/fix-blog-images.ts",
+    "check-images": "npx tsx scripts/check-images.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",
