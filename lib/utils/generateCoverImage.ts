@@ -1,4 +1,42 @@
+import { createAdminClient } from '@/lib/supabase/admin'
+
 const XAI_BASE_URL = 'https://api.x.ai/v1'
+
+async function uploadToSupabaseStorage(imageBuffer: ArrayBuffer, filename: string): Promise<string | null> {
+  try {
+    const supabase = createAdminClient()
+
+    // Create bucket if it doesn't exist (this will fail gracefully if it exists)
+    await supabase.storage.createBucket('blog-images', {
+      public: true,
+      allowedMimeTypes: ['image/jpeg', 'image/png', 'image/webp'],
+      fileSizeLimit: 10485760, // 10MB
+    }).catch(() => {}) // Ignore errors if bucket already exists
+
+    // Upload the image
+    const { data, error } = await supabase.storage
+      .from('blog-images')
+      .upload(`covers/${filename}.jpeg`, imageBuffer, {
+        contentType: 'image/jpeg',
+        upsert: true
+      })
+
+    if (error) {
+      console.error('Error uploading to Supabase:', error)
+      return null
+    }
+
+    // Get public URL
+    const { data: publicUrl } = supabase.storage
+      .from('blog-images')
+      .getPublicUrl(data.path)
+
+    return publicUrl.publicUrl
+  } catch (err) {
+    console.error('Error uploading to storage:', err)
+    return null
+  }
+}
 
 export async function generateCoverImage(
   title: string,
@@ -78,9 +116,41 @@ Reply with ONLY the image prompt, nothing else.`,
     }
 
     const data = await res.json()
-    return data?.data?.[0]?.url ?? null
+    const tempImageUrl = data?.data?.[0]?.url
+
+    if (!tempImageUrl) {
+      console.error('No image URL returned from xAI')
+      return null
+    }
+
+    // Step 3: Download the image and upload to permanent storage
+    console.log('Downloading and storing image permanently...')
+    const imageResponse = await fetch(tempImageUrl)
+    if (!imageResponse.ok) {
+      console.error(`Failed to download image: ${imageResponse.status}`)
+      return null
+    }
+
+    const imageBuffer = await imageResponse.arrayBuffer()
+
+    // Create a unique filename based on title
+    const filename = title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '')
+      .substring(0, 50) + '-' + Date.now()
+
+    const permanentUrl = await uploadToSupabaseStorage(imageBuffer, filename)
+
+    if (!permanentUrl) {
+      console.error('Failed to upload image to permanent storage')
+      return null
+    }
+
+    console.log(`Image stored permanently: ${permanentUrl}`)
+    return permanentUrl
   } catch (err) {
-    console.error('Image generation error:', err)
+    console.error('Image generation/storage error:', err)
     return null
   }
 }

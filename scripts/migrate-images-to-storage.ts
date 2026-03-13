@@ -1,6 +1,5 @@
 import { config } from 'dotenv'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { generateCoverImage } from '@/lib/utils/generateCoverImage'
 
 // Load environment variables
 config({ path: '.env.local' })
@@ -26,6 +25,13 @@ async function downloadAndStoreImage(imageUrl: string, filename: string): Promis
 
     const imageBuffer = await response.arrayBuffer()
     const supabase = createAdminClient()
+
+    // Create bucket if it doesn't exist
+    await supabase.storage.createBucket('blog-images', {
+      public: true,
+      allowedMimeTypes: ['image/jpeg', 'image/png', 'image/webp'],
+      fileSizeLimit: 10485760, // 10MB
+    }).catch(() => {}) // Ignore errors if bucket already exists
 
     // Upload to Supabase storage
     const { data, error } = await supabase.storage
