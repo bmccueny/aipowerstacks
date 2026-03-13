@@ -15,7 +15,10 @@
     "pipeline:submit": "node scripts/pipeline-100.mjs --submit",
     "pipeline:submit:50": "node scripts/pipeline-100.mjs --submit --limit=50",
     "fix-blog-images": "npx tsx scripts/fix-blog-images.ts",
-    "check-images": "npx tsx scripts/check-images.ts"
+    "check-images": "npx tsx scripts/check-images.ts",
+    "check-missing-images": "npx tsx scripts/check-missing-images.ts",
+    "check-visual-images": "npx tsx scripts/check-visual-images.ts",
+    "fix-broken-images": "npx tsx scripts/fix-broken-images.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",
