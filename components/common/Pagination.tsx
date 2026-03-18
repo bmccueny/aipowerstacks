@@ -8,18 +8,19 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 interface PaginationProps {
   page: number
   hasMore: boolean
+  paramName?: string
 }
 
-export function Pagination({ page, hasMore }: PaginationProps) {
+export function Pagination({ page, hasMore, paramName = 'page' }: PaginationProps) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
   const pageHref = (p: number) => {
     const params = new URLSearchParams(searchParams.toString())
     if (p === 1) {
-      params.delete('page')
+      params.delete(paramName)
     } else {
-      params.set('page', String(p))
+      params.set(paramName, String(p))
     }
     const query = params.toString()
     return query ? `${pathname}?${query}` : pathname

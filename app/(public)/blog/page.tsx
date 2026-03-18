@@ -1,7 +1,8 @@
 import Image from 'next/image'
 import { SITE_URL } from '@/lib/constants/site'
 import { getPublishedPosts, getFeaturedPost } from '@/lib/supabase/queries/blog'
-import { getLatestAINews } from '@/lib/supabase/queries/news'
+import { getPaginatedAINews } from '@/lib/supabase/queries/news'
+import { BLOG_PAGE_SIZE, NEWS_PAGE_SIZE } from '@/lib/constants'
 import { BlogCard } from '@/components/blog/BlogCard'
 import { NewsletterBanner } from '@/components/layout/NewsletterBanner'
 import { Pagination } from '@/components/common/Pagination'
@@ -13,18 +14,20 @@ import { generateBlogJsonLd } from '@/lib/utils/seo'
 export default async function BlogPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string }>
+  searchParams: Promise<{ page?: string; newsPage?: string }>
 }) {
-  const { page: pageStr } = await searchParams
+  const { page: pageStr, newsPage: newsPageStr } = await searchParams
   const page = Math.max(1, parseInt(pageStr ?? '1'))
+  const newsPage = Math.max(1, parseInt(newsPageStr ?? '1'))
 
-  const [{ posts, total }, featured, latestNews] = await Promise.all([
+  const [{ posts, total }, featured, { items: latestNews, total: newsTotal }] = await Promise.all([
     getPublishedPosts(page),
     page === 1 ? getFeaturedPost() : Promise.resolve(null),
-    page === 1 ? getLatestAINews(24) : Promise.resolve([]),
+    page === 1 ? getPaginatedAINews(newsPage) : Promise.resolve({ items: [], total: 0 }),
   ])
 
-  const totalPages = Math.ceil(total / 24)
+  const totalPages = Math.ceil(total / BLOG_PAGE_SIZE)
+  const newsTotalPages = Math.ceil(newsTotal / NEWS_PAGE_SIZE)
   const regularPosts = featured ? posts.filter((p) => p.id !== featured.id) : posts
 
   const allPosts = featured ? [featured, ...regularPosts] : regularPosts
@@ -109,6 +112,11 @@ export default async function BlogPage({
               </a>
             ))}
           </div>
+          {newsTotalPages > 1 && (
+            <div className="mt-6">
+              <Pagination page={newsPage} hasMore={newsPage < newsTotalPages} paramName="newsPage" />
+            </div>
+          )}
         </section>
       )}
 

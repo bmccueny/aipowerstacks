@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { NEWS_PAGE_SIZE } from '@/lib/constants'
 
 export type AINewsItem = {
   id: string
@@ -36,4 +37,22 @@ export async function getLatestAINews(limit = 50): Promise<AINewsItem[]> {
     ...item,
     image_url: normalizeNewsImageUrl(item.image_url, item.url),
   }))
+}
+
+export async function getPaginatedAINews(page = 1) {
+  const supabase = await createClient()
+  const offset = (page - 1) * NEWS_PAGE_SIZE
+
+  const { data, count } = await supabase
+    .from('ai_news')
+    .select('id, title, url, summary, source_name, source_url, image_url, published_at', { count: 'exact' })
+    .order('published_at', { ascending: false })
+    .range(offset, offset + NEWS_PAGE_SIZE - 1)
+
+  const items = ((data ?? []) as AINewsItem[]).map((item) => ({
+    ...item,
+    image_url: normalizeNewsImageUrl(item.image_url, item.url),
+  }))
+
+  return { items, total: count ?? 0 }
 }

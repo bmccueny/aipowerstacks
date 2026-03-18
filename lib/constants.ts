@@ -1,4 +1,6 @@
 export const PAGE_SIZE = 24
+export const BLOG_PAGE_SIZE = 10
+export const NEWS_PAGE_SIZE = 10
 
 export const PRICING_MODELS = [
   { value: 'free', label: 'Free' },

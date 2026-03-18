@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
-import { PAGE_SIZE } from '@/lib/constants'
+import { BLOG_PAGE_SIZE } from '@/lib/constants'
 
 export type BlogPostSummary = {
   id: string
@@ -29,14 +29,14 @@ export type BlogPostFull = BlogPostSummary & {
 
 export async function getPublishedPosts(page = 1, category?: string) {
   const supabase = await createClient()
-  const offset = (page - 1) * PAGE_SIZE
+  const offset = (page - 1) * BLOG_PAGE_SIZE
 
   let query = supabase
     .from('blog_posts')
     .select('id, title, slug, excerpt, cover_image_url, tags, reading_time_min, published_at, view_count, author_id', { count: 'exact' })
     .eq('status', 'published')
     .order('published_at', { ascending: false })
-    .range(offset, offset + PAGE_SIZE - 1)
+    .range(offset, offset + BLOG_PAGE_SIZE - 1)
 
   if (category) {
     const { data: cat } = await supabase.from('blog_categories').select('id').eq('slug', category).single()

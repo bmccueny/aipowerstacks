@@ -2,7 +2,7 @@
   "crons": [
     { "path": "/api/cron/health-check",    "schedule": "0 * * * *"       },
     { "path": "/api/cron/review-spam",      "schedule": "15 * * * *"     },
-    { "path": "/api/cron/ai-news",          "schedule": "0 */4 * * *"    },
+    { "path": "/api/cron/ai-news",          "schedule": "0 7,19 * * *"   },
     { "path": "/api/cron/cleanup-news",     "schedule": "30 3 * * *"     },
     { "path": "/api/cron/benchmarks",       "schedule": "0 */6 * * *"    },
     { "path": "/api/cron/github-trending",  "schedule": "0 8,20 * * *"   },
