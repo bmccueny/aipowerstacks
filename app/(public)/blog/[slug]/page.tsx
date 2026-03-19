@@ -222,13 +222,24 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
             {post.video_embed_url && (
               <div className="aspect-video mb-12 rounded-2xl overflow-hidden border-2 border-black shadow-[4px_4px_0_0_#000] dark:shadow-[4px_4px_0_0_var(--primary)]">
-                <iframe
-                  src={post.video_embed_url}
-                  className="w-full h-full"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                  title={post.title}
-                />
+                {post.video_embed_url.endsWith('.mp4') || post.video_embed_url.endsWith('.webm') ? (
+                  <video
+                    src={post.video_embed_url}
+                    className="w-full h-full object-cover"
+                    controls
+                    playsInline
+                    preload="metadata"
+                    title={post.title}
+                  />
+                ) : (
+                  <iframe
+                    src={post.video_embed_url}
+                    className="w-full h-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                    title={post.title}
+                  />
+                )}
               </div>
             )}
 
