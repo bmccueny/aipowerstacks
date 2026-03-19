@@ -19,7 +19,12 @@ export async function createClient() {
             cookiesToSet.forEach(({ name, value, options }) =>
               cookieStore.set(name, value, options)
             )
-          } catch {
+          } catch (error) {
+            // Cookie setting can fail in Server Components (read-only context).
+            // This is expected for middleware/page reads — only log in dev.
+            if (process.env.NODE_ENV === 'development') {
+              console.warn('Supabase cookie setAll failed (read-only context):', error)
+            }
           }
         },
       },

@@ -4,6 +4,15 @@ import { createClient } from '@supabase/supabase-js'
 
 export const dynamic = 'force-dynamic'
 
+// Untyped client for the tool_health table (not in generated Database types)
+function getUntypedAdmin() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { autoRefreshToken: false, persistSession: false } }
+  )
+}
+
 export async function GET(request: Request) {
   const authHeader = request.headers.get('authorization')
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
@@ -11,6 +20,7 @@ export async function GET(request: Request) {
   }
 
   const supabase = createAdminClient()
+  const untypedAdmin = getUntypedAdmin()
 
   const { data: tools, error } = await supabase
     .from('tools')
@@ -36,24 +46,24 @@ export async function GET(request: Request) {
       
       const isUp = status >= 200 && status < 400
       
-      await supabase.from('tool_health').upsert({
+      await untypedAdmin.from('tool_health').upsert({
         tool_id: tool.id,
         status_code: status,
         response_time_ms: responseTime,
         is_up: isUp,
         checked_at: new Date().toISOString()
-      } as any, { onConflict: 'tool_id' })
+      }, { onConflict: 'tool_id' })
 
       results.push({ tool: tool.name, status, isUp })
     } catch (err) {
-      await supabase.from('tool_health').upsert({
+      await untypedAdmin.from('tool_health').upsert({
         tool_id: tool.id,
         status_code: 0,
         response_time_ms: 0,
         is_up: false,
         checked_at: new Date().toISOString(),
         error: err instanceof Error ? err.message : 'Unknown error'
-      } as any, { onConflict: 'tool_id' })
+      }, { onConflict: 'tool_id' })
 
       results.push({ tool: tool.name, status: 'error', isUp: false })
     }

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
-import { createClient } from '@/lib/supabase/server'
+import { requireRole } from '@/lib/supabase/admin-auth'
 import { createAdminClient } from '@/lib/supabase/admin'
 
 const updateSchema = z.object({
@@ -26,19 +26,13 @@ const updateSchema = z.object({
   wrapper_details: z.string().max(500).nullable().optional(),
 })
 
-async function isAdmin(supabase: Awaited<ReturnType<typeof createClient>>, userId: string) {
-  const { data } = await supabase.from('profiles').select('role').eq('id', userId).single()
-  return (data as { role: string } | null)?.role === 'admin'
-}
-
 export async function PUT(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user || !await isAdmin(supabase, user.id)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  const { error: authError } = await requireRole('admin')
+  if (authError) return authError
 
   const body = await request.json()
   const parsed = updateSchema.safeParse(body)
@@ -59,9 +53,8 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user || !await isAdmin(supabase, user.id)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  const { error: authError } = await requireRole('admin')
+  if (authError) return authError
 
   const admin = createAdminClient()
   const { error } = await admin.from('tools').delete().eq('id', id)

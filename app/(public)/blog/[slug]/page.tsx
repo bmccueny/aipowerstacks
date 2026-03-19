@@ -68,6 +68,20 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
 }
 
+export const revalidate = 3600 // ISR: revalidate every hour
+
+export async function generateStaticParams() {
+  const { createAdminClient } = await import('@/lib/supabase/admin')
+  const supabase = createAdminClient()
+  const { data } = await supabase
+    .from('blog_posts')
+    .select('slug')
+    .eq('status', 'published')
+    .order('published_at', { ascending: false })
+    .limit(200)
+  return (data ?? []).map((p) => ({ slug: p.slug }))
+}
+
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const post = await getBlogPostBySlug(slug)

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
-import { createClient } from '@/lib/supabase/server'
+import { requireRole } from '@/lib/supabase/admin-auth'
 import { createAdminClient } from '@/lib/supabase/admin'
 
 const createCategorySchema = z.object({
@@ -12,17 +12,9 @@ const createCategorySchema = z.object({
   sort_order: z.number().int().min(0).max(9999).default(0),
 })
 
-async function isAdmin(supabase: Awaited<ReturnType<typeof createClient>>, userId: string) {
-  const { data } = await supabase.from('profiles').select('role').eq('id', userId).single()
-  return (data as { role: string } | null)?.role === 'admin'
-}
-
 export async function POST(request: Request) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user || !await isAdmin(supabase, user.id)) {
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
-  }
+  const { error: authError } = await requireRole('admin')
+  if (authError) return authError
 
   const body = await request.json()
   const parsed = createCategorySchema.safeParse(body)

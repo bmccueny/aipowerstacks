@@ -33,7 +33,18 @@ export const metadata: Metadata = {
 export default async function BlueprintsPage() {
   const supabase = await createClient()
 
-  const { data: blueprints } = await supabase
+  type BlueprintTool = { role: string; tools: { id: string; name: string; logo_url: string | null; slug: string } }
+  type Blueprint = {
+    id: string
+    title: string
+    description: string
+    category: string
+    estimated_time: string
+    difficulty: string
+    blueprint_tools: BlueprintTool[]
+  }
+
+  const { data } = await supabase
     .from('blueprints')
     .select(`
       *,
@@ -43,6 +54,8 @@ export default async function BlueprintsPage() {
       )
     `)
     .order('created_at', { ascending: false })
+
+  const blueprints = (data ?? []) as unknown as Blueprint[]
 
   return (
     <div className="page-shell pb-24">
@@ -62,9 +75,10 @@ export default async function BlueprintsPage() {
 
         {/* Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {(blueprints ?? []).map((b: any) => {
-            const toolIds = b.blueprint_tools.map((bt: any) => bt.tools.id)
-            const toolNotes = b.blueprint_tools.reduce((acc: any, bt: any) => {
+          {blueprints.map((b) => {
+            const bTools = b.blueprint_tools
+            const toolIds = bTools.map((bt) => bt.tools.id)
+            const toolNotes = bTools.reduce<Record<string, string>>((acc, bt) => {
               acc[bt.tools.id] = bt.role
               return acc
             }, {})
@@ -93,7 +107,7 @@ export default async function BlueprintsPage() {
                   <div className="space-y-3 mb-8">
                     <p className="text-[10px] uppercase font-black tracking-widest text-foreground/40">The Ingredients</p>
                     <div className="grid grid-cols-1 gap-2">
-                      {b.blueprint_tools.map((bt: any) => (
+                      {bTools.map((bt) => (
                         <div key={bt.tools.id} className="flex items-center justify-between p-3 rounded-md bg-muted/40 border border-foreground/5 group/tool">
                           <div className="flex items-center gap-3">
                             <div className="h-8 w-8 rounded bg-background flex items-center justify-center shrink-0 border border-foreground/10">

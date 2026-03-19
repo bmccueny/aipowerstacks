@@ -26,19 +26,19 @@ export async function POST(req: NextRequest) {
     let embedding: number[]
     try {
       embedding = await getQueryEmbedding(query.trim())
-    } catch (err: any) {
-      console.error('Embedding generation failed:', err.message)
+    } catch (err) {
+      console.error('Embedding generation failed:', err instanceof Error ? err.message : err)
       return NextResponse.json({ tools: [], semantic: false })
     }
 
-    // 2. Call pgvector RPC
+    // 2. Call pgvector RPC with parameterized vector
     const supabase = createAdminClient()
-    const vectorStr = `[${embedding.join(',')}]`
 
-    const { data: semanticHits, error: rpcError } = await (supabase as any).rpc(
+    // pgvector RPC expects a string-encoded vector, not number[]
+    const { data: semanticHits, error: rpcError } = await supabase.rpc(
       'match_tools_semantic',
       {
-        query_embedding: vectorStr,
+        query_embedding: `[${embedding.join(',')}]` as unknown as number[],
         match_threshold: threshold,
         match_count: Math.min(limit, 50),
       }
@@ -54,7 +54,8 @@ export async function POST(req: NextRequest) {
     }
 
     // 3. Fetch full tool data for the matched IDs (preserving semantic rank order)
-    const ids = semanticHits.map((h: any) => h.id)
+    type SemanticHit = { id: string; similarity: number }
+    const ids = (semanticHits as SemanticHit[]).map((h) => h.id)
 
     const { data: fullTools, error: fetchError } = await supabase
       .from('tools')
@@ -70,13 +71,13 @@ export async function POST(req: NextRequest) {
     }
 
     // 4. Reorder by semantic similarity (preserve the RPC's ranking)
-    const toolMap = new Map((fullTools ?? []).map((t: any) => [t.id, t]))
+    const toolMap = new Map((fullTools ?? []).map((t) => [t.id, t]))
     const similarityMap = new Map(
-      semanticHits.map((h: any) => [h.id, h.similarity])
+      (semanticHits as SemanticHit[]).map((h) => [h.id, h.similarity])
     )
 
     const ordered = ids
-      .map((id: string) => {
+      .map((id) => {
         const tool = toolMap.get(id)
         if (!tool) return null
         return { ...tool, _similarity: similarityMap.get(id) ?? 0 }
@@ -88,8 +89,8 @@ export async function POST(req: NextRequest) {
       semantic: true,
       count: ordered.length,
     })
-  } catch (err: any) {
-    console.error('Semantic search error:', err.message)
+  } catch (err) {
+    console.error('Semantic search error:', err instanceof Error ? err.message : err)
     return NextResponse.json(
       { error: 'Semantic search failed' },
       { status: 500 }

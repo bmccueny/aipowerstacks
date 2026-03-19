@@ -44,7 +44,7 @@ export function BlogCard({ post, featured = false }: { post: BlogPostSummary; fe
         <div className="override grid h-full overflow-hidden rounded-lg brutalist-card-effect burn-glow-card no-underline lg:grid-cols-2">
           {coverImageUrl ? (
             <div className="relative aspect-[16/9] lg:aspect-auto lg:min-h-[320px] shrink-0">
-              <Image src={coverImageUrl} alt={post.title} fill unoptimized className="object-cover" />
+              <Image src={coverImageUrl} alt={post.title} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className="object-cover" />
             </div>
           ) : (
             <div className="aspect-[16/9] lg:aspect-auto lg:min-h-[320px] shrink-0 bg-gradient-to-br from-primary/10 to-amber-100 flex items-center justify-center">
@@ -86,11 +86,11 @@ export function BlogCard({ post, featured = false }: { post: BlogPostSummary; fe
     <Link href={`/blog/${post.slug}`} className="block group h-full">
       <div className="override grid h-full overflow-hidden rounded-lg brutalist-card-effect burn-glow-card no-underline">
         {coverImageUrl ? (
-          <div className="relative h-44 shrink-0 overflow-hidden">
-            <Image src={coverImageUrl} alt={post.title} fill unoptimized className="object-cover transition-transform duration-300" />
+          <div className="relative aspect-video shrink-0 overflow-hidden">
+            <Image src={coverImageUrl} alt={post.title} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className="object-cover transition-transform duration-300" />
           </div>
         ) : (
-          <div className="h-44 bg-gradient-to-br from-primary/8 to-amber-100 flex items-center justify-center shrink-0">
+          <div className="aspect-video bg-gradient-to-br from-primary/8 to-amber-100 flex items-center justify-center shrink-0">
             <span className="text-5xl opacity-20">✦</span>
           </div>
         )}

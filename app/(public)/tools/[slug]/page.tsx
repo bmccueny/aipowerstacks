@@ -20,6 +20,20 @@ import { getReviewsByTool } from '@/lib/supabase/queries/reviews'
 import { generateFaqJsonLd, generateJsonLd, generateToolMetadata, generateBreadcrumbJsonLd } from '@/lib/utils/seo'
 import { PRICING_BADGE_COLORS, PRICING_LABELS, MODEL_PROVIDER_LABELS } from '@/lib/constants'
 
+export const revalidate = 3600 // ISR: revalidate every hour
+
+export async function generateStaticParams() {
+  const { createAdminClient } = await import('@/lib/supabase/admin')
+  const supabase = createAdminClient()
+  const { data } = await supabase
+    .from('tools')
+    .select('slug')
+    .eq('status', 'published')
+    .order('upvote_count', { ascending: false })
+    .limit(500)
+  return (data ?? []).map((t) => ({ slug: t.slug }))
+}
+
 interface Props {
   params: Promise<{ slug: string }>
 }

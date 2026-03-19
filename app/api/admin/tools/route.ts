@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
-import { createClient } from '@/lib/supabase/server'
+import { requireRole } from '@/lib/supabase/admin-auth'
 import { createAdminClient } from '@/lib/supabase/admin'
 
 const toolSchema = z.object({
@@ -26,15 +26,9 @@ const toolSchema = z.object({
   wrapper_details: z.string().max(500).nullable().optional(),
 })
 
-async function isAdmin(supabase: Awaited<ReturnType<typeof createClient>>, userId: string) {
-  const { data } = await supabase.from('profiles').select('role').eq('id', userId).single()
-  return (data as { role: string } | null)?.role === 'admin'
-}
-
 export async function POST(request: Request) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user || !await isAdmin(supabase, user.id)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  const { user, error: authError } = await requireRole('admin')
+  if (authError) return authError
 
   const body = await request.json()
   const parsed = toolSchema.safeParse(body)
@@ -43,8 +37,8 @@ export async function POST(request: Request) {
   const admin = createAdminClient()
   const { data, error } = await admin.from('tools').insert({
     ...parsed.data,
-    submitted_by: user.id,
-    approved_by: user.id,
+    submitted_by: user!.id,
+    approved_by: user!.id,
     approved_at: new Date().toISOString(),
     published_at: parsed.data.status === 'published' ? new Date().toISOString() : null,
   }).select('id').single()

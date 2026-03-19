@@ -7,7 +7,12 @@ import Link from 'next/link'
 import { ArrowLeft, Check, Clock, Eye, Globe, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { TiptapEditor } from './TiptapEditor'
+import dynamic from 'next/dynamic'
+
+const TiptapEditor = dynamic(
+  () => import('./TiptapEditor').then(m => ({ default: m.TiptapEditor })),
+  { ssr: false, loading: () => <div className="h-[500px] rounded-3xl border border-border/50 animate-pulse bg-muted/30" /> }
+)
 
 interface Post {
   id: string

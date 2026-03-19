@@ -17,8 +17,7 @@ type SearchToolsArgs = {
 }
 
 async function rpcSearchTools(supabase: Awaited<ReturnType<typeof createClient>>, args: SearchToolsArgs) {
-  const { data, error } = await (supabase as ReturnType<typeof supabase.rpc> extends never ? never : typeof supabase)
-    .rpc('search_tools', args as never)
+  const { data, error } = await supabase.rpc('search_tools', args as Record<string, unknown>)
   return { data: data as ToolSearchResult[] | null, error }
 }
 
@@ -195,19 +194,22 @@ async function semanticSearch(
     const vectorStr = `[${embedding.join(',')}]`
 
     const admin = createAdminClient()
-    const { data: hits, error } = await (admin as any).rpc('match_tools_semantic', {
-      query_embedding: vectorStr,
+    type SemanticHit = { id: string; similarity: number }
+    // pgvector RPC expects a string-encoded vector, not number[]
+    const { data: hits, error } = await admin.rpc('match_tools_semantic', {
+      query_embedding: vectorStr as unknown as number[],
       match_threshold: 0.15,
       match_count: Math.min(limit, 50),
     })
 
-    if (error || !hits || hits.length === 0) {
+    if (error || !hits || (hits as SemanticHit[]).length === 0) {
       if (error) console.warn('Semantic search RPC error:', error.message)
       return null
     }
 
     // Fetch full tool data to match ToolSearchResult shape
-    const ids = hits.map((h: any) => h.id)
+    const semanticHits = hits as SemanticHit[]
+    const ids = semanticHits.map((h) => h.id)
     const { data: fullTools } = await admin
       .from('tools')
       .select(TOOL_SELECT_COLUMNS)
@@ -217,14 +219,14 @@ async function semanticSearch(
     if (!fullTools || fullTools.length === 0) return null
 
     // Preserve semantic ranking order
-    const toolMap = new Map(fullTools.map((t: any) => [t.id, t]))
+    const toolMap = new Map(fullTools.map((t) => [t.id, t]))
     const ordered = ids
-      .map((id: string) => toolMap.get(id))
-      .filter(Boolean) as ToolSearchResult[]
+      .map((id) => toolMap.get(id))
+      .filter(Boolean) as unknown as ToolSearchResult[]
 
     return ordered.length > 0 ? ordered : null
-  } catch (err: any) {
-    console.warn('Semantic search failed:', err.message)
+  } catch (err) {
+    console.warn('Semantic search failed:', err instanceof Error ? err.message : err)
     return null
   }
 }
@@ -300,13 +302,14 @@ export async function searchTools({
       if (semanticResults && semanticResults.length > 0) {
         // Apply client-side filters to semantic results
         let filtered = semanticResults
-        if (categoryId) filtered = filtered.filter(t => (t as any).category_id === categoryId)
-        if (pricing) filtered = filtered.filter(t => (t as any).pricing_model === pricing)
-        if (verified) filtered = filtered.filter(t => (t as any).is_verified === true)
-        if (hasApi) filtered = filtered.filter(t => (t as any).has_api === true)
-        if (hasMobile) filtered = filtered.filter(t => (t as any).has_mobile_app === true)
-        if (isOpenSource) filtered = filtered.filter(t => (t as any).is_open_source === true)
-        if (audience) filtered = filtered.filter(t => (t as Record<string, unknown>).target_audience === audience)
+        type FilterableTool = ToolSearchResult & Record<string, unknown>
+        if (categoryId) filtered = filtered.filter(t => (t as FilterableTool).category_id === categoryId)
+        if (pricing) filtered = filtered.filter(t => (t as FilterableTool).pricing_model === pricing)
+        if (verified) filtered = filtered.filter(t => (t as FilterableTool).is_verified === true)
+        if (hasApi) filtered = filtered.filter(t => (t as FilterableTool).has_api === true)
+        if (hasMobile) filtered = filtered.filter(t => (t as FilterableTool).has_mobile_app === true)
+        if (isOpenSource) filtered = filtered.filter(t => (t as FilterableTool).is_open_source === true)
+        if (audience) filtered = filtered.filter(t => (t as FilterableTool).target_audience === audience)
 
         if (filtered.length > 0) {
           return { tools: filtered.slice(0, PAGE_SIZE), total: filtered.length }
@@ -388,11 +391,11 @@ export async function searchTools({
       .or(ilikeOrClause)
 
     // Apply ALL filters (fixing previous filter leakage)
-    if (categoryId) fallback = fallback.eq('category_id', categoryId as any)
-    if (pricing)    fallback = fallback.eq('pricing_model', pricing as any)
+    if (categoryId) fallback = fallback.eq('category_id', categoryId)
+    if (pricing)    fallback = fallback.eq('pricing_model', pricing)
     if (verified)   fallback = fallback.eq('is_verified', true)
-    if (useCase)    fallback = fallback.eq('use_case', useCase as any)
-    if (teamSize)   fallback = fallback.eq('team_size', teamSize as any)
+    if (useCase)    fallback = fallback.eq('use_case', useCase)
+    if (teamSize)   fallback = fallback.eq('team_size', teamSize)
     if (audience)   fallback = fallback.eq('target_audience', audience)
     if (hasApi)     fallback = fallback.eq('has_api', true)
     if (hasMobile)  fallback = fallback.eq('has_mobile_app', true)
@@ -427,15 +430,15 @@ export async function searchTools({
       }
     }
 
-    return { tools: (fallbackData as any) ?? [], total: fallbackData?.length ?? 0 }
+    return { tools: (fallbackData ?? []) as unknown as ToolSearchResult[], total: fallbackData?.length ?? 0 }
   }
 
   // Apply filters
-  if (categoryId) builder = builder.eq('category_id', categoryId as any)
-  if (pricing) builder = builder.eq('pricing_model', pricing as any)
+  if (categoryId) builder = builder.eq('category_id', categoryId)
+  if (pricing) builder = builder.eq('pricing_model', pricing)
   if (verified) builder = builder.eq('is_verified', true)
-  if (useCase) builder = builder.eq('use_case', useCase as any)
-  if (teamSize) builder = builder.eq('team_size', teamSize as any)
+  if (useCase) builder = builder.eq('use_case', useCase)
+  if (teamSize) builder = builder.eq('team_size', teamSize)
   if (audience) builder = builder.eq('target_audience', audience)
   if (hasApi) builder = builder.eq('has_api', true)
   if (hasMobile) builder = builder.eq('has_mobile_app', true)
@@ -462,7 +465,7 @@ export async function searchTools({
     return { tools: [], total: 0 }
   }
 
-  return { tools: (data as any) ?? [], total: data?.length ?? 0 }
+  return { tools: (data ?? []) as unknown as ToolSearchResult[], total: data?.length ?? 0 }
 }
 
 export async function getToolBySlug(slug: string): Promise<ToolWithTags | null> {
@@ -487,11 +490,13 @@ export async function getToolBySlug(slug: string): Promise<ToolWithTags | null> 
 
 export async function getSiteStats(): Promise<{ toolCount: number; reviewCount: number }> {
   const supabase = await createClient()
-  const [{ count: toolCount }, { count: reviewCount }] = await Promise.all([
+  const [toolsResult, reviewsResult] = await Promise.allSettled([
     supabase.from('tools').select('*', { count: 'exact', head: true }).eq('status', 'published'),
     supabase.from('reviews').select('*', { count: 'exact', head: true }).eq('status', 'published'),
   ])
-  return { toolCount: toolCount ?? 0, reviewCount: reviewCount ?? 0 }
+  const toolCount = toolsResult.status === 'fulfilled' ? toolsResult.value.count ?? 0 : 0
+  const reviewCount = reviewsResult.status === 'fulfilled' ? reviewsResult.value.count ?? 0 : 0
+  return { toolCount, reviewCount }
 }
 
 export async function getLatestTools(limit = 8): Promise<ToolCardData[]> {
@@ -695,7 +700,7 @@ export async function getMatchedTools({
     data = lastResort.data
   }
 
-  return (data as any) ?? [] as ToolSearchResult[]
+  return (data ?? []) as unknown as ToolSearchResult[]
 }
 
 export async function getPopularToolsExcluding(excludeIds: string[], limit = 4): Promise<ToolSearchResult[]> {
@@ -717,10 +722,10 @@ export async function getPopularToolsExcluding(excludeIds: string[], limit = 4):
 export async function getFeaturedStack() {
   const supabase = createAdminClient()
 
-  // Get the most recently featured public stack
+  // Get the most recently featured public stack with creator profile in one query
   const { data: collection } = await supabase
     .from('collections')
-    .select('id, name, description, icon, share_slug, featured_at, user_id, view_count, save_count')
+    .select('id, name, description, icon, share_slug, featured_at, user_id, view_count, save_count, profiles:user_id (username, display_name, avatar_url)')
     .eq('is_public', true)
     .not('featured_at', 'is', null)
     .order('featured_at', { ascending: false })
@@ -729,7 +734,7 @@ export async function getFeaturedStack() {
 
   if (!collection) return null
 
-  // Get tools in this stack
+  // Get tools in this stack (second query — can't easily join through collection_items in one shot)
   const { data: items } = await supabase
     .from('collection_items')
     .select('tools:tool_id (id, name, slug, logo_url, tagline, pricing_model)')
@@ -737,16 +742,11 @@ export async function getFeaturedStack() {
     .order('sort_order', { ascending: true })
     .limit(5)
 
-  // Get creator profile
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('username, display_name, avatar_url')
-    .eq('id', collection.user_id)
-    .single()
+  const { profiles: creator, ...rest } = collection
 
   return {
-    ...collection,
+    ...rest,
     tools: (items?.map(i => i.tools).filter(Boolean) ?? []) as Array<{id: string; name: string; slug: string; logo_url: string | null; tagline: string; pricing_model: string}>,
-    creator: profile,
+    creator: creator as { username: string | null; display_name: string | null; avatar_url: string | null } | null,
   }
 }

@@ -9,7 +9,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const supabase = await createClient()
   const adminSupabase = createAdminClient()
 
-  const [toolsRes, categoriesRes, postsRes, stacksRes, curatorsRes, vsToolsRes] = await Promise.all([
+  const [toolsRes, categoriesRes, postsRes, stacksRes, curatorsRes, vsToolsRes] = await Promise.allSettled([
     supabase.from('tools').select('slug, updated_at').eq('status', 'published').limit(5000),
     supabase.from('categories').select('slug, created_at'),
     supabase.from('blog_posts').select('slug, updated_at').eq('status', 'published').limit(1000),
@@ -24,11 +24,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .limit(40),
   ])
 
-  const tools = (toolsRes.data ?? []) as { slug: string; updated_at: string }[]
-  const categories = (categoriesRes.data ?? []) as { slug: string; created_at: string }[]
-  const posts = (postsRes.data ?? []) as { slug: string; updated_at: string }[]
-  const stacks = (stacksRes.data ?? []) as { share_slug: string; updated_at: string }[]
-  const curators = (curatorsRes.data ?? []) as { username: string; created_at: string }[]
+  const settled = <T,>(r: PromiseSettledResult<{ data: T | null }>) =>
+    r.status === 'fulfilled' ? r.value.data : null
+
+  const tools = (settled(toolsRes) ?? []) as { slug: string; updated_at: string }[]
+  const categories = (settled(categoriesRes) ?? []) as { slug: string; created_at: string }[]
+  const posts = (settled(postsRes) ?? []) as { slug: string; updated_at: string }[]
+  const stacks = (settled(stacksRes) ?? []) as { share_slug: string; updated_at: string }[]
+  const curators = (settled(curatorsRes) ?? []) as { username: string; created_at: string }[]
 
   const toolUrls: MetadataRoute.Sitemap = tools.map((t) => ({
     url: `${BASE_URL}/tools/${t.slug}`,
@@ -59,7 +62,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }))
 
   // Generate vs comparison pairs from top tools grouped by category
-  const vsTools = (vsToolsRes.data ?? []) as { slug: string; category_id: string; updated_at: string }[]
+  const vsTools = (settled(vsToolsRes) ?? []) as { slug: string; category_id: string; updated_at: string }[]
   const vsByCategory = new Map<string, typeof vsTools>()
   for (const t of vsTools) {
     if (!t.category_id) continue

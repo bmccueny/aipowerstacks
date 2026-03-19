@@ -233,8 +233,25 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .stars {
+  .stars,
+  .shimmer,
+  .animate-aurora,
+  .animate-prism,
+  .animate-neon-glow,
+  .animate-liquid-float,
+  .animate-glass-glow,
+  .animate-delicate-float,
+  .animate-vote-pop,
+  .animate-vote-float,
+  .animate-vote-ring,
+  .animate-in-stagger,
+  .animate-sparkle-once,
+  .sparkle,
+  .badge-flare::after {
     animation: none !important;
+    transition: none !important;
+  }
+  .stars {
     opacity: 0.55;
   }
 }
