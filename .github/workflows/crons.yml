@@ -2,33 +2,24 @@ name: Cron Jobs
 
 on:
   schedule:
-    # Daily at 6:00 AM UTC - Featured Stack
-    - cron: '0 6 * * *'
-    # Daily at 7:00 AM UTC - Blog Posts
-    - cron: '0 7 * * *'
-    # Daily at 10:00 AM UTC - Benchmarks
-    - cron: '0 10 * * *'
-    # Daily at 12:00 PM UTC - Social Posts
-    - cron: '0 12 * * *'
-    # Daily at 2:00 PM UTC - Editor Reviews
-    - cron: '0 14 * * *'
-    # Weekly Friday at 2:00 PM UTC - Newsletter
-    - cron: '0 14 * * 5'
-    # Daily at 6:00 PM UTC - GitHub Trending
-    - cron: '0 18 * * *'
-    # Daily at 8:00 PM UTC - AI News
-    - cron: '0 20 * * *'
-    # Daily at 4:00 AM UTC - Pricing Check (NEW)
-    - cron: '0 4 * * *'
-    # Daily at 8:30 AM UTC - Daily Stats (NEW)
-    - cron: '30 8 * * *'
-    # Weekly Sunday at 3:00 AM UTC - Broken Links (NEW)
-    - cron: '0 3 * * 0'
-    # Monthly on the 1st at 5:00 AM UTC - Stale Tools (NEW)
-    - cron: '0 5 1 * *'
-    # Every 6 hours - Review Spam (NEW)
-    - cron: '0 */6 * * *'
+    - cron: '0 6 * * *'     # 06:00 UTC daily
+    - cron: '0 7 * * *'     # 07:00 UTC daily
+    - cron: '0 2 * * *'     # 02:00 UTC daily
+    - cron: '0 10 * * *'    # 10:00 UTC daily
+    - cron: '0 9 * * *'     # 09:00 UTC daily
+    - cron: '0 9 * * 1'     # 09:00 UTC Monday
+    - cron: '0 8 * * *'     # 08:00 UTC daily
+    - cron: '0 20 * * *'    # 20:00 UTC daily
+    - cron: '0 23 * * *'    # 23:00 UTC daily
+    - cron: '0 5 * * *'     # 05:00 UTC daily
+    - cron: '0 4 * * *'     # 04:00 UTC daily
+    - cron: '15 3 * * *'    # 03:15 UTC daily
   workflow_dispatch:
+    inputs:
+      job:
+        description: 'Which cron job to run (or "all")'
+        required: false
+        default: 'all'
 
 env:
   CRON_SECRET: ${{ secrets.CRON_SECRET }}
@@ -37,78 +28,143 @@ env:
 jobs:
   featured-stack:
     runs-on: ubuntu-latest
+    if: github.event.schedule == '0 6 * * *' || github.event_name == 'workflow_dispatch'
     steps:
       - name: Call Featured Stack Cron
-        run: curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/featured-stack"
+        run: |
+          status=$(curl -s -o /tmp/response.txt -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/featured-stack")
+          echo "HTTP $status"
+          cat /tmp/response.txt
+          [ "$status" -ge 200 ] && [ "$status" -lt 300 ]
 
   blog-posts:
     runs-on: ubuntu-latest
+    if: github.event.schedule == '0 7 * * *' || github.event_name == 'workflow_dispatch'
     steps:
       - name: Call Blog Posts Cron
-        run: curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/blog-posts"
+        run: |
+          status=$(curl -s -o /tmp/response.txt -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/blog-posts")
+          echo "HTTP $status"
+          cat /tmp/response.txt
+          [ "$status" -ge 200 ] && [ "$status" -lt 300 ]
 
   benchmarks:
     runs-on: ubuntu-latest
+    if: github.event.schedule == '0 2 * * *' || github.event_name == 'workflow_dispatch'
     steps:
       - name: Call Benchmarks Cron
-        run: curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/benchmarks"
+        run: |
+          status=$(curl -s -o /tmp/response.txt -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/benchmarks")
+          echo "HTTP $status"
+          cat /tmp/response.txt
+          [ "$status" -ge 200 ] && [ "$status" -lt 300 ]
 
   social-posts:
     runs-on: ubuntu-latest
+    if: github.event.schedule == '0 10 * * *' || github.event_name == 'workflow_dispatch'
     steps:
       - name: Call Social Posts Cron
-        run: curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/social-posts"
+        run: |
+          status=$(curl -s -o /tmp/response.txt -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/social-posts")
+          echo "HTTP $status"
+          cat /tmp/response.txt
+          [ "$status" -ge 200 ] && [ "$status" -lt 300 ]
 
   editor-reviews:
     runs-on: ubuntu-latest
+    if: github.event.schedule == '0 9 * * *' || github.event_name == 'workflow_dispatch'
     steps:
       - name: Call Editor Reviews Cron
-        run: curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/editor-reviews"
+        run: |
+          status=$(curl -s -o /tmp/response.txt -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/editor-reviews")
+          echo "HTTP $status"
+          cat /tmp/response.txt
+          [ "$status" -ge 200 ] && [ "$status" -lt 300 ]
 
   newsletter:
     runs-on: ubuntu-latest
+    if: github.event.schedule == '0 9 * * 1' || github.event_name == 'workflow_dispatch'
     steps:
       - name: Call Newsletter Cron
-        run: curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/newsletter"
+        run: |
+          status=$(curl -s -o /tmp/response.txt -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/newsletter")
+          echo "HTTP $status"
+          cat /tmp/response.txt
+          [ "$status" -ge 200 ] && [ "$status" -lt 300 ]
 
   github-trending:
     runs-on: ubuntu-latest
+    if: github.event.schedule == '0 8 * * *' || github.event_name == 'workflow_dispatch'
     steps:
       - name: Call GitHub Trending Cron
-        run: curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/github-trending"
+        run: |
+          status=$(curl -s -o /tmp/response.txt -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/github-trending")
+          echo "HTTP $status"
+          cat /tmp/response.txt
+          [ "$status" -ge 200 ] && [ "$status" -lt 300 ]
 
   ai-news:
     runs-on: ubuntu-latest
+    if: github.event.schedule == '0 20 * * *' || github.event_name == 'workflow_dispatch'
     steps:
       - name: Call AI News Cron
-        run: curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/ai-news"
-
-  pricing-check:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Call Pricing Check Cron
-        run: curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/pricing-check"
+        run: |
+          status=$(curl -s -o /tmp/response.txt -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/ai-news")
+          echo "HTTP $status"
+          cat /tmp/response.txt
+          [ "$status" -ge 200 ] && [ "$status" -lt 300 ]
 
   daily-stats:
     runs-on: ubuntu-latest
+    if: github.event.schedule == '0 23 * * *' || github.event_name == 'workflow_dispatch'
     steps:
       - name: Call Daily Stats Cron
-        run: curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/daily-stats"
+        run: |
+          status=$(curl -s -o /tmp/response.txt -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/daily-stats")
+          echo "HTTP $status"
+          cat /tmp/response.txt
+          [ "$status" -ge 200 ] && [ "$status" -lt 300 ]
 
-  broken-links:
+  health-check:
     runs-on: ubuntu-latest
+    if: github.event.schedule == '0 5 * * *' || github.event_name == 'workflow_dispatch'
     steps:
-      - name: Call Broken Links Cron
-        run: curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/health-check"
+      - name: Call Health Check Cron
+        run: |
+          status=$(curl -s -o /tmp/response.txt -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/health-check")
+          echo "HTTP $status"
+          cat /tmp/response.txt
+          [ "$status" -ge 200 ] && [ "$status" -lt 300 ]
 
   stale-tools:
     runs-on: ubuntu-latest
+    if: github.event.schedule == '0 4 * * *' || github.event_name == 'workflow_dispatch'
     steps:
       - name: Call Stale Tools Cron
-        run: curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/stale-tools"
+        run: |
+          status=$(curl -s -o /tmp/response.txt -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/stale-tools")
+          echo "HTTP $status"
+          cat /tmp/response.txt
+          [ "$status" -ge 200 ] && [ "$status" -lt 300 ]
 
   review-spam:
     runs-on: ubuntu-latest
+    if: github.event.schedule == '15 3 * * *' || github.event_name == 'workflow_dispatch'
     steps:
       - name: Call Review Spam Cron
-        run: curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/review-spam"
+        run: |
+          status=$(curl -s -o /tmp/response.txt -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/review-spam")
+          echo "HTTP $status"
+          cat /tmp/response.txt
+          [ "$status" -ge 200 ] && [ "$status" -lt 300 ]
+
+  cleanup-news:
+    runs-on: ubuntu-latest
+    if: github.event.schedule == '15 3 * * *' || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Call Cleanup News Cron
+        run: |
+          status=$(curl -s -o /tmp/response.txt -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/cleanup-news")
+          echo "HTTP $status"
+          cat /tmp/response.txt
+          [ "$status" -ge 200 ] && [ "$status" -lt 300 ]
