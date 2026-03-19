@@ -272,14 +272,18 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         {/* Newsletter CTA */}
         <div className="glass-card rounded-2xl overflow-hidden mb-12 border border-primary/15">
           <div className="h-1 bg-gradient-to-r from-primary/40 via-primary to-primary/40" />
-          <div className="p-8 sm:p-10">
-            <h3 className="text-xl sm:text-2xl font-black mb-3 leading-tight">
-              Stay ahead of the AI curve
-            </h3>
-            <p className="text-sm text-muted-foreground mb-6 max-w-xl leading-relaxed">
-              Weekly updates on cutting-edge models, breakthrough tools, and what matters for builders and buyers.
-            </p>
-            <NewsletterBanner source="blog-post" />
+          <div className="p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center gap-5">
+            <div className="flex-1 min-w-0">
+              <h3 className="text-lg font-black leading-tight mb-1">
+                Stay ahead of the AI curve
+              </h3>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Weekly briefings on models, tools, and what matters.
+              </p>
+            </div>
+            <div className="sm:w-72 shrink-0">
+              <NewsletterBanner source="blog-post" />
+            </div>
           </div>
         </div>
 
