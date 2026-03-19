@@ -53,30 +53,34 @@ export async function generateCoverImage(
         Authorization: `Bearer ${process.env.XAI_API_KEY}`,
       },
       body: JSON.stringify({
-        model: 'grok-3-mini-fast',
-        max_tokens: 300,
-        temperature: 1.0,
+        model: 'grok-3-mini',
+        max_tokens: 400,
+        temperature: 0.9,
         messages: [{
           role: 'user',
-          content: `You are an art director creating a cover image for a blog post.
+          content: `You are a professional photographer planning a real photo shoot for a blog header image.
 
 ARTICLE TITLE: "${title}"
 TOPIC: ${topic}
 SUMMARY: ${excerpt}
 
-Write a single image generation prompt (2-3 sentences) for this specific article. The image should:
-- Directly illustrate the core concept of THIS article, not generic AI imagery
-- Use a distinct visual style (pick ONE: ${photorealistic ? 'photorealistic photography, studio lighting, high detail, 8K resolution, professional photography' : 'editorial illustration, isometric 3D, retro pixel art, watercolor, paper cutout collage, neon cyberpunk, studio photograph with dramatic lighting, vintage poster, flat vector, or ink sketch'})
-- Include specific scene details, objects, and composition that relate to the article content
-- Feature people with clear, expressive emotions where relevant
-- If a specific brand or company is mentioned in the title (e.g. Nvidia, OpenAI, Google, Meta), incorporate recognizable visual references to that brand: their signature colors, iconic product designs, or well-known logos rendered as physical objects in the scene. Make the brand identity unmistakable.
-- Be visually distinct from other tech blog headers
+Write a single image generation prompt (3-4 sentences) describing a REAL PHOTOGRAPH for this article.
 
-RULES:
-- No text, words, or letters in the image
+${photorealistic ? `MANDATORY STYLE: Photorealistic editorial photography. Describe it as if briefing a photographer:
+- Specify camera angle (eye-level, overhead, close-up macro, wide establishing shot)
+- Specify lighting (golden hour, studio softbox, neon ambient, overcast natural light, dramatic side-lit)
+- Specify lens feel (shallow depth of field with bokeh, wide-angle, telephoto compression)
+- Describe real physical materials, textures, and surfaces (brushed aluminum, glass reflections, concrete, wood grain)
+- If people are in the shot, describe their posture, clothing, and environment realistically
+- Reference real-world settings (modern office, server room, coffee shop, laboratory, workshop)` : `Pick ONE distinct visual style: editorial illustration, isometric 3D, retro pixel art, watercolor, paper cutout collage, neon cyberpunk, vintage poster, flat vector, or ink sketch.`}
+
+CRITICAL RULES:
+- NO text, words, letters, UI elements, or floating icons in the image
+- NO glowing orbs, abstract neural networks, or generic "AI brain" imagery
+- NO circuit boards unless the article is specifically about hardware
+- Describe a SPECIFIC SCENE with concrete objects, not abstract concepts
+- Think about what a real photographer would actually photograph to illustrate this topic
 - Format: widescreen 16:9 blog header
-- Be specific and concrete, not abstract or vague
-- Do NOT mention "cartoon" or "playful"
 
 Reply with ONLY the image prompt, nothing else.`,
         }],
