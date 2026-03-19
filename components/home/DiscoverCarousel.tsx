@@ -39,7 +39,7 @@ function FeedCard({ item }: { item: FeedItem }) {
   return (
     <Link
       href={item.href}
-      className="shrink-0 w-[220px] glass-card rounded-xl p-4 hover:border-primary/30 transition-all group"
+      className="shrink-0 w-[220px] rounded-xl p-4 border border-border/20 bg-background/60 backdrop-blur-sm hover:border-primary/30 hover:bg-background/80 transition-all group"
     >
       <div className="flex items-center gap-2 mb-2">
         <Icon className={`h-3.5 w-3.5 ${colorMap[item.type]}`} />
