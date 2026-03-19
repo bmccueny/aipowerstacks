@@ -30,6 +30,11 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'the-decoder.com' },
       { protocol: 'https', hostname: 'venturebeat.com' },
       { protocol: 'https', hostname: 'image.thum.io' },
+      { protocol: 'https', hostname: 'www.google.com' },
+      { protocol: 'https', hostname: 'avatars.githubusercontent.com' },
+      { protocol: 'https', hostname: 'ph-files.imgix.net' },
+      { protocol: 'https', hostname: 'custom.typingmind.com' },
+      { protocol: 'https', hostname: 'nexos.ai' },
     ],
   },
 }
