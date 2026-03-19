@@ -24,6 +24,7 @@
     "generate-tiretech-images": "npx tsx scripts/generate-tiretech-images.ts",
     "analyze-tiretech-images": "npx tsx scripts/analyze-tiretech-images.ts",
     "generate-tiretech-hero-video": "npx tsx scripts/generate-tiretech-hero-video.ts",
+    "regenerate-covers": "npx tsx scripts/regenerate-blog-covers.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },
