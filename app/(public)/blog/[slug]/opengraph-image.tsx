@@ -1,5 +1,6 @@
 import { ImageResponse } from 'next/og'
 import { createClient } from '@supabase/supabase-js'
+import { SITE_URL } from '@/lib/constants/site'
 
 export const alt = 'Blog Post Preview'
 export const size = {
@@ -30,7 +31,6 @@ async function getBlogPostBySlug(slug: string) {
 
   if (!post) return null
 
-  // Fetch author
   const { data: author } = await supabase
     .from('profiles')
     .select('display_name, username, avatar_url')
@@ -38,6 +38,12 @@ async function getBlogPostBySlug(slug: string) {
     .single()
 
   return { ...post, author: author || null }
+}
+
+function resolveImageUrl(url: string | null): string | null {
+  if (!url) return null
+  if (url.startsWith('http')) return url
+  return `${SITE_URL}${url}`
 }
 
 export default async function Image({ params }: { params: Promise<{ slug: string }> }) {
@@ -66,32 +72,57 @@ export default async function Image({ params }: { params: Promise<{ slug: string
     )
   }
 
+  const coverUrl = resolveImageUrl(post.cover_image_url)
   const tag = post.tags?.[0] ?? 'AI Briefing'
   const authorName = post.author?.display_name ?? 'AIPowerStacks Team'
-  const date = post.published_at
-    ? new Date(post.published_at).toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-      })
-    : ''
 
   return new ImageResponse(
     (
       <div
         style={{
-          background: '#0a0a0f',
           width: '100%',
           height: '100%',
           display: 'flex',
-          flexDirection: 'column',
-          fontFamily: 'sans-serif',
-          color: 'white',
           position: 'relative',
           overflow: 'hidden',
+          fontFamily: 'sans-serif',
+          color: 'white',
         }}
       >
-        {/* Accent gradient */}
+        {/* Cover image as full background */}
+        {coverUrl ? (
+          <img
+            src={coverUrl}
+            alt=""
+            width={1200}
+            height={630}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+            }}
+          />
+        ) : (
+          <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: '#0a0a0f' }} />
+        )}
+
+        {/* Dark gradient overlay for text readability */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.2) 100%)',
+            display: 'flex',
+          }}
+        />
+
+        {/* Accent gradient bar at top */}
         <div
           style={{
             position: 'absolute',
@@ -100,21 +131,24 @@ export default async function Image({ params }: { params: Promise<{ slug: string
             right: 0,
             height: '6px',
             background: 'linear-gradient(90deg, #f97316, #ef4444, #8b5cf6, #3b82f6)',
+            display: 'flex',
           }}
         />
 
-        {/* Content */}
+        {/* Content overlay */}
         <div
           style={{
+            position: 'relative',
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'space-between',
+            justifyContent: 'flex-end',
             height: '100%',
-            padding: '60px 70px 50px',
+            width: '100%',
+            padding: '50px 60px',
           }}
         >
-          {/* Top: tag + date */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          {/* Tag */}
+          <div style={{ display: 'flex', marginBottom: '16px' }}>
             <div
               style={{
                 background: '#f97316',
@@ -125,97 +159,61 @@ export default async function Image({ params }: { params: Promise<{ slug: string
                 letterSpacing: '0.08em',
                 padding: '6px 18px',
                 borderRadius: '999px',
+                display: 'flex',
               }}
             >
               {tag}
             </div>
-            {date && (
-              <div style={{ fontSize: 20, color: '#888', fontWeight: 600 }}>
-                {date}
-              </div>
-            )}
           </div>
 
-          {/* Middle: title */}
+          {/* Title */}
           <div
             style={{
-              fontSize: post.title.length > 60 ? 52 : 62,
+              fontSize: post.title.length > 60 ? 46 : 56,
               fontWeight: 900,
               lineHeight: 1.15,
               letterSpacing: '-0.03em',
               maxWidth: '90%',
               display: 'flex',
+              textShadow: '0 2px 20px rgba(0,0,0,0.8)',
+              marginBottom: '20px',
             }}
           >
             {post.title}
           </div>
 
-          {/* Bottom: author + branding */}
+          {/* Author + branding row */}
           <div
             style={{
               display: 'flex',
               justifyContent: 'space-between',
-              alignItems: 'flex-end',
+              alignItems: 'center',
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <div
                 style={{
-                  width: '44px',
-                  height: '44px',
+                  width: '40px',
+                  height: '40px',
                   borderRadius: '50%',
                   background: '#f97316',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: 22,
+                  fontSize: 20,
                   fontWeight: 800,
                   color: '#000',
                 }}
               >
                 {authorName[0]}
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                <div style={{ fontSize: 22, fontWeight: 700 }}>{authorName}</div>
-                <div style={{ fontSize: 16, color: '#666' }}>AIPowerStacks</div>
+              <div style={{ fontSize: 20, fontWeight: 700, display: 'flex' }}>
+                {authorName}
               </div>
             </div>
 
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-              }}
-            >
-              <div
-                style={{
-                  width: '36px',
-                  height: '36px',
-                  borderRadius: '8px',
-                  background: '#f97316',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <div
-                  style={{
-                    width: '20px',
-                    height: '14px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '3px',
-                  }}
-                >
-                  <div style={{ width: '100%', height: '3px', background: '#000', borderRadius: '2px' }} />
-                  <div style={{ width: '70%', height: '3px', background: '#000', borderRadius: '2px' }} />
-                  <div style={{ width: '45%', height: '3px', background: '#000', borderRadius: '2px' }} />
-                </div>
-              </div>
-              <div style={{ fontSize: 22, fontWeight: 700, color: '#999' }}>
-                aipowerstacks.com
-              </div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: 'rgba(255,255,255,0.7)', display: 'flex' }}>
+              aipowerstacks.com
             </div>
           </div>
         </div>
