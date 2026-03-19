@@ -1,4 +1,7 @@
+'use client'
+
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { Clock, Calendar } from 'lucide-react'
 import type { BlogPostSummary } from '@/lib/supabase/queries/blog'
@@ -26,7 +29,6 @@ function normalizeThumUrl(url: string | null): string | null {
         }
       } catch (error) {
         console.error('Error normalizing Thum.io URL:', error, url)
-        // Return original URL if parsing fails
       }
     }
   }
@@ -35,6 +37,7 @@ function normalizeThumUrl(url: string | null): string | null {
 }
 
 function AuthorLink({ author, size = 'sm' }: { author: BlogPostSummary['author']; size?: 'sm' | 'md' }) {
+  const router = useRouter()
   const avatarSize = size === 'md' ? 'h-6 w-6' : 'h-5 w-5'
   const textSize = size === 'md' ? 'text-[11px]' : 'text-[10px]'
   const fallbackSize = size === 'md' ? 'text-[10px]' : 'text-[8px]'
@@ -49,7 +52,7 @@ function AuthorLink({ author, size = 'sm' }: { author: BlogPostSummary['author']
           <span className={`${fallbackSize} font-black`}>{(author?.display_name?.[0] ?? 'A').toUpperCase()}</span>
         )}
       </div>
-      <span className={`${textSize} font-bold truncate group-hover/author:text-primary transition-colors`}>
+      <span className={`${textSize} font-bold truncate`}>
         {author?.display_name || 'AIPowerStacks Team'}
         {size === 'md' && author?.username && (
           <span className="text-muted-foreground ml-1.5 font-medium">@{author.username}</span>
@@ -60,9 +63,25 @@ function AuthorLink({ author, size = 'sm' }: { author: BlogPostSummary['author']
 
   if (author?.username) {
     return (
-      <Link href={`/curators/${author.username}`} className={`relative z-10 flex items-center ${gap} group/author`}>
+      <span
+        role="link"
+        tabIndex={0}
+        className={`flex items-center ${gap} cursor-pointer hover:text-primary transition-colors`}
+        onClick={(e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          router.push(`/curators/${author.username}`)
+        }}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault()
+            e.stopPropagation()
+            router.push(`/curators/${author.username}`)
+          }
+        }}
+      >
         {content}
-      </Link>
+      </span>
     )
   }
 
@@ -75,8 +94,7 @@ export function BlogCard({ post, featured = false }: { post: BlogPostSummary; fe
 
   if (featured) {
     return (
-      <div className="block group relative">
-        <Link href={`/blog/${post.slug}`} className="absolute inset-0 z-0" aria-label={post.title} />
+      <Link href={`/blog/${post.slug}`} className="block group">
         <div className="override grid h-full overflow-hidden rounded-lg brutalist-card-effect burn-glow-card no-underline lg:grid-cols-2">
           {coverImageUrl ? (
             <div className="relative aspect-[16/9] lg:aspect-auto lg:min-h-[320px] shrink-0">
@@ -102,13 +120,12 @@ export function BlogCard({ post, featured = false }: { post: BlogPostSummary; fe
             </div>
           </div>
         </div>
-      </div>
+      </Link>
     )
   }
 
   return (
-    <div className="block group h-full relative">
-      <Link href={`/blog/${post.slug}`} className="absolute inset-0 z-0" aria-label={post.title} />
+    <Link href={`/blog/${post.slug}`} className="block group h-full">
       <div className="override grid h-full overflow-hidden rounded-lg brutalist-card-effect burn-glow-card no-underline">
         {coverImageUrl ? (
           <div className="relative aspect-video shrink-0 overflow-hidden">
@@ -134,6 +151,6 @@ export function BlogCard({ post, featured = false }: { post: BlogPostSummary; fe
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   )
 }
