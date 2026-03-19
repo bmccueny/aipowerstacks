@@ -34,13 +34,49 @@ function normalizeThumUrl(url: string | null): string | null {
   return normalizedUrl
 }
 
+function AuthorLink({ author, size = 'sm' }: { author: BlogPostSummary['author']; size?: 'sm' | 'md' }) {
+  const avatarSize = size === 'md' ? 'h-6 w-6' : 'h-5 w-5'
+  const textSize = size === 'md' ? 'text-[11px]' : 'text-[10px]'
+  const fallbackSize = size === 'md' ? 'text-[10px]' : 'text-[8px]'
+  const gap = size === 'md' ? 'gap-3' : 'gap-2'
+
+  const content = (
+    <>
+      <div className={`${avatarSize} rounded-full glass-card border border-border/30 bg-primary/5 flex items-center justify-center overflow-hidden relative`}>
+        {author?.avatar_url ? (
+          <Image src={author.avatar_url} alt={author.display_name ?? ''} fill className="object-cover" />
+        ) : (
+          <span className={`${fallbackSize} font-black`}>{(author?.display_name?.[0] ?? 'A').toUpperCase()}</span>
+        )}
+      </div>
+      <span className={`${textSize} font-bold truncate group-hover/author:text-primary transition-colors`}>
+        {author?.display_name || 'AIPowerStacks Team'}
+        {size === 'md' && author?.username && (
+          <span className="text-muted-foreground ml-1.5 font-medium">@{author.username}</span>
+        )}
+      </span>
+    </>
+  )
+
+  if (author?.username) {
+    return (
+      <Link href={`/curators/${author.username}`} className={`relative z-10 flex items-center ${gap} group/author`}>
+        {content}
+      </Link>
+    )
+  }
+
+  return <div className={`flex items-center ${gap}`}>{content}</div>
+}
+
 export function BlogCard({ post, featured = false }: { post: BlogPostSummary; featured?: boolean }) {
   const date = post.published_at ? new Date(post.published_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : null
   const coverImageUrl = normalizeThumUrl(post.cover_image_url)
 
   if (featured) {
     return (
-      <Link href={`/blog/${post.slug}`} className="block group">
+      <div className="block group relative">
+        <Link href={`/blog/${post.slug}`} className="absolute inset-0 z-0" aria-label={post.title} />
         <div className="override grid h-full overflow-hidden rounded-lg brutalist-card-effect burn-glow-card no-underline lg:grid-cols-2">
           {coverImageUrl ? (
             <div className="relative aspect-[16/9] lg:aspect-auto lg:min-h-[320px] shrink-0">
@@ -52,20 +88,8 @@ export function BlogCard({ post, featured = false }: { post: BlogPostSummary; fe
             </div>
           )}
           <div className="p-7 flex flex-col justify-center">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="h-6 w-6 rounded-full glass-card border border-border/30 bg-primary/5 flex items-center justify-center overflow-hidden relative">
-                {post.author?.avatar_url ? (
-                  <Image src={post.author.avatar_url} alt={post.author.display_name ?? ''} fill className="object-cover" />
-                ) : (
-                  <span className="text-[10px] font-black">{(post.author?.display_name?.[0] ?? 'A').toUpperCase()}</span>
-                )}
-              </div>
-              <span className="text-[11px] font-bold">
-                {post.author?.display_name || 'AIPowerStacks Team'}
-                {post.author?.username && (
-                  <span className="text-muted-foreground ml-1.5 font-medium">@{post.author.username}</span>
-                )}
-              </span>
+            <div className="mb-4">
+              <AuthorLink author={post.author} size="md" />
             </div>
             {post.tags?.[0] && (
               <span className="text-xs font-semibold text-primary uppercase tracking-wider mb-3">{post.tags[0]}</span>
@@ -78,12 +102,13 @@ export function BlogCard({ post, featured = false }: { post: BlogPostSummary; fe
             </div>
           </div>
         </div>
-      </Link>
+      </div>
     )
   }
 
   return (
-    <Link href={`/blog/${post.slug}`} className="block group h-full">
+    <div className="block group h-full relative">
+      <Link href={`/blog/${post.slug}`} className="absolute inset-0 z-0" aria-label={post.title} />
       <div className="override grid h-full overflow-hidden rounded-lg brutalist-card-effect burn-glow-card no-underline">
         {coverImageUrl ? (
           <div className="relative aspect-video shrink-0 overflow-hidden">
@@ -95,17 +120,8 @@ export function BlogCard({ post, featured = false }: { post: BlogPostSummary; fe
           </div>
         )}
         <div className="p-5 flex flex-col flex-1">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="h-5 w-5 rounded-full glass-card border border-border/30 bg-primary/5 flex items-center justify-center overflow-hidden relative">
-              {post.author?.avatar_url ? (
-                <Image src={post.author.avatar_url} alt={post.author.display_name ?? ''} fill className="object-cover" />
-              ) : (
-                <span className="text-[8px] font-black">{(post.author?.display_name?.[0] ?? 'A').toUpperCase()}</span>
-              )}
-            </div>
-            <span className="text-[10px] font-bold truncate">
-              {post.author?.display_name || 'AIPowerStacks Team'}
-            </span>
+          <div className="mb-3">
+            <AuthorLink author={post.author} size="sm" />
           </div>
           {post.tags?.[0] && (
             <span className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">{post.tags[0]}</span>
@@ -118,6 +134,6 @@ export function BlogCard({ post, featured = false }: { post: BlogPostSummary; fe
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   )
 }

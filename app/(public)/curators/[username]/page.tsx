@@ -21,6 +21,8 @@ const SOCIAL_PLATFORMS: Record<string, { label: string; icon: LucideIcon; color:
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { DirectMessageDialog } from '@/components/curators/DirectMessageDialog'
+import { BlogCard } from '@/components/blog/BlogCard'
+import type { BlogPostSummary } from '@/lib/supabase/queries/blog'
 
 export async function generateMetadata({
   params,
@@ -88,7 +90,7 @@ export default async function CuratorPage({
   }
   const isOwner = user?.id === profile.id
 
-  const [stacksRes, followerRes, followingRes, isFollowingRes, followerListRes, followingListRes, reviewsRes] = await Promise.all([
+  const [stacksRes, followerRes, followingRes, isFollowingRes, followerListRes, followingListRes, reviewsRes, blogPostsRes] = await Promise.all([
     supabase
       .from('collections')
       .select(`
@@ -136,7 +138,14 @@ export default async function CuratorPage({
       `)
       .eq('user_id', profile.id)
       .eq('status', 'published')
-      .order('created_at', { ascending: false })
+      .order('created_at', { ascending: false }),
+    supabase
+      .from('blog_posts')
+      .select('id, title, slug, excerpt, cover_image_url, tags, reading_time_min, published_at, view_count, author_id')
+      .eq('author_id', profile.id)
+      .eq('status', 'published')
+      .order('published_at', { ascending: false })
+      .limit(6)
   ])
 
   const stacks = (stacksRes.data ?? []) as any[]
@@ -149,6 +158,11 @@ export default async function CuratorPage({
   const reviews = (reviewsRes.data ?? []) as any[]
   const reviewsCount = reviews.length
   const totalHelpfulClicks = reviews.reduce((acc, r) => acc + (r.helpful_count || 0), 0)
+
+  const blogPosts: BlogPostSummary[] = ((blogPostsRes.data ?? []) as any[]).map(p => ({
+    ...p,
+    author: { display_name: profile.display_name, username: profile.username, avatar_url: profile.avatar_url },
+  }))
 
   // Calculate membership duration
   const joinedDate = new Date(profile.created_at)
@@ -222,6 +236,18 @@ export default async function CuratorPage({
             </div>
           </div>
         </div>
+
+        {/* Published Articles */}
+        {blogPosts.length > 0 && (
+          <section>
+            <h2 className="text-xl font-bold mb-4">Published Articles</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {blogPosts.map((post) => (
+                <BlogCard key={post.id} post={post} />
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* Stacks grid */}
         <section>

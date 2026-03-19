@@ -168,26 +168,38 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             </h1>
 
             <div className="flex items-center gap-6">
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full border-2 border-black bg-primary/20 flex items-center justify-center font-black overflow-hidden relative">
-                  {post.author?.avatar_url ? (
-                    <Image src={post.author.avatar_url} alt={post.author.display_name ?? ''} fill className="object-cover" />
-                  ) : (
-                    <span className="text-sm">{(post.author?.display_name?.[0] ?? 'A').toUpperCase()}</span>
-                  )}
-                </div>
-                <div>
-                  <p className="text-sm font-black leading-none">
-                    {post.author?.display_name || 'AIPowerStacks Team'}
-                    {post.author?.username && (
-                      <span className="text-muted-foreground ml-2 font-bold">@{post.author.username}</span>
+              {post.author?.username ? (
+                <Link href={`/curators/${post.author.username}`} className="flex items-center gap-3 group/author">
+                  <div className="h-10 w-10 rounded-full border-2 border-black bg-primary/20 flex items-center justify-center font-black overflow-hidden relative">
+                    {post.author?.avatar_url ? (
+                      <Image src={post.author.avatar_url} alt={post.author.display_name ?? ''} fill className="object-cover" />
+                    ) : (
+                      <span className="text-sm">{(post.author?.display_name?.[0] ?? 'A').toUpperCase()}</span>
                     )}
-                  </p>
-                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mt-1">
-                    {post.reading_time_min ? `${post.reading_time_min} min read` : 'Briefing'}
-                  </p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-black leading-none group-hover/author:text-primary transition-colors">
+                      {post.author?.display_name || 'AIPowerStacks Team'}
+                      <span className="text-muted-foreground ml-2 font-bold">@{post.author.username}</span>
+                    </p>
+                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mt-1">
+                      {post.reading_time_min ? `${post.reading_time_min} min read` : 'Briefing'}
+                    </p>
+                  </div>
+                </Link>
+              ) : (
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-full border-2 border-black bg-primary/20 flex items-center justify-center font-black overflow-hidden relative">
+                    <span className="text-sm">{(post.author?.display_name?.[0] ?? 'A').toUpperCase()}</span>
+                  </div>
+                  <div>
+                    <p className="text-sm font-black leading-none">{post.author?.display_name || 'AIPowerStacks Team'}</p>
+                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mt-1">
+                      {post.reading_time_min ? `${post.reading_time_min} min read` : 'Briefing'}
+                    </p>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
 
