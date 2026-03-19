@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowRight, ChevronRight, ExternalLink, Newspaper, Sparkles, Zap, ShieldCheck, TrendingUp, Layers } from 'lucide-react'
+import { ArrowRight, ChevronRight, Newspaper, Sparkles, ShieldCheck, TrendingUp, Layers } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Navbar } from '@/components/layout/Navbar'
@@ -11,7 +11,7 @@ import { DiscoverFeed } from '@/components/home/DiscoverFeed'
 import { ToolCard } from '@/components/tools/ToolCard'
 import { CategoryIcon } from '@/components/ui/CategoryIcon'
 import { getAllCategories } from '@/lib/supabase/queries/categories'
-import { getLatestAINews } from '@/lib/supabase/queries/news'
+// News wire removed — keeping blog posts only
 import { getLatestTools, getSuperTools, getSiteStats, getFeaturedStack } from '@/lib/supabase/queries/tools'
 import { getLatestPosts } from '@/lib/supabase/queries/blog'
 
@@ -19,35 +19,13 @@ import { JsonLd } from '@/components/common/JsonLd'
 import { SITE_URL } from '@/lib/constants/site'
 import { createClient } from '@/lib/supabase/server'
 
-type CombinedNewsItem = {
+type BlogNewsItem = {
   id: string
   title: string
   url: string
-  summary: string | null
   source_name: string
-  source_url: string | null
   image_url: string | null
   published_at: string
-  kind: 'rss' | 'briefing'
-}
-
-const SITE_BASE_URL = SITE_URL
-
-function toAbsoluteUrl(url: string) {
-  if (url.startsWith('http')) return url
-  return `${SITE_BASE_URL}${url.startsWith('/') ? url : `/${url}`}`
-}
-
-function buildPreviewImageUrl(articleUrl: string): string {
-  return `https://image.thum.io/get/width/1200/noanimate/${encodeURIComponent(articleUrl)}`
-}
-
-function normalizeNewsImageUrl(imageUrl: string | null, articleUrl: string): string {
-  if (!imageUrl) return buildPreviewImageUrl(articleUrl)
-  if (imageUrl.startsWith('https://image.thum.io/get/') && imageUrl.includes('/noanimate/https://')) {
-    return buildPreviewImageUrl(articleUrl)
-  }
-  return imageUrl
 }
 
 export const metadata = {
@@ -68,12 +46,11 @@ export default async function HomePage() {
     // Corrupted auth cookie
   }
 
-  const [categories, latestTools, superTools, latestNews, latestPosts, siteStats, stacksResult, featuredStack] = await Promise.all([
+  const [categories, latestTools, superTools, latestPosts, siteStats, stacksResult, featuredStack] = await Promise.all([
     getAllCategories(),
     getLatestTools(6),
     getSuperTools(6),
-    getLatestAINews(6),
-    getLatestPosts(3),
+    getLatestPosts(6),
     getSiteStats(),
     user
       ? supabase.from('collections').select('id', { count: 'exact', head: true }).eq('user_id', user.id)
@@ -85,29 +62,16 @@ export default async function HomePage() {
 
   const featuredCategories = categories.filter((c) => c.sort_order > 0).slice(0, 12)
 
-  const briefingItems: CombinedNewsItem[] = latestPosts
+  const briefingItems: BlogNewsItem[] = latestPosts
     .filter((post) => post.published_at)
     .map((post) => ({
-      id: `briefing-${post.id}`,
+      id: post.id,
       title: post.title,
       url: `/blog/${post.slug}`,
-      summary: post.excerpt,
       source_name: post.author?.display_name ?? 'AIPowerStacks',
-      source_url: null,
       image_url: post.cover_image_url,
       published_at: post.published_at ?? new Date().toISOString(),
-      kind: 'briefing',
     }))
-
-  const rssItems: CombinedNewsItem[] = latestNews.slice(0, 3).map((item) => {
-    const articleUrl = toAbsoluteUrl(item.url)
-    return {
-      ...item,
-      url: articleUrl,
-      image_url: normalizeNewsImageUrl(item.image_url, articleUrl),
-      kind: 'rss',
-    }
-  })
 
   const toolCount = siteStats.toolCount
   const reviewCount = siteStats.reviewCount
@@ -377,122 +341,58 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* News */}
+        {/* Latest Blog Posts */}
         <section className="border-y-[1px] border-foreground bg-background">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div className="flex items-center justify-center mb-8">
+            <div className="flex items-center justify-between mb-8">
               <h2 className="text-lg font-semibold text-foreground flex items-center gap-2.5">
-                <span className="text-primary font-bold">&#x27E9;</span> AI Industry News & Analysis
+                <Newspaper className="h-4 w-4 text-primary" /> Latest Briefings
               </h2>
+              <Link href="/blog" className="text-xs font-semibold text-primary hover:underline flex items-center gap-1">
+                All posts <ChevronRight className="h-3 w-3" />
+              </Link>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-              {/* Latest Blog Posts */}
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-                    <Newspaper className="h-4 w-4 text-primary" /> Latest Briefings
-                  </h3>
-                  <Link href="/blog" className="text-xs font-semibold text-primary hover:underline flex items-center gap-1">
-                    All posts <ChevronRight className="h-3 w-3" />
+            {briefingItems.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {briefingItems.map((news) => (
+                  <Link
+                    key={news.id}
+                    href={news.url}
+                    className="override grid grid-cols-[100px_1fr] sm:grid-cols-[120px_1fr] h-full overflow-hidden rounded-lg brutalist-card-effect burn-glow-card no-underline group"
+                  >
+                    {news.image_url ? (
+                      <div className="relative h-full min-h-[88px] overflow-hidden border-r border-foreground/10">
+                        <Image
+                          src={news.image_url}
+                          alt={news.title}
+                          fill
+                          className="object-cover transition-transform duration-500"
+                        />
+                      </div>
+                    ) : (
+                      <div className="h-full min-h-[88px] bg-muted/30 border-r border-foreground/10" />
+                    )}
+                    <div className="p-3 sm:p-4 flex flex-col justify-center gap-1.5">
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
+                        {news.source_name}
+                      </span>
+                      <h4 className="font-bold text-sm leading-snug line-clamp-2 group-hover:text-primary transition-colors">
+                        {news.title}
+                      </h4>
+                      <span className="text-xs text-muted-foreground">
+                        {new Date(news.published_at).toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric',
+                        })}
+                      </span>
+                    </div>
                   </Link>
-                </div>
-                {briefingItems.length > 0 ? (
-                  <div className="space-y-4">
-                    {briefingItems.map((news) => (
-                      <Link
-                        key={news.id}
-                        href={news.url}
-                        className="override grid grid-cols-[100px_1fr] sm:grid-cols-[140px_1fr] h-full overflow-hidden rounded-lg brutalist-card-effect burn-glow-card no-underline group"
-                      >
-                        {news.image_url ? (
-                          <div className="relative h-full min-h-[88px] overflow-hidden border-r border-foreground/10">
-                            <Image
-                              src={news.image_url}
-                              alt={news.title}
-                              fill
-                              className="object-cover transition-transform duration-500"
-                            />
-                          </div>
-                        ) : (
-                          <div className="h-full min-h-[88px] bg-muted/30 border-r border-foreground/10" />
-                        )}
-                        <div className="p-3 sm:p-4 flex flex-col justify-center gap-1.5">
-                          <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
-                            {news.source_name}
-                          </span>
-                          <h4 className="font-bold text-sm leading-snug line-clamp-2 group-hover:text-primary transition-colors">
-                            {news.title}
-                          </h4>
-                          <span className="text-xs text-muted-foreground">
-                            {new Date(news.published_at).toLocaleDateString('en-US', {
-                              month: 'short',
-                              day: 'numeric',
-                            })}
-                          </span>
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="rounded-lg border border-border/50 p-6 text-center text-sm text-muted-foreground">No briefings yet.</div>
-                )}
+                ))}
               </div>
-
-              {/* Latest News Articles */}
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-                    <Zap className="h-4 w-4 text-primary" /> News Wire
-                  </h3>
-                </div>
-                {rssItems.length > 0 ? (
-                  <div className="space-y-4">
-                    {rssItems.map((news) => (
-                      <a
-                        key={news.id}
-                        href={news.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="override grid grid-cols-[100px_1fr] sm:grid-cols-[140px_1fr] h-full overflow-hidden rounded-lg brutalist-card-effect burn-glow-card no-underline group"
-                      >
-                        {news.image_url ? (
-                          <div className="relative h-full min-h-[88px] overflow-hidden border-r border-foreground/10">
-                            <Image
-                              src={news.image_url}
-                              alt={news.title}
-                              fill
-                              className="object-cover transition-transform duration-500"
-                            />
-                          </div>
-                        ) : (
-                          <div className="h-full min-h-[88px] bg-muted/30 border-r border-foreground/10" />
-                        )}
-                        <div className="p-3 sm:p-4 flex flex-col justify-center gap-1.5">
-                          <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
-                            {news.source_name}
-                          </span>
-                          <h4 className="font-bold text-sm leading-snug line-clamp-2 group-hover:text-primary transition-colors">
-                            {news.title}
-                          </h4>
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs text-muted-foreground">
-                              {new Date(news.published_at).toLocaleDateString('en-US', {
-                                month: 'short',
-                                day: 'numeric',
-                              })}
-                            </span>
-                            <ExternalLink className="h-3 w-3 text-muted-foreground/50" />
-                          </div>
-                        </div>
-                      </a>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="rounded-lg border border-border/50 p-6 text-center text-sm text-muted-foreground">No news yet.</div>
-                )}
-              </div>
-            </div>
+            ) : (
+              <div className="rounded-lg border border-border/50 p-6 text-center text-sm text-muted-foreground">No briefings yet.</div>
+            )}
           </div>
         </section>
       </main>

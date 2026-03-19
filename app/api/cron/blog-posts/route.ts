@@ -603,7 +603,7 @@ Respond in EXACTLY this JSON format (no extra text before or after):
 
 /* ── Route handler ─────────────────────────────────────────────────────────── */
 
-export const maxDuration = 120 // Vercel function timeout (seconds)
+export const maxDuration = 60 // Vercel Hobby plan limit
 
 export async function GET(request: Request) {
   // Auth check
@@ -619,131 +619,88 @@ export async function GET(request: Request) {
 
   const supabase = createAdminClient()
 
-  // Step 1: Pick 3 random editors and 3 random (non-overlapping) topics
-  const selectedEditors = pickRandomEditors(3)
-  const selectedTopics = pickRandomTopics(3)
+  // Generate ONE post per invocation to stay within Vercel timeout
+  const editor = pickRandomEditors(1)[0]
+  const topic = pickRandomTopics(1)[0]
+  const topicConfig = TOPIC_SOURCES[topic]
 
-  // Step 2: For each post, scrape topic-specific sources, then generate
-  const results: Array<{
-    editor: string
-    title: string
-    slug: string
-    topic: string
-    status: string
-    sources: { reddit: number; youtube: number; twitter: number; transcripts: number }
-  }> = []
+  try {
+    // Scrape sources specific to this topic
+    const [postReddit, youtubeResult, postTwitter] = await Promise.all([
+      scrapeReddit(topicConfig.subreddits),
+      scrapeYouTube(topicConfig.ytdlpQueries, topicConfig.ytSearches),
+      scrapeTwitter(topicConfig.twitterQueries),
+    ])
+    const { items: postYoutube, transcripts: ytTranscripts } = youtubeResult
 
-  for (let i = 0; i < 3; i++) {
-    const editor = selectedEditors[i]
-    const topic = selectedTopics[i]
-    const topicConfig = TOPIC_SOURCES[topic]
-
-    try {
-      // Scrape sources specific to THIS topic
-      const [postReddit, youtubeResult, postTwitter] = await Promise.all([
-        scrapeReddit(topicConfig.subreddits),
-        scrapeYouTube(topicConfig.ytdlpQueries, topicConfig.ytSearches),
-        scrapeTwitter(topicConfig.twitterQueries),
-      ])
-      const { items: postYoutube, transcripts: ytTranscripts } = youtubeResult
-
-      const totalSources = postReddit.length + postYoutube.length + postTwitter.length
-      if (totalSources === 0) {
-        results.push({
-          editor: editor.name,
-          title: '(no sources)',
-          slug: '',
-          topic,
-          status: 'skipped: no source material for this topic',
-          sources: { reddit: 0, youtube: 0, twitter: 0, transcripts: 0 },
-        })
-        continue
-      }
-
-      // Deep-scrape top URLs for this post's sources
-      const topUrls = [
-        ...postReddit.slice(0, 1).map((r) => r.url),
-        ...postYoutube.slice(0, 1).map((y) => y.url),
-      ]
-      const scrapedContents = await Promise.all(topUrls.map(scrapeUrl))
-      const scrapedParts = scrapedContents
-        .filter(Boolean)
-        .map((c, idx) => `--- Web Source ${idx + 1} ---\n${c}`)
-
-      // Add YouTube transcripts
-      for (const [url, transcript] of ytTranscripts) {
-        const video = postYoutube.find((y) => y.url === url)
-        scrapedParts.push(`--- YouTube Transcript: "${video?.title ?? 'Unknown'}" ---\n${transcript}`)
-      }
-
-      const scrapedContent = scrapedParts.join('\n\n')
-
-      const post = await generateBlogPost(
-        editor,
-        topic,
-        postReddit,
-        postYoutube,
-        postTwitter,
-        scrapedContent,
-      )
-
-      // Insert into database
-      const { error } = await supabase.from('blog_posts').upsert(
-        {
-          title: post.title,
-          slug: post.slug,
-          excerpt: post.excerpt,
-          content: post.content,
-          cover_image_url: post.cover_image_url,
-          author_id: editor.id,
-          tags: post.tags,
-          status: 'published' as const,
-          published_at: new Date().toISOString(),
-          reading_time_min: post.reading_time_min,
-          is_featured: false,
-        },
-        { onConflict: 'slug' },
-      )
-
-      if (error) {
-        results.push({
-          editor: editor.name,
-          title: post.title,
-          slug: post.slug,
-          topic,
-          status: `db error: ${error.message}`,
-          sources: { reddit: postReddit.length, youtube: postYoutube.length, twitter: postTwitter.length, transcripts: ytTranscripts.size },
-        })
-      } else {
-        results.push({
-          editor: editor.name,
-          title: post.title,
-          slug: post.slug,
-          topic,
-          status: 'published',
-          sources: { reddit: postReddit.length, youtube: postYoutube.length, twitter: postTwitter.length, transcripts: ytTranscripts.size },
-        })
-      }
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : String(err)
-      results.push({
-        editor: editor.name,
-        title: '(generation failed)',
-        slug: '',
-        topic,
-        status: `error: ${msg.slice(0, 200)}`,
-        sources: { reddit: 0, youtube: 0, twitter: 0, transcripts: 0 },
+    const totalSources = postReddit.length + postYoutube.length + postTwitter.length
+    if (totalSources === 0) {
+      return NextResponse.json({
+        ok: true,
+        published: 0,
+        result: { editor: editor.name, topic, status: 'skipped: no source material' },
       })
     }
-  }
 
-  return NextResponse.json({
-    ok: true,
-    tools: {
-      yt_dlp: HAS_YTDLP,
-      xreach: HAS_XREACH,
-    },
-    published: results.filter((r) => r.status === 'published').length,
-    results,
-  })
+    // Deep-scrape top URLs
+    const topUrls = [
+      ...postReddit.slice(0, 1).map((r) => r.url),
+      ...postYoutube.slice(0, 1).map((y) => y.url),
+    ]
+    const scrapedContents = await Promise.all(topUrls.map(scrapeUrl))
+    const scrapedParts = scrapedContents
+      .filter(Boolean)
+      .map((c, idx) => `--- Web Source ${idx + 1} ---\n${c}`)
+
+    for (const [url, transcript] of ytTranscripts) {
+      const video = postYoutube.find((y) => y.url === url)
+      scrapedParts.push(`--- YouTube Transcript: "${video?.title ?? 'Unknown'}" ---\n${transcript}`)
+    }
+
+    const post = await generateBlogPost(
+      editor,
+      topic,
+      postReddit,
+      postYoutube,
+      postTwitter,
+      scrapedParts.join('\n\n'),
+    )
+
+    const { error } = await supabase.from('blog_posts').upsert(
+      {
+        title: post.title,
+        slug: post.slug,
+        excerpt: post.excerpt,
+        content: post.content,
+        cover_image_url: post.cover_image_url,
+        author_id: editor.id,
+        tags: post.tags,
+        status: 'published' as const,
+        published_at: new Date().toISOString(),
+        reading_time_min: post.reading_time_min,
+        is_featured: false,
+      },
+      { onConflict: 'slug' },
+    )
+
+    return NextResponse.json({
+      ok: true,
+      published: error ? 0 : 1,
+      result: {
+        editor: editor.name,
+        title: post.title,
+        slug: post.slug,
+        topic,
+        status: error ? `db error: ${error.message}` : 'published',
+        sources: { reddit: postReddit.length, youtube: postYoutube.length, twitter: postTwitter.length, transcripts: ytTranscripts.size },
+      },
+    })
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err)
+    return NextResponse.json({
+      ok: false,
+      published: 0,
+      result: { editor: editor.name, topic, status: `error: ${msg.slice(0, 200)}` },
+    }, { status: 500 })
+  }
 }

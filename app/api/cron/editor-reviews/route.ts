@@ -244,58 +244,54 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const supabase = createAdminClient()
-  const results: Array<{
-    editor: string
-    tool: string
-    rating: number
-    status: string
-  }> = []
-
-  for (const [name, editor] of Object.entries(EDITORS)) {
-    try {
-      const tool = await pickUnreviewedTool(supabase, editor.id)
-
-      if (!tool) {
-        results.push({ editor: name, tool: '—', rating: 0, status: 'no unreviewed tools' })
-        continue
-      }
-
-      const review = await generateReview(name, editor.voice, tool)
-
-      const { error } = await supabase.from('reviews').insert({
-        tool_id: tool.id,
-        user_id: editor.id,
-        rating: review.rating,
-        body: review.body,
-        status: 'published',
-        is_verified: true,
-      })
-
-      if (error) {
-        results.push({
-          editor: name,
-          tool: tool.name,
-          rating: review.rating,
-          status: `db error: ${error.message}`,
-        })
-      } else {
-        results.push({
-          editor: name,
-          tool: tool.name,
-          rating: review.rating,
-          status: 'published',
-        })
-      }
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : String(err)
-      results.push({ editor: name, tool: '?', rating: 0, status: `error: ${msg}` })
-    }
+  if (!process.env.XAI_API_KEY) {
+    return NextResponse.json({ error: 'XAI_API_KEY not set' }, { status: 500 })
   }
 
-  return NextResponse.json({
-    ok: true,
-    generated: results.filter((r) => r.status === 'published').length,
-    results,
-  })
+  const supabase = createAdminClient()
+
+  // Pick ONE random editor per invocation to stay within Vercel timeout
+  const editorEntries = Object.entries(EDITORS)
+  const [name, editor] = editorEntries[Math.floor(Math.random() * editorEntries.length)]
+
+  try {
+    const tool = await pickUnreviewedTool(supabase, editor.id)
+
+    if (!tool) {
+      return NextResponse.json({
+        ok: true,
+        generated: 0,
+        result: { editor: name, tool: '—', rating: 0, status: 'no unreviewed tools' },
+      })
+    }
+
+    const review = await generateReview(name, editor.voice, tool)
+
+    const { error } = await supabase.from('reviews').insert({
+      tool_id: tool.id,
+      user_id: editor.id,
+      rating: review.rating,
+      body: review.body,
+      status: 'published',
+      is_verified: true,
+    })
+
+    return NextResponse.json({
+      ok: true,
+      generated: error ? 0 : 1,
+      result: {
+        editor: name,
+        tool: tool.name,
+        rating: review.rating,
+        status: error ? `db error: ${error.message}` : 'published',
+      },
+    })
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err)
+    return NextResponse.json({
+      ok: false,
+      generated: 0,
+      result: { editor: name, tool: '?', rating: 0, status: `error: ${msg}` },
+    }, { status: 500 })
+  }
 }
