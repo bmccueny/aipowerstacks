@@ -65,14 +65,14 @@ export const metadata: Metadata = {
     siteName: 'AIPowerStacks',
     title: 'AIPowerStacks | Discover & Compare AI Tools',
     description: 'Find, compare, and shortlist AI tools in seconds. Verified listings with real user reviews, updated daily.',
-    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'AIPowerStacks - Discover & Compare AI Tools' }],
+    images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'AIPowerStacks - Discover & Compare AI Tools' }],
   },
   twitter: {
     card: 'summary_large_image',
     site: '@aipowerstacks',
     title: 'AIPowerStacks | Discover & Compare AI Tools',
     description: 'Find, compare, and shortlist AI tools in seconds. Verified listings with real user reviews, updated daily.',
-    images: ['/og-image.png'],
+    images: ['/og-image.jpg'],
   },
   robots: {
     index: true,
