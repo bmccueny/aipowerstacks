@@ -95,74 +95,36 @@ export async function generateCoverImage(
         temperature: 0.9,
         messages: [{
           role: 'user',
-          content: `You are a YouTube thumbnail designer creating a click-worthy blog cover image.
+          content: `You write image generation prompts for blog cover thumbnails.
 
 ARTICLE TITLE: "${title}"
 TOPIC: ${topic}
 SUMMARY: ${excerpt}
 
-You must return TWO things in this exact format:
+Return TWO things in this exact format:
 
-HEADLINE: [3-5 high-impact words that create urgency/curiosity, e.g., "GAME OVER", "NO WAY", "HUGE MISTAKE", "$0 COST", "NEVER GOING BACK"]
-PROMPT: [3-4 sentence image generation prompt]
+HEADLINE: [3-5 ALL CAPS power words for text overlay, e.g., "GAME OVER", "NEVER GOING BACK", "$0 COST"]
+PROMPT: [A single vivid paragraph, 2-4 sentences max]
 
-For the HEADLINE (bold sans-serif font rules):
-- 3 to 5 short, punchy words — NOT full sentences. If someone has to stop to read, they'll keep scrolling.
-- Use power words: FREE, SECRET, BROKEN, IMPOSSIBLE, INSANE, SHOCKING, NEVER AGAIN
-- Must relate to the article's core hook — create a "curiosity gap"
-- ALL CAPS
-- Must pass the "squint test" — if you can't read it while squinting, it's too long
+HEADLINE RULES:
+- 3-5 short punchy words, ALL CAPS
+- Power words: FREE, SECRET, BROKEN, IMPOSSIBLE, INSANE, SHOCKING
+- Must create a curiosity gap related to the article
 
-For the PROMPT, follow ALL of these rules:
+PROMPT RULES — write it like this example:
+"A high-contrast, wide-angle 16:9 cinematic shot of a young man with a shocked facial expression, mouth agape, standing in front of a giant, glowing mountain of gold coins. Hyper-realistic details, vibrant saturated colors with neon yellow highlights. The background is a slightly blurred, high-tech vault. Soft white outline around the subject to make him pop. 8k resolution, professional lighting, intense energy."
 
-1. HIGH-CONTRAST & VIBRANT COLORS
-- Bright, highly saturated colors (red, yellow, orange) to trigger urgency and excitement
-- Pair complementary colors that "pop": blue/orange, yellow/black, red/teal, yellow/purple
-- Heavy saturation and sharpness throughout
+Your prompt MUST include ALL of these elements:
+1. A person with a dramatic facial expression (shocked, excited, jaw-dropped, mind-blown) — reference a real celebrity then modify 2-3 features so it's unique (e.g., "resembles a younger Pedro Pascal but with a buzzcut and glasses")
+2. A vivid, article-relevant scene or prop that creates visual storytelling (NOT abstract AI imagery)
+3. Hyper-realistic details, 8k resolution, professional cinematic lighting
+4. Vibrant saturated colors with a complementary color pair (orange/teal, red/blue, yellow/purple)
+5. Soft white outline or glow around the subject to separate from background
+6. Slightly blurred background, shallow depth of field
+7. 16:9 widescreen format
+8. NO text, NO UI elements, NO gradients/vignettes in the image
 
-2. EXPRESSIVE HUMAN FACES (PHOTOREALISTIC — USE CELEBRITY REFERENCES)
-- Close-up or medium shot with an EXAGGERATED emotion (shock, joy, confusion, awe)
-- The face must trigger a curiosity loop — the viewer wants to know what caused that reaction
-- Eye contact with the camera to create psychological connection
-- CRITICAL FOR REALISM: Reference a real celebrity and then modify their appearance so it's not a likeness copy. For example:
-  * "A man who resembles a younger Pedro Pascal but with a shaved head and glasses"
-  * "A woman with Zendaya's bone structure but with short red hair and freckles"
-  * "A man built like Chris Hemsworth but with dark skin, a beard, and wearing a lab coat"
-  * "A woman with Lupita Nyong'o's complexion and Florence Pugh's expressive eyes"
-- Always pick a DIFFERENT celebrity reference for each article — vary gender, ethnicity, and age
-- Then MODIFY at least 2-3 features (hair color/style, facial hair, glasses, skin tone, age) so the result is a unique person who looks real, not a copy
-- Specify real skin texture: pores, stubble, laugh lines, individual eyebrow hairs, catchlights in eyes
-- Reference real camera: "shot on Sony A7IV 85mm f/1.4" or "Canon R5 70-200mm f/2.8"
-
-3. THE "CURIOSITY GAP"
-- Tease information without giving away the ending
-- Use visual hooks: arrows pointing at something, circles highlighting a mystery, blurred objects
-- Juxtaposition of two conflicting things creates immediate tension (e.g., before/after, cheap/expensive)
-
-4. SIMPLE, FOCUSED COMPOSITION
-- ONE dominant focal point — do not crowd the image
-- Place the subject off-center (rule of thirds) for a dynamic composition
-- Do NOT add any gradient, vignette, or darkened area for text — the text overlay has its own outline and shadow
-- Keep the bottom-right corner clear (YouTube places the timestamp there)
-- White outlines or glow effects around the main subject to separate from background
-- Blur or darken the background aggressively
-
-5. DRAMATIC LIGHTING
-- Studio-style key light on face, moody rim lighting or colored gels
-- Cinematic color grading with shallow depth of field and bokeh
-
-${photorealistic ? `STYLE: Hyper-photorealistic editorial portrait, indistinguishable from a real photograph. Shot for a major tech magazine (Wired, TIME, Forbes, Bloomberg Businessweek). Describe the exact camera and lens (e.g., "Sony A7IV, 85mm f/1.4 at ISO 400"). Include micro-details: skin pores, individual hair strands, fabric texture, specular highlights on skin, catchlights in the eyes. The person should look like a real human being, not an AI rendering.` : `Pick ONE style: cinematic illustration, neon cyberpunk, bold graphic poster, or hyper-saturated editorial photo.`}
-
-CRITICAL IMAGE RULES:
-- NO text, words, letters, or UI elements in the image (text is composited separately)
-- NO glowing orbs, abstract neural networks, or generic "AI brain" imagery
-- NO crowded compositions — one focal point only
-- The person's expression is the HERO of the image
-- Format: widescreen 16:9 blog header
-
-Reply in this exact format:
-HEADLINE: [words]
-PROMPT: [prompt]`,
+Reply with ONLY the two lines. Nothing else.`,
         }],
       }),
     })
