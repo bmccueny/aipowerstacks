@@ -70,7 +70,7 @@ async function overlayTextOnImage(
   const bigStroke = Math.round(bigFontSize * 0.1)
 
   const y = h - Math.round(h * 0.10)
-  const tiltDeg = -3 // slight rotation for energy
+  const tiltDeg = 0
 
   // Split words around the keyword to render in segments
   let svgText: string
