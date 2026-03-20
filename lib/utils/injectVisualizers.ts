@@ -19,13 +19,13 @@ export async function injectVisualizers(content: string): Promise<string> {
 ARTICLE:
 ${content}
 
-Create 3-4 visualizer blocks to inject INTO the article between paragraphs.
+Create EXACTLY 2 visualizer blocks to inject INTO the article between paragraphs. No more, no less.
 
-TYPES:
-1. STAT CARDS ROW — 2-3 key numbers in bold cards side by side (e.g., "5 hrs/week saved", "$0 cost", "10x faster")
-2. COMPARISON BAR CHART — horizontal bars comparing things mentioned in the article
-3. CALLOUT BOX — highlighted insight with accent left border
-4. PROGRESS/PERCENTAGE INDICATOR — visual bars for metrics
+Pick the 2 BEST types for this article (never use the same type twice):
+- STAT CARDS ROW — 2-3 key numbers in bold cards side by side (e.g., "5 hrs/week saved", "$0 cost", "10x faster")
+- COMPARISON BAR CHART — horizontal bars comparing things mentioned in the article
+- CALLOUT BOX — ONE highlighted insight with accent left border (max 1 callout per article)
+- PROGRESS/PERCENTAGE INDICATOR — visual bars for metrics
 
 DESIGN (inline styles only):
 - Container: background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; padding: 24px; margin: 32px 0
@@ -58,6 +58,8 @@ Return ONLY the JSON array.` }],
     }
 
     if (!Array.isArray(visualizers) || visualizers.length === 0) return content
+    // Hard cap: never inject more than 2 visualizers
+    visualizers = visualizers.slice(0, 2)
 
     let enhanced = content
     for (const v of visualizers) {
