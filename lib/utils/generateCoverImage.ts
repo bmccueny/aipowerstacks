@@ -99,12 +99,21 @@ async function overlayTextOnImage(
     svgText = `<text x="${padding}" y="${y}" font-family="Impact, Arial Black, sans-serif" font-size="${baseFontSize}" font-weight="900" fill="${accent}" stroke="black" stroke-width="${strokeWidth}" paint-order="stroke fill" filter="url(#shadow)" letter-spacing="3">${escapeXml(words)}</text>`
   }
 
+  // Watermark: small, semi-transparent, top-right — opposite corner from headline
+  const wmFontSize = Math.round(w * 0.018)
+  const wmY = padding + wmFontSize
+  const watermark = `<text x="${w - padding}" y="${wmY}" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="${wmFontSize}" font-weight="600" fill="rgba(255,255,255,0.6)" filter="url(#wm-shadow)" letter-spacing="1">aipowerstacks.com</text>`
+
   const svg = `<svg width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg">
     <defs>
+      <filter id="wm-shadow" x="-10%" y="-10%" width="120%" height="120%">
+        <feDropShadow dx="1" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.5"/>
+      </filter>
       <filter id="shadow" x="-15%" y="-15%" width="130%" height="130%">
         <feDropShadow dx="3" dy="5" stdDeviation="4" flood-color="#000" flood-opacity="1"/>
       </filter>
     </defs>
+    ${watermark}
     <g transform="rotate(${tiltDeg} ${padding} ${y})">
       ${svgText}
     </g>
