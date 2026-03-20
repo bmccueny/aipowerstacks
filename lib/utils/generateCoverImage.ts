@@ -36,7 +36,7 @@ async function uploadToSupabaseStorage(imageBuffer: Buffer, filename: string): P
   }
 }
 
-/** Overlay 1-3 bold words onto the cover image (bottom-left, white with black shadow) */
+/** Overlay 3-5 bold words onto the cover image (bottom-left, avoiding bottom-right timestamp zone) */
 async function overlayTextOnImage(imageBuffer: ArrayBuffer, headlineWords: string): Promise<Buffer> {
   const words = headlineWords.trim().toUpperCase()
   if (!words) return Buffer.from(imageBuffer)
@@ -46,17 +46,20 @@ async function overlayTextOnImage(imageBuffer: ArrayBuffer, headlineWords: strin
   const w = metadata.width || 1280
   const h = metadata.height || 720
 
-  const fontSize = Math.round(w * 0.065)
+  // Large bold font that passes the "squint test" — readable even at thumbnail size
+  const fontSize = Math.round(w * 0.08)
+  const strokeWidth = Math.round(fontSize * 0.08)
   const padding = Math.round(w * 0.04)
-  const y = h - padding - fontSize
+  // Bottom-left but well above the bottom-right corner where YouTube puts the timestamp
+  const y = h - Math.round(h * 0.12)
 
   const svg = `<svg width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg">
     <defs>
-      <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
-        <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.8"/>
+      <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+        <feDropShadow dx="0" dy="5" stdDeviation="8" flood-color="#000" flood-opacity="0.9"/>
       </filter>
     </defs>
-    <text x="${padding}" y="${y}" font-family="Impact, Arial Black, sans-serif" font-size="${fontSize}" font-weight="900" fill="white" filter="url(#shadow)" letter-spacing="2">${escapeXml(words)}</text>
+    <text x="${padding}" y="${y}" font-family="Impact, Arial Black, Bebas Neue, sans-serif" font-size="${fontSize}" font-weight="900" fill="white" stroke="black" stroke-width="${strokeWidth}" paint-order="stroke fill" filter="url(#shadow)" letter-spacing="3">${escapeXml(words)}</text>
   </svg>`
 
   return img.composite([{ input: Buffer.from(svg), top: 0, left: 0 }]).jpeg({ quality: 90 }).toBuffer()
@@ -94,15 +97,15 @@ SUMMARY: ${excerpt}
 
 You must return TWO things in this exact format:
 
-HEADLINE: [1-3 high-impact words that create urgency/curiosity, e.g., "GAME OVER", "NO WAY", "HUGE MISTAKE", "$0 COST", "MIND-BLOWN"]
+HEADLINE: [3-5 high-impact words that create urgency/curiosity, e.g., "GAME OVER", "NO WAY", "HUGE MISTAKE", "$0 COST", "NEVER GOING BACK"]
 PROMPT: [3-4 sentence image generation prompt]
 
-For the HEADLINE (the 3-Word Rule):
-- 3 words or fewer (e.g., "I QUIT", "IT'S OVER", "NEVER AGAIN", "$0 COST")
-- Bold, punchy words that make people STOP scrolling
-- Use power words: FREE, SECRET, BROKEN, IMPOSSIBLE, INSANE, SHOCKING
+For the HEADLINE (bold sans-serif font rules):
+- 3 to 5 short, punchy words — NOT full sentences. If someone has to stop to read, they'll keep scrolling.
+- Use power words: FREE, SECRET, BROKEN, IMPOSSIBLE, INSANE, SHOCKING, NEVER AGAIN
 - Must relate to the article's core hook — create a "curiosity gap"
 - ALL CAPS
+- Must pass the "squint test" — if you can't read it while squinting, it's too long
 
 For the PROMPT, follow ALL of these rules:
 
@@ -125,7 +128,8 @@ For the PROMPT, follow ALL of these rules:
 4. SIMPLE, FOCUSED COMPOSITION
 - ONE dominant focal point — do not crowd the image
 - Place the subject off-center (rule of thirds) for a dynamic composition
-- Leave clear space for text overlay (bottom-left area should be darker/less busy)
+- Leave the bottom-left darker/less busy for text overlay
+- Keep the bottom-right corner completely clear (YouTube places the timestamp there)
 - White outlines or glow effects around the main subject to separate from background
 - Blur or darken the background aggressively
 
