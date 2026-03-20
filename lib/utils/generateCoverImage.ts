@@ -120,15 +120,19 @@ For the PROMPT, follow ALL of these rules:
 - Pair complementary colors that "pop": blue/orange, yellow/black, red/teal, yellow/purple
 - Heavy saturation and sharpness throughout
 
-2. EXPRESSIVE HUMAN FACES (PHOTOREALISTIC)
-- Close-up or medium shot of a person with an EXAGGERATED emotion (shock, joy, confusion, awe)
+2. EXPRESSIVE HUMAN FACES (PHOTOREALISTIC — USE CELEBRITY REFERENCES)
+- Close-up or medium shot with an EXAGGERATED emotion (shock, joy, confusion, awe)
 - The face must trigger a curiosity loop — the viewer wants to know what caused that reaction
 - Eye contact with the camera to create psychological connection
-- This is the single most important element — humans notice faces faster than anything else
-- PHOTOREALISM IS CRITICAL: Describe the person as if photographed for Wired, TIME, or Forbes magazine
-- Specify real skin texture (pores, stubble, laugh lines), natural hair, real clothing fabrics
-- Describe specific ethnicities, ages, and physical details to anchor realism
-- Reference real camera equipment: "shot on Sony A7IV with 85mm f/1.4 lens" or "Canon R5, 70-200mm f/2.8"
+- CRITICAL FOR REALISM: Reference a real celebrity and then modify their appearance so it's not a likeness copy. For example:
+  * "A man who resembles a younger Pedro Pascal but with a shaved head and glasses"
+  * "A woman with Zendaya's bone structure but with short red hair and freckles"
+  * "A man built like Chris Hemsworth but with dark skin, a beard, and wearing a lab coat"
+  * "A woman with Lupita Nyong'o's complexion and Florence Pugh's expressive eyes"
+- Always pick a DIFFERENT celebrity reference for each article — vary gender, ethnicity, and age
+- Then MODIFY at least 2-3 features (hair color/style, facial hair, glasses, skin tone, age) so the result is a unique person who looks real, not a copy
+- Specify real skin texture: pores, stubble, laugh lines, individual eyebrow hairs, catchlights in eyes
+- Reference real camera: "shot on Sony A7IV 85mm f/1.4" or "Canon R5 70-200mm f/2.8"
 
 3. THE "CURIOSITY GAP"
 - Tease information without giving away the ending
