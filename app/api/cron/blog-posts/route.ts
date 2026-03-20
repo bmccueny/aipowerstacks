@@ -469,6 +469,15 @@ async function generateBlogPost(
     .map((t) => `- ${t.title}${t.snippet ? `\n  ${t.snippet.slice(0, 300)}` : ''}`)
     .join('\n')
 
+  // Fetch tools and recent posts for internal linking
+  const supabase = createAdminClient()
+  const [{ data: toolRows }, { data: postRows }] = await Promise.all([
+    supabase.from('tools').select('name, slug').eq('status', 'published').order('upvote_count', { ascending: false }).limit(200),
+    supabase.from('blog_posts').select('title, slug').eq('status', 'published').order('published_at', { ascending: false }).limit(20),
+  ])
+  const toolList = (toolRows ?? []).map(t => `${t.name} -> /tools/${t.slug}`).join('\n')
+  const postList = (postRows ?? []).map(p => `${p.title} -> /blog/${p.slug}`).join('\n')
+
   const prompt = `You are ${editor.name}, a respected voice in AI, writing a blog post for AIPowerStacks (an AI tools directory).
 
 YOUR VOICE: ${editor.voice}
@@ -499,6 +508,13 @@ REQUIREMENTS:
 6. Reference specific tools, projects, or discussions from the source material when relevant
 7. Include 3 to 5 relevant tags (lowercase, single words or hyphenated compounds)
 8. Estimate reading time in minutes (typically 3 to 5)
+9. INTERNAL LINKING: When you mention a tool that exists on our site, link to it using <a href="/tools/SLUG">Tool Name</a>. When a topic relates to a recent blog post, link to it once using <a href="/blog/SLUG">short anchor text</a>. Keep it natural — max 3-4 tool links and 1-2 blog post links per article. Do NOT force links where they don't fit.
+
+== TOOLS ON OUR SITE (name -> URL path) ==
+${toolList}
+
+== RECENT BLOG POSTS (title -> URL path) ==
+${postList}
 
 PERSONALITY AND EMOTIONAL TEXTURE:
 - Write in first person. You have feelings, opinions, and reactions. Express them.
