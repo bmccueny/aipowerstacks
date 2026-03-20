@@ -21,13 +21,11 @@ ${content}
 
 Create EXACTLY 2 visualizer blocks. Each must visualize COMPLETELY DIFFERENT data — no overlapping metrics.
 
-BLOCK 1: A STAT CARDS ROW — pick 2-3 of the most impactful numbers/metrics from the article and display them as big bold stats side by side (e.g., "$0 cost", "5 hrs saved", "10x faster"). Numbers only — no paragraphs of text.
+BLOCK 1 — KEY NUMBERS: Extract 3 specific numbers or metrics mentioned in the article. Display as big bold stat cards in a row. These must be concrete data points FROM the text (hours, dollars, percentages, counts). Do NOT invent numbers.
 
-BLOCK 2: Pick ONE of these (whichever fits the article best):
-- COMPARISON BAR CHART — compare exactly 2 things (e.g., "Cloud AI vs Local AI") with 2-3 metrics as horizontal bars
-- PROGRESS INDICATOR — show 2-3 percentage bars for different metrics
+BLOCK 2 — TOOL/CONCEPT BREAKDOWN: List the specific tools, products, or techniques mentioned in the article as a simple visual list or horizontal bar chart showing their relative usefulness/relevance. This block is about WHAT was discussed, not numbers. Example: showing "LTX 2.3 — video gen", "OpenCode — data analysis", "LiteParse — document parsing" as labeled bars or cards.
 
-CRITICAL: Block 2 must NOT repeat any data from Block 1. If Block 1 shows time saved, Block 2 must show something else (cost, privacy, speed, etc).
+ABSOLUTE RULE: Block 1 shows NUMBERS. Block 2 shows NAMES/TOOLS. They must be completely different in nature — one is quantitative, one is qualitative. Never show the same information twice.
 
 DESIGN (inline styles only):
 - Container: background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; padding: 24px; margin: 32px 0
