@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { generateCoverImage } from '@/lib/utils/generateCoverImage'
+import { injectVisualizers } from '@/lib/utils/injectVisualizers'
 
 /* ── Editor personas (same as editor-reviews) ─────────────────────────────── */
 
@@ -571,7 +572,7 @@ Respond in EXACTLY this JSON format (no extra text before or after):
     title,
     slug,
     excerpt,
-    content: String(parsed.content ?? ''),
+    content: await injectVisualizers(String(parsed.content ?? '')),
     tags: Array.isArray(parsed.tags) ? parsed.tags.map(String).slice(0, 5) : [],
     reading_time_min: Math.max(1, Math.min(15, Number(parsed.reading_time_min) || 4)),
     topic_category: topic,
