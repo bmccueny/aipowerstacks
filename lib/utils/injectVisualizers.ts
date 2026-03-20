@@ -19,13 +19,15 @@ export async function injectVisualizers(content: string): Promise<string> {
 ARTICLE:
 ${content}
 
-Create EXACTLY 2 visualizer blocks to inject INTO the article between paragraphs. No more, no less.
+Create EXACTLY 2 visualizer blocks. Each must visualize COMPLETELY DIFFERENT data — no overlapping metrics.
 
-Pick the 2 BEST types for this article (never use the same type twice):
-- STAT CARDS ROW — 2-3 key numbers in bold cards side by side (e.g., "5 hrs/week saved", "$0 cost", "10x faster")
-- COMPARISON BAR CHART — horizontal bars comparing things mentioned in the article
-- CALLOUT BOX — ONE highlighted insight with accent left border (max 1 callout per article)
-- PROGRESS/PERCENTAGE INDICATOR — visual bars for metrics
+BLOCK 1: A STAT CARDS ROW — pick 2-3 of the most impactful numbers/metrics from the article and display them as big bold stats side by side (e.g., "$0 cost", "5 hrs saved", "10x faster"). Numbers only — no paragraphs of text.
+
+BLOCK 2: Pick ONE of these (whichever fits the article best):
+- COMPARISON BAR CHART — compare exactly 2 things (e.g., "Cloud AI vs Local AI") with 2-3 metrics as horizontal bars
+- PROGRESS INDICATOR — show 2-3 percentage bars for different metrics
+
+CRITICAL: Block 2 must NOT repeat any data from Block 1. If Block 1 shows time saved, Block 2 must show something else (cost, privacy, speed, etc).
 
 DESIGN (inline styles only):
 - Container: background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; padding: 24px; margin: 32px 0
