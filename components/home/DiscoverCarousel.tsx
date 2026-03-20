@@ -58,27 +58,25 @@ function FeedCard({ item }: { item: FeedItem }) {
 
 export function DiscoverCarousel({ items }: { items: FeedItem[] }) {
   const trackRef = useRef<HTMLDivElement>(null)
-  const [paused, setPaused] = useState(false)
+  const pausedRef = useRef(false)
+  const positionRef = useRef(0)
 
   useEffect(() => {
     const track = trackRef.current
     if (!track) return
 
     let animationId: number
-    let position = 0
-    // Each card is 220px + 12px gap
     const cardWidth = 232
     const singleSetWidth = items.length * cardWidth
 
     function step() {
-      if (!paused) {
-        position -= 0.5
-        // Reset seamlessly when the first set has scrolled out
-        if (Math.abs(position) >= singleSetWidth) {
-          position += singleSetWidth
+      if (!pausedRef.current) {
+        positionRef.current -= 0.5
+        if (Math.abs(positionRef.current) >= singleSetWidth) {
+          positionRef.current += singleSetWidth
         }
         if (track) {
-          track.style.transform = `translateX(${position}px)`
+          track.style.transform = `translateX(${positionRef.current}px)`
         }
       }
       animationId = requestAnimationFrame(step)
@@ -86,7 +84,7 @@ export function DiscoverCarousel({ items }: { items: FeedItem[] }) {
 
     animationId = requestAnimationFrame(step)
     return () => cancelAnimationFrame(animationId)
-  }, [paused, items.length])
+  }, [items.length])
 
   // Duplicate items for seamless looping
   const doubled = [...items, ...items]
@@ -94,8 +92,8 @@ export function DiscoverCarousel({ items }: { items: FeedItem[] }) {
   return (
     <div
       className="relative overflow-hidden"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
+      onMouseEnter={() => { pausedRef.current = true }}
+      onMouseLeave={() => { pausedRef.current = false }}
     >
       {/* Fade edges */}
       <div className="pointer-events-none absolute inset-y-0 left-0 w-16 z-10 bg-gradient-to-r from-background to-transparent" />
