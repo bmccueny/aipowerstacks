@@ -1,5 +1,6 @@
+import Link from 'next/link'
 import { SITE_URL } from '@/lib/constants/site'
-import { getPublishedPosts, getFeaturedPost } from '@/lib/supabase/queries/blog'
+import { getPublishedPosts, getFeaturedPost, getBlogCategories } from '@/lib/supabase/queries/blog'
 import { BLOG_PAGE_SIZE } from '@/lib/constants'
 import { BlogCard } from '@/components/blog/BlogCard'
 import { NewsletterBanner } from '@/components/layout/NewsletterBanner'
@@ -12,14 +13,15 @@ import { generateBlogJsonLd } from '@/lib/utils/seo'
 export default async function BlogPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string }>
+  searchParams: Promise<{ page?: string; category?: string }>
 }) {
-  const { page: pageStr } = await searchParams
+  const { page: pageStr, category } = await searchParams
   const page = Math.max(1, parseInt(pageStr ?? '1'))
 
-  const [{ posts, total }, featured] = await Promise.all([
-    getPublishedPosts(page),
-    page === 1 ? getFeaturedPost() : Promise.resolve(null),
+  const [{ posts, total }, featured, categories] = await Promise.all([
+    getPublishedPosts(page, category),
+    page === 1 && !category ? getFeaturedPost() : Promise.resolve(null),
+    getBlogCategories(),
   ])
 
   const totalPages = Math.ceil(total / BLOG_PAGE_SIZE)
@@ -27,6 +29,10 @@ export default async function BlogPage({
 
   const allPosts = featured ? [featured, ...regularPosts] : regularPosts
   const blogJsonLd = generateBlogJsonLd(allPosts)
+
+  // Mixed grid: first 2 regular posts get "secondary" variant on page 1
+  const secondaryPosts = page === 1 && !category ? regularPosts.slice(0, 2) : []
+  const gridPosts = page === 1 && !category ? regularPosts.slice(2) : regularPosts
 
   return (
     <div className="page-shell">
@@ -40,15 +46,55 @@ export default async function BlogPage({
         <p className="text-muted-foreground">What changed, why it matters, and what to do next.</p>
       </div>
 
-      {featured && page === 1 && (
+      {/* Category navigation */}
+      {categories.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2 mb-8">
+          <Link
+            href="/blog"
+            className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-colors ${
+              !category
+                ? 'bg-primary text-primary-foreground'
+                : 'glass-card text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            All
+          </Link>
+          {categories.map((cat) => (
+            <Link
+              key={cat.id}
+              href={`/blog?category=${cat.slug}`}
+              className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-colors ${
+                category === cat.slug
+                  ? 'bg-primary text-primary-foreground'
+                  : 'glass-card text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              {cat.name}
+            </Link>
+          ))}
+        </div>
+      )}
+
+      {/* Featured hero — page 1 only */}
+      {featured && page === 1 && !category && (
         <div className="mb-10">
           <BlogCard post={featured} featured />
         </div>
       )}
 
-      {regularPosts.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {regularPosts.map((post) => (
+      {/* Secondary posts — 2-column for first 2 posts on page 1 */}
+      {secondaryPosts.length > 0 && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-8">
+          {secondaryPosts.map((post) => (
+            <BlogCard key={post.id} post={post} variant="secondary" />
+          ))}
+        </div>
+      )}
+
+      {/* Remaining posts grid */}
+      {gridPosts.length > 0 && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+          {gridPosts.map((post) => (
             <BlogCard key={post.id} post={post} />
           ))}
         </div>
@@ -82,7 +128,7 @@ export default async function BlogPage({
 export async function generateMetadata({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string }>
+  searchParams: Promise<{ page?: string; category?: string }>
 }): Promise<Metadata> {
   const { page: pageStr } = await searchParams
   const page = Math.max(1, parseInt(pageStr ?? '1'))

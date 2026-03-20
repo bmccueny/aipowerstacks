@@ -59,7 +59,7 @@ function AuthorLink({ author, size = 'sm' }: { author: BlogPostSummary['author']
   return <div className={`flex items-center ${gap}`}>{content}</div>
 }
 
-export function BlogCard({ post, featured = false }: { post: BlogPostSummary; featured?: boolean }) {
+export function BlogCard({ post, featured = false, variant }: { post: BlogPostSummary; featured?: boolean; variant?: 'secondary' }) {
   const date = post.published_at ? new Date(post.published_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : null
   const coverImageUrl = normalizeThumUrl(post.cover_image_url)
 
@@ -86,6 +86,38 @@ export function BlogCard({ post, featured = false }: { post: BlogPostSummary; fe
             <h2 className="text-2xl font-bold mb-3 pb-0.5 transition-colors line-clamp-2 leading-[1.25]">{post.title}</h2>
             <p className="text-muted-foreground text-[14px] line-clamp-2 mb-5 pb-0.5 leading-[1.6]">{post.excerpt}</p>
             <div className="flex items-center gap-4 text-[13px] text-muted-foreground">
+              {date && <span className="flex items-center gap-1.5"><Calendar className="h-3 w-3" />{date}</span>}
+              {post.reading_time_min && <span className="flex items-center gap-1.5"><Clock className="h-3 w-3" />{post.reading_time_min} min read</span>}
+            </div>
+          </div>
+        </div>
+      </Link>
+    )
+  }
+
+  if (variant === 'secondary') {
+    return (
+      <Link href={`/blog/${post.slug}`} className="block group h-full">
+        <div className="override grid h-full overflow-hidden rounded-lg brutalist-card-effect burn-glow-card no-underline">
+          {coverImageUrl ? (
+            <div className="relative aspect-[16/10] shrink-0 overflow-hidden">
+              <Image src={coverImageUrl} alt={post.title} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover transition-transform duration-300" />
+            </div>
+          ) : (
+            <div className="aspect-[16/10] bg-gradient-to-br from-primary/8 to-amber-100 flex items-center justify-center shrink-0">
+              <span className="text-5xl opacity-20">✦</span>
+            </div>
+          )}
+          <div className="p-6 flex flex-col flex-1">
+            <div className="mb-3">
+              <AuthorLink author={post.author} size="md" />
+            </div>
+            {post.tags?.[0] && (
+              <span className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">{post.tags[0]}</span>
+            )}
+            <h3 className="font-bold text-lg mb-2 pb-0.5 transition-colors line-clamp-2 flex-1 leading-[1.3]">{post.title}</h3>
+            <p className="text-[13px] text-muted-foreground line-clamp-1 mb-3 leading-[1.5]">{post.excerpt}</p>
+            <div className="flex items-center gap-3 text-[12px] text-muted-foreground border-t border-border/30 pt-3 mt-auto">
               {date && <span className="flex items-center gap-1.5"><Calendar className="h-3 w-3" />{date}</span>}
               {post.reading_time_min && <span className="flex items-center gap-1.5"><Clock className="h-3 w-3" />{post.reading_time_min} min read</span>}
             </div>
