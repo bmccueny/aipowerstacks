@@ -58,28 +58,28 @@ export async function generateCoverImage(
         temperature: 0.9,
         messages: [{
           role: 'user',
-          content: `You are a professional photographer planning a real photo shoot for a blog header image.
+          content: `You are a YouTube thumbnail designer creating a click-worthy blog cover image.
 
 ARTICLE TITLE: "${title}"
 TOPIC: ${topic}
 SUMMARY: ${excerpt}
 
-Write a single image generation prompt (3-4 sentences) describing a REAL PHOTOGRAPH for this article.
+Write a single image generation prompt (3-4 sentences) for a THUMBNAIL-STYLE blog cover.
 
-${photorealistic ? `MANDATORY STYLE: Photorealistic editorial photography. Describe it as if briefing a photographer:
-- Specify camera angle (eye-level, overhead, close-up macro, wide establishing shot)
-- Specify lighting (golden hour, studio softbox, neon ambient, overcast natural light, dramatic side-lit)
-- Specify lens feel (shallow depth of field with bokeh, wide-angle, telephoto compression)
-- Describe real physical materials, textures, and surfaces (brushed aluminum, glass reflections, concrete, wood grain)
-- If people are in the shot, describe their posture, clothing, and environment realistically
-- Reference real-world settings (modern office, server room, coffee shop, laboratory, workshop)` : `Pick ONE distinct visual style: editorial illustration, isometric 3D, retro pixel art, watercolor, paper cutout collage, neon cyberpunk, vintage poster, flat vector, or ink sketch.`}
+MANDATORY THUMBNAIL RULES (follow ALL of these):
+1. EXPRESSIVE FACES: Feature a person with an exaggerated emotion — shock, excitement, curiosity, awe. Close-up or medium shot showing clear facial expression.
+2. MOVIE POSTER COMPOSITION: Treat as a movie poster. Tease a "micro-story" or "before vs. after" transformation related to the article topic.
+3. FOCAL POINTS: Blur or darken the background. Add a bright glow, white outline, or neon highlight around the main subject to guide the viewer's eye.
+4. BOLD COLORS: Use high-saturation, high-contrast color pairs: Red/Blue, Yellow/Purple, Orange/Teal. Favor red, yellow, orange for urgency. Heavy saturation and sharpness.
+5. DRAMATIC LIGHTING: Studio-style lighting with strong key light on face, moody rim lighting or colored gels for atmosphere.
+
+${photorealistic ? `STYLE: Photorealistic editorial photography with cinematic color grading. Shallow depth of field with bokeh. Real-world setting (office, lab, studio).` : `Pick ONE distinct visual style: cinematic illustration, neon cyberpunk, bold graphic poster, or hyper-saturated editorial photo.`}
 
 CRITICAL RULES:
-- NO text, words, letters, UI elements, or floating icons in the image
+- NO text, words, letters, or UI elements in the image
 - NO glowing orbs, abstract neural networks, or generic "AI brain" imagery
-- NO circuit boards unless the article is specifically about hardware
-- Describe a SPECIFIC SCENE with concrete objects, not abstract concepts
-- Think about what a real photographer would actually photograph to illustrate this topic
+- NO flat, boring compositions — every image needs dramatic energy
+- The person's expression should make viewers CURIOUS about the article
 - Format: widescreen 16:9 blog header
 
 Reply with ONLY the image prompt, nothing else.`,
