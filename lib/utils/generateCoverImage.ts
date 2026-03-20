@@ -120,11 +120,15 @@ For the PROMPT, follow ALL of these rules:
 - Pair complementary colors that "pop": blue/orange, yellow/black, red/teal, yellow/purple
 - Heavy saturation and sharpness throughout
 
-2. EXPRESSIVE HUMAN FACES
+2. EXPRESSIVE HUMAN FACES (PHOTOREALISTIC)
 - Close-up or medium shot of a person with an EXAGGERATED emotion (shock, joy, confusion, awe)
 - The face must trigger a curiosity loop — the viewer wants to know what caused that reaction
 - Eye contact with the camera to create psychological connection
 - This is the single most important element — humans notice faces faster than anything else
+- PHOTOREALISM IS CRITICAL: Describe the person as if photographed for Wired, TIME, or Forbes magazine
+- Specify real skin texture (pores, stubble, laugh lines), natural hair, real clothing fabrics
+- Describe specific ethnicities, ages, and physical details to anchor realism
+- Reference real camera equipment: "shot on Sony A7IV with 85mm f/1.4 lens" or "Canon R5, 70-200mm f/2.8"
 
 3. THE "CURIOSITY GAP"
 - Tease information without giving away the ending
@@ -143,7 +147,7 @@ For the PROMPT, follow ALL of these rules:
 - Studio-style key light on face, moody rim lighting or colored gels
 - Cinematic color grading with shallow depth of field and bokeh
 
-${photorealistic ? `STYLE: Photorealistic editorial photography. Real-world setting (office, lab, studio, workshop).` : `Pick ONE style: cinematic illustration, neon cyberpunk, bold graphic poster, or hyper-saturated editorial photo.`}
+${photorealistic ? `STYLE: Hyper-photorealistic editorial portrait, indistinguishable from a real photograph. Shot for a major tech magazine (Wired, TIME, Forbes, Bloomberg Businessweek). Describe the exact camera and lens (e.g., "Sony A7IV, 85mm f/1.4 at ISO 400"). Include micro-details: skin pores, individual hair strands, fabric texture, specular highlights on skin, catchlights in the eyes. The person should look like a real human being, not an AI rendering.` : `Pick ONE style: cinematic illustration, neon cyberpunk, bold graphic poster, or hyper-saturated editorial photo.`}
 
 CRITICAL IMAGE RULES:
 - NO text, words, letters, or UI elements in the image (text is composited separately)
