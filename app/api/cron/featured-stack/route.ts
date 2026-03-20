@@ -19,7 +19,7 @@ export async function GET(request: Request) {
     .order('view_count', { ascending: false })
     .limit(20)
 
-  const eligible = (candidates ?? []).filter((c: any) => {
+  const eligible = (candidates ?? []).filter((c: { collection_items?: { count: number }[] }) => {
     const count = c.collection_items?.[0]?.count ?? 0
     return count >= 3
   })

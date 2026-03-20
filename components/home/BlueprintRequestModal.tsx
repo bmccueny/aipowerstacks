@@ -71,7 +71,7 @@ export function BlueprintRequestModal({ children }: { children: React.ReactNode 
                 <textarea 
                   required
                   placeholder="e.g. A faceless YouTube channel for AI news..."
-                  className="w-full min-h-[100px] rounded-[4px] border-[1px] border-foreground bg-background p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                  className="w-full min-h-[100px] rounded-[4px] border-[1px] border-foreground bg-background p-3 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 transition-all"
                   value={goal}
                   onChange={(e) => setGoal(e.target.value)}
                 />

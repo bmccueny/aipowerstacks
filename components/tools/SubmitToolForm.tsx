@@ -104,17 +104,17 @@ export function SubmitToolForm({
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="text-sm font-medium mb-1.5 block">Tool Name *</label>
-          <Input value={form.name} onChange={set('name')} placeholder="e.g. ChatGPT" required className="bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-primary focus:border-primary" />
+          <Input value={form.name} onChange={set('name')} placeholder="e.g. ChatGPT" required className="bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus-visible:ring-2 focus-visible:ring-primary focus-visible:border-primary" />
         </div>
         <div>
           <label className="text-sm font-medium mb-1.5 block">Website URL *</label>
-          <Input value={form.website_url} onChange={set('website_url')} placeholder="https://..." type="url" required className="bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-primary focus:border-primary" />
+          <Input value={form.website_url} onChange={set('website_url')} placeholder="https://..." type="url" required className="bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus-visible:ring-2 focus-visible:ring-primary focus-visible:border-primary" />
         </div>
       </div>
 
       <div>
         <label className="text-sm font-medium mb-1.5 block">Tagline *</label>
-        <Input value={form.tagline} onChange={set('tagline')} placeholder="One-line description (max 150 chars)" required maxLength={150} className="bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-primary focus:border-primary" />
+        <Input value={form.tagline} onChange={set('tagline')} placeholder="One-line description (max 150 chars)" required maxLength={150} className="bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus-visible:ring-2 focus-visible:ring-primary focus-visible:border-primary" />
       </div>
 
       <div>
@@ -125,14 +125,14 @@ export function SubmitToolForm({
           placeholder="Describe what the tool does, its key features, and who it's for..."
           required
           maxLength={2000}
-          className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-2xl px-4 py-3 text-sm resize-none h-32 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+          className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-2xl px-4 py-3 text-sm resize-none h-32 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:border-primary"
         />
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="text-sm font-medium mb-1.5 block">Category</label>
-          <select value={form.category_id} onChange={set('category_id')} className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-2xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
+          <select value={form.category_id} onChange={set('category_id')} className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-2xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:border-primary">
             <option value="">Select category...</option>
             {categories.map((c) => (
               <option key={c.id} value={c.id}>{c.name}</option>
@@ -141,7 +141,7 @@ export function SubmitToolForm({
         </div>
         <div>
           <label className="text-sm font-medium mb-1.5 block">Pricing Model</label>
-          <select value={form.pricing_model} onChange={set('pricing_model')} className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-2xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
+          <select value={form.pricing_model} onChange={set('pricing_model')} className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-2xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:border-primary">
             <option value="">Select pricing...</option>
             {PRICING_MODELS.map((p) => (
               <option key={p.value} value={p.value}>{p.label}</option>
@@ -152,7 +152,7 @@ export function SubmitToolForm({
 
       <div>
         <label className="text-sm font-medium mb-1.5 block">Underlying AI Model (optional)</label>
-        <select value={form.model_provider} onChange={set('model_provider')} className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-2xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
+        <select value={form.model_provider} onChange={set('model_provider')} className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-2xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:border-primary">
           <option value="">Not sure / Proprietary</option>
           {MODEL_PROVIDER_OPTIONS.map((p) => (
             <option key={p.value} value={p.value}>{p.label}</option>
@@ -163,12 +163,12 @@ export function SubmitToolForm({
 
       <div>
         <label className="text-sm font-medium mb-1.5 block">Logo URL</label>
-        <Input value={form.logo_url} onChange={set('logo_url')} placeholder="https://... (direct image link)" type="url" className="bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-primary focus:border-primary" />
+        <Input value={form.logo_url} onChange={set('logo_url')} placeholder="https://... (direct image link)" type="url" className="bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus-visible:ring-2 focus-visible:ring-primary focus-visible:border-primary" />
       </div>
 
       <div>
         <label className="text-sm font-medium mb-1.5 block">Your Email</label>
-        <Input value={form.submitter_email} onChange={set('submitter_email')} placeholder="For submission updates (optional)" type="email" className="bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-primary focus:border-primary" />
+        <Input value={form.submitter_email} onChange={set('submitter_email')} placeholder="For submission updates (optional)" type="email" className="bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus-visible:ring-2 focus-visible:ring-primary focus-visible:border-primary" />
       </div>
 
       <div>
@@ -178,7 +178,7 @@ export function SubmitToolForm({
           onChange={set('notes')}
           placeholder="Anything else you'd like us to know..."
           maxLength={500}
-          className="w-full glass-card border border-border/50 rounded-2xl px-4 py-3 text-sm resize-none h-24 focus:outline-none focus:ring-2 focus:ring-primary/50"
+          className="w-full glass-card border border-border/50 rounded-2xl px-4 py-3 text-sm resize-none h-24 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
         />
       </div>
 

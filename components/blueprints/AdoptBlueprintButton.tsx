@@ -66,8 +66,8 @@ export function AdoptBlueprintButton({ blueprintId, title, toolIds, toolNotes }:
       toast.success(`"${title}" added to your dashboard!`)
       setTimeout(() => router.push('/dashboard'), 1500)
 
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to adopt blueprint')
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : 'Failed to adopt blueprint')
     } finally {
       setLoading(false)
     }

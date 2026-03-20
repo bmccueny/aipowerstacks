@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 import { ArrowRight, Sparkles } from 'lucide-react'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { Navbar } from '@/components/layout/Navbar'
@@ -113,8 +114,7 @@ export default async function MatchmakerResultsPage({ searchParams }: Props) {
                 <span className="text-lg font-black text-muted-foreground/40 w-6 text-center shrink-0">{i + 1}</span>
                 <div className="h-11 w-11 rounded-lg bg-muted overflow-hidden flex items-center justify-center shrink-0">
                   {tool.logo_url ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={tool.logo_url} alt={tool.name} width={44} height={44} className="object-contain" />
+                    <Image src={tool.logo_url} alt={tool.name} width={44} height={44} className="object-contain" />
                   ) : (
                     <span className="text-lg font-bold text-primary">{tool.name[0]}</span>
                   )}

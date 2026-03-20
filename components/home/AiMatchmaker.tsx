@@ -31,11 +31,25 @@ import {
 import { Button } from '@/components/ui/button'
 import { ToolCard } from '@/components/tools/ToolCard'
 import { AiAgentLoading } from './AiAgentLoading'
-import type { ToolSearchResult } from '@/lib/types'
+import type { ToolCardData, ToolSearchResult } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
 type Step = 'goal' | 'requirements' | 'budget' | 'persona' | 'results'
 type Mode = 'wizard' | 'chat'
+
+interface MatchmakerResponse {
+  tools?: ToolSearchResult[]
+  explanation?: string
+  roles?: { toolId: string; role: string }[]
+}
+
+const STEP_PROGRESS: Record<Step, number> = {
+  goal: 20,
+  requirements: 40,
+  budget: 60,
+  persona: 80,
+  results: 100,
+}
 
 const GOALS = [
   { id: 'content-creation', label: 'Create Content', icon: PenLine, desc: 'Writing, social media, & blogs' },
@@ -85,6 +99,27 @@ export function AiMatchmaker({ initialQuery }: { initialQuery?: string } = {}) {
   const [processingModel, setProcessingModel] = useState('')
   const [loading, setLoading] = useState(false)
 
+  /** Shared fetch helper: hits the matchmaker API and updates all result state. */
+  const applyMatchmakerResponse = (data: MatchmakerResponse) => {
+    setResults(data.tools ?? [])
+    setChatExplanation(data.explanation ?? '')
+    setProcessingModel('Claude Haiku')
+    const rolesMap: Record<string, string> = {}
+    data.roles?.forEach(({ toolId, role }) => {
+      rolesMap[toolId] = role
+    })
+    setStackRoles(rolesMap)
+  }
+
+  const fetchMatchmaker = async (request: Request | string, minDelay = 6500) => {
+    const [res] = await Promise.all([
+      typeof request === 'string' ? fetch(request) : fetch(request),
+      new Promise<void>(resolve => setTimeout(resolve, minDelay)),
+    ])
+    const data: MatchmakerResponse = await res.json()
+    return data
+  }
+
   // Auto-submit when arriving from hero search with a pre-filled query
   useEffect(() => {
     if (initialQuery?.trim()) {
@@ -97,17 +132,8 @@ export function AiMatchmaker({ initialQuery }: { initialQuery?: string } = {}) {
         body: JSON.stringify({ message: initialQuery.trim() })
       })
         .then(r => r.json())
-        .then(data => {
-          setResults(data.tools ?? [])
-          setChatExplanation(data.explanation ?? '')
-          setProcessingModel('Claude Haiku')
-          const rolesMap: Record<string, string> = {}
-          data.roles?.forEach(({ toolId, role }: { toolId: string; role: string }) => {
-            rolesMap[toolId] = role
-          })
-          setStackRoles(rolesMap)
-        })
-        .catch(err => console.error('Auto matchmaker failed:', err))
+        .then((data: MatchmakerResponse) => applyMatchmakerResponse(data))
+        .catch(() => {})
         .finally(() => setLoading(false))
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -131,30 +157,21 @@ export function AiMatchmaker({ initialQuery }: { initialQuery?: string } = {}) {
   const handleChatSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!chatMessage.trim()) return
-    
+
     setLoading(true)
     setStep('results')
-    
+
     try {
-      const [res] = await Promise.all([
-        fetch('/api/matchmaker', {
+      const data = await fetchMatchmaker(
+        new Request('/api/matchmaker', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: chatMessage })
-        }),
-        new Promise(resolve => setTimeout(resolve, 6500)) // Deep simulation delay
-      ])
-      const data = await res.json()
-      setResults(data.tools ?? [])
-      setChatExplanation(data.explanation ?? '')
-      setProcessingModel('Claude Haiku')
-      const rolesMap: Record<string, string> = {}
-      data.roles?.forEach(({ toolId, role }: { toolId: string; role: string }) => {
-        rolesMap[toolId] = role
-      })
-      setStackRoles(rolesMap)
-    } catch (err) {
-      console.error('Chat matchmaker failed:', err)
+          body: JSON.stringify({ message: chatMessage }),
+        })
+      )
+      applyMatchmakerResponse(data)
+    } catch {
+      // Network or parsing failure — results stay empty
     } finally {
       setLoading(false)
     }
@@ -163,7 +180,7 @@ export function AiMatchmaker({ initialQuery }: { initialQuery?: string } = {}) {
   const fetchWizardResults = async (finalPersona: string) => {
     setLoading(true)
     setStep('results')
-    
+
     try {
       const params = new URLSearchParams({
         useCase: selections.useCase,
@@ -175,16 +192,11 @@ export function AiMatchmaker({ initialQuery }: { initialQuery?: string } = {}) {
         needsPrivacy: selections.needsPrivacy.toString(),
         needsSSO: selections.needsSSO.toString()
       })
-      
-      const [res] = await Promise.all([
-        fetch(`/api/matchmaker?${params.toString()}`),
-        new Promise(resolve => setTimeout(resolve, 6500)) // Deep simulation delay
-      ])
-      const data = await res.json()
-      setResults(data.tools ?? data)
-      if (data.explanation) setChatExplanation(data.explanation)
-    } catch (err) {
-      console.error('Matchmaker failed:', err)
+
+      const data = await fetchMatchmaker(`/api/matchmaker?${params.toString()}`)
+      applyMatchmakerResponse(data)
+    } catch {
+      // Network or parsing failure — results stay empty
     } finally {
       setLoading(false)
     }
@@ -209,7 +221,9 @@ export function AiMatchmaker({ initialQuery }: { initialQuery?: string } = {}) {
     setChatExplanation('')
   }
 
-  const progress = step === 'results' ? 100 : mode === 'chat' ? 50 : (step === 'goal' ? 20 : step === 'requirements' ? 40 : step === 'budget' ? 60 : 80)
+  const progress = step === 'results' ? 100
+    : mode === 'chat' ? 50
+    : STEP_PROGRESS[step]
 
   return (
     <div className="w-full">
@@ -224,7 +238,9 @@ export function AiMatchmaker({ initialQuery }: { initialQuery?: string } = {}) {
         <div className="p-6 sm:p-10">
           {step !== 'results' && (
             <div className="flex items-center gap-2 mb-8 bg-muted/30 p-1 rounded-md w-fit mx-auto">
-              <button
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={() => setMode('chat')}
                 className={cn(
                   "flex items-center gap-2 px-4 py-1.5 text-xs font-bold uppercase tracking-tight rounded transition-all",
@@ -232,8 +248,10 @@ export function AiMatchmaker({ initialQuery }: { initialQuery?: string } = {}) {
                 )}
               >
                 <Wand2 className="h-3.5 w-3.5" /> AI Agent
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={() => setMode('wizard')}
                 className={cn(
                   "flex items-center gap-2 px-4 py-1.5 text-xs font-bold uppercase tracking-tight rounded transition-all",
@@ -241,7 +259,7 @@ export function AiMatchmaker({ initialQuery }: { initialQuery?: string } = {}) {
                 )}
               >
                 <Zap className="h-3.5 w-3.5" /> Guided Wizard
-              </button>
+              </Button>
             </div>
           )}
 
@@ -261,7 +279,7 @@ export function AiMatchmaker({ initialQuery }: { initialQuery?: string } = {}) {
                   value={chatMessage}
                   onChange={(e) => setChatMessage(e.target.value)}
                   placeholder="Tell me your goal..."
-                  className="w-full bg-background border-2 border-foreground rounded-md h-14 pl-12 pr-24 sm:pr-32 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all font-bold text-sm sm:text-base"
+                  className="w-full bg-background border-2 border-foreground rounded-md h-14 pl-12 pr-24 sm:pr-32 focus:outline-none focus-visible:border-primary focus-visible:ring-4 focus-visible:ring-primary/5 transition-all font-bold text-sm sm:text-base"
                 />
                 <div className="absolute inset-y-0 right-2 flex items-center">
                   <Button type="submit" disabled={!chatMessage.trim() || loading} className="h-10 px-6 gap-2">
@@ -281,13 +299,15 @@ export function AiMatchmaker({ initialQuery }: { initialQuery?: string } = {}) {
                   "Launch a self-hosted open source RAG agent",
                   "Write and grow a technical newsletter",
                 ].slice(0, 4).map(suggestion => (
-                  <button
+                  <Button
                     key={suggestion}
+                    variant="ghost"
+                    size="xs"
                     onClick={() => setChatMessage(suggestion)}
                     className="text-[11px] font-bold px-3 py-1.5 rounded-full border border-foreground/10 hover:border-primary/30 hover:bg-primary/5 transition-all"
                   >
                     {suggestion}
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>
@@ -299,10 +319,11 @@ export function AiMatchmaker({ initialQuery }: { initialQuery?: string } = {}) {
               <p className="text-muted-foreground mb-8 text-sm sm:text-base">We&apos;ll find the tools that match your specific workflow.</p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {GOALS.map((g) => (
-                  <button
+                  <Button
                     key={g.id}
+                    variant="ghost"
                     onClick={() => handleGoalSelect(g.id)}
-                    className="glass-card flex items-center gap-4 p-4 text-left hover:border-primary transition-colors group rounded-md"
+                    className="glass-card flex items-center gap-4 p-4 h-auto text-left hover:border-primary transition-colors group rounded-md"
                   >
                     <div className="h-10 w-10 rounded-lg bg-primary/5 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
                       <g.icon className="h-5 w-5" />
@@ -311,7 +332,7 @@ export function AiMatchmaker({ initialQuery }: { initialQuery?: string } = {}) {
                       <p className="font-bold text-sm">{g.label}</p>
                       <p className="text-xs text-muted-foreground">{g.desc}</p>
                     </div>
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>
@@ -319,20 +340,21 @@ export function AiMatchmaker({ initialQuery }: { initialQuery?: string } = {}) {
 
           {step === 'requirements' && (
             <div className="animate-in-stagger">
-              <button onClick={() => setStep('goal')} className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary mb-4 transition-colors">
+              <Button variant="link" size="xs" onClick={() => setStep('goal')} className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary mb-4 transition-colors px-0">
                 <ChevronLeft className="h-3 w-3" /> Back
-              </button>
+              </Button>
               <h2 className="text-2xl font-bold mb-2 uppercase tracking-tight">2. Any must-have features?</h2>
               <p className="text-muted-foreground mb-8 text-sm sm:text-base">Select all that apply. We gathered this data through deep site scans.</p>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-8">
                 {REQUIREMENTS.map((r) => {
                   const isActive = selections[r.id as keyof typeof selections]
                   return (
-                    <button
+                    <Button
                       key={r.id}
+                      variant="ghost"
                       onClick={() => toggleRequirement(r.id)}
                       className={cn(
-                        "glass-card flex flex-col items-center p-4 text-center transition-all group rounded-md",
+                        "glass-card flex flex-col items-center p-4 h-auto text-center transition-all group rounded-md",
                         isActive ? "border-primary bg-primary/5 ring-1 ring-primary" : "hover:border-primary/50"
                       )}
                     >
@@ -345,7 +367,7 @@ export function AiMatchmaker({ initialQuery }: { initialQuery?: string } = {}) {
                       <p className="font-bold text-[11px] mb-1 leading-tight">{r.label}</p>
                       <p className="text-[10px] text-muted-foreground leading-tight hidden sm:block">{r.desc}</p>
                       {isActive && <CheckCircle2 className="h-3 w-3 text-primary mt-2" />}
-                    </button>
+                    </Button>
                   )
                 })}
               </div>
@@ -359,24 +381,25 @@ export function AiMatchmaker({ initialQuery }: { initialQuery?: string } = {}) {
 
           {step === 'budget' && (
             <div className="animate-in-stagger">
-              <button onClick={() => setStep('requirements')} className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary mb-4 transition-colors">
+              <Button variant="link" size="xs" onClick={() => setStep('requirements')} className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary mb-4 transition-colors px-0">
                 <ChevronLeft className="h-3 w-3" /> Back
-              </button>
+              </Button>
               <h2 className="text-2xl font-bold mb-2 uppercase tracking-tight">3. What is your budget?</h2>
               <p className="text-muted-foreground mb-8 text-sm sm:text-base">AI costs can vary. Choose what works for you.</p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 {BUDGETS.map((b) => (
-                  <button
+                  <Button
                     key={b.id}
+                    variant="ghost"
                     onClick={() => handleSelect('pricing', b.id)}
-                    className="glass-card flex flex-col items-center p-6 text-center hover:border-primary transition-colors group rounded-md"
+                    className="glass-card flex flex-col items-center p-6 h-auto text-center hover:border-primary transition-colors group rounded-md"
                   >
                     <div className="h-12 w-12 rounded-full bg-primary/5 flex items-center justify-center text-primary mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
                       <b.icon className="h-6 w-6" />
                     </div>
                     <p className="font-bold text-sm mb-1">{b.label}</p>
                     <p className="text-xs text-muted-foreground">{b.desc}</p>
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>
@@ -384,24 +407,25 @@ export function AiMatchmaker({ initialQuery }: { initialQuery?: string } = {}) {
 
           {step === 'persona' && (
             <div className="animate-in-stagger">
-              <button onClick={() => setStep('budget')} className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary mb-4 transition-colors">
+              <Button variant="link" size="xs" onClick={() => setStep('budget')} className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary mb-4 transition-colors px-0">
                 <ChevronLeft className="h-3 w-3" /> Back
-              </button>
+              </Button>
               <h2 className="text-2xl font-bold mb-2 uppercase tracking-tight">4. Who is this for?</h2>
               <p className="text-muted-foreground mb-8 text-sm sm:text-base">We&apos;ll tailor recommendations to your team size.</p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 {PERSONAS.map((p) => (
-                  <button
+                  <Button
                     key={p.id}
+                    variant="ghost"
                     onClick={() => handleSelect('persona', p.id)}
-                    className="glass-card flex flex-col items-center p-6 text-center hover:border-primary transition-colors group rounded-md"
+                    className="glass-card flex flex-col items-center p-6 h-auto text-center hover:border-primary transition-colors group rounded-md"
                   >
                     <div className="h-12 w-12 rounded-full bg-primary/5 flex items-center justify-center text-primary mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
                       <p.icon className="h-6 w-6" />
                     </div>
                     <p className="font-bold text-sm mb-1">{p.label}</p>
                     <p className="text-xs text-muted-foreground">{p.desc}</p>
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>
@@ -459,7 +483,7 @@ export function AiMatchmaker({ initialQuery }: { initialQuery?: string } = {}) {
                       variant="outline"
                       size="sm"
                       onClick={() => {
-                        const slugs = results.map((t: any) => t.slug).join(',')
+                        const slugs = results.map((t) => t.slug).join(',')
                         const shareUrl = `${window.location.origin}/matchmaker/results?tools=${slugs}${chatMessage ? `&q=${encodeURIComponent(chatMessage)}` : ''}`
                         navigator.clipboard.writeText(shareUrl)
                         alert('Share link copied!')
@@ -490,7 +514,7 @@ export function AiMatchmaker({ initialQuery }: { initialQuery?: string } = {}) {
                         </span>
                       )}
                       <ToolCard
-                        tool={tool as any}
+                        tool={tool as ToolCardData}
                         cardStyle="home"
                         compact={results.length > 3}
                       />

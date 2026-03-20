@@ -62,22 +62,27 @@ export default async function StacksPage() {
     .maybeSingle()
 
   // Fetch profiles for these stacks separately to avoid join issues
-  const userIds = [...new Set(((stacks ?? []) as any[]).map((s: any) => s.user_id))]
-  const { data: profiles } = userIds.length 
-    ? await supabase.from('profiles').select('id, username, avatar_url, display_name').in('id', userIds)
-    : { data: [] }
+  type StackRow = NonNullable<typeof stacks>[number]
+  type StackCollectionItem = StackRow['collection_items'][number]
+  type StackToolPreview = NonNullable<StackCollectionItem['tools']>
+  type ProfileRow = { id: string; username: string | null; avatar_url: string | null; display_name: string | null }
 
-  const profileMap = (profiles ?? []).reduce((acc: any, p) => {
+  const userIds = [...new Set((stacks ?? []).map((s) => s.user_id))]
+  const { data: profiles } = userIds.length
+    ? await supabase.from('profiles').select('id, username, avatar_url, display_name').in('id', userIds)
+    : { data: [] as ProfileRow[] }
+
+  const profileMap = (profiles ?? []).reduce<Record<string, ProfileRow>>((acc, p) => {
     acc[p.id] = p
     return acc
   }, {})
 
-  const enriched = (stacks ?? []).map((s: any) => ({
+  const enriched = (stacks ?? []).map((s) => ({
     ...s,
-    profiles: profileMap[s.user_id],
+    profiles: profileMap[s.user_id] as ProfileRow | undefined,
     tools: (s.collection_items ?? [])
-      .map((i: any) => i.tools)
-      .filter(Boolean)
+      .map((i: StackCollectionItem) => i.tools)
+      .filter((t): t is StackToolPreview => Boolean(t))
       .slice(0, 5),
     toolCount: (s.collection_items ?? []).length,
   }))
@@ -135,9 +140,9 @@ export default async function StacksPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {enriched.map((stack: any) => {
+          {enriched.map((stack) => {
             const creator = stack.profiles
-            const toolIds = (stack.collection_items ?? []).map((i: any) => i.tools?.id).filter(Boolean)
+            const toolIds = (stack.collection_items ?? []).map((i: StackCollectionItem) => i.tools?.id).filter((id): id is string => Boolean(id))
             
             return (
               <div
@@ -179,7 +184,7 @@ export default async function StacksPage() {
                     {stack.tools.length > 0 && (
                       <Link href={`/stacks/${stack.share_slug}`} className="flex items-center gap-2">
                         <div className="flex items-center">
-                          {stack.tools.map((tool: any, i: number) => (
+                          {stack.tools.map((tool: StackToolPreview, i: number) => (
                             <div
                               key={tool.id}
                               className="h-7 w-7 rounded-full bg-muted border-2 border-background overflow-hidden flex items-center justify-center shrink-0"

@@ -57,7 +57,7 @@ export function ChallengeForm() {
           onChange={set('description')}
           rows={2}
           placeholder="Short context for participants..."
-          className="w-full bg-background border border-input rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 resize-none"
+          className="w-full bg-background border border-input rounded-md px-3 py-2 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 resize-none"
         />
       </div>
       <div>
@@ -68,7 +68,7 @@ export function ChallengeForm() {
           rows={3}
           placeholder="e.g. Build the ultimate AI stack for a solo content creator..."
           required
-          className="w-full bg-background border border-input rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 resize-none"
+          className="w-full bg-background border border-input rounded-md px-3 py-2 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 resize-none"
         />
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

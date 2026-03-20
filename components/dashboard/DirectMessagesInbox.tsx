@@ -15,11 +15,35 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { cn } from '@/lib/utils'
 import { DirectMessageDialog } from '@/components/curators/DirectMessageDialog'
 
+type ConversationUser = {
+  id: string
+  username: string | null
+  display_name: string | null
+  avatar_url: string | null
+}
+
+type DirectMessage = {
+  id: string
+  sender_id: string
+  receiver_id: string
+  content: string
+  is_read: boolean
+  created_at: string
+  sender: ConversationUser | null
+  receiver: ConversationUser | null
+}
+
+type Conversation = {
+  user: ConversationUser
+  lastMessage: DirectMessage
+  unreadCount: number
+}
+
 export function DirectMessagesInbox({ currentUserId }: { currentUserId: string }) {
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [conversations, setConversations] = useState<any[]>([])
-  const [selectedChat, setSelectedChat] = useState<any | null>(null)
+  const [conversations, setConversations] = useState<Conversation[]>([])
+  const [selectedChat, setSelectedChat] = useState<ConversationUser | null>(null)
   const [chatOpen, setChatOpen] = useState(false)
 
   const supabase = createClient()
@@ -41,8 +65,8 @@ export function DirectMessagesInbox({ currentUserId }: { currentUserId: string }
     if (error) {
       console.error('Error fetching conversations:', error)
     } else {
-      const groups: Record<string, any> = {}
-      data?.forEach((msg: any) => {
+      const groups: Record<string, Conversation> = {}
+      ;(data as unknown as DirectMessage[])?.forEach((msg) => {
         const otherUser = msg.sender_id === currentUserId ? msg.receiver : msg.sender
         if (!otherUser) return
         if (!groups[otherUser.id]) {
@@ -77,7 +101,7 @@ export function DirectMessagesInbox({ currentUserId }: { currentUserId: string }
     }
   }, [open, currentUserId])
 
-  const handleOpenChat = (user: any) => {
+  const handleOpenChat = (user: ConversationUser) => {
     setSelectedChat(user)
     setChatOpen(true)
     // We keep the inbox sheet open or close it? 
@@ -131,7 +155,7 @@ export function DirectMessagesInbox({ currentUserId }: { currentUserId: string }
                   >
                     <div className="relative shrink-0">
                       <Avatar className="h-12 w-12 border border-primary/10">
-                        <AvatarImage src={conv.user.avatar_url} />
+                        <AvatarImage src={conv.user.avatar_url ?? undefined} />
                         <AvatarFallback className="bg-primary/10 text-primary font-bold">
                           {conv.user.display_name?.[0] || conv.user.username?.[0]}
                         </AvatarFallback>
@@ -168,9 +192,9 @@ export function DirectMessagesInbox({ currentUserId }: { currentUserId: string }
       {selectedChat && (
         <DirectMessageDialog
           receiverId={selectedChat.id}
-          receiverName={selectedChat.display_name || selectedChat.username}
-          receiverUsername={selectedChat.username}
-          receiverAvatar={selectedChat.avatar_url}
+          receiverName={selectedChat.display_name || selectedChat.username || 'User'}
+          receiverUsername={selectedChat.username || ''}
+          receiverAvatar={selectedChat.avatar_url ?? undefined}
           currentUserId={currentUserId}
           open={chatOpen}
           onOpenChange={(val) => {

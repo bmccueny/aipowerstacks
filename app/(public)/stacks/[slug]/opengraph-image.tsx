@@ -29,7 +29,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
     .eq('collection_id', collection.id)
     .limit(6)
 
-  const tools = (items?.map(i => i.tools) ?? []).filter(Boolean) as any[]
+  const tools = (items?.map(i => i.tools) ?? []).filter(Boolean) as { name: string; logo_url: string | null }[]
 
   return new ImageResponse(
     (

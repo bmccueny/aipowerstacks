@@ -241,7 +241,7 @@ export async function GET(request: Request) {
 
         if (tools && tools.length > 0) {
           const tool = tools[Math.floor(Math.random() * tools.length)]
-          const catName = (tool as any).categories?.name ?? 'AI'
+          const catName = (tool as { categories?: { name?: string } }).categories?.name ?? 'AI'
           content = await generateToolHighlight({
             name: tool.name,
             tagline: tool.tagline,
@@ -344,8 +344,9 @@ export async function GET(request: Request) {
       } else {
         results.push({ type: postType, status: 'created', content: content.slice(0, 100) })
       }
-    } catch (err: any) {
-      results.push({ type: postType, status: 'error', error: err.message?.slice(0, 200) })
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : String(err)
+      results.push({ type: postType, status: 'error', error: message.slice(0, 200) })
     }
   }
 

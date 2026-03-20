@@ -326,7 +326,7 @@ export async function searchTools({
     const rpcKeywords = rpcQuery.split(/\s+/).filter(w => w.length >= 2)
 
     let rpcData: ToolSearchResult[] | null = null
-    let rpcError: any = null
+    let rpcError: { message: string } | null = null
 
     // Try full query first, then progressively reduce keywords
     for (let len = rpcKeywords.length; len >= Math.min(2, rpcKeywords.length); len--) {

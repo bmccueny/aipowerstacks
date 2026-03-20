@@ -52,7 +52,7 @@ export function SubmissionActions({ submissionId, submission }: SubmissionAction
           value={rejectReason}
           onChange={(e) => setRejectReason(e.target.value)}
           placeholder="Rejection reason (optional)"
-          className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs resize-none h-20 focus:outline-none focus:border-primary/50"
+          className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs resize-none h-20 focus:outline-none focus-visible:border-primary/50"
         />
         <div className="flex gap-2">
           <Button size="sm" variant="destructive" onClick={handleReject} disabled={loading === 'reject'} className="flex-1">

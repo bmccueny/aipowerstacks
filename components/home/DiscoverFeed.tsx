@@ -53,8 +53,8 @@ async function getFeedItems(): Promise<FeedItem[]> {
   const reviewToolIds = (recentReviews ?? []).map(r => r.tool_id).filter(Boolean) as string[]
   const { data: reviewTools } = reviewToolIds.length > 0
     ? await supabase.from('tools').select('id, name, slug').in('id', reviewToolIds)
-    : { data: [] as any[] }
-  const toolMap = new Map((reviewTools ?? []).map((t: any) => [t.id, t]))
+    : { data: [] as { id: string; name: string; slug: string }[] }
+  const toolMap = new Map((reviewTools ?? []).map((t) => [t.id, t]))
 
   for (const review of recentReviews ?? []) {
     const tool = toolMap.get(review.tool_id)

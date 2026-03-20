@@ -1,6 +1,7 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import type { Metadata } from 'next'
-import { 
+import {
   Sparkles, Check, Plus, ChevronDown, LayoutGrid,
   Zap, Trophy, Notebook, Video, Mic, Palette
 } from 'lucide-react'
@@ -16,11 +17,12 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { createClient } from '@/lib/supabase/server'
 import { getSuperTools, getSimilarTools } from '@/lib/supabase/queries/tools'
+import type { Tool } from '@/lib/types'
 import { CompareSearch } from '@/components/tools/CompareSearch'
 import { MatrixAutoFocus } from '@/components/tools/MatrixAutoFocus'
 import { Suspense } from 'react'
 import { cn } from '@/lib/utils'
-import { CompareTable } from '@/components/tools/CompareTable'
+import { CompareTableLazy } from '@/components/tools/CompareTableLazy'
 
 const MAX_TOOLS = 4
 
@@ -98,13 +100,14 @@ export default async function ComparePage({
           .select('id, name, slug, tagline, website_url, logo_url, pricing_model, pricing_details, pricing_tags, has_api, has_mobile_app, is_open_source, avg_rating, review_count, use_case, team_size, integrations, pros, cons, is_supertools, model_provider, trains_on_data, has_sso, security_certifications')
           .in('slug', slugs)
           .eq('status', 'published')
-      : Promise.resolve({ data: [] as any[] }),
+      : Promise.resolve({ data: [] as Tool[] }),
     slugs.length > 0 ? getSimilarTools(slugs, 4) : getSuperTools(4),
   ])
 
+  const rows = (data ?? []) as Tool[]
   const tools = slugs
-    .map((slug) => (data as any[] | undefined)?.find((tool) => tool.slug === slug))
-    .filter(Boolean)
+    .map((slug) => rows.find((tool) => tool.slug === slug))
+    .filter((t): t is Tool => t != null)
 
   const comparePresets = [
     {
@@ -228,9 +231,9 @@ export default async function ComparePage({
               className="group"
             >
               <Badge variant="outline" className="h-7 sm:h-8 border-foreground/10 hover:border-primary/40 hover:bg-primary/5 transition-all bg-background cursor-pointer gap-1.5 sm:gap-2 pr-2.5 sm:pr-3 text-[9px] sm:text-[10px]">
-                <div className="h-3.5 w-3.5 sm:h-4 sm:w-4 rounded bg-white overflow-hidden border border-foreground/5 shrink-0 flex items-center justify-center">
+                <div className="relative h-3.5 w-3.5 sm:h-4 sm:w-4 rounded bg-white overflow-hidden border border-foreground/5 shrink-0 flex items-center justify-center">
                   {rec.logo_url ? (
-                    <img src={rec.logo_url} alt={`${rec.name} logo`} className="object-contain" />
+                    <Image src={rec.logo_url} alt={`${rec.name} logo`} fill className="object-contain" />
                   ) : (
                     <span className="text-[6px] sm:text-[8px] font-black text-primary">{rec.name[0]}</span>
                   )}
@@ -265,7 +268,7 @@ export default async function ComparePage({
             </div>
           </div>
         ) : (
-          <CompareTable tools={tools} />
+          <CompareTableLazy tools={tools as unknown as import('@/lib/types').ToolWithTags[]} />
         )}
       </div>
     </div>

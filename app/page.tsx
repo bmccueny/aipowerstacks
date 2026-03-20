@@ -257,8 +257,7 @@ export default async function HomePage() {
                     <div key={tool.id} className="flex items-center gap-2 shrink-0 bg-muted/50 rounded-lg px-3 py-2">
                       <div className="h-7 w-7 rounded-md bg-background overflow-hidden flex items-center justify-center">
                         {tool.logo_url ? (
-                          /* eslint-disable-next-line @next/next/no-img-element */
-                          <img src={tool.logo_url} alt={tool.name} width={28} height={28} className="object-contain" />
+                          <Image src={tool.logo_url} alt={tool.name} width={28} height={28} className="object-contain" />
                         ) : (
                           <span className="text-xs font-bold text-primary">{tool.name[0]}</span>
                         )}

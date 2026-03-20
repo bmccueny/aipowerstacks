@@ -51,8 +51,8 @@ export function AvatarUpload({ userId, displayName, username, initialAvatarUrl, 
       setUrl(publicUrl)
       toast.success('Avatar updated successfully!')
       onSuccess?.(publicUrl)
-    } catch (error: any) {
-      toast.error(error.message || 'Error uploading avatar')
+    } catch (error: unknown) {
+      toast.error(error instanceof Error ? error.message : 'Error uploading avatar')
     } finally {
       setUploading(false)
     }
@@ -68,8 +68,8 @@ export function AvatarUpload({ userId, displayName, username, initialAvatarUrl, 
       setLinkInput('')
       toast.success('Avatar updated successfully!')
       onSuccess?.(linkInput.trim())
-    } catch (error: any) {
-      toast.error(error.message || 'Error updating avatar')
+    } catch (error: unknown) {
+      toast.error(error instanceof Error ? error.message : 'Error updating avatar')
     } finally {
       setSaving(false)
     }
@@ -83,8 +83,8 @@ export function AvatarUpload({ userId, displayName, username, initialAvatarUrl, 
       setShowGallery(false)
       toast.success('Avatar updated successfully!')
       onSuccess?.(avatarUrl)
-    } catch (error: any) {
-      toast.error(error.message || 'Error updating avatar')
+    } catch (error: unknown) {
+      toast.error(error instanceof Error ? error.message : 'Error updating avatar')
     } finally {
       setSaving(false)
     }

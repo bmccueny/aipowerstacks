@@ -103,18 +103,20 @@ export function ReviewCard({ review, currentUserId }: ReviewCardProps) {
         <div className="space-y-4 bg-primary/5 p-4 rounded-md border border-primary/10">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold">Edit Your Review</h3>
-            <button onClick={() => setIsEditing(false)} className="text-muted-foreground hover:text-foreground">
+            <Button variant="ghost" size="icon-xs" onClick={() => setIsEditing(false)} className="text-muted-foreground hover:text-foreground">
               <X className="h-4 w-4" />
-            </button>
+            </Button>
           </div>
           
           <div>
             <p className="text-xs font-medium mb-2 uppercase tracking-wider text-muted-foreground">Rating</p>
             <div className="flex gap-1">
               {[1, 2, 3, 4, 5].map((star) => (
-                <button
+                <Button
                   key={star}
                   type="button"
+                  variant="ghost"
+                  size="icon-xs"
                   onMouseEnter={() => setEditHovered(star)}
                   onMouseLeave={() => setEditHovered(0)}
                   onClick={() => setEditRating(star)}
@@ -125,7 +127,7 @@ export function ReviewCard({ review, currentUserId }: ReviewCardProps) {
                       ? 'fill-yellow-400 text-yellow-400'
                       : 'fill-foreground/15 text-foreground/15'
                   )} />
-                </button>
+                </Button>
               ))}
             </div>
           </div>
@@ -136,7 +138,7 @@ export function ReviewCard({ review, currentUserId }: ReviewCardProps) {
               value={editTitle}
               onChange={(e) => setEditTitle(e.target.value)}
               placeholder="Brief summary"
-              className="glass-card border-border/30 h-10 text-sm focus:ring-2 focus:ring-primary/50"
+              className="glass-card border-border/30 h-10 text-sm focus-visible:ring-2 focus-visible:ring-primary/50"
               maxLength={100}
             />
           </div>
@@ -147,7 +149,7 @@ export function ReviewCard({ review, currentUserId }: ReviewCardProps) {
               value={editBody}
               onChange={(e) => setEditBody(e.target.value)}
               placeholder="Share your experience..."
-              className="w-full glass-card border border-border/30 rounded-2xl px-4 py-3 text-sm resize-none h-28 focus:outline-none focus:ring-2 focus:ring-primary/50"
+              className="w-full glass-card border border-border/30 rounded-2xl px-4 py-3 text-sm resize-none h-28 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
               maxLength={1000}
             />
           </div>
@@ -188,21 +190,25 @@ export function ReviewCard({ review, currentUserId }: ReviewCardProps) {
         <div className="flex items-center gap-3">
           {isOwner && (
             <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-              <button
+              <Button
+                variant="ghost"
+                size="icon-xs"
                 onClick={() => setIsEditing(true)}
                 className="p-1 text-muted-foreground hover:text-primary transition-colors"
                 title="Edit review"
               >
                 <Pencil className="h-3.5 w-3.5" />
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon-xs"
                 onClick={handleDelete}
                 className="p-1 text-muted-foreground hover:text-destructive transition-colors"
                 disabled={loading}
                 title="Delete review"
               >
                 {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Trash2 className="h-3.5 w-3.5" />}
-              </button>
+              </Button>
             </div>
           )}
           <span className="text-xs text-muted-foreground shrink-0">

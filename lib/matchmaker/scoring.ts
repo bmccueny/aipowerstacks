@@ -1,10 +1,22 @@
 import type { Role } from './intent'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
-export type StackEntry = { tool: any; role: string; description: string }
+type PoolTool = {
+  id: string
+  name: string
+  tagline?: string
+  use_case?: string
+  description?: string
+  is_supertools?: boolean
+  is_verified?: boolean
+  avg_rating?: number
+  [key: string]: unknown
+}
+
+export type StackEntry = { tool: PoolTool; role: string; description: string }
 
 // ── Tool Scoring ───────────────────────────────────────────────────────────────
-export function scoreToolForRole(tool: any, role: Role, poolRank: number): number {
+export function scoreToolForRole(tool: PoolTool, role: Role, poolRank: number): number {
   // Generic roles: score purely by semantic rank
   if (role.keywords.length === 0) return Math.max(0, 100 - poolRank * 10)
 
@@ -22,22 +34,23 @@ export function scoreToolForRole(tool: any, role: Role, poolRank: number): numbe
   return score
 }
 
-export function buildContextualStack(pool: any[], roles: Role[]): StackEntry[] {
+export function buildContextualStack(pool: PoolTool[], roles: Role[]): StackEntry[] {
   const used = new Set<string>()
   const stack: StackEntry[] = []
 
   for (const role of roles) {
-    let best: any = null
+    let best: PoolTool | null = null
     let bestScore = 0
 
-    pool.forEach((tool, rank) => {
-      if (used.has(tool.id)) return
+    for (let rank = 0; rank < pool.length; rank++) {
+      const tool = pool[rank]
+      if (used.has(tool.id)) continue
       const score = scoreToolForRole(tool, role, rank)
       if (score > bestScore) {
         bestScore = score
         best = tool
       }
-    })
+    }
 
     if (best) {
       used.add(best.id)

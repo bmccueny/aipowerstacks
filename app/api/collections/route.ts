@@ -40,14 +40,18 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json(data)
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error)
+    const code = error instanceof Object && 'code' in error ? (error as { code: string }).code : undefined
+    const details = error instanceof Object && 'details' in error ? (error as { details: string }).details : undefined
+    const hint = error instanceof Object && 'hint' in error ? (error as { hint: string }).hint : undefined
     console.error('Error creating collection:', {
-      message: error.message,
-      code: error.code,
-      details: error.details,
-      hint: error.hint
+      message,
+      code,
+      details,
+      hint
     })
-    return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 })
+    return NextResponse.json({ error: message || 'Internal Server Error' }, { status: 500 })
   }
 }
 

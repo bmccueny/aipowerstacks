@@ -13,10 +13,8 @@ import {
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
-// ── Claude: intelligent tool selection ────────────────────────────────────────
-// Uses claude-haiku (lowest token cost) with the semantic pool as candidates.
-// Falls back to heuristics if the API key is missing or the call fails.
-async function selectStackWithClaude(message: string, pool: any[]): Promise<{
+// Uses claude-haiku with the semantic pool as candidates.
+async function selectStackWithClaude(message: string, pool: Record<string, unknown>[]): Promise<{
   intro: string
   stack: Array<{ id: string; role: string; reason: string }>
 }> {
@@ -48,7 +46,6 @@ async function selectStackWithClaude(message: string, pool: any[]): Promise<{
   return JSON.parse(match[0])
 }
 
-// ── POST: Chat / Natural Language Mode ────────────────────────────────────────
 export async function POST(req: NextRequest) {
   try {
     const { message } = await req.json()
@@ -56,44 +53,36 @@ export async function POST(req: NextRequest) {
 
     const supabase = createAdminClient()
 
-    // 1. Semantic pool — always runs, cheap local embeddings
     const embedding = await getQueryEmbedding(message)
     const vectorStr = `[${embedding.join(',')}]`
 
-    const { data: pool, error: poolError } = await (supabase as any).rpc('match_tools_semantic', {
-      query_embedding: vectorStr,
+    const { data: pool } = await supabase.rpc('match_tools_semantic', {
+      query_embedding: vectorStr as unknown as number[],
       match_threshold: 0.1,
       match_count: 30,
     })
 
-    if (poolError) {
-      console.error('Semantic search error:', poolError)
-    }
-
-    // If no semantic results, fall back to popular published tools
-    let finalPool = pool
-    if (!pool || pool.length === 0) {
-      console.log('No semantic matches, falling back to popular tools')
+    // If semantic search fails or returns nothing, fall back to popular published tools
+    type PoolTool = Record<string, unknown> & { id: string; name: string; slug: string }
+    let finalPool: PoolTool[] = (pool ?? []) as PoolTool[]
+    if (finalPool.length === 0) {
       const { data: fallbackPool } = await supabase
         .from('tools')
         .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, avg_rating, review_count, upvote_count, is_supertools, use_case, description, has_api, is_open_source, trains_on_data')
         .eq('status', 'published')
         .order('upvote_count', { ascending: false })
         .limit(30)
-      finalPool = fallbackPool || []
+      finalPool = (fallbackPool ?? []) as PoolTool[]
     }
 
-    // 2. Claude path — real AI reasoning over the semantic pool
     if (process.env.ANTHROPIC_API_KEY) {
       try {
         const { intro, stack: claudeStack } = await selectStackWithClaude(message, finalPool)
-        const stack: StackEntry[] = claudeStack
-          .map(({ id, role, reason }) => ({
-            tool: finalPool.find((t: any) => t.id === id),
-            role,
-            description: reason,
-          }))
-          .filter((s): s is StackEntry => Boolean(s.tool))
+        const stack: StackEntry[] = []
+        for (const { id, role, reason } of claudeStack) {
+          const tool = finalPool.find(t => t.id === id)
+          if (tool) stack.push({ tool, role, description: reason })
+        }
 
         if (stack.length >= 2) {
           return NextResponse.json({
@@ -102,33 +91,25 @@ export async function POST(req: NextRequest) {
             roles: stack.map(s => ({ toolId: s.tool.id, role: s.role })),
           })
         }
-      } catch (claudeErr: any) {
-        // Log and fall through to heuristic fallback
-        console.warn('Claude selection failed, using fallback:', claudeErr.message)
+      } catch {
+        // Fall through to heuristic fallback
       }
     }
 
-    // 3. Heuristic fallback — no API key or Claude failed
+    // Heuristic fallback — no API key or Claude failed/returned too few results
     const intent = analyzeIntent(message)
     const stack = buildContextualStack(finalPool, intent.roles)
-    const results = stack.length >= 2 ? stack : finalPool.slice(0, 5).map((tool: any) => ({
-      tool,
-      role: 'Recommended',
-      description: tool.tagline || '',
-    }))
 
     return NextResponse.json({
-      tools: results.map((s: any) => s.tool),
-      explanation: buildNarrative(results, { message, primaryDomain: intent.primaryDomain }),
-      roles: results.map((s: any) => ({ toolId: s.tool.id, role: s.role })),
+      tools: stack.map((s: StackEntry) => s.tool),
+      explanation: buildNarrative(stack, { message, primaryDomain: intent.primaryDomain }),
+      roles: stack.map((s: StackEntry) => ({ toolId: s.tool.id, role: s.role })),
     })
-  } catch (err: any) {
-    console.error('Matchmaker POST error:', err.message)
+  } catch {
     return NextResponse.json({ error: 'Failed to process request' }, { status: 500 })
   }
 }
 
-// ── GET: Guided Wizard Mode ────────────────────────────────────────────────────
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
   const useCase = searchParams.get('useCase') || 'content-creation'
@@ -151,8 +132,7 @@ export async function GET(req: NextRequest) {
       tools,
       explanation: buildWizardExplanation(useCase, pricing, persona, tools.length),
     })
-  } catch (err) {
-    console.error('Matchmaker GET error:', err)
+  } catch {
     return NextResponse.json({ error: 'Failed to fetch recommendations' }, { status: 500 })
   }
 }

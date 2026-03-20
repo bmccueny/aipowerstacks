@@ -70,7 +70,7 @@ export function ToolSearch() {
           value={value}
           onChange={(e) => setValue(e.target.value)}
           placeholder="Search tools or describe what you need..."
-          className="pl-9 pr-9 glass-card border-border/50 focus:ring-2 focus:ring-primary/50 focus:border-primary/60"
+          className="pl-9 pr-9 glass-card border-border/50 focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:border-primary/60"
         />
         {value && (
           <button

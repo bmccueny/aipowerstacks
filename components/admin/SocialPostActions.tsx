@@ -94,7 +94,7 @@ export function SocialPostActions({ post }: SocialPostActionsProps) {
           onChange={(e) => setEditContent(e.target.value)}
           rows={4}
           maxLength={280}
-          className="w-full bg-background border border-border/50 rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary/20"
+          className="w-full bg-background border border-border/50 rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
         />
         <p className="text-xs text-muted-foreground">{editContent.length}/280</p>
         <div className="flex gap-2">

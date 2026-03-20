@@ -51,7 +51,7 @@ export function UserRoleActions({ userId, currentRole }: UserRoleActionsProps) {
       <select
         value={role}
         onChange={(e) => setRole(e.target.value as UserRole)}
-        className="glass-card border border-border/30 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-primary/50"
+        className="glass-card border border-border/30 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
       >
         <option value="user">user</option>
         <option value="editor">editor</option>

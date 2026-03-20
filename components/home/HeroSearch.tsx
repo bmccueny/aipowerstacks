@@ -90,14 +90,14 @@ export function HeroSearch({ toolCount }: { toolCount: number }) {
           <input
             ref={(el) => {
               // Merge refs
-              (inputRef as any).current = el
-              ;(searchBarRef as any).current = el
+              (inputRef as React.MutableRefObject<HTMLInputElement | null>).current = el
+              ;(searchBarRef as React.MutableRefObject<HTMLInputElement | null>).current = el
             }}
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder=" "
-            className="w-full h-14 sm:h-20 px-6 sm:px-8 pr-16 sm:pr-20 rounded-2xl sm:rounded-3xl border-2 border-white/20 dark:border-white/10 liquid-glass glass-card text-base sm:text-xl font-medium outline-none focus:ring-4 focus:ring-primary/20 focus:border-primary/50 transition-all duration-300 placeholder:text-transparent"
+            className="w-full h-14 sm:h-20 px-6 sm:px-8 pr-16 sm:pr-20 rounded-2xl sm:rounded-3xl border-2 border-white/20 dark:border-white/10 liquid-glass glass-card text-base sm:text-xl font-medium outline-none focus-visible:ring-4 focus-visible:ring-primary/20 focus-visible:border-primary/50 transition-all duration-300 placeholder:text-transparent"
           />
 
           {/* Animated cursor in placeholder when empty */}
@@ -115,7 +115,7 @@ export function HeroSearch({ toolCount }: { toolCount: number }) {
         <button
           type="submit"
           aria-label="Search"
-          className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 h-10 w-10 sm:h-14 sm:w-14 inline-flex items-center justify-center rounded-xl sm:rounded-2xl bg-primary text-white hover:bg-primary/90 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2"
+          className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 h-10 w-10 sm:h-14 sm:w-14 inline-flex items-center justify-center rounded-xl sm:rounded-2xl bg-primary text-white hover:bg-primary/90 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2"
         >
           <Search className="h-6 w-6" />
         </button>

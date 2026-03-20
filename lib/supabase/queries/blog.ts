@@ -110,7 +110,7 @@ export async function getFeaturedPost() {
   const { data: author } = await supabase
     .from('profiles')
     .select('display_name, username, avatar_url')
-    .eq('id', (post as any).author_id)
+    .eq('id', post.author_id)
     .single()
 
   return { ...post, author: author || null } as BlogPostSummary

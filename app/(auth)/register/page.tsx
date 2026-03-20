@@ -173,7 +173,7 @@ export default function RegisterPage() {
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Your name"
                   required
-                  className="relative w-full h-12 px-5 glass-card border border-white/10 rounded-xl font-medium text-base focus:outline-none focus:border-primary/50 placeholder:text-muted-foreground/40 transition-all duration-200"
+                  className="relative w-full h-12 px-5 glass-card border border-white/10 rounded-xl font-medium text-base focus:outline-none focus-visible:border-primary/50 placeholder:text-muted-foreground/40 transition-all duration-200"
                 />
               </div>
             </div>
@@ -190,7 +190,7 @@ export default function RegisterPage() {
                   onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
                   placeholder="username"
                   required
-                  className="relative w-full h-12 pl-10 pr-5 glass-card border border-white/10 rounded-xl font-medium text-base focus:outline-none focus:border-primary/50 placeholder:text-muted-foreground/40 transition-all duration-200"
+                  className="relative w-full h-12 pl-10 pr-5 glass-card border border-white/10 rounded-xl font-medium text-base focus:outline-none focus-visible:border-primary/50 placeholder:text-muted-foreground/40 transition-all duration-200"
                 />
               </div>
             </div>
@@ -206,7 +206,7 @@ export default function RegisterPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
                   required
-                  className="relative w-full h-12 px-5 glass-card border border-white/10 rounded-xl font-medium text-base focus:outline-none focus:border-primary/50 placeholder:text-muted-foreground/40 transition-all duration-200"
+                  className="relative w-full h-12 px-5 glass-card border border-white/10 rounded-xl font-medium text-base focus:outline-none focus-visible:border-primary/50 placeholder:text-muted-foreground/40 transition-all duration-200"
                 />
               </div>
             </div>
@@ -223,7 +223,7 @@ export default function RegisterPage() {
                   placeholder="Min 8 characters"
                   required
                   minLength={8}
-                  className="relative w-full h-12 px-5 pr-12 glass-card border border-white/10 rounded-xl font-medium text-base focus:outline-none focus:border-primary/50 placeholder:text-muted-foreground/40 transition-all duration-200"
+                  className="relative w-full h-12 px-5 pr-12 glass-card border border-white/10 rounded-xl font-medium text-base focus:outline-none focus-visible:border-primary/50 placeholder:text-muted-foreground/40 transition-all duration-200"
                 />
                 <button
                   type="button"

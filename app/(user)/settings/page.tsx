@@ -52,8 +52,16 @@ export default function SettingsPage() {
         .eq('id', data.user.id)
         .maybeSingle()
         .then(({ data: row }) => {
-          const profile = row as any
-          if (profile) {
+          if (row) {
+            const profile = row as unknown as {
+              display_name: string | null
+              username: string | null
+              avatar_url: string | null
+              linkedin_url: string | null
+              github_url: string | null
+              is_identity_verified: boolean
+              social_links: SocialLink[] | null
+            }
             setDisplayName(profile.display_name ?? '')
             setUsername(profile.username ?? '')
             setAvatarUrl(profile.avatar_url ?? null)

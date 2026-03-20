@@ -240,7 +240,7 @@ export function DirectMessageDialog({
               placeholder="Type a message..."
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              className="flex-1 bg-muted/50 border-none rounded-full px-4 py-2 text-sm focus:ring-1 focus:ring-primary outline-none"
+              className="flex-1 bg-muted/50 border-none rounded-full px-4 py-2 text-sm focus-visible:ring-1 focus-visible:ring-primary outline-none"
               disabled={loading}
             />
             <Button 

@@ -26,8 +26,7 @@ export async function POST(req: NextRequest) {
     let embedding: number[]
     try {
       embedding = await getQueryEmbedding(query.trim())
-    } catch (err) {
-      console.error('Embedding generation failed:', err instanceof Error ? err.message : err)
+    } catch {
       return NextResponse.json({ tools: [], semantic: false })
     }
 
@@ -45,7 +44,6 @@ export async function POST(req: NextRequest) {
     )
 
     if (rpcError) {
-      console.error('match_tools_semantic RPC error:', rpcError.message)
       return NextResponse.json({ tools: [], semantic: false })
     }
 
@@ -66,7 +64,6 @@ export async function POST(req: NextRequest) {
       .eq('status', 'published')
 
     if (fetchError) {
-      console.error('Full tool fetch error:', fetchError.message)
       return NextResponse.json({ tools: [], semantic: true })
     }
 
@@ -89,8 +86,7 @@ export async function POST(req: NextRequest) {
       semantic: true,
       count: ordered.length,
     })
-  } catch (err) {
-    console.error('Semantic search error:', err instanceof Error ? err.message : err)
+  } catch {
     return NextResponse.json(
       { error: 'Semantic search failed' },
       { status: 500 }

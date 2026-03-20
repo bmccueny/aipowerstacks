@@ -14,6 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
 const navLinks = [
@@ -119,7 +120,7 @@ export function Navbar() {
               {user ? (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <button className="flex items-center gap-2 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 w-11 h-11 flex-shrink-0 relative z-10">
+                      <Button variant="ghost" size="icon-lg" className="rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 hover:scale-105 focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 flex-shrink-0 relative z-10">
                       <Avatar className="h-9 w-9 ring-2 ring-gray-200 dark:ring-gray-700 ring-offset-1 transition-transform duration-200 hover:scale-110">
                         <AvatarImage
                           src={profile?.avatar_url || undefined}
@@ -133,7 +134,7 @@ export function Navbar() {
                            'U'}
                         </AvatarFallback>
                       </Avatar>
-                    </button>
+                    </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
                     align="end"
@@ -186,12 +187,14 @@ export function Navbar() {
               )}
 
               {/* Mobile Menu Button */}
-              <button
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={() => setMobileOpen(!mobileOpen)}
-                className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
+                className="md:hidden rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
               >
                 {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-              </button>
+              </Button>
             </div>
           </div>
         </div>

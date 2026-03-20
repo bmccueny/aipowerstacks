@@ -157,14 +157,14 @@ export function CategoryManager({ initialCategories }: CategoryManagerProps) {
             }}
             placeholder="Name"
             required
-            className="glass-card border-border/30 focus:ring-2 focus:ring-primary/50"
+            className="glass-card border-border/30 focus-visible:ring-2 focus-visible:ring-primary/50"
           />
           <Input
             value={createForm.slug}
             onChange={(e) => setCreateForm((prev) => ({ ...prev, slug: e.target.value }))}
             placeholder="slug"
             required
-            className="glass-card border-border/30 focus:ring-2 focus:ring-primary/50"
+            className="glass-card border-border/30 focus-visible:ring-2 focus-visible:ring-primary/50"
           />
           <Input
             value={createForm.sort_order}
@@ -172,25 +172,25 @@ export function CategoryManager({ initialCategories }: CategoryManagerProps) {
             min={0}
             onChange={(e) => setCreateForm((prev) => ({ ...prev, sort_order: e.target.value }))}
             placeholder="Sort order"
-            className="glass-card border-border/30 focus:ring-2 focus:ring-primary/50"
+            className="glass-card border-border/30 focus-visible:ring-2 focus-visible:ring-primary/50"
           />
           <Input
             value={createForm.icon}
             onChange={(e) => setCreateForm((prev) => ({ ...prev, icon: e.target.value }))}
             placeholder="Icon (optional)"
-            className="glass-card border-border/30 focus:ring-2 focus:ring-primary/50"
+            className="glass-card border-border/30 focus-visible:ring-2 focus-visible:ring-primary/50"
           />
           <Input
             value={createForm.color}
             onChange={(e) => setCreateForm((prev) => ({ ...prev, color: e.target.value }))}
             placeholder="Color (optional)"
-            className="glass-card border-border/30 focus:ring-2 focus:ring-primary/50"
+            className="glass-card border-border/30 focus-visible:ring-2 focus-visible:ring-primary/50"
           />
           <Input
             value={createForm.description}
             onChange={(e) => setCreateForm((prev) => ({ ...prev, description: e.target.value }))}
             placeholder="Description (optional)"
-            className="glass-card border-border/30 focus:ring-2 focus:ring-primary/50"
+            className="glass-card border-border/30 focus-visible:ring-2 focus-visible:ring-primary/50"
           />
         </div>
         <Button type="submit" size="sm" disabled={createLoading}>

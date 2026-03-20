@@ -113,7 +113,7 @@ export function ToolForm({ categories, tool }: ToolFormProps) {
     }
   }
 
-  const inputCls = 'glass-card border-border/30 focus:ring-2 focus:ring-primary/50'
+  const inputCls = 'glass-card border-border/30 focus-visible:ring-2 focus-visible:ring-primary/50'
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5 max-w-2xl">
@@ -136,7 +136,7 @@ export function ToolForm({ categories, tool }: ToolFormProps) {
       <div>
         <label className="text-sm font-medium mb-1.5 block">Description *</label>
         <textarea value={form.description} onChange={set('description')} required maxLength={5000}
-          className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm resize-none h-32 focus:outline-none focus:border-primary/50" />
+          className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm resize-none h-32 focus:outline-none focus-visible:border-primary/50" />
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -154,7 +154,7 @@ export function ToolForm({ categories, tool }: ToolFormProps) {
         <div>
           <label className="text-sm font-medium mb-1.5 block">Category *</label>
           <select value={form.category_id} onChange={set('category_id')} required
-            className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary/50">
+            className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus-visible:border-primary/50">
             <option value="">Select...</option>
             {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
@@ -162,14 +162,14 @@ export function ToolForm({ categories, tool }: ToolFormProps) {
         <div>
           <label className="text-sm font-medium mb-1.5 block">Pricing</label>
           <select value={form.pricing_model} onChange={set('pricing_model')}
-            className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary/50">
+            className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus-visible:border-primary/50">
             {PRICING_MODELS.map((p) => <option key={p.value} value={p.value}>{p.label}</option>)}
           </select>
         </div>
         <div>
           <label className="text-sm font-medium mb-1.5 block">Status</label>
           <select value={form.status} onChange={set('status')}
-            className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary/50">
+            className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus-visible:border-primary/50">
             {['published', 'pending', 'rejected', 'archived'].map((s) => <option key={s} value={s}>{s}</option>)}
           </select>
         </div>
@@ -184,7 +184,7 @@ export function ToolForm({ categories, tool }: ToolFormProps) {
         <div>
           <label className="text-sm font-medium mb-1.5 block">Primary Use Case</label>
           <select value={form.use_case} onChange={set('use_case')}
-            className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary/50">
+            className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus-visible:border-primary/50">
             <option value="">Select use case...</option>
             {USE_CASE_OPTIONS.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
           </select>
@@ -192,7 +192,7 @@ export function ToolForm({ categories, tool }: ToolFormProps) {
         <div>
           <label className="text-sm font-medium mb-1.5 block">Team Size</label>
           <select value={form.team_size} onChange={set('team_size')}
-            className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary/50">
+            className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus-visible:border-primary/50">
             <option value="">Select team size...</option>
             {TEAM_SIZE_OPTIONS.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
           </select>
@@ -213,7 +213,7 @@ export function ToolForm({ categories, tool }: ToolFormProps) {
         <div>
           <label className="text-sm font-medium mb-1.5 block">Model Provider</label>
           <select value={form.model_provider} onChange={set('model_provider')}
-            className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary/50">
+            className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus-visible:border-primary/50">
             <option value="">None / Unknown</option>
             {MODEL_PROVIDER_OPTIONS.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
           </select>

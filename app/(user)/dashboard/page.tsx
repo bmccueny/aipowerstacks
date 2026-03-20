@@ -86,9 +86,9 @@ export default async function DashboardPage() {
   const myStacks = allCollections.filter(c => !c.source_collection_id)
   
   // Combine clones (from collections) and links (from collection_saves)
-  const linkedStacks = (savedRes.data ?? []).map(r => (r as any).collection).filter(Boolean)
+  const linkedStacks = (savedRes.data ?? []).map(r => (r as unknown as { collection: typeof allCollections[number] | null }).collection).filter((c): c is typeof allCollections[number] => c != null)
   const clonedStacks = allCollections.filter(c => c.source_collection_id)
-  
+
   // Unify for display
   const savedStacks = [...linkedStacks, ...clonedStacks].map(s => ({
     ...s,
@@ -105,9 +105,10 @@ export default async function DashboardPage() {
       .eq('user_id', user.id)
       .maybeSingle()
     if (sub) {
+      const typedSub = sub as unknown as { vote_count: number; collections: { name: string } | null }
       userChallengeSubmission = {
-        collection_name: (sub as any).collections?.name ?? 'Your stack',
-        vote_count: (sub as any).vote_count ?? 0,
+        collection_name: typedSub.collections?.name ?? 'Your stack',
+        vote_count: typedSub.vote_count ?? 0,
       }
     }
   }
@@ -225,9 +226,9 @@ export default async function DashboardPage() {
           )}
 
           <DashboardTabs
-            myStacks={myStacks as any}
-            savedStacks={savedStacks as any}
-            reviews={reviews as any}
+            myStacks={myStacks}
+            savedStacks={savedStacks}
+            reviews={reviews}
             submissions={submissions}
             statusColors={statusColors}
           />

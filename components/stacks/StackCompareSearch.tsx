@@ -2,8 +2,9 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { Search, Plus, Loader2, X } from 'lucide-react'
+import { Search, Plus, Loader2, X, SearchX } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import { EmptyState } from '@/components/common/EmptyState'
 
 export function StackCompareSearch({ paramA, paramB }: { paramA: string | null; paramB: string | null }) {
   const router = useRouter()
@@ -83,7 +84,7 @@ export function StackCompareSearch({ paramA, paramB }: { paramA: string | null; 
           onChange={(e) => { setQuery(e.target.value); setOpen(true) }}
           onFocus={() => setOpen(true)}
           placeholder={placeholder}
-          className="w-full bg-background border-[1.5px] border-foreground/20 rounded-md h-11 pl-10 pr-10 focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all text-sm font-medium"
+          className="w-full bg-background border-[1.5px] border-foreground/20 rounded-md h-11 pl-10 pr-10 focus:outline-none focus-visible:border-primary/50 focus-visible:ring-4 focus-visible:ring-primary/5 transition-all text-sm font-medium"
         />
         {query && (
           <button
@@ -122,8 +123,12 @@ export function StackCompareSearch({ paramA, paramB }: { paramA: string | null; 
               ))}
             </div>
           ) : (
-            <div className="p-4 text-center text-muted-foreground text-xs italic">
-              No stacks found for &quot;{query}&quot;
+            <div className="p-4">
+              <EmptyState
+                icon={SearchX}
+                title="No stacks found"
+                description={`No results for "${query}". Try a different search.`}
+              />
             </div>
           )}
         </div>

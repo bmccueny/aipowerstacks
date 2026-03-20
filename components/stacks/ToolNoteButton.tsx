@@ -45,7 +45,7 @@ export function ToolNoteButton({ collectionId, toolId, initialNote }: Props) {
           value={note}
           onChange={e => setNote(e.target.value)}
           onKeyDown={e => { if (e.key === 'Enter') save(); if (e.key === 'Escape') setEditing(false) }}
-          className="flex-1 text-xs bg-muted border border-border rounded-md px-2.5 py-1.5 outline-none focus:border-primary/50 placeholder:text-muted-foreground/50"
+          className="flex-1 text-xs bg-muted border border-border rounded-md px-2.5 py-1.5 outline-none focus-visible:border-primary/50 placeholder:text-muted-foreground/50"
         />
         <button
           onClick={save}

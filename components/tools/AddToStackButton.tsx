@@ -112,8 +112,9 @@ export function AddToStackButton({
       const fallbackMembership = await fetchMembershipViaClient(cols.map((c) => c.id))
       setItemCounts(fallbackMembership)
       return true
-    } catch (err: any) {
-      toast.error('Failed to load your stacks: ' + (err.message || 'Unknown error'))
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : String(err)
+      toast.error('Failed to load your stacks: ' + (message || 'Unknown error'))
       return false
     } finally {
       setFetching(false)
@@ -188,8 +189,9 @@ export function AddToStackButton({
       setNewStackIcon('⚡')
       setIsDialogOpen(false)
       toast.success(`"${name}" created and tool added!`)
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to create stack')
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : String(err)
+      toast.error(message || 'Failed to create stack')
     } finally {
       setLoading(false)
     }

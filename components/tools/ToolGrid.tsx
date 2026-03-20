@@ -1,5 +1,7 @@
+import { SearchX } from 'lucide-react'
 import { ToolCard } from './ToolCard'
 import { ToolCardSkeleton } from './ToolCardSkeleton'
+import { EmptyState } from '@/components/common/EmptyState'
 import type { ToolSearchResult } from '@/lib/types'
 
 interface ToolGridProps {
@@ -25,13 +27,12 @@ export function ToolGrid({ tools, view = 'grid', loading = false, cardStyle = 'd
 
   if (tools.length === 0) {
     return (
-      <div className="text-center py-16">
-        <p className="text-muted-foreground text-lg">No tools found.</p>
-        <p className="text-muted-foreground text-sm mt-1">Try adjusting your search or filters.</p>
-        <p className="text-muted-foreground text-sm mt-3">
-          Can&apos;t find what you need? <a href="/submit" className="text-primary hover:underline">Submit a tool</a>.
-        </p>
-      </div>
+      <EmptyState
+        icon={SearchX}
+        title="No tools found"
+        description="Try adjusting your search or filters."
+        action={{ label: 'Submit a tool', href: '/submit' }}
+      />
     )
   }
 

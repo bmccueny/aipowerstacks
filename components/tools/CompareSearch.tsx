@@ -76,7 +76,7 @@ export function CompareSearch({ currentSlugs }: { currentSlugs: string[] }) {
           onChange={(e) => { setQuery(e.target.value); setOpen(true) }}
           onFocus={() => setOpen(true)}
           placeholder="Search tools to add..."
-          className="w-full bg-background border-[1.5px] border-foreground/10 rounded-xl h-12 pl-11 pr-10 focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all text-sm font-bold shadow-sm"
+          className="w-full bg-background border-[1.5px] border-foreground/10 rounded-xl h-12 pl-11 pr-10 focus:outline-none focus-visible:border-primary/50 focus-visible:ring-4 focus-visible:ring-primary/5 transition-all text-sm font-bold shadow-sm"
         />
         {query && (
           <button 
@@ -104,9 +104,9 @@ export function CompareSearch({ currentSlugs }: { currentSlugs: string[] }) {
                     onClick={() => addTool(tool.slug)}
                     className="w-full flex items-center gap-4 p-3 hover:bg-primary/5 transition-all text-left group rounded-xl"
                   >
-                    <div className="h-10 w-10 rounded-2xl glass-card overflow-hidden flex items-center justify-center shrink-0 shadow-lg transition-all duration-300">
+                    <div className="relative h-10 w-10 rounded-2xl glass-card overflow-hidden flex items-center justify-center shrink-0 shadow-lg transition-all duration-300">
                       {tool.logo_url ? (
-                        <img src={tool.logo_url} alt={tool.name} className="object-contain p-1" />
+                        <Image src={tool.logo_url} alt={tool.name} fill className="object-contain p-1" />
                       ) : (
                         <span className="text-xs font-black text-primary uppercase">{tool.name[0]}</span>
                       )}

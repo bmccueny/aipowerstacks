@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import type { Metadata } from 'next'
 import { SITE_URL } from '@/lib/constants/site'
 import { createClient } from '@/lib/supabase/server'
@@ -112,7 +113,7 @@ export default async function BlueprintsPage() {
                           <div className="flex items-center gap-3">
                             <div className="h-8 w-8 rounded bg-background flex items-center justify-center shrink-0 border border-foreground/10">
                               {bt.tools.logo_url ? (
-                                <img src={bt.tools.logo_url} alt={`${bt.tools.name} logo`} className="h-6 w-6 object-contain" />
+                                <Image src={bt.tools.logo_url} alt={`${bt.tools.name} logo`} width={24} height={24} className="object-contain" />
                               ) : (
                                 <span className="text-[10px] font-black text-primary">{bt.tools.name[0]}</span>
                               )}

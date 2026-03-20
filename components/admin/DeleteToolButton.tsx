@@ -40,8 +40,9 @@ export function DeleteToolButton({ toolId, toolName }: DeleteToolButtonProps) {
 
       toast.success(`${toolName} deleted successfully`)
       router.refresh()
-    } catch (error: any) {
-      toast.error(error.message)
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error)
+      toast.error(message)
     } finally {
       setLoading(false)
     }

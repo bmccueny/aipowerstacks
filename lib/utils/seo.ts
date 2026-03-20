@@ -100,7 +100,7 @@ export function generateJsonLd(tool: ToolWithTags) {
     description: tool.description,
     url: canonicalUrl,
     image: tool.logo_url,
-    applicationCategory: (tool as any).category_slug ? (CATEGORY_MAP[(tool as any).category_slug] ?? 'BusinessApplication') : 'BusinessApplication',
+    applicationCategory: tool.categories?.slug ? (CATEGORY_MAP[tool.categories.slug] ?? 'BusinessApplication') : 'BusinessApplication',
     operatingSystem: 'Any',
     ...(tool.pricing_model === 'free' ? {
       offers: {

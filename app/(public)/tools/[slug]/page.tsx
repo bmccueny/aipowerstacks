@@ -134,8 +134,8 @@ export default async function ToolDetailPage({ params }: Props) {
     { name: tool.name, url: `/tools/${tool.slug}` },
   ]
 
-  const { data: trend } = await (supabase as any).rpc('get_tool_price_trend', { p_tool_id: tool.id })
-  const priceChange = (trend as any)?.[0]?.percent_change ?? 0
+  const { data: trend } = await supabase.rpc('get_tool_price_trend', { p_tool_id: tool.id })
+  const priceChange = trend?.[0]?.percent_change ?? 0
 
   return (
     <>
@@ -345,7 +345,7 @@ export default async function ToolDetailPage({ params }: Props) {
               <div className="glass-card rounded-md p-6">
                 <h2 className="text-lg font-semibold mb-3">You Might Also Like</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {youMightLike.map((rec: any) => (
+                  {youMightLike.map((rec) => (
                     <Link
                       key={rec.id}
                       href={`/tools/${rec.slug}`}
@@ -353,7 +353,7 @@ export default async function ToolDetailPage({ params }: Props) {
                     >
                       <div className="h-9 w-9 shrink-0 rounded-lg bg-muted overflow-hidden flex items-center justify-center">
                         {rec.logo_url ? (
-                          <img src={rec.logo_url} alt={rec.name} width={36} height={36} className="object-cover" />
+                          <Image src={rec.logo_url} alt={rec.name} width={36} height={36} className="object-cover" />
                         ) : (
                           <span className="text-sm font-bold text-primary">{rec.name[0]}</span>
                         )}

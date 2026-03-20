@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import type { AINews } from '@/lib/types'
 
 const AI_KEYWORDS = [
   'ai', 'llm', 'gpt', 'claude', 'anthropic', 'openai', 'gemini', 'perplexity', 
@@ -48,8 +49,8 @@ export async function GET(request: Request) {
   const toKeep: string[] = []
   const toDelete: string[] = []
   
-  const dailyGroups: Record<string, any[]> = {}
-  
+  const dailyGroups: Record<string, AINews[]> = {}
+
   news.forEach(item => {
     const day = new Date(item.published_at).toISOString().split('T')[0]
     if (!dailyGroups[day]) dailyGroups[day] = []
@@ -58,7 +59,7 @@ export async function GET(request: Request) {
 
   for (const day in dailyGroups) {
     const dayItems = dailyGroups[day]
-    const keptInDay: any[] = []
+    const keptInDay: AINews[] = []
     
     for (const item of dayItems) {
       const isAi = isAiRelated(item.title, item.summary)

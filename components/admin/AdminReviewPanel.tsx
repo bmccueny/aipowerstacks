@@ -26,7 +26,7 @@ export function AdminReviewPanel({ toolId, initialVerified, initialVideoUrl, ini
     setLoading(true)
     const supabase = createClient()
     
-    const { error } = await (supabase as any)
+    const { error } = await supabase
       .from('tools')
       .update({
         verified_by_admin: verified,
@@ -59,7 +59,7 @@ export function AdminReviewPanel({ toolId, initialVerified, initialVideoUrl, ini
               type="checkbox" 
               checked={verified} 
               onChange={(e) => setVerified(e.target.checked)}
-              className="h-4 w-4 rounded border-foreground/20 text-primary focus:ring-primary"
+              className="h-4 w-4 rounded border-foreground/20 text-primary focus-visible:ring-primary"
             />
             <span className="text-sm font-bold group-hover:text-primary transition-colors">Mark as Expert Verified</span>
           </label>
@@ -85,7 +85,7 @@ export function AdminReviewPanel({ toolId, initialVerified, initialVideoUrl, ini
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             placeholder="Notes about the tool performance, quirks, etc..."
-            className="w-full bg-background border border-foreground/10 rounded-md px-3 py-2 text-sm min-h-[100px] focus:outline-none focus:border-primary/30"
+            className="w-full bg-background border border-foreground/10 rounded-md px-3 py-2 text-sm min-h-[100px] focus:outline-none focus-visible:border-primary/30"
           />
         </div>
 

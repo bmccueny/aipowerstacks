@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { Zap, Star, Newspaper, ArrowRight } from 'lucide-react'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { Navbar } from '@/components/layout/Navbar'
@@ -71,17 +72,20 @@ export default async function ChangelogPage() {
   const reviewToolIds = [...new Set((reviews ?? []).map(r => r.tool_id).filter(Boolean))]
   const reviewUserIds = [...new Set((reviews ?? []).map(r => r.user_id).filter(Boolean))]
 
+  type ReviewTool = { id: string; name: string; slug: string }
+  type ReviewProfile = { id: string; display_name: string | null }
+
   const [{ data: reviewToolsData }, { data: reviewProfilesData }] = await Promise.all([
     reviewToolIds.length > 0
       ? supabase.from('tools').select('id, name, slug').in('id', reviewToolIds)
-      : Promise.resolve({ data: [] as any[] }),
+      : Promise.resolve({ data: [] as ReviewTool[] }),
     reviewUserIds.length > 0
       ? supabase.from('profiles').select('id, display_name').in('id', reviewUserIds)
-      : Promise.resolve({ data: [] as any[] }),
+      : Promise.resolve({ data: [] as ReviewProfile[] }),
   ])
 
-  const toolMap = new Map((reviewToolsData ?? []).map((t: any) => [t.id, t]))
-  const profileMap = new Map((reviewProfilesData ?? []).map((p: any) => [p.id, p]))
+  const toolMap = new Map((reviewToolsData ?? []).map((t) => [t.id, t]))
+  const profileMap = new Map((reviewProfilesData ?? []).map((p) => [p.id, p]))
 
   // Group by week
   const weekMap = new Map<string, WeekEntry>()
@@ -179,7 +183,7 @@ export default async function ChangelogPage() {
                             >
                               <div className="h-8 w-8 rounded-md bg-muted overflow-hidden flex items-center justify-center shrink-0">
                                 {tool.logo_url ? (
-                                  <img src={tool.logo_url} alt={tool.name} width={32} height={32} className="object-contain" />
+                                  <Image src={tool.logo_url} alt={tool.name} width={32} height={32} className="object-contain" />
                                 ) : (
                                   <span className="text-xs font-bold text-primary">{tool.name[0]}</span>
                                 )}

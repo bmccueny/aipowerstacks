@@ -23,6 +23,41 @@ import { Badge } from '@/components/ui/badge'
 import { DirectMessageDialog } from '@/components/curators/DirectMessageDialog'
 import { BlogCard } from '@/components/blog/BlogCard'
 import type { BlogPostSummary } from '@/lib/supabase/queries/blog'
+import type { Profile, AINews, Collection, Tool } from '@/lib/types'
+
+/** Profile fields returned by the extended curator query (includes columns not in generated types) */
+type CuratorProfile = Profile & {
+  reputation_score?: number | null
+  curator_tier?: string | null
+  social_links?: { platform: string; url: string }[] | null
+}
+
+/** Shape of a stack row with nested collection_items -> tools */
+type StackRow = Pick<Collection, 'id' | 'name' | 'description' | 'share_slug' | 'icon' | 'view_count' | 'save_count'> & {
+  collection_items: Array<{
+    tools: Pick<Tool, 'id' | 'name' | 'logo_url'> | null
+  }>
+}
+
+/** Shape of a review row with nested tool */
+type ReviewRow = {
+  id: string
+  rating: number
+  title: string | null
+  body: string | null
+  created_at: string
+  helpful_count: number
+  is_verified: boolean
+  tools: Pick<Tool, 'id' | 'name' | 'slug' | 'logo_url'> | null
+}
+
+/** Shape of a follow row with nested profile */
+type FollowWithProfile = {
+  profiles: Pick<Profile, 'id' | 'username' | 'display_name' | 'avatar_url'> | null
+}
+
+/** Minimal profile for follower/following lists */
+type MiniProfile = Pick<Profile, 'id' | 'username' | 'display_name' | 'avatar_url'>
 
 export async function generateMetadata({
   params,
@@ -31,7 +66,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { username } = await params
   const supabase = await createClient()
-  const { data: profile } = await (supabase as any)
+  const { data: profile } = await supabase
     .from('profiles')
     .select('display_name, bio, avatar_url')
     .eq('username', username)
@@ -73,11 +108,11 @@ export default async function CuratorPage({
   const { username } = await params
   const supabase = await createClient()
 
-  const { data: profile } = await (supabase as any)
+  const { data: profile } = await supabase
     .from('profiles')
     .select('id, username, display_name, avatar_url, bio, created_at, role, reputation_score, curator_tier, social_links')
     .eq('username', username)
-    .single()
+    .single() as { data: CuratorProfile | null }
 
   if (!profile) notFound()
 
@@ -148,18 +183,18 @@ export default async function CuratorPage({
       .limit(6)
   ])
 
-  const stacks = (stacksRes.data ?? []) as any[]
+  const stacks = (stacksRes.data ?? []) as StackRow[]
   const followerCount = followerRes.count ?? 0
   const followingCount = followingRes.count ?? 0
-  const isFollowing = !!(isFollowingRes as any).data
-  const followerList = ((followerListRes.data ?? []) as any[]).map((r) => r.profiles).filter(Boolean)
-  const followingList = ((followingListRes.data ?? []) as any[]).map((r) => r.profiles).filter(Boolean)
-  
-  const reviews = (reviewsRes.data ?? []) as any[]
+  const isFollowing = !!isFollowingRes.data
+  const followerList = ((followerListRes.data ?? []) as unknown as FollowWithProfile[]).map((r) => r.profiles).filter(Boolean) as MiniProfile[]
+  const followingList = ((followingListRes.data ?? []) as unknown as FollowWithProfile[]).map((r) => r.profiles).filter(Boolean) as MiniProfile[]
+
+  const reviews = (reviewsRes.data ?? []) as ReviewRow[]
   const reviewsCount = reviews.length
   const totalHelpfulClicks = reviews.reduce((acc, r) => acc + (r.helpful_count || 0), 0)
 
-  const blogPosts: BlogPostSummary[] = ((blogPostsRes.data ?? []) as any[]).map(p => ({
+  const blogPosts: BlogPostSummary[] = ((blogPostsRes.data ?? []) as typeof blogPostsRes.data & unknown[]).map(p => ({
     ...p,
     author: { display_name: profile.display_name, username: profile.username, avatar_url: profile.avatar_url },
   }))
@@ -193,7 +228,7 @@ export default async function CuratorPage({
           <div className="flex flex-col sm:flex-row sm:items-start gap-6">
             <div className="shrink-0">
               <Avatar className="h-24 w-24 border-4 border-primary/20 shadow-md">
-                <AvatarImage src={profile.avatar_url} className="object-cover" />
+                <AvatarImage src={profile.avatar_url ?? undefined} className="object-cover" />
                 <AvatarFallback className="bg-primary/10 text-primary text-3xl font-black">
                   {(profile.display_name || profile.username || 'A')[0].toUpperCase()}
                 </AvatarFallback>
@@ -259,9 +294,9 @@ export default async function CuratorPage({
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {stacks.map((stack: any) => {
-                const tools = (stack.collection_items ?? []).map((i: any) => i.tools).filter(Boolean)
-                const toolIds = tools.map((t: any) => t.id)
+              {stacks.map((stack: StackRow) => {
+                const tools = (stack.collection_items ?? []).map((i) => i.tools).filter(Boolean) as Pick<Tool, 'id' | 'name' | 'logo_url'>[]
+                const toolIds = tools.map((t) => t.id)
                 const previews = tools.slice(0, 5)
                 return (
                   <div
@@ -296,7 +331,7 @@ export default async function CuratorPage({
                         {previews.length > 0 && (
                           <Link href={`/stacks/${stack.share_slug}`} className="flex items-center gap-2">
                             <div className="flex items-center">
-                              {previews.map((tool: any, i: number) => (
+                              {previews.map((tool, i) => (
                                 <div
                                   key={tool.id}
                                   className="h-7 w-7 rounded-full bg-muted border-2 border-background overflow-hidden flex items-center justify-center shrink-0"
@@ -342,7 +377,7 @@ export default async function CuratorPage({
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-4">
-              {reviews.map((review: any) => (
+              {reviews.map((review: ReviewRow) => (
                 <div key={review.id} className="glass-card rounded-xl overflow-hidden flex flex-col group border-b-2 border-b-amber-500/20">
                   <div className="p-6 flex flex-col gap-4">
                     <div className="flex items-start justify-between gap-4">
@@ -416,9 +451,9 @@ export default async function CuratorPage({
                   />
                   <DirectMessageDialog
                     receiverId={profile.id}
-                    receiverName={profile.display_name || profile.username}
-                    receiverUsername={profile.username}
-                    receiverAvatar={profile.avatar_url}
+                    receiverName={profile.display_name || profile.username || ''}
+                    receiverUsername={profile.username ?? ''}
+                    receiverAvatar={profile.avatar_url ?? undefined}
                     currentUserId={user?.id}
                   />
                   <p className="text-xs text-muted-foreground leading-relaxed">
@@ -463,10 +498,10 @@ export default async function CuratorPage({
                   <p className="text-xs text-muted-foreground">None yet.</p>
                 ) : (
                   <div className="space-y-2">
-                    {followerList.slice(0, 5).map((p: any) => (
+                    {followerList.slice(0, 5).map((p: MiniProfile) => (
                       <Link key={p.id} href={`/curators/${p.username}`} className="flex items-center gap-2 group">
                         <Avatar className="h-7 w-7 border border-primary/20 shrink-0">
-                          <AvatarImage src={p.avatar_url} className="object-cover" />
+                          <AvatarImage src={p.avatar_url ?? undefined} className="object-cover" />
                           <AvatarFallback className="bg-primary/10 text-primary text-xs font-black">
                             {(p.display_name || p.username || '?')[0].toUpperCase()}
                           </AvatarFallback>
@@ -487,10 +522,10 @@ export default async function CuratorPage({
                   <p className="text-xs text-muted-foreground">None yet.</p>
                 ) : (
                   <div className="space-y-2">
-                    {followingList.slice(0, 5).map((p: any) => (
+                    {followingList.slice(0, 5).map((p: MiniProfile) => (
                       <Link key={p.id} href={`/curators/${p.username}`} className="flex items-center gap-2 group">
                         <Avatar className="h-7 w-7 border border-primary/20 shrink-0">
-                          <AvatarImage src={p.avatar_url} className="object-cover" />
+                          <AvatarImage src={p.avatar_url ?? undefined} className="object-cover" />
                           <AvatarFallback className="bg-primary/10 text-primary text-xs font-black">
                             {(p.display_name || p.username || '?')[0].toUpperCase()}
                           </AvatarFallback>

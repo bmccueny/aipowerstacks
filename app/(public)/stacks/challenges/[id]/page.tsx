@@ -78,8 +78,10 @@ export default async function ChallengePage({
     .eq('challenge_id', id)
     .order('vote_count', { ascending: false })
 
+  type SubmissionRow = NonNullable<typeof submissions>[number]
+
   const userSubmission = user
-    ? (submissions ?? []).find((s: any) => s.profiles && s.collections?.user_id === user.id)
+    ? (submissions ?? []).find((s: SubmissionRow) => s.profiles && s.collections?.user_id === user.id)
     : null
 
   const userVotedCollectionId = user
@@ -92,7 +94,7 @@ export default async function ChallengePage({
         .then((r) => r.data?.collection_id ?? null)
     : null
 
-  let userStacks: any[] = []
+  let userStacks: { id: string; name: string; icon: string | null; share_slug: string }[] = []
   if (user && isLive) {
     const { data } = await supabase
       .from('collections')
@@ -157,7 +159,7 @@ export default async function ChallengePage({
             </p>
             <p className="text-xs text-muted-foreground mt-0.5">
               {userSubmission
-                ? `"${(userSubmission as any).collections?.name}" — ${(userSubmission as any).vote_count} votes`
+                ? `"${userSubmission.collections?.name}" — ${userSubmission.vote_count} votes`
                 : 'Pick one of your public stacks to enter.'}
             </p>
           </div>
@@ -188,10 +190,12 @@ export default async function ChallengePage({
         </div>
       ) : (
         <div className="space-y-3">
-          {(submissions ?? []).map((sub: any, i: number) => {
+          {(submissions ?? []).map((sub: SubmissionRow, i: number) => {
             const stack = sub.collections
             const creator = sub.profiles
-            const tools = (stack?.collection_items ?? []).map((ci: any) => ci.tools).filter(Boolean).slice(0, 5)
+            type ChallengeCollectionItem = NonNullable<typeof stack>['collection_items'][number]
+            type ChallengeTool = NonNullable<ChallengeCollectionItem['tools']>
+            const tools = (stack?.collection_items ?? []).map((ci: ChallengeCollectionItem) => ci.tools).filter((t): t is ChallengeTool => Boolean(t)).slice(0, 5)
             const hasVoted = userVotedCollectionId === stack?.id
 
             return (
@@ -219,7 +223,7 @@ export default async function ChallengePage({
                   </div>
                   {tools.length > 0 && (
                     <div className="flex items-center mt-1.5">
-                      {tools.map((tool: any, ti: number) => (
+                      {tools.map((tool: ChallengeTool, ti: number) => (
                         <div
                           key={tool.id}
                           className="h-5 w-5 rounded-full bg-muted border-[1.5px] border-background overflow-hidden flex items-center justify-center shrink-0"

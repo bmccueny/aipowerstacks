@@ -43,9 +43,11 @@ async function fetchStack(supabase: Awaited<ReturnType<typeof createClient>>, sl
     .eq('collection_id', collection.id)
     .order('sort_order', { ascending: true })
 
+  type CompareToolRow = NonNullable<NonNullable<typeof items>[number]['tools']>
+
   return {
     ...collection,
-    tools: (items?.map((i: any) => i.tools).filter(Boolean) ?? []) as any[],
+    tools: (items?.map((i) => i.tools).filter((t): t is CompareToolRow => Boolean(t)) ?? []),
   }
 }
 
@@ -62,13 +64,16 @@ export default async function StackComparePage({
     slugB ? fetchStack(supabase, slugB) : null,
   ])
 
+  type StackResult = NonNullable<Awaited<ReturnType<typeof fetchStack>>>
+  type CompareTool = StackResult['tools'][number]
+
   const toolsA = stackA?.tools ?? []
   const toolsB = stackB?.tools ?? []
-  const idsA = new Set(toolsA.map((t: any) => t.id))
-  const idsB = new Set(toolsB.map((t: any) => t.id))
+  const idsA = new Set(toolsA.map((t) => t.id))
+  const idsB = new Set(toolsB.map((t) => t.id))
 
-  const toolMap = new Map<string, any>()
-  ;[...toolsA, ...toolsB].forEach((t: any) => toolMap.set(t.id, t))
+  const toolMap = new Map<string, CompareTool>()
+  ;[...toolsA, ...toolsB].forEach((t) => toolMap.set(t.id, t))
   const allToolIds = new Set([...idsA, ...idsB])
 
   const allTools = [...allToolIds].map((id) => ({
@@ -124,7 +129,7 @@ export default async function StackComparePage({
         <>
           {/* Two-column headers */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8 mb-4">
-            {([stackA, stackB] as any[]).map((stack, i) => {
+            {([stackA, stackB] as StackResult[]).map((stack, i) => {
               const creator = stack.profiles
               const label = i === 0 ? 'A' : 'B'
               return (

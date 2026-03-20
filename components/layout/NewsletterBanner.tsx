@@ -74,7 +74,7 @@ export function NewsletterBanner({
           placeholder="Enter your email"
           required
           className={cn(
-            'flex-1 focus:ring-2 focus:ring-primary focus:border-primary h-11',
+            'flex-1 focus-visible:ring-2 focus-visible:ring-primary focus-visible:border-primary h-11',
             isDark
               ? 'bg-gray-800 border-gray-600 text-white placeholder:text-gray-400'
               : 'bg-gray-100 border-gray-300 text-gray-900 placeholder:text-gray-500'

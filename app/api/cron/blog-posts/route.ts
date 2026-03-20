@@ -75,11 +75,8 @@ const EDITORS: Record<string, { id: string; voice: string; beat: string }> = {
 const XAI_BASE_URL = 'https://api.x.ai/v1'
 const JINA_BASE = 'https://r.jina.ai'
 
-/**
- * Topic-specific source configurations.
- * Each topic gets its own subreddits, YouTube searches, and Twitter queries
- * so every blog post draws from genuinely different source material.
- */
+const AI_KEYWORDS = ['ai', 'llm', 'gpt', 'model', 'machine learning', 'neural', 'transformer', 'openai', 'anthropic', 'claude', 'gemini', 'copilot', 'agent', 'chatbot', 'diffusion', 'fine-tun', 'rag', 'embedding', 'inference', 'deep learning', 'artificial intelligence']
+
 const TOPIC_SOURCES: Record<string, {
   subreddits: string[]
   ytSearches: string[]
@@ -136,7 +133,6 @@ const TOPIC_SOURCES: Record<string, {
   },
 }
 
-/** All available topic categories */
 const TOPIC_CATEGORIES = Object.keys(TOPIC_SOURCES)
 
 /* ── Scraping helpers ──────────────────────────────────────────────────────── */
@@ -150,7 +146,7 @@ interface ScrapedItem {
   snippet?: string
 }
 
-/** Check if a CLI tool is available on this machine */
+/** Check if a CLI tool is available */
 function hasCommand(cmd: string): boolean {
   try {
     const { execFileSync } = require('child_process')
@@ -203,8 +199,7 @@ async function scrapeReddit(subreddits: string[]): Promise<ScrapedItem[]> {
         if (!d || d.stickied || d.over_18) continue
 
         const text = `${d.title} ${d.selftext ?? ''}`.toLowerCase()
-        const aiKeywords = ['ai', 'llm', 'gpt', 'model', 'machine learning', 'neural', 'transformer', 'openai', 'anthropic', 'claude', 'gemini', 'copilot', 'agent', 'chatbot', 'diffusion', 'fine-tun', 'rag', 'embedding', 'inference']
-        const isRelevant = aiKeywords.some((kw) => text.includes(kw))
+        const isRelevant = AI_KEYWORDS.some((kw) => text.includes(kw))
         if (!isRelevant && sub !== 'artificial' && sub !== 'MachineLearning') continue
 
         items.push({
@@ -226,7 +221,7 @@ async function scrapeReddit(subreddits: string[]): Promise<ScrapedItem[]> {
     .slice(0, 8)
 }
 
-/** Scrape YouTube via yt-dlp (with transcript extraction) or fall back to Jina Reader */
+/** Scrape YouTube via yt-dlp or Jina Reader fallback */
 async function scrapeYouTube(
   ytdlpQueries: string[],
   jinaSearchUrls: string[],
@@ -235,7 +230,6 @@ async function scrapeYouTube(
   const transcripts = new Map<string, string>()
 
   if (HAS_YTDLP) {
-    // Use yt-dlp for search + metadata + subtitles
     for (const query of ytdlpQueries) {
       const raw = runCommand('yt-dlp', [
         '--dump-json',
@@ -253,8 +247,7 @@ async function scrapeYouTube(
           if (!title || !url) continue
 
           const lower = title.toLowerCase()
-          const aiKeywords = ['ai', 'llm', 'gpt', 'model', 'machine learning', 'neural', 'openai', 'anthropic', 'claude', 'gemini', 'copilot', 'agent', 'chatbot', 'diffusion', 'deep learning', 'artificial intelligence']
-          if (!aiKeywords.some((kw) => lower.includes(kw))) continue
+          if (!AI_KEYWORDS.some((kw) => lower.includes(kw))) continue
 
           items.push({ title, url, source: 'youtube', snippet: d.description?.slice(0, 300) })
         } catch {
@@ -263,7 +256,6 @@ async function scrapeYouTube(
       }
     }
 
-    // For top 3 videos, try to extract actual transcripts via yt-dlp
     const seen = new Set<string>()
     const uniqueItems = items.filter((i) => {
       if (seen.has(i.url)) return false
@@ -282,11 +274,9 @@ async function scrapeYouTube(
 
       try {
         const meta = JSON.parse(raw)
-        // Try to get English subtitles
         const subs = meta.subtitles?.en ?? meta.automatic_captions?.en ?? []
         if (subs.length > 0) {
-          // yt-dlp provides subtitle URLs; pick the json3 or srv1 format
-          const subEntry = subs.find((s: any) => s.ext === 'json3') ?? subs.find((s: any) => s.ext === 'srv1') ?? subs[0]
+          const subEntry = subs.find((s: { ext?: string; url?: string }) => s.ext === 'json3') ?? subs.find((s: { ext?: string; url?: string }) => s.ext === 'srv1') ?? subs[0]
           if (subEntry?.url) {
             try {
               const subRes = await fetch(subEntry.url, { signal: AbortSignal.timeout(8_000) })
@@ -298,7 +288,7 @@ async function scrapeYouTube(
                   try {
                     const parsed = JSON.parse(subData)
                     transcript = (parsed.events ?? [])
-                      .flatMap((e: any) => (e.segs ?? []).map((s: any) => s.utf8 ?? ''))
+                      .flatMap((e: { segs?: { utf8?: string }[] }) => (e.segs ?? []).map((s: { utf8?: string }) => s.utf8 ?? ''))
                       .join('')
                       .replace(/\n+/g, ' ')
                       .trim()
@@ -349,8 +339,7 @@ async function scrapeYouTube(
         const title = match[1].trim()
         const url = match[2]
         const lower = title.toLowerCase()
-        const aiKeywords = ['ai', 'llm', 'gpt', 'model', 'machine learning', 'neural', 'openai', 'anthropic', 'claude', 'gemini', 'copilot', 'agent', 'chatbot', 'diffusion', 'deep learning', 'artificial intelligence']
-        if (!aiKeywords.some((kw) => lower.includes(kw))) continue
+        if (!AI_KEYWORDS.some((kw) => lower.includes(kw))) continue
         items.push({ title, url, source: 'youtube' })
       }
     } catch {
@@ -365,7 +354,7 @@ async function scrapeYouTube(
   }
 }
 
-/** Scrape Twitter/X for trending AI discussions via xreach CLI */
+/** Scrape Twitter/X via xreach CLI */
 async function scrapeTwitter(queries: string[]): Promise<ScrapedItem[]> {
   if (!HAS_XREACH || queries.length === 0) return []
 
@@ -406,7 +395,7 @@ async function scrapeTwitter(queries: string[]): Promise<ScrapedItem[]> {
     .slice(0, 10)
 }
 
-/** Scrape a URL via Jina Reader for full content */
+/** Scrape a URL via Jina Reader */
 async function scrapeUrl(url: string): Promise<string | null> {
   try {
     const jinaUrl = `${JINA_BASE}/${url}`
@@ -421,14 +410,6 @@ async function scrapeUrl(url: string): Promise<string | null> {
     return null
   }
 }
-
-/* ── Cover image generation ─────────────────────────────────────────────────── */
-
-/**
- * Use Grok to write a unique, article-specific image prompt,
- * then generate the cover image with that prompt.
- * Returns the image URL or null on failure.
- */
 
 /* ── Blog post generation ──────────────────────────────────────────────────── */
 
@@ -467,7 +448,7 @@ function slugify(title: string): string {
     .replace(/-$/, '')
 }
 
-/** Generate a single blog post using Grok, fed with scraped source material */
+/** Generate a blog post via Grok from scraped sources */
 async function generateBlogPost(
   editor: { name: string; voice: string; beat: string },
   topic: string,
@@ -476,7 +457,6 @@ async function generateBlogPost(
   twitterItems: ScrapedItem[],
   scrapedContent: string,
 ): Promise<GeneratedPost> {
-  // Build the source material context
   const redditContext = redditItems
     .map((r) => `- [r/${r.subreddit}] "${r.title}" (score: ${r.score})${r.snippet ? `\n  ${r.snippet.slice(0, 200)}` : ''}`)
     .join('\n')
@@ -569,8 +549,7 @@ Respond in EXACTLY this JSON format (no extra text before or after):
   const data = await res.json()
   const text = (data.choices?.[0]?.message?.content ?? '').trim()
 
-  // Parse JSON response
-  let parsed: any
+  let parsed: Record<string, unknown>
   try {
     parsed = JSON.parse(text)
   } catch {
@@ -586,7 +565,6 @@ Respond in EXACTLY this JSON format (no extra text before or after):
   const excerpt = String(parsed.excerpt ?? '').slice(0, 500)
   const slug = slugify(title) + '-' + Date.now().toString(36)
 
-  // Generate cover image with article-specific prompt
   const cover_image_url = await generateCoverImage(title, topic, excerpt, true)
 
   return {
@@ -606,7 +584,6 @@ Respond in EXACTLY this JSON format (no extra text before or after):
 export const maxDuration = 60 // Vercel Hobby plan limit
 
 export async function GET(request: Request) {
-  // Auth check
   const cronSecret = process.env.CRON_SECRET
   const authHeader = request.headers.get('authorization')
   if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
@@ -619,13 +596,12 @@ export async function GET(request: Request) {
 
   const supabase = createAdminClient()
 
-  // Generate ONE post per invocation to stay within Vercel timeout
+  // Single post per invocation to stay within Vercel timeout
   const editor = pickRandomEditors(1)[0]
   const topic = pickRandomTopics(1)[0]
   const topicConfig = TOPIC_SOURCES[topic]
 
   try {
-    // Scrape sources specific to this topic
     const [postReddit, youtubeResult, postTwitter] = await Promise.all([
       scrapeReddit(topicConfig.subreddits),
       scrapeYouTube(topicConfig.ytdlpQueries, topicConfig.ytSearches),
@@ -642,7 +618,6 @@ export async function GET(request: Request) {
       })
     }
 
-    // Deep-scrape top URLs
     const topUrls = [
       ...postReddit.slice(0, 1).map((r) => r.url),
       ...postYoutube.slice(0, 1).map((y) => y.url),

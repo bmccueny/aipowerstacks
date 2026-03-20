@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { createClient } from '@/lib/supabase/client'
 import { toast } from 'sonner'
 import Link from 'next/link'
+import type { User } from '@supabase/supabase-js'
 
 interface Props {
   sourceCollectionId: string
@@ -16,7 +17,7 @@ interface Props {
 }
 
 export function SaveStackButton({ sourceCollectionId, stackName, toolIds, variant = 'default', className }: Props) {
-  const [user, setUser] = useState<any>(null)
+  const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(false)
   const [saved, setSaved] = useState(false)
 
@@ -47,7 +48,7 @@ export function SaveStackButton({ sourceCollectionId, stackName, toolIds, varian
 
     if (variant === 'icon') {
       // LINKING: Save as a reference in collection_saves
-      const { error } = await (supabase as any)
+      const { error } = await (supabase as unknown as { from: (table: string) => { insert: (row: Record<string, string>) => Promise<{ error: { message: string } | null }> } })
         .from('collection_saves')
         .insert({ user_id: user.id, collection_id: sourceCollectionId })
       

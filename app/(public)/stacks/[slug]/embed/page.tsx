@@ -41,7 +41,9 @@ export default async function StackEmbedPage({ params }: { params: Promise<{ slu
     .order('sort_order', { ascending: true })
     .limit(10)
 
-  const tools = (items?.map(i => ({ ...(i.tools as any), _note: i.note })) ?? []).filter(t => t?.id)
+  type EmbedToolRow = NonNullable<NonNullable<typeof items>[number]['tools']>
+  type EmbedToolWithNote = EmbedToolRow & { _note: string | null }
+  const tools: EmbedToolWithNote[] = (items?.map(i => ({ ...(i.tools as EmbedToolRow), _note: i.note })) ?? []).filter((t): t is EmbedToolWithNote => Boolean(t?.id))
 
   return (
     <html>
@@ -86,7 +88,7 @@ export default async function StackEmbedPage({ params }: { params: Promise<{ slu
             )}
           </div>
 
-          {tools.map((tool: any) => {
+          {tools.map((tool: EmbedToolWithNote) => {
             const badgeStyle = EMBED_BADGE_STYLES[tool.pricing_model] ?? EMBED_BADGE_STYLES.unknown
             const pricingLabel = PRICING_LABELS[tool.pricing_model] ?? 'Unknown'
             return (

@@ -135,6 +135,10 @@ export type Database = {
           last_benchmarked_at: string | null
           is_api_wrapper: boolean
           wrapper_details: string | null
+          verified_by_admin: boolean
+          admin_review_video_url: string | null
+          admin_review_notes: string | null
+          admin_review_at: string | null
           created_at: string
           updated_at: string
         }
@@ -178,6 +182,10 @@ export type Database = {
           last_benchmarked_at?: string | null
           is_api_wrapper?: boolean
           wrapper_details?: string | null
+          verified_by_admin?: boolean
+          admin_review_video_url?: string | null
+          admin_review_notes?: string | null
+          admin_review_at?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -219,6 +227,10 @@ export type Database = {
           last_benchmarked_at?: string | null
           is_api_wrapper?: boolean
           wrapper_details?: string | null
+          verified_by_admin?: boolean
+          admin_review_video_url?: string | null
+          admin_review_notes?: string | null
+          admin_review_at?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -942,6 +954,14 @@ export type Database = {
       increment_stack_view: {
         Args: { collection_id: string }
         Returns: void
+      }
+      get_tool_price_trend: {
+        Args: { p_tool_id: string; p_days?: number }
+        Returns: {
+          current_price: number
+          previous_price: number
+          percent_change: number
+        }[]
       }
     }
   }
