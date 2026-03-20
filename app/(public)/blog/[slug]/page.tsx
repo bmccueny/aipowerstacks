@@ -10,29 +10,7 @@ import { BlogCard } from '@/components/blog/BlogCard'
 import { NewsletterBanner } from '@/components/layout/NewsletterBanner'
 import { FacebookIcon, LinkedInIcon, XIcon } from '@/components/common/SocialIcons'
 import { SITE_URL } from '@/lib/constants/site'
-
-function normalizeThumUrl(url: string | null): string | null {
-  if (!url) return null
-  let normalizedUrl = url.replace(/^http:\/\//, 'https://')
-  if (normalizedUrl.startsWith('https://image.thum.io/get/')) {
-    const marker = '/noanimate/'
-    const markerIndex = normalizedUrl.indexOf(marker)
-    if (markerIndex !== -1) {
-      try {
-        const parsed = new URL(normalizedUrl)
-        const articlePartRaw = parsed.pathname.slice(markerIndex + marker.length).replace(/^\/+/, '')
-        if (articlePartRaw) {
-          const decoded = decodeURIComponent(articlePartRaw)
-          const articleUrl = encodeURIComponent(decoded) + (parsed.search || '')
-          normalizedUrl = `${normalizedUrl.slice(0, markerIndex + marker.length)}${articleUrl}`
-        }
-      } catch {
-        // Return original URL if parsing fails
-      }
-    }
-  }
-  return normalizedUrl
-}
+import { normalizeThumUrl } from '@/lib/utils/url'
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params

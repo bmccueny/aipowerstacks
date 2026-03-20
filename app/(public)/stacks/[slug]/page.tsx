@@ -3,6 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { SITE_URL } from '@/lib/constants/site'
 import { createClient } from '@/lib/supabase/server'
+import type { CollectionWithJoins, StackTool, StackToolWithNote, StackToolCategory } from '@/lib/types'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { ShareButton } from '@/components/stacks/ShareButton'
@@ -70,7 +71,7 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
     .single()
 
   if (error || !collectionRaw) notFound()
-  const collection = collectionRaw as any
+  const collection = collectionRaw as unknown as CollectionWithJoins
 
   let user = null
   try {
@@ -108,7 +109,10 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
     .eq('collection_id', collection.id)
     .order('sort_order', { ascending: true })
 
-  const tools = (items?.map(i => ({ ...(i.tools as any), _note: i.note })) ?? []).filter(t => t?.id) as any[]
+  const tools: StackToolWithNote[] = (items?.map(i => ({
+    ...(i.tools as unknown as StackTool),
+    _note: i.note,
+  })) ?? []).filter((t): t is StackToolWithNote => !!t?.id)
 
   const pricingCounts = tools.reduce((acc: Record<string, number>, t) => {
     acc[t.pricing_model] = (acc[t.pricing_model] ?? 0) + 1
@@ -116,13 +120,13 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
   }, {})
 
   const categories = [...new Map(
-    tools.map(t => t.categories).filter(Boolean).map((c: any) => [c.slug, c])
-  ).values()] as any[]
+    tools.map(t => t.categories).filter((c): c is StackToolCategory => c !== null).map(c => [c.slug, c])
+  ).values()]
 
   const shareUrl = `${SITE_URL}/stacks/${slug}`
-  const creator = (collection as any).profiles
+  const creator = collection.profiles
   const isSavedStack = !!collection.source_collection_id
-  const sourceCollection = (collection as any).source
+  const sourceCollection = collection.source
 
   let isFollowingCreator = false
   if (user && !isOwner) {
@@ -207,7 +211,7 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
               )}
               {categories.length > 0 && (
                 <div className="flex items-center gap-2 mt-3 flex-wrap">
-                  {categories.map((cat: any) => (
+                  {categories.map((cat) => (
                     <Link
                       key={cat.slug}
                       href={`/categories/${cat.slug}`}
@@ -429,19 +433,19 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
                   <span className="text-muted-foreground flex items-center gap-2">
                     <Eye className="h-3.5 w-3.5" /> Views
                   </span>
-                  <span className="font-bold">{(collection as any).view_count || 0}</span>
+                  <span className="font-bold">{collection.view_count || 0}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground flex items-center gap-2">
                     <Bookmark className="h-3.5 w-3.5" /> Saves
                   </span>
-                  <span className="font-bold">{(collection as any).save_count || 0}</span>
+                  <span className="font-bold">{collection.save_count || 0}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground flex items-center gap-2">
                     <ArrowLeftRight className="h-3.5 w-3.5" /> Remixes
                   </span>
-                  <span className="font-bold">{(collection as any).save_count || 0}</span>
+                  <span className="font-bold">{collection.save_count || 0}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground flex items-center gap-2">

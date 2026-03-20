@@ -20,11 +20,7 @@
     "check-visual-images": "npx tsx scripts/check-visual-images.ts",
     "fix-broken-images": "npx tsx scripts/fix-broken-images.ts",
     "migrate-images-to-storage": "npx tsx scripts/migrate-images-to-storage.ts",
-    "scrape-tiretech-images": "npx tsx scripts/scrape-tiretech-images.ts",
-    "generate-tiretech-images": "npx tsx scripts/generate-tiretech-images.ts",
-    "analyze-tiretech-images": "npx tsx scripts/analyze-tiretech-images.ts",
-    "generate-tiretech-hero-video": "npx tsx scripts/generate-tiretech-hero-video.ts",
-    "regenerate-covers": "npx tsx scripts/regenerate-blog-covers.ts",
+"regenerate-covers": "npx tsx scripts/regenerate-blog-covers.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },

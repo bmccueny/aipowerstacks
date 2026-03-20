@@ -504,7 +504,7 @@ export async function getLatestTools(limit = 8): Promise<ToolCardData[]> {
 
   const { data } = await supabase
     .from('tools')
-    .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, is_featured, avg_rating, review_count, upvote_count, category_id, published_at, screenshot_urls, model_provider')
+    .select(TOOL_SELECT_COLUMNS)
     .eq('status', 'published')
     .order('published_at', { ascending: false })
     .limit(limit)
@@ -517,7 +517,7 @@ export async function getSuperTools(limit = 8): Promise<ToolSearchResult[]> {
 
   const { data } = await supabase
     .from('tools')
-    .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, is_featured, avg_rating, review_count, upvote_count, category_id, published_at, screenshot_urls, model_provider')
+    .select(TOOL_SELECT_COLUMNS)
     .eq('status', 'published')
     .eq('is_supertools', true)
     .order('upvote_count', { ascending: false })
@@ -545,7 +545,7 @@ export async function getSimilarTools(slugs: string[], limit = 4): Promise<ToolS
   // 2. Find other tools in those categories
   const { data } = await supabase
     .from('tools')
-    .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, is_featured, avg_rating, review_count, upvote_count, category_id, published_at, model_provider')
+    .select(TOOL_SELECT_COLUMNS)
     .in('category_id', categoryIds)
     .not('slug', 'in', `(${slugs.join(',')})`)
     .eq('status', 'published')
@@ -572,7 +572,7 @@ export async function getRelatedToolsByCategory({
 
   const { data } = await supabase
     .from('tools')
-    .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, is_featured, avg_rating, review_count, upvote_count, category_id, published_at, model_provider')
+    .select(TOOL_SELECT_COLUMNS)
     .eq('status', 'published')
     .eq('category_id', categoryId)
     .neq('id', excludeToolId)
@@ -631,7 +631,7 @@ export async function getMatchedTools({
   const buildBaseQuery = () => {
     let q = supabase
       .from('tools')
-      .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, avg_rating, review_count, upvote_count, has_api, has_mobile_app, is_open_source, is_supertools, trains_on_data, has_sso, security_certifications')
+      .select(TOOL_SELECT_COLUMNS)
       .eq('status', 'published')
 
     // 1. Deep Text Analysis: match use_case OR check tagline/description for keywords
@@ -665,7 +665,7 @@ export async function getMatchedTools({
   if (!data || data.length < 2) {
     const fallback = await supabase
       .from('tools')
-      .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, avg_rating, review_count, upvote_count, has_api, has_mobile_app, is_open_source, is_supertools, trains_on_data, has_sso, security_certifications')
+      .select(TOOL_SELECT_COLUMNS)
       .eq('status', 'published')
       .eq('use_case', useCase)
       .order('is_supertools', { ascending: false })
@@ -678,26 +678,15 @@ export async function getMatchedTools({
     }
   }
 
-  // C. NUCLEAR FALLBACK: If still nothing, get top supertools overall to ensure we never show an empty screen
+  // C. FINAL FALLBACK: If still nothing, get top tools by popularity to ensure we never show an empty screen
   if (!data || data.length === 0) {
-    const nuclear = await supabase
+    const fallbackPopular = await supabase
       .from('tools')
-      .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, avg_rating, review_count, upvote_count, has_api, has_mobile_app, is_open_source, is_supertools, trains_on_data, has_sso, security_certifications')
+      .select(TOOL_SELECT_COLUMNS)
       .eq('status', 'published')
       .order('upvote_count', { ascending: false })
       .limit(limit)
-    data = nuclear.data
-  }
-
-  // D. LAST RESORT: Get any published tools if supertools query failed
-  if (!data || data.length === 0) {
-    const lastResort = await supabase
-      .from('tools')
-      .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, avg_rating, review_count, upvote_count, has_api, has_mobile_app, is_open_source, is_supertools, trains_on_data, has_sso, security_certifications')
-      .eq('status', 'published')
-      .order('upvote_count', { ascending: false })
-      .limit(limit)
-    data = lastResort.data
+    data = fallbackPopular.data
   }
 
   return (data ?? []) as unknown as ToolSearchResult[]
@@ -708,7 +697,7 @@ export async function getPopularToolsExcluding(excludeIds: string[], limit = 4):
 
   const { data } = await supabase
     .from('tools')
-    .select('id, name, slug, tagline, logo_url, pricing_model, is_verified, is_featured, avg_rating, review_count, upvote_count, category_id, published_at, model_provider, is_api_wrapper, has_api, is_open_source')
+    .select(TOOL_SELECT_COLUMNS)
     .eq('status', 'published')
     .order('avg_rating', { ascending: false })
     .order('review_count', { ascending: false })

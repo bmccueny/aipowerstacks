@@ -59,3 +59,37 @@ export type BlogPostWithAuthor = BlogPost & {
   profiles: Pick<Profile, 'id' | 'display_name' | 'avatar_url' | 'username'>
   blog_categories: Pick<BlogCategory, 'id' | 'name' | 'slug'> | null
 }
+
+/** Profile fields selected in stack page collection query */
+export type CollectionCreatorProfile = Pick<Profile, 'display_name' | 'avatar_url' | 'username'>
+
+/** Source collection joined in stack page query */
+export type CollectionSource = {
+  id: string
+  name: string
+  share_slug: string
+  profiles: Pick<Profile, 'username' | 'display_name'> | null
+}
+
+/** Full collection row with joined profiles and source for the stack page */
+export type CollectionWithJoins = Collection & {
+  profiles: CollectionCreatorProfile | null
+  source: CollectionSource | null
+}
+
+/** Tool category fields selected in the collection_items join */
+export type StackToolCategory = Pick<Category, 'name' | 'slug' | 'icon' | 'color'>
+
+/** Tool fields selected in the collection_items join */
+export type StackTool = Pick<Tool,
+  'id' | 'name' | 'slug' | 'tagline' | 'description' | 'website_url' | 'logo_url' |
+  'pricing_model' | 'avg_rating' | 'review_count' | 'upvote_count' |
+  'is_verified' | 'has_api' | 'is_open_source' | 'use_cases'
+> & {
+  categories: StackToolCategory | null
+}
+
+/** StackTool with curator note attached from collection_items */
+export type StackToolWithNote = StackTool & {
+  _note: string | null
+}
