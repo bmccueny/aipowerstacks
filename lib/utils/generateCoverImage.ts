@@ -97,28 +97,50 @@ You must return TWO things in this exact format:
 HEADLINE: [1-3 high-impact words that create urgency/curiosity, e.g., "GAME OVER", "NO WAY", "HUGE MISTAKE", "$0 COST", "MIND-BLOWN"]
 PROMPT: [3-4 sentence image generation prompt]
 
-For the HEADLINE:
-- Pick 1-3 punchy words that make people STOP scrolling
-- Use power words: FREE, SECRET, BROKEN, IMPOSSIBLE, INSANE, SHOCKING, $X,XXX
-- Must relate to the article's core hook
+For the HEADLINE (the 3-Word Rule):
+- 3 words or fewer (e.g., "I QUIT", "IT'S OVER", "NEVER AGAIN", "$0 COST")
+- Bold, punchy words that make people STOP scrolling
+- Use power words: FREE, SECRET, BROKEN, IMPOSSIBLE, INSANE, SHOCKING
+- Must relate to the article's core hook — create a "curiosity gap"
 - ALL CAPS
 
-For the PROMPT, follow these MANDATORY THUMBNAIL RULES:
-1. EXPRESSIVE FACES: Feature a person with an exaggerated emotion — shock, excitement, curiosity, awe. Close-up or medium shot showing clear facial expression.
-2. MOVIE POSTER COMPOSITION: Treat as a movie poster. Tease a "micro-story" or "before vs. after" transformation related to the article topic.
-3. FOCAL POINTS: Blur or darken the background. Add a bright glow, white outline, or neon highlight around the main subject to guide the viewer's eye.
-4. BOLD COLORS: Use high-saturation, high-contrast color pairs: Red/Blue, Yellow/Purple, Orange/Teal. Favor red, yellow, orange for urgency. Heavy saturation and sharpness.
-5. DRAMATIC LIGHTING: Studio-style lighting with strong key light on face, moody rim lighting or colored gels for atmosphere.
+For the PROMPT, follow ALL of these rules:
 
-${photorealistic ? `STYLE: Photorealistic editorial photography with cinematic color grading. Shallow depth of field with bokeh. Real-world setting (office, lab, studio).` : `Pick ONE distinct visual style: cinematic illustration, neon cyberpunk, bold graphic poster, or hyper-saturated editorial photo.`}
+1. HIGH-CONTRAST & VIBRANT COLORS
+- Bright, highly saturated colors (red, yellow, orange) to trigger urgency and excitement
+- Pair complementary colors that "pop": blue/orange, yellow/black, red/teal, yellow/purple
+- Heavy saturation and sharpness throughout
+
+2. EXPRESSIVE HUMAN FACES
+- Close-up or medium shot of a person with an EXAGGERATED emotion (shock, joy, confusion, awe)
+- The face must trigger a curiosity loop — the viewer wants to know what caused that reaction
+- Eye contact with the camera to create psychological connection
+- This is the single most important element — humans notice faces faster than anything else
+
+3. THE "CURIOSITY GAP"
+- Tease information without giving away the ending
+- Use visual hooks: arrows pointing at something, circles highlighting a mystery, blurred objects
+- Juxtaposition of two conflicting things creates immediate tension (e.g., before/after, cheap/expensive)
+
+4. SIMPLE, FOCUSED COMPOSITION
+- ONE dominant focal point — do not crowd the image
+- Place the subject off-center (rule of thirds) for a dynamic composition
+- Leave clear space for text overlay (bottom-left area should be darker/less busy)
+- White outlines or glow effects around the main subject to separate from background
+- Blur or darken the background aggressively
+
+5. DRAMATIC LIGHTING
+- Studio-style key light on face, moody rim lighting or colored gels
+- Cinematic color grading with shallow depth of field and bokeh
+
+${photorealistic ? `STYLE: Photorealistic editorial photography. Real-world setting (office, lab, studio, workshop).` : `Pick ONE style: cinematic illustration, neon cyberpunk, bold graphic poster, or hyper-saturated editorial photo.`}
 
 CRITICAL IMAGE RULES:
-- NO text, words, letters, or UI elements in the image itself (text is added separately)
+- NO text, words, letters, or UI elements in the image (text is composited separately)
 - NO glowing orbs, abstract neural networks, or generic "AI brain" imagery
-- NO flat, boring compositions — every image needs dramatic energy
-- The person's expression should make viewers CURIOUS about the article
+- NO crowded compositions — one focal point only
+- The person's expression is the HERO of the image
 - Format: widescreen 16:9 blog header
-- Leave the bottom-left area slightly darker/less busy for the text overlay
 
 Reply in this exact format:
 HEADLINE: [words]
