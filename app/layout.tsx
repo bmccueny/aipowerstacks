@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { GeistSans } from 'geist/font/sans'
 import { Space_Grotesk, Reddit_Sans } from 'next/font/google'
 import { SITE_URL } from '@/lib/constants/site'
+import { Analytics } from '@vercel/analytics/react'
+import { SpeedInsights } from '@vercel/speed-insights/react'
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -127,6 +129,8 @@ export default function RootLayout({
           {children}
         </div>
         <Toaster richColors position="top-center" />
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )
