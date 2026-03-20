@@ -46,11 +46,16 @@ async function overlayTextOnImage(imageBuffer: ArrayBuffer, headlineWords: strin
   const w = metadata.width || 1280
   const h = metadata.height || 720
 
-  // Large bold font that passes the "squint test" — readable even at thumbnail size
-  const fontSize = Math.round(w * 0.08)
-  const strokeWidth = Math.round(fontSize * 0.08)
   const padding = Math.round(w * 0.04)
-  // Bottom-left but well above the bottom-right corner where YouTube puts the timestamp
+  const maxTextWidth = w - padding * 2
+
+  // Scale font to fit: Impact is ~0.6x character width ratio at a given font size
+  const charWidthRatio = 0.6
+  const maxFontSize = Math.round(w * 0.08)
+  const fittedFontSize = Math.min(maxFontSize, Math.round(maxTextWidth / (words.length * charWidthRatio)))
+  const fontSize = Math.max(fittedFontSize, Math.round(w * 0.04)) // floor at 4% so it's always readable
+
+  const strokeWidth = Math.round(fontSize * 0.08)
   const y = h - Math.round(h * 0.12)
 
   const svg = `<svg width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg">
@@ -128,8 +133,8 @@ For the PROMPT, follow ALL of these rules:
 4. SIMPLE, FOCUSED COMPOSITION
 - ONE dominant focal point — do not crowd the image
 - Place the subject off-center (rule of thirds) for a dynamic composition
-- Leave the bottom-left darker/less busy for text overlay
-- Keep the bottom-right corner completely clear (YouTube places the timestamp there)
+- Do NOT add any gradient, vignette, or darkened area for text — the text overlay has its own outline and shadow
+- Keep the bottom-right corner clear (YouTube places the timestamp there)
 - White outlines or glow effects around the main subject to separate from background
 - Blur or darken the background aggressively
 
