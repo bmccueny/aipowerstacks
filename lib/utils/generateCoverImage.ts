@@ -49,11 +49,12 @@ async function overlayTextOnImage(imageBuffer: ArrayBuffer, headlineWords: strin
   const padding = Math.round(w * 0.04)
   const maxTextWidth = w - padding * 2
 
-  // Scale font to fit: Impact is ~0.6x character width ratio at a given font size
-  const charWidthRatio = 0.6
+  // Scale font to fit: Impact averages ~0.55x width + 3px letter-spacing per char
   const maxFontSize = Math.round(w * 0.08)
-  const fittedFontSize = Math.min(maxFontSize, Math.round(maxTextWidth / (words.length * charWidthRatio)))
-  const fontSize = Math.max(fittedFontSize, Math.round(w * 0.04)) // floor at 4% so it's always readable
+  const letterSpacing = 3
+  const fittedFontSize = Math.min(maxFontSize, Math.round(maxTextWidth / (words.length * 0.55 + words.length * (letterSpacing / maxFontSize))))
+  // Apply 10% safety margin, floor at 4% of width
+  const fontSize = Math.max(Math.round(fittedFontSize * 0.9), Math.round(w * 0.04))
 
   const strokeWidth = Math.round(fontSize * 0.08)
   const y = h - Math.round(h * 0.12)
