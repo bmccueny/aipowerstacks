@@ -20,14 +20,14 @@ export const metadata: Metadata = {
     url: `${SITE_URL}/blueprints`,
     type: 'website',
     siteName: 'AIPowerStacks',
-    images: [{ url: `${SITE_URL}/og-image.png`, width: 1200, height: 630, alt: 'AIPowerStacks Project Blueprints' }],
+    images: [{ url: `${SITE_URL}/og-home-2026.jpg`, width: 1200, height: 630, alt: 'AIPowerStacks Project Blueprints' }],
   },
   twitter: {
     card: 'summary_large_image',
     site: '@aipowerstacks',
     title: 'Project Blueprints - AI Workflow Recipes',
     description: 'Pre-built AI tool recipes for high-impact workflows. One-click adopt expert stacks for content creation, development, marketing, data analysis, and more.',
-    images: [`${SITE_URL}/og-image.png`],
+    images: [`${SITE_URL}/og-home-2026.jpg`],
   },
 }
 

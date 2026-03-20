@@ -19,14 +19,14 @@ export const metadata: Metadata = {
     url: `${SITE_URL}/stacks`,
     type: 'website',
     siteName: 'AIPowerStacks',
-    images: [{ url: `${SITE_URL}/og-image.png`, width: 1200, height: 630, alt: 'AIPowerStacks Power Stacks' }],
+    images: [{ url: `${SITE_URL}/og-home-2026.jpg`, width: 1200, height: 630, alt: 'AIPowerStacks Power Stacks' }],
   },
   twitter: {
     card: 'summary_large_image',
     site: '@aipowerstacks',
     title: 'Power Stacks - Curated AI Tool Collections',
     description: 'Browse community-curated collections of AI tools organized by workflow. Find proven tool stacks for development, content creation, marketing, research, and more.',
-    images: [`${SITE_URL}/og-image.png`],
+    images: [`${SITE_URL}/og-home-2026.jpg`],
   },
 }
 

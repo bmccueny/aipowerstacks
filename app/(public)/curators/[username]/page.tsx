@@ -88,7 +88,7 @@ export async function generateMetadata({
       url: `${SITE_URL}/curators/${username}`,
       type: 'profile',
       siteName: 'AIPowerStacks',
-      ...(profile?.avatar_url ? { images: [{ url: profile.avatar_url, width: 200, height: 200, alt: displayName }] } : { images: [{ url: `${SITE_URL}/og-image.png`, width: 1200, height: 630, alt: 'AIPowerStacks' }] }),
+      ...(profile?.avatar_url ? { images: [{ url: profile.avatar_url, width: 200, height: 200, alt: displayName }] } : { images: [{ url: `${SITE_URL}/og-home-2026.jpg`, width: 1200, height: 630, alt: 'AIPowerStacks' }] }),
     },
     twitter: {
       card: 'summary',

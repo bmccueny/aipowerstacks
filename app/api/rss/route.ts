@@ -37,7 +37,7 @@ export async function GET() {
     <language>en-us</language>
     <lastBuildDate>${lastBuildDate}</lastBuildDate>
     <image>
-      <url>${siteUrl}/og-image.png</url>
+      <url>${siteUrl}/og-home-2026.jpg</url>
       <title>AIPowerStacks Blog</title>
       <link>${siteUrl}/blog</link>
       <width>144</width>
