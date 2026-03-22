@@ -32,6 +32,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params
   const post = await getBlogPostBySlug(slug)
   if (!post) return {}
+  const ogImage = post.cover_image_url ? normalizeThumUrl(post.cover_image_url) : undefined
   return {
     title: post.title,
     description: post.excerpt,
@@ -42,11 +43,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       type: 'article',
       publishedTime: post.published_at ?? undefined,
       modifiedTime: post.updated_at ?? undefined,
+      ...(ogImage && { images: [{ url: ogImage, width: 1280, height: 720, alt: post.title }] }),
     },
     twitter: {
       card: 'summary_large_image',
       title: post.title,
       description: post.excerpt,
+      ...(ogImage && { images: [ogImage] }),
     },
     alternates: {
       canonical: `/blog/${post.slug}`,

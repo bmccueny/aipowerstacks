@@ -69,7 +69,7 @@ async function fixBrokenBlogImages() {
       const topic = post.tags?.[0] || 'AI'
 
       // Regenerate the image with photorealism
-      const newImageUrl = await generateCoverImage(post.title, topic, post.excerpt || '', true)
+      const newImageUrl = await generateCoverImage(post.title, topic, post.excerpt || '')
 
       if (newImageUrl) {
         // Update the database with the new image URL

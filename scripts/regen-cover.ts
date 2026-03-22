@@ -29,7 +29,7 @@ async function main() {
   for (const post of posts) {
     console.log(`\nRegenerating cover for: "${post.title}"`)
     const topic = post.tags?.[0] ?? 'AI Tools & Product Launches'
-    const newCoverUrl = await generateCoverImage(post.title, topic, post.excerpt ?? '', true)
+    const newCoverUrl = await generateCoverImage(post.title, topic, post.excerpt ?? '')
 
     if (newCoverUrl) {
       const { error } = await supabase

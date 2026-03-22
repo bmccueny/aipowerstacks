@@ -82,7 +82,7 @@ async function generateHeroVideoScenes(): Promise<void> {
         `TireTech Hero Scene ${scene.sceneNumber}`,
         'hero-video',
         scene.prompt,
-        true // photorealistic
+        'photorealistic'
       )
 
       if (imageUrl) {

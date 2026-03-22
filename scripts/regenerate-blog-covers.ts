@@ -67,7 +67,7 @@ async function regenerateBlogCovers() {
     }
 
     try {
-      const newImageUrl = await generateCoverImage(post.title, topic, post.excerpt || '', true)
+      const newImageUrl = await generateCoverImage(post.title, topic, post.excerpt || '')
 
       if (newImageUrl) {
         const { error: updateError } = await supabase

@@ -69,9 +69,9 @@ async function overlayTextOnImage(
 
   const accent = ACCENT_COLORS[accentColor.toLowerCase()] || ACCENT_COLORS.yellow
   const kw = keyword.trim().toUpperCase()
-  const padding = Math.round(w * 0.05)
+  const padding = Math.round(w * 0.06)
   const maxTextWidth = w - padding * 2
-  const charWidth = 0.58 // approximate char width as fraction of font size
+  const charWidth = 0.67 // Anton is a wide display font
   const kwScale = 1.35 // keyword rendered this much bigger
 
   // Calculate total "effective characters" accounting for keyword being bigger
@@ -83,11 +83,20 @@ async function overlayTextOnImage(
   const gapCount = (otherChars > 0 && kwChars > 0) ? (words.split(kwUpper).filter(Boolean).length) : 0
   const gapWidthInChars = gapCount * 0.5
 
-  // Size font to fit within maxTextWidth
+  // Size font to fit within maxTextWidth, then shrink until it actually fits
   const maxFontSize = Math.round(w * 0.08)
-  const fitted = Math.round(maxTextWidth / ((effectiveChars + gapWidthInChars) * charWidth))
-  const baseFontSize = Math.min(maxFontSize, Math.max(fitted, Math.round(w * 0.035)))
-  const bigFontSize = Math.round(baseFontSize * kwScale)
+  let baseFontSize = Math.min(maxFontSize, Math.round(maxTextWidth / ((effectiveChars + gapWidthInChars) * charWidth)))
+  baseFontSize = Math.max(baseFontSize, Math.round(w * 0.03))
+  let bigFontSize = Math.round(baseFontSize * kwScale)
+
+  // Safety clamp: verify total pixel width fits, shrink if not
+  for (let attempt = 0; attempt < 5; attempt++) {
+    const totalPx = (otherChars * baseFontSize + kwChars * bigFontSize) * charWidth + gapCount * baseFontSize * 0.25
+    if (totalPx <= maxTextWidth) break
+    baseFontSize = Math.round(baseFontSize * 0.88)
+    bigFontSize = Math.round(baseFontSize * kwScale)
+  }
+
   const strokeWidth = Math.round(baseFontSize * 0.1)
   const bigStroke = Math.round(bigFontSize * 0.1)
 
@@ -156,18 +165,145 @@ async function overlayTextOnImage(
   return img.composite([{ input: Buffer.from(svg), top: 0, left: 0 }]).jpeg({ quality: 90 }).toBuffer()
 }
 
+/** Watermark-only overlay — headline text is now rendered by Grok Imagine */
+async function overlayWatermark(imageBuffer: ArrayBuffer): Promise<Buffer> {
+  const img = sharp(Buffer.from(imageBuffer))
+  const metadata = await img.metadata()
+  const w = metadata.width || 1280
+  const h = metadata.height || 720
+
+  const padding = Math.round(w * 0.05)
+  const wmFontSize = Math.round(w * 0.018)
+  const wmY = padding + wmFontSize
+
+  const svg = `<svg width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <filter id="wm-shadow" x="-10%" y="-10%" width="120%" height="120%">
+        <feDropShadow dx="1" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.5"/>
+      </filter>
+    </defs>
+    <text x="${w - padding}" y="${wmY}" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="${wmFontSize}" font-weight="600" fill="rgba(255,255,255,0.6)" filter="url(#wm-shadow)" letter-spacing="1">aipowerstacks.com</text>
+  </svg>`
+
+  return img.composite([{ input: Buffer.from(svg), top: 0, left: 0 }]).jpeg({ quality: 90 }).toBuffer()
+}
+
 function escapeXml(s: string): string {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+}
+
+const VISUAL_STYLE_PROMPTS: Record<string, { scene: string; typography: string }> = {
+  'photorealistic': {
+    scene: `1. A person with a dramatic facial expression (shocked, excited, jaw-dropped) — reference a real celebrity then modify 2-3 features so it's unique
+2. A vivid, article-relevant scene or prop that creates visual storytelling (NOT abstract AI imagery)
+3. Hyper-realistic details, 8k resolution, professional cinematic lighting
+4. Vibrant saturated colors with a complementary color pair (orange/teal, red/blue, yellow/purple)
+5. Soft white outline or glow around the subject to separate from background
+6. Slightly blurred background, shallow depth of field
+7. 16:9 widescreen format`,
+    typography: `Bold white 3D extruded block letters with thick black outline, positioned at the bottom center. The keyword word should be significantly larger and filled with the accent color. Letters should have a slight perspective tilt and heavy drop shadow. YouTube thumbnail typography style.`,
+  },
+
+  'data-viz': {
+    scene: `1. A data visualization centerpiece — charts, dashboards, flowing data streams relevant to the article topic
+2. Dark background (navy, charcoal, or near-black) with glowing data elements
+3. Color palette: electric blue, teal, white accents with occasional warm highlights (amber, coral)
+4. Clean, precise lines and geometric shapes. No messy or organic textures
+5. Subtle glow and luminosity on data elements
+6. 16:9 widescreen format, high resolution, crisp vector-like quality
+7. NO people, NO faces`,
+    typography: `Clean, modern sans-serif text rendered as glowing holographic floating text in the lower third. The keyword word is larger and rendered in bright accent color with a data-grid underline. Other words in crisp white with subtle blue glow. The text should look like it belongs on a high-tech dashboard HUD.`,
+  },
+
+  'editorial-illustration': {
+    scene: `1. A conceptual, metaphorical scene that captures the article's theme (NOT literal depictions)
+2. Bold flat colors with a limited palette of 3-4 strong colors (coral/navy/cream/gold or teal/orange/white/charcoal)
+3. Geometric shapes, clean outlines, paper-cut or screen-print texture
+4. Strong composition with clear focal point, diagonal or asymmetric layout
+5. Modern editorial illustration style inspired by NYT, The Verge, or Monocle magazine
+6. Abstract and conceptual, NOT photorealistic
+7. 16:9 widescreen format`,
+    typography: `Bold condensed sans-serif headline integrated into the illustration composition, positioned in the lower third. The keyword word is rendered much larger in the accent color. Other words in white or cream with strong contrast against the illustration. Typography should feel like a magazine cover headline — clean, authoritative, designed.`,
+  },
+
+  'youtube-thumbnail': {
+    scene: `1. A person with a dramatic facial expression (shocked, excited, jaw-dropped) — reference a real celebrity then modify 2-3 features so it's unique
+2. A vivid, article-relevant scene or prop that creates visual storytelling (NOT abstract AI imagery)
+3. Hyper-realistic details, 8k resolution, professional cinematic lighting
+4. Vibrant saturated colors with a complementary color pair (orange/teal, red/blue, yellow/purple)
+5. Soft white outline or glow around the subject to separate from background
+6. Slightly blurred background, shallow depth of field
+7. 16:9 widescreen format`,
+    typography: `Massive bold 3D block letters with thick black stroke outline, positioned at the bottom center. The keyword word should be 50% larger than the other words and filled with the bright accent color. Other words in pure white with heavy black outline. Letters should have strong drop shadows and feel like they're popping off the image. Classic YouTube thumbnail text style — impossible to miss.`,
+  },
+
+  'retro-pixel': {
+    scene: `1. A pixel art scene with chunky, visible pixels rendered in 8-bit or 16-bit game style
+2. Article-relevant subject matter depicted through retro game aesthetics (computers, robots, tools as game items)
+3. Neon color palette: magenta, electric green, hot pink, cyan, bright orange against dark backgrounds
+4. CRT scanline effect or subtle screen-door texture overlay
+5. Retro-futuristic feel inspired by 1980s arcade games, synthwave, or vaporwave
+6. Clear composition with a strong central subject
+7. 16:9 widescreen format`,
+    typography: `Pixel art font rendered in the same 8-bit style as the scene, positioned at the bottom. The keyword word is larger and rendered in bright neon accent color with a pixel glow effect. Other words in white pixel font. The text should look like an arcade game title screen or high-score display. Chunky, blocky pixel letters.`,
+  },
+
+  'minimalist-3d': {
+    scene: `1. A single object or small arrangement of objects relevant to the article topic, rendered in clean 3D
+2. Smooth gradient background (light gray to white, or soft pastel transitions)
+3. Professional studio lighting: soft key light, subtle rim light, gentle shadows
+4. Minimalist composition with generous negative space
+5. Matte or semi-glossy surfaces, clean premium materials
+6. One accent color for visual interest (the object glows, reflects, or is tinted)
+7. 16:9 widescreen format, photorealistic 3D render quality
+8. NO people`,
+    typography: `Ultra-clean, thin modern sans-serif text (like Helvetica Neue or Futura) positioned in the lower third with generous spacing. The keyword word is rendered larger and in the accent color. Other words in dark charcoal or slate gray. Minimal, elegant, Apple-style typography with plenty of breathing room. No outlines, no shadows, no effects — pure clean type.`,
+  },
+
+  'pop-art': {
+    scene: `1. A bold comic-book style scene with article-relevant subject matter
+2. Classic pop art techniques: Ben-Day halftone dots, bold black outlines, flat color fills
+3. Vibrant primary colors (red, yellow, blue) with occasional secondary accents (green, orange, purple)
+4. High contrast, graphic quality — every shape is clearly defined
+5. Dynamic composition with dramatic angles or diagonal layouts
+6. Roy Lichtenstein / Andy Warhol / classic comic book aesthetic
+7. 16:9 widescreen format, crisp graphic quality`,
+    typography: `Comic book style bold block letters with thick black outlines, positioned at the bottom. The keyword word is much larger and filled with the accent color. Other words in white with bold black outline. Letters should look like they belong in a comic book speech bubble or action panel — punchy, bold, slightly tilted for energy. Ben-Day dot texture on the letters.`,
+  },
+
+  'cyberpunk-anime': {
+    scene: `1. A cyberpunk scene with anime/manga-style rendering relevant to the article topic
+2. Neon-lit environment: rain-slicked streets, holographic displays, glowing circuitry, futuristic cityscape
+3. Color palette: neon pink, electric blue, deep purple, with warm amber or green accents
+4. Detailed linework in manga style: sharp, confident lines with cel-shaded coloring
+5. Atmospheric effects: rain, fog, lens flare, volumetric light from neon signs
+6. Inspired by Ghost in the Shell, Akira, Blade Runner anime adaptations
+7. 16:9 widescreen format, high detail`,
+    typography: `Japanese manga-inspired bold condensed text at the bottom, rendered as glowing neon signs or holographic floating text. The keyword word is larger and rendered in bright neon accent color (pink or cyan) with a strong glow/bloom effect. Other words in white with neon edge glow. The text should feel like neon signage in a cyberpunk city — glowing, slightly flickering, atmospheric.`,
+  },
+
+  'isometric': {
+    scene: `1. An isometric (30-degree angle) scene depicting article-relevant workspace, technology, or process
+2. Clean flat design with depth created through the isometric perspective and layering
+3. Color palette transitioning from pastels to bold: lavender, mint, coral as base with electric blue or orange pops
+4. Detailed miniature elements that tell a story (screens, devices, small characters, data objects)
+5. Crisp vector-illustration quality, depth from color and shadow
+6. Modern, friendly aesthetic inspired by Slack, Notion, or Linear marketing illustrations
+7. 16:9 widescreen format, high resolution`,
+    typography: `Clean, rounded sans-serif text rendered as 3D isometric block letters sitting on the ground plane of the scene, positioned in the lower portion. The keyword word is taller/larger and in the accent color. Other words in white with subtle shadow. The letters should look like they're physical 3D objects placed in the isometric scene — same angle, same lighting, integrated into the world.`,
+  },
 }
 
 export async function generateCoverImage(
   title: string,
   topic: string,
   excerpt: string,
-  photorealistic = false
+  visualStyle = 'youtube-thumbnail'
 ): Promise<string | null> {
   try {
-    // Step 1: Have Grok generate both an image prompt AND 1-3 headline words
+    const style = VISUAL_STYLE_PROMPTS[visualStyle] ?? VISUAL_STYLE_PROMPTS['youtube-thumbnail']
+
+    // Step 1: Have Grok generate an image prompt with headline text baked in
     const metaRes = await fetch(`${XAI_BASE_URL}/chat/completions`, {
       method: 'POST',
       headers: {
@@ -176,7 +312,7 @@ export async function generateCoverImage(
       },
       body: JSON.stringify({
         model: 'grok-3-mini',
-        max_tokens: 500,
+        max_tokens: 600,
         temperature: 0.9,
         messages: [{
           role: 'user',
@@ -186,30 +322,26 @@ ARTICLE TITLE: "${title}"
 TOPIC: ${topic}
 SUMMARY: ${excerpt}
 
-Return THREE things in this exact format:
+Return TWO things in this exact format:
 
-HEADLINE: [3-5 ALL CAPS power words, e.g., "GAME OVER", "NEVER GOING BACK", "$0 COST"] | KEYWORD: [the ONE most important word to emphasize] | COLOR: [one bright accent color: yellow, red, lime, cyan, orange, magenta]
-PROMPT: [A single vivid paragraph, 2-4 sentences max]
+HEADLINE: [2-3 ALL CAPS power words, e.g., "GAME OVER", "ITS FREE", "$0 COST"] | KEYWORD: [the ONE most important word to emphasize] | COLOR: [one bright accent color: yellow, red, lime, cyan, orange, magenta]
+PROMPT: [A single vivid paragraph, 3-5 sentences max]
 
 HEADLINE RULES:
-- 3-5 short punchy words, ALL CAPS
-- Power words: FREE, SECRET, BROKEN, IMPOSSIBLE, INSANE, SHOCKING
+- EXACTLY 2 or 3 short punchy words, ALL CAPS. NEVER more than 3 words.
+- Use short words (max 7 letters each). Prefer: FREE, SECRET, DEAD, OVER, GONE, INSANE, NEW, WILD, $0
 - Must create a curiosity gap related to the article
 - KEYWORD is the single most impactful word — it will be rendered BIGGER and in the accent COLOR
-- COLOR should match the thumbnail's energy (yellow for money/success, red for danger/urgency, lime for growth, cyan for tech)
+- COLOR should match the energy (yellow for money/success, red for danger/urgency, lime for growth, cyan for tech)
 
-PROMPT RULES — write it like this example:
-"A high-contrast, wide-angle 16:9 cinematic shot of a young man with a shocked facial expression, mouth agape, standing in front of a giant, glowing mountain of gold coins. Hyper-realistic details, vibrant saturated colors with neon yellow highlights. The background is a slightly blurred, high-tech vault. Soft white outline around the subject to make him pop. 8k resolution, professional lighting, intense energy."
+SCENE RULES — your prompt must describe:
+${style.scene}
 
-Your prompt MUST include ALL of these elements:
-1. A person with a dramatic facial expression (shocked, excited, jaw-dropped, mind-blown) — reference a real celebrity then modify 2-3 features so it's unique (e.g., "resembles a younger Pedro Pascal but with a buzzcut and glasses")
-2. A vivid, article-relevant scene or prop that creates visual storytelling (NOT abstract AI imagery)
-3. Hyper-realistic details, 8k resolution, professional cinematic lighting
-4. Vibrant saturated colors with a complementary color pair (orange/teal, red/blue, yellow/purple)
-5. Soft white outline or glow around the subject to separate from background
-6. Slightly blurred background, shallow depth of field
-7. 16:9 widescreen format
-8. NO text, NO UI elements, NO gradients/vignettes in the image
+TEXT IN IMAGE — your prompt MUST include typography instructions:
+The image must contain ONLY the headline words as text, rendered as part of the artwork.
+${style.typography}
+The headline text must be clearly readable, properly spelled, and visually integrated.
+No other text, labels, UI elements, watermarks, or captions — ONLY the headline words.
 
 Reply with ONLY the two lines. Nothing else.`,
         }],
@@ -227,7 +359,6 @@ Reply with ONLY the two lines. Nothing else.`,
     const headlineLine = response.match(/HEADLINE:\s*(.+)/i)?.[1]?.trim() ?? ''
     const promptMatch = response.match(/PROMPT:\s*([\s\S]+)/i)
 
-    // Parse: "SOME WORDS | KEYWORD: word | COLOR: yellow"
     const headlineParts = headlineLine.split('|').map((s: string) => s.trim())
     const headlineWords = headlineParts[0]?.replace(/HEADLINE:\s*/i, '').trim() ?? ''
     const keyword = headlineParts.find((p: string) => /KEYWORD:/i.test(p))?.replace(/KEYWORD:\s*/i, '').trim() ?? ''
@@ -240,9 +371,9 @@ Reply with ONLY the two lines. Nothing else.`,
     }
 
     console.log(`Headline: "${headlineWords}" | Keyword: "${keyword}" | Color: ${accentColor}`)
-    console.log(`Image prompt: ${imagePrompt.substring(0, 100)}...`)
+    console.log(`Image prompt: ${imagePrompt.substring(0, 120)}...`)
 
-    // Step 2: Generate the image
+    // Step 2: Generate the image (headline text rendered by Grok Imagine)
     const res = await fetch(`${XAI_BASE_URL}/images/generations`, {
       method: 'POST',
       headers: {
@@ -269,7 +400,7 @@ Reply with ONLY the two lines. Nothing else.`,
       return null
     }
 
-    // Step 3: Download and overlay headline text
+    // Step 3: Download and add watermark only (headline is in the generated image)
     const imageResponse = await fetch(tempImageUrl)
     if (!imageResponse.ok) {
       console.error(`Failed to download image: ${imageResponse.status}`)
@@ -277,7 +408,7 @@ Reply with ONLY the two lines. Nothing else.`,
     }
 
     const rawBuffer = await imageResponse.arrayBuffer()
-    const finalBuffer = await overlayTextOnImage(rawBuffer, headlineWords, keyword, accentColor)
+    const finalBuffer = await overlayWatermark(rawBuffer)
 
     // Step 4: Upload to permanent storage
     const filename = title

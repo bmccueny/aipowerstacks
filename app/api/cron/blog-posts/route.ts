@@ -4,13 +4,14 @@ import { generateCoverImage } from '@/lib/utils/generateCoverImage'
 
 /* ── Editor personas (same as editor-reviews) ─────────────────────────────── */
 
-const EDITORS: Record<string, { id: string; voice: string; beat: string }> = {
+const EDITORS: Record<string, { id: string; voice: string; beat: string; visualStyle: string }> = {
   'Andrew Ng': {
     id: 'c131993d-8710-43f9-91ef-fb194d7113c0',
     voice:
       'Measured, technically precise, educational lens. References ML concepts. ' +
       'Values openness, reproducibility, and practical impact on learners and teams.',
     beat: 'ML research, model architectures, training techniques, AI education',
+    visualStyle: 'photorealistic',
   },
   'Cassie Kozyrkov': {
     id: '54cd616d-c866-4f41-8ec9-f6cd57190b4a',
@@ -18,6 +19,7 @@ const EDITORS: Record<string, { id: string; voice: string; beat: string }> = {
       'Decision-science framing. Analytically skeptical, calls out false confidence. ' +
       'Cares about data quality and calibration. Occasionally blunt.',
     beat: 'data science, AI decision-making, statistical reasoning, AI hype vs reality',
+    visualStyle: 'data-viz',
   },
   'Ethan Mollick': {
     id: '8d0cf351-70ee-428c-bc76-164f1ee1b929',
@@ -25,6 +27,7 @@ const EDITORS: Record<string, { id: string; voice: string; beat: string }> = {
       'Optimistic about AI-human collaboration. References research and workplace trends. ' +
       'Accessible academic tone. Experimental, hands-on.',
     beat: 'AI and work, productivity experiments, human-AI collaboration, education',
+    visualStyle: 'editorial-illustration',
   },
   'Zain Kahn': {
     id: '21b72dfb-882c-44ec-afc0-3a7f5391af70',
@@ -32,6 +35,7 @@ const EDITORS: Record<string, { id: string; voice: string; beat: string }> = {
       'Practical, educational, productivity-focused. Direct and enthusiastic when impressed. ' +
       '"How to use this to save 10 hours." Speaks to professionals and founders.',
     beat: 'AI productivity tools, automation, business use cases, workflows',
+    visualStyle: 'youtube-thumbnail',
   },
   'Marcus Thompson': {
     id: '4cc6e534-b024-4bf4-bd26-c382412e5802',
@@ -39,6 +43,7 @@ const EDITORS: Record<string, { id: string; voice: string; beat: string }> = {
       'Bootstrapped SaaS founder. Direct, pricing-aware, respects simplicity. ' +
       'Hard to impress. Calls out bloat. Praises tools that just work.',
     beat: 'AI for startups, indie tools, open source, pricing, developer experience',
+    visualStyle: 'retro-pixel',
   },
   'Lena Fischer': {
     id: '6e9bf129-5598-4947-9282-c4fe5ed40ef7',
@@ -46,6 +51,7 @@ const EDITORS: Record<string, { id: string; voice: string; beat: string }> = {
       'Berlin UX designer. Evaluates interface quality as much as output quality. ' +
       'Calls out dark patterns, opaque AI, and design that serves the demo not the user.',
     beat: 'AI design tools, UX of AI products, creative AI, interface design',
+    visualStyle: 'minimalist-3d',
   },
   'Aisha Okonkwo': {
     id: 'be2d6e6d-5ac7-4eed-a37e-1125dd05f964',
@@ -53,6 +59,7 @@ const EDITORS: Record<string, { id: string; voice: string; beat: string }> = {
       'Content strategist and growth marketer. Real workflow perspective. ' +
       'Warm but results-focused. Honest about AI content quality.',
     beat: 'AI content creation, marketing AI, social media AI, growth tools',
+    visualStyle: 'pop-art',
   },
   'Dev Patel': {
     id: '1a089886-3a67-4332-8fc9-849561897b8c',
@@ -60,6 +67,7 @@ const EDITORS: Record<string, { id: string; voice: string; beat: string }> = {
       'Full-stack developer. Tests the API, reads the docs, checks GitHub issues. ' +
       'Values open source, documentation quality, and honest error messages.',
     beat: 'AI coding tools, APIs, developer tools, open source AI, local models',
+    visualStyle: 'cyberpunk-anime',
   },
   'Sofia Reyes': {
     id: '1c882cdc-fcbd-4ce1-9441-9514bfbde5c8',
@@ -67,6 +75,7 @@ const EDITORS: Record<string, { id: string; voice: string; beat: string }> = {
       'Startup operator / COO. Systems lens. Cares about team adoption and async workflows. ' +
       'Practical, people-oriented, thinks about onboarding and org-wide rollout.',
     beat: 'AI for teams, workflow automation, enterprise AI, adoption strategy',
+    visualStyle: 'isometric',
   },
 }
 
@@ -424,17 +433,25 @@ interface GeneratedPost {
   cover_image_url: string | null
 }
 
+/** Fisher-Yates shuffle for uniform randomness */
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr]
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]]
+  }
+  return a
+}
+
 /** Pick N random editors from the pool */
-function pickRandomEditors(count: number): Array<{ name: string; id: string; voice: string; beat: string }> {
+function pickRandomEditors(count: number): Array<{ name: string; id: string; voice: string; beat: string; visualStyle: string }> {
   const entries = Object.entries(EDITORS).map(([name, e]) => ({ name, ...e }))
-  const shuffled = entries.sort(() => Math.random() - 0.5)
-  return shuffled.slice(0, count)
+  return shuffle(entries).slice(0, count)
 }
 
 /** Pick N random topic categories */
 function pickRandomTopics(count: number): string[] {
-  const shuffled = [...TOPIC_CATEGORIES].sort(() => Math.random() - 0.5)
-  return shuffled.slice(0, count)
+  return shuffle(TOPIC_CATEGORIES).slice(0, count)
 }
 
 /** Generate a slug from a title */
@@ -450,7 +467,7 @@ function slugify(title: string): string {
 
 /** Generate a blog post via Grok from scraped sources */
 async function generateBlogPost(
-  editor: { name: string; voice: string; beat: string },
+  editor: { name: string; voice: string; beat: string; visualStyle: string },
   topic: string,
   redditItems: ScrapedItem[],
   youtubeItems: ScrapedItem[],
@@ -574,7 +591,7 @@ Respond in EXACTLY this JSON format (no extra text before or after):
   const excerpt = String(parsed.excerpt ?? '').slice(0, 500)
   const slug = slugify(title) + '-' + Date.now().toString(36)
 
-  const cover_image_url = await generateCoverImage(title, topic, excerpt, true)
+  const cover_image_url = await generateCoverImage(title, topic, excerpt, editor.visualStyle ?? 'youtube-thumbnail')
 
   return {
     title,
