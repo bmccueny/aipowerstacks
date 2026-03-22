@@ -353,7 +353,7 @@ function ToolCardGrid({ tool, pricingColor, pricingLabel, screenshotUrl, isWellF
   return (
     <div
       onMouseEnter={() => setHasBeenHovered(true)}
-      className="relative card-directory h-full flex flex-col overflow-hidden group"
+      className="relative card-directory h-full flex flex-col group"
     >
       {screenshotUrl && (
         <div className="relative h-40 border-b border-foreground/10 shrink-0 overflow-hidden rounded-t-[14px]">

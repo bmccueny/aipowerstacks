@@ -197,16 +197,23 @@ export function AddToStackButton({
     }
   }
 
+  const [clicking, setClicking] = useState(false)
   const handleTriggerClick = async (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
-    const supabase = createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) {
-      redirectToLogin()
-      return
+    if (clicking || pickerOpen) return
+    setClicking(true)
+    try {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
+        redirectToLogin()
+        return
+      }
+      setPickerOpen(true)
+    } finally {
+      setClicking(false)
     }
-    setPickerOpen(true)
   }
 
   useEffect(() => {
@@ -221,8 +228,8 @@ export function AddToStackButton({
     }
   }, [pickerOpen, toolId])
 
-  // Compute dropdown position from trigger button
-  const [dropdownPos, setDropdownPos] = useState<{ top: number; right: number } | null>(null)
+  // Compute dropdown position from trigger button, clamped to viewport
+  const [dropdownPos, setDropdownPos] = useState<{ top: number; left: number } | null>(null)
 
   useEffect(() => {
     if (isMobile || !pickerOpen || !triggerRef.current) {
@@ -230,10 +237,23 @@ export function AddToStackButton({
       return
     }
     const rect = triggerRef.current.getBoundingClientRect()
-    setDropdownPos({
-      top: rect.bottom + 8,
-      right: window.innerWidth - rect.right,
-    })
+    const dropdownWidth = 288 // w-72 = 18rem = 288px
+    const dropdownHeight = 360 // approximate max height
+    const margin = 8
+
+    // Prefer aligning right edge with trigger, fall back to left-aligned if it would go off-screen
+    let left = rect.right - dropdownWidth
+    if (left < margin) left = margin
+    if (left + dropdownWidth > window.innerWidth - margin) left = window.innerWidth - margin - dropdownWidth
+
+    // Prefer below trigger, flip above if it would go off-screen
+    let top = rect.bottom + margin
+    if (top + dropdownHeight > window.innerHeight - margin) {
+      top = rect.top - dropdownHeight - margin
+      if (top < margin) top = margin
+    }
+
+    setDropdownPos({ top, left })
   }, [pickerOpen, isMobile])
 
   // Close on outside click (desktop)
@@ -406,7 +426,7 @@ export function AddToStackButton({
             style={{
               position: 'fixed',
               top: dropdownPos.top,
-              right: dropdownPos.right,
+              left: dropdownPos.left,
             }}
             className="z-[101] w-72 p-2 rounded-lg border border-border/60 bg-background/95 dark:bg-neutral-900/95 backdrop-blur-2xl shadow-[0_25px_70px_rgba(0,0,0,0.3)] dark:shadow-[0_25px_70px_rgba(0,0,0,0.6)] animate-in fade-in-0 zoom-in-95 duration-150"
           >
