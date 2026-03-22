@@ -1,7 +1,18 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import sharp from 'sharp'
+import { readFileSync } from 'fs'
+import { join } from 'path'
 
 const XAI_BASE_URL = 'https://api.x.ai/v1'
+
+// Embed font as base64 so it works on Vercel (no system fonts available)
+let antonFontBase64: string | null = null
+function getAntonFontBase64(): string {
+  if (antonFontBase64) return antonFontBase64
+  const fontPath = join(process.cwd(), 'assets', 'fonts', 'Anton-Regular.ttf')
+  antonFontBase64 = readFileSync(fontPath).toString('base64')
+  return antonFontBase64
+}
 
 async function uploadToSupabaseStorage(imageBuffer: Buffer, filename: string): Promise<string | null> {
   try {
@@ -87,16 +98,16 @@ async function overlayTextOnImage(
 
     svgText = ''
     if (before) {
-      svgText += `<text x="${padding}" y="${y}" font-family="Impact, Arial Black, sans-serif" font-size="${baseFontSize}" font-weight="900" fill="white" stroke="black" stroke-width="${strokeWidth}" paint-order="stroke fill" filter="url(#shadow)" letter-spacing="2">${escapeXml(before)}</text>`
+      svgText += `<text x="${padding}" y="${y}" font-family="Anton, Impact, sans-serif" font-size="${baseFontSize}" font-weight="900" fill="white" stroke="black" stroke-width="${strokeWidth}" paint-order="stroke fill" filter="url(#shadow)" letter-spacing="2">${escapeXml(before)}</text>`
     }
     // Keyword: bigger, accent colored
-    svgText += `<text x="${kwX}" y="${y}" font-family="Impact, Arial Black, sans-serif" font-size="${bigFontSize}" font-weight="900" fill="${accent}" stroke="black" stroke-width="${bigStroke}" paint-order="stroke fill" filter="url(#shadow)" letter-spacing="3">${escapeXml(kw)}</text>`
+    svgText += `<text x="${kwX}" y="${y}" font-family="Anton, Impact, sans-serif" font-size="${bigFontSize}" font-weight="900" fill="${accent}" stroke="black" stroke-width="${bigStroke}" paint-order="stroke fill" filter="url(#shadow)" letter-spacing="3">${escapeXml(kw)}</text>`
     if (after) {
-      svgText += `<text x="${afterX}" y="${y}" font-family="Impact, Arial Black, sans-serif" font-size="${baseFontSize}" font-weight="900" fill="white" stroke="black" stroke-width="${strokeWidth}" paint-order="stroke fill" filter="url(#shadow)" letter-spacing="2">${escapeXml(after)}</text>`
+      svgText += `<text x="${afterX}" y="${y}" font-family="Anton, Impact, sans-serif" font-size="${baseFontSize}" font-weight="900" fill="white" stroke="black" stroke-width="${strokeWidth}" paint-order="stroke fill" filter="url(#shadow)" letter-spacing="2">${escapeXml(after)}</text>`
     }
   } else {
     // No keyword match — render all in accent color
-    svgText = `<text x="${padding}" y="${y}" font-family="Impact, Arial Black, sans-serif" font-size="${baseFontSize}" font-weight="900" fill="${accent}" stroke="black" stroke-width="${strokeWidth}" paint-order="stroke fill" filter="url(#shadow)" letter-spacing="3">${escapeXml(words)}</text>`
+    svgText = `<text x="${padding}" y="${y}" font-family="Anton, Impact, sans-serif" font-size="${baseFontSize}" font-weight="900" fill="${accent}" stroke="black" stroke-width="${strokeWidth}" paint-order="stroke fill" filter="url(#shadow)" letter-spacing="3">${escapeXml(words)}</text>`
   }
 
   // Watermark: small, semi-transparent, top-right — opposite corner from headline
@@ -104,8 +115,17 @@ async function overlayTextOnImage(
   const wmY = padding + wmFontSize
   const watermark = `<text x="${w - padding}" y="${wmY}" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="${wmFontSize}" font-weight="600" fill="rgba(255,255,255,0.6)" filter="url(#wm-shadow)" letter-spacing="1">aipowerstacks.com</text>`
 
+  const fontBase64 = getAntonFontBase64()
   const svg = `<svg width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg">
     <defs>
+      <style>
+        @font-face {
+          font-family: 'Anton';
+          src: url('data:font/truetype;base64,${fontBase64}') format('truetype');
+          font-weight: normal;
+          font-style: normal;
+        }
+      </style>
       <filter id="wm-shadow" x="-10%" y="-10%" width="120%" height="120%">
         <feDropShadow dx="1" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.5"/>
       </filter>
