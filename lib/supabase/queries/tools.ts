@@ -515,17 +515,27 @@ export async function getLatestTools(limit = 8): Promise<ToolCardData[]> {
 export async function getSuperTools(limit = 8): Promise<ToolSearchResult[]> {
   const supabase = await createClient()
 
+  // Fetch reviewed tools, then rank by weighted score (review_count * avg_rating).
+  // A 4.8 with 50 reviews beats a 5.0 with 2 reviews.
   const { data } = await supabase
     .from('tools')
     .select(TOOL_SELECT_COLUMNS)
     .eq('status', 'published')
-    .eq('is_supertools', true)
-    .order('upvote_count', { ascending: false })
-    .order('avg_rating', { ascending: false })
+    .gte('review_count', 1)
+    .gte('avg_rating', 3.5)
     .order('review_count', { ascending: false })
-    .limit(limit)
+    .order('avg_rating', { ascending: false })
+    .limit(limit * 3)
 
-  return (data ?? []) as unknown as ToolSearchResult[]
+  const tools = (data ?? []) as unknown as ToolSearchResult[]
+
+  tools.sort((a, b) => {
+    const scoreA = (a.review_count ?? 0) * (a.avg_rating ?? 0)
+    const scoreB = (b.review_count ?? 0) * (b.avg_rating ?? 0)
+    return scoreB - scoreA
+  })
+
+  return tools.slice(0, limit)
 }
 
 export async function getSimilarTools(slugs: string[], limit = 4): Promise<ToolSearchResult[]> {
