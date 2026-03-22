@@ -69,15 +69,26 @@ async function overlayTextOnImage(
 
   const accent = ACCENT_COLORS[accentColor.toLowerCase()] || ACCENT_COLORS.yellow
   const kw = keyword.trim().toUpperCase()
-  const padding = Math.round(w * 0.04)
+  const padding = Math.round(w * 0.05)
   const maxTextWidth = w - padding * 2
+  const charWidth = 0.58 // approximate char width as fraction of font size
+  const kwScale = 1.35 // keyword rendered this much bigger
 
-  // Base font sizing with safety margin
+  // Calculate total "effective characters" accounting for keyword being bigger
+  const kwUpper = kw
+  const otherChars = words.replace(kwUpper, '').trim().length
+  const kwChars = kwUpper.length
+  const effectiveChars = otherChars + kwChars * kwScale
+  // Add spacing gaps between segments
+  const gapCount = (otherChars > 0 && kwChars > 0) ? (words.split(kwUpper).filter(Boolean).length) : 0
+  const gapWidthInChars = gapCount * 0.5
+
+  // Size font to fit within maxTextWidth
   const maxFontSize = Math.round(w * 0.08)
-  const fitted = Math.min(maxFontSize, Math.round(maxTextWidth / (words.length * 0.55 + words.length * 0.03)))
-  const baseFontSize = Math.max(Math.round(fitted * 0.9), Math.round(w * 0.04))
-  const bigFontSize = Math.round(baseFontSize * 1.45) // keyword is 1.45x bigger
-  const strokeWidth = Math.round(baseFontSize * 0.1) // thick YouTube-style stroke
+  const fitted = Math.round(maxTextWidth / ((effectiveChars + gapWidthInChars) * charWidth))
+  const baseFontSize = Math.min(maxFontSize, Math.max(fitted, Math.round(w * 0.035)))
+  const bigFontSize = Math.round(baseFontSize * kwScale)
+  const strokeWidth = Math.round(baseFontSize * 0.1)
   const bigStroke = Math.round(bigFontSize * 0.1)
 
   const y = h - Math.round(h * 0.10)
@@ -90,24 +101,27 @@ async function overlayTextOnImage(
     const before = parts[0]?.trim() || ''
     const after = parts.slice(1).join(kw)?.trim() || ''
 
-    // Estimate x positions: each char ~0.55 * fontSize wide
-    const beforeWidth = before.length * baseFontSize * 0.58
-    const kwWidth = kw.length * bigFontSize * 0.58
-    const kwX = padding + (before ? beforeWidth + baseFontSize * 0.3 : 0)
-    const afterX = kwX + kwWidth + bigFontSize * 0.3
+    const gap = Math.round(baseFontSize * 0.25)
+    const beforeWidth = Math.round(before.length * baseFontSize * charWidth)
+    const kwWidth = Math.round(kw.length * bigFontSize * charWidth)
+    const afterWidth = Math.round(after.length * baseFontSize * charWidth)
+    const totalWidth = beforeWidth + (before ? gap : 0) + kwWidth + (after ? gap : 0) + afterWidth
+    // Center the whole line
+    const startX = Math.round((w - totalWidth) / 2)
+
+    const kwX = startX + (before ? beforeWidth + gap : 0)
+    const afterX = kwX + kwWidth + (after ? gap : 0)
 
     svgText = ''
     if (before) {
-      svgText += `<text x="${padding}" y="${y}" font-family="Anton, Impact, sans-serif" font-size="${baseFontSize}" font-weight="900" fill="white" stroke="black" stroke-width="${strokeWidth}" paint-order="stroke fill" filter="url(#shadow)" letter-spacing="2">${escapeXml(before)}</text>`
+      svgText += `<text x="${startX}" y="${y}" font-family="Anton, Impact, sans-serif" font-size="${baseFontSize}" font-weight="900" fill="white" stroke="black" stroke-width="${strokeWidth}" paint-order="stroke fill" filter="url(#shadow)" letter-spacing="1">${escapeXml(before)}</text>`
     }
-    // Keyword: bigger, accent colored
-    svgText += `<text x="${kwX}" y="${y}" font-family="Anton, Impact, sans-serif" font-size="${bigFontSize}" font-weight="900" fill="${accent}" stroke="black" stroke-width="${bigStroke}" paint-order="stroke fill" filter="url(#shadow)" letter-spacing="3">${escapeXml(kw)}</text>`
+    svgText += `<text x="${kwX}" y="${y}" font-family="Anton, Impact, sans-serif" font-size="${bigFontSize}" font-weight="900" fill="${accent}" stroke="black" stroke-width="${bigStroke}" paint-order="stroke fill" filter="url(#shadow)" letter-spacing="1">${escapeXml(kw)}</text>`
     if (after) {
-      svgText += `<text x="${afterX}" y="${y}" font-family="Anton, Impact, sans-serif" font-size="${baseFontSize}" font-weight="900" fill="white" stroke="black" stroke-width="${strokeWidth}" paint-order="stroke fill" filter="url(#shadow)" letter-spacing="2">${escapeXml(after)}</text>`
+      svgText += `<text x="${afterX}" y="${y}" font-family="Anton, Impact, sans-serif" font-size="${baseFontSize}" font-weight="900" fill="white" stroke="black" stroke-width="${strokeWidth}" paint-order="stroke fill" filter="url(#shadow)" letter-spacing="1">${escapeXml(after)}</text>`
     }
   } else {
-    // No keyword match — render all in accent color
-    svgText = `<text x="${padding}" y="${y}" font-family="Anton, Impact, sans-serif" font-size="${baseFontSize}" font-weight="900" fill="${accent}" stroke="black" stroke-width="${strokeWidth}" paint-order="stroke fill" filter="url(#shadow)" letter-spacing="3">${escapeXml(words)}</text>`
+    svgText = `<text x="${Math.round(w / 2)}" y="${y}" text-anchor="middle" font-family="Anton, Impact, sans-serif" font-size="${baseFontSize}" font-weight="900" fill="${accent}" stroke="black" stroke-width="${strokeWidth}" paint-order="stroke fill" filter="url(#shadow)" letter-spacing="1">${escapeXml(words)}</text>`
   }
 
   // Watermark: small, semi-transparent, top-right — opposite corner from headline
