@@ -10,6 +10,8 @@ import { HeroSearch } from '@/components/home/HeroSearch'
 import { DiscoverFeed } from '@/components/home/DiscoverFeed'
 import { ToolCard } from '@/components/tools/ToolCard'
 import { CategoryIcon } from '@/components/ui/CategoryIcon'
+import { CompareProvider } from '@/lib/context/CompareContext'
+import { CompareTray } from '@/components/tools/CompareTray'
 import { getAllCategories } from '@/lib/supabase/queries/categories'
 // News wire removed — keeping blog posts only
 import { getLatestTools, getSuperTools, getSiteStats, getFeaturedStack } from '@/lib/supabase/queries/tools'
@@ -78,7 +80,7 @@ export default async function HomePage() {
   const categoryCount = categories.length
 
   return (
-    <>
+    <CompareProvider>
       <Navbar />
       <main className="min-h-screen pt-20 flex flex-col gap-16 md:gap-20 pb-24">
         <JsonLd data={{
@@ -396,6 +398,7 @@ export default async function HomePage() {
         </section>
       </main>
       <Footer />
-    </>
+      <CompareTray />
+    </CompareProvider>
   )
 }
