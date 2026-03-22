@@ -17,8 +17,12 @@ const POST_TYPES: PostType[] = [
 ]
 
 function pickRandom<T>(arr: T[], n: number): T[] {
-  const shuffled = [...arr].sort(() => Math.random() - 0.5)
-  return shuffled.slice(0, n)
+  const a = [...arr]
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]]
+  }
+  return a.slice(0, n)
 }
 
 /* ── Generate tweets via Grok ──────────────────────────────────────────────── */
@@ -26,21 +30,22 @@ function pickRandom<T>(arr: T[], n: number): T[] {
 async function generateToolHighlight(
   tool: { name: string; tagline: string; slug: string; category_name: string; pricing_model: string },
 ) {
-  const prompt = `Write a tweet (max 260 chars) promoting this AI tool from AIPowerStacks.com:
+  const includeLink = Math.random() < 0.4
+  const linkLine = includeLink ? `\n- End with the link: ${SITE_URL}/tools/${tool.slug}` : '\n- Do NOT include any links'
+
+  const prompt = `Write a tweet (max 260 chars) about this AI tool you genuinely find interesting:
 
 Tool: ${tool.name}
-Tagline: ${tool.tagline}
+What it does: ${tool.tagline}
 Category: ${tool.category_name}
 Pricing: ${tool.pricing_model}
-Link: ${SITE_URL}/tools/${tool.slug}
 
 RULES:
-- Be genuinely enthusiastic but not spammy
-- Include the link at the end
+- Write like a real person sharing a discovery with friends, not a brand account
+- Share a specific take, opinion, or use case. Why does this tool matter?
 - Do NOT use em dashes, en dashes, or semicolons
-- Include 2 to 3 relevant hashtags inline or at the end
-- Sound like a knowledgeable tech curator, not a bot
-- Share what makes this tool worth checking out
+- NEVER use hashtags. No # anywhere in the tweet.
+- Sound like someone who builds with AI tools daily${linkLine}
 
 Respond with ONLY the tweet text, nothing else.`
 
@@ -50,20 +55,22 @@ Respond with ONLY the tweet text, nothing else.`
 async function generateBlogPromo(
   post: { title: string; excerpt: string; slug: string; tags: string[] },
 ) {
-  const prompt = `Write a tweet (max 260 chars) promoting this blog post from AIPowerStacks.com:
+  const includeLink = Math.random() < 0.5
+  const linkLine = includeLink ? `\n- End with the link: ${SITE_URL}/blog/${post.slug}` : '\n- Do NOT include any links. Just share the insight itself.'
+
+  const prompt = `Write a tweet (max 260 chars) sharing an insight from this article:
 
 Title: ${post.title}
-Excerpt: ${post.excerpt}
-Tags: ${post.tags.join(', ')}
-Link: ${SITE_URL}/blog/${post.slug}
+Key point: ${post.excerpt}
+Topics: ${post.tags.join(', ')}
 
 RULES:
-- Hook the reader with the most interesting takeaway
-- Include the link at the end
+- Lead with the most interesting or surprising takeaway, not the article title
+- Write like you're sharing something you just learned, not promoting content
 - Do NOT use em dashes, en dashes, or semicolons
-- Include 2 to 3 relevant hashtags
-- Sound like a tech content curator sharing something genuinely interesting
-- No "Check out our latest post" generic openers
+- NEVER use hashtags. No # anywhere in the tweet.
+- No "Just published", "New post", "Check out" openers
+- Be opinionated. Take a stance.${linkLine}
 
 Respond with ONLY the tweet text, nothing else.`
 
@@ -76,21 +83,19 @@ async function generateStatInsight(stats: {
   reviewCount: number
   blogCount: number
 }) {
-  const prompt = `Write a tweet (max 260 chars) sharing an interesting stat or milestone about AIPowerStacks.com, an AI tools directory.
+  const prompt = `Write a tweet (max 260 chars) making an interesting observation about the AI tools landscape. You can use these data points for context:
 
-Current stats:
-- ${stats.toolCount} AI tools listed
-- ${stats.categoryCount} categories
-- ${stats.reviewCount} expert reviews
-- ${stats.blogCount} blog posts
+- There are now ${stats.toolCount}+ AI tools available across ${stats.categoryCount} categories
+- ${stats.reviewCount} expert reviews written
+- ${stats.blogCount} articles analyzing AI trends
 
 RULES:
-- Pick ONE compelling angle (don't list all stats)
-- Sound proud but not braggy
-- Include a call to action like "Explore the full directory" with link: ${SITE_URL}
+- Make it a genuine observation about the AI tools market, not a brag
+- Pick ONE angle and make it thought-provoking
 - Do NOT use em dashes, en dashes, or semicolons
-- Include 1 to 2 hashtags
-- Be conversational, not corporate
+- NEVER use hashtags. No # anywhere in the tweet.
+- Do NOT include any links
+- End with a question or take that invites replies
 
 Respond with ONLY the tweet text, nothing else.`
 
@@ -107,18 +112,20 @@ async function generateTip() {
     'when to switch from one AI tool to another',
     'building an AI workflow as a solo founder',
     'AI tools for content creators on a budget',
+    'the difference between AI tools that stick vs ones you drop after a week',
+    'why the best AI tool is the one you actually use consistently',
   ]
   const topic = topics[Math.floor(Math.random() * topics.length)]
 
-  const prompt = `Write a tweet (max 260 chars) sharing a practical tip about: ${topic}
+  const prompt = `Write a tweet (max 260 chars) sharing a real, practical take about: ${topic}
 
 RULES:
-- Give genuine, actionable advice
-- Sound like someone who actually uses these tools daily
-- End with something like "More AI tool insights at ${SITE_URL}" or similar
+- Give genuine advice from experience, not generic wisdom
+- Sound like someone who actually builds with these tools daily
 - Do NOT use em dashes, en dashes, or semicolons
-- Include 1 to 2 hashtags
-- No filler, every word should earn its place
+- NEVER use hashtags. No # anywhere in the tweet.
+- Do NOT include any links
+- Make it feel like a tweet you'd actually post, not marketing copy
 
 Respond with ONLY the tweet text, nothing else.`
 
@@ -126,7 +133,7 @@ Respond with ONLY the tweet text, nothing else.`
 }
 
 async function generateEngagement() {
-  const prompts = [
+  const questions = [
     'What AI tool changed your workflow the most this year?',
     'Hot take: most AI tools are just ChatGPT wrappers. Which ones actually bring something new?',
     'If you could only keep 3 AI tools, which would you pick?',
@@ -135,18 +142,22 @@ async function generateEngagement() {
     'Biggest AI tool disappointment of 2026 so far?',
     'Solo founders: what is your must have AI tool stack?',
     'What is one AI tool you keep going back to even though alternatives exist?',
+    'Unpopular opinion: what popular AI tool do you think is overrated?',
+    'What is one thing you still do manually that AI probably should handle?',
+    'Be honest. How many AI subscriptions are you paying for right now?',
+    'What AI tool did you cancel and why?',
   ]
-  const question = prompts[Math.floor(Math.random() * prompts.length)]
+  const question = questions[Math.floor(Math.random() * questions.length)]
 
-  const prompt = `Write a tweet (max 260 chars) asking this engaging question to the AI community: "${question}"
+  const prompt = `Write a tweet (max 260 chars) that sparks conversation about this topic: "${question}"
 
 RULES:
-- Make it feel casual and genuine, like a real person asking
-- You can rephrase the question to be more engaging
-- Include 1 to 2 relevant hashtags
+- Write like a real person on Twitter, casual and direct
+- You can rephrase the question, add your own take first, or make it a hot take
 - Do NOT use em dashes, en dashes, or semicolons
+- NEVER use hashtags. No # anywhere in the tweet.
 - Do NOT include any links
-- Encourage replies
+- Make people want to quote tweet or reply
 
 Respond with ONLY the tweet text, nothing else.`
 
@@ -180,11 +191,10 @@ async function callGrok(prompt: string): Promise<string> {
   return text.replace(/^["']|["']$/g, '')
 }
 
-/* ── Extract hashtags from tweet text ──────────────────────────────────────── */
+/* ── Strip any hashtags Grok may still sneak in ──────────────────────────── */
 
-function extractHashtags(text: string): string[] {
-  const matches = text.match(/#\w+/g)
-  return matches ? matches.map((h) => h.toLowerCase()) : []
+function stripHashtags(text: string): string {
+  return text.replace(/\s*#\w+/g, '').trim()
 }
 
 /* ── Route handler ─────────────────────────────────────────────────────────── */
@@ -307,13 +317,9 @@ export async function GET(request: Request) {
           reviewCount: reviewsRes.count ?? 0,
           blogCount: blogRes.count ?? 0,
         })
-        linkUrl = SITE_URL
-        linkTitle = 'AIPowerStacks'
         sourceType = 'stats'
       } else if (postType === 'tip') {
         content = await generateTip()
-        linkUrl = SITE_URL
-        linkTitle = 'AIPowerStacks'
         sourceType = 'tip'
       } else if (postType === 'engagement') {
         content = await generateEngagement()
@@ -325,13 +331,13 @@ export async function GET(request: Request) {
         continue
       }
 
-      const hashtags = extractHashtags(content)
+      content = stripHashtags(content)
 
       const { error: insertError } = await supabase.from('social_posts').insert({
         platform: 'twitter',
         post_type: postType,
         content,
-        hashtags,
+        hashtags: [],
         link_url: linkUrl,
         link_title: linkTitle,
         source_type: sourceType,
