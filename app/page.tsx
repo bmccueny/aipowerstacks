@@ -199,7 +199,7 @@ export default async function HomePage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {superTools.map((tool, idx) => (
                 <div key={tool.id} className="animate-in-stagger" style={{ animationDelay: `${idx * 0.05}s` }}>
-                  <ToolCard tool={tool} cardStyle="home" />
+                  <ToolCard tool={tool} />
                 </div>
               ))}
             </div>
@@ -217,7 +217,7 @@ export default async function HomePage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {latestTools.map((tool, idx) => (
                 <div key={tool.id} className="animate-in-stagger" style={{ animationDelay: `${idx * 0.05}s` }}>
-                  <ToolCard tool={tool} cardStyle="home" />
+                  <ToolCard tool={tool} />
                 </div>
               ))}
             </div>
