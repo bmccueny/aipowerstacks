@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Star, ExternalLink, Clock } from 'lucide-react'
+import { Star, ExternalLink, Clock, Github } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import type { ToolCardData } from '@/lib/types'
 import { PRICING_BADGE_COLORS, PRICING_LABELS, MODEL_PROVIDER_LABELS, USE_CASE_LABELS } from '@/lib/constants'
@@ -209,7 +209,11 @@ function CapabilityBadges({ tool, variant = 'span' }: { tool: ToolCardData; vari
     pills.push({ label: 'Local + Cloud', cls: 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950 dark:text-purple-300 dark:border-purple-800', href: '/tools?deployment_type=both' })
   }
 
-  if (pills.length === 0) return null
+  // GitHub badge — links externally to the repo
+  const isGitHub = tool.website_url?.includes('github.com')
+  const gitHubPill = isGitHub ? { label: 'GitHub', cls: 'bg-neutral-100 text-neutral-800 border-neutral-300 dark:bg-neutral-800 dark:text-neutral-200 dark:border-neutral-600', href: tool.website_url, external: true } : null
+
+  if (pills.length === 0 && !gitHubPill) return null
 
   if (variant === 'badge') {
     return (
@@ -219,6 +223,13 @@ function CapabilityBadges({ tool, variant = 'span' }: { tool: ToolCardData; vari
             <Badge variant="secondary" className={cn('text-[10px] hover:opacity-80 transition-opacity cursor-pointer', p.cls)}>{p.label}</Badge>
           </Link>
         ))}
+        {gitHubPill && (
+          <a href={gitHubPill.href} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}>
+            <Badge variant="secondary" className={cn('text-[10px] hover:opacity-80 transition-opacity cursor-pointer gap-1', gitHubPill.cls)}>
+              <Github className="h-3 w-3" />{gitHubPill.label}
+            </Badge>
+          </a>
+        )}
       </>
     )
   }
@@ -230,6 +241,11 @@ function CapabilityBadges({ tool, variant = 'span' }: { tool: ToolCardData; vari
           {p.label}
         </Link>
       ))}
+      {gitHubPill && (
+        <a href={gitHubPill.href} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className={cn('text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border hover:opacity-80 transition-opacity cursor-pointer inline-flex items-center gap-1', gitHubPill.cls)}>
+          <Github className="h-3 w-3" />{gitHubPill.label}
+        </a>
+      )}
     </>
   )
 }
