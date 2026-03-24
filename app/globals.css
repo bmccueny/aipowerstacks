@@ -357,7 +357,6 @@
     inset 0 0 var(--lg-inner-shadow-blur) var(--lg-inner-shadow-spread) var(--lg-inner-shadow-color),
     0 8px 32px rgba(0, 0, 0, 0.35),
     0 0 0 0.5px rgba(255, 255, 255, 0.06);
-  overflow: hidden;
 }
 .liquid-glass-dropdown::before {
   content: '';

@@ -6,7 +6,7 @@ import Image from 'next/image'
 import { Star, ExternalLink } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import type { ToolCardData } from '@/lib/types'
-import { PRICING_BADGE_COLORS, PRICING_LABELS, MODEL_PROVIDER_LABELS } from '@/lib/constants'
+import { PRICING_BADGE_COLORS, PRICING_LABELS, MODEL_PROVIDER_LABELS, USE_CASE_LABELS } from '@/lib/constants'
 import { WellFavoredBadge } from './WellFavoredBadge'
 import { VerifiedBadge } from '@/components/ui/VerifiedBadge'
 import { AddToStackButton } from './AddToStackButton'
@@ -175,6 +175,46 @@ function ModelProviderBadge({
   )
 }
 
+/** Capability pills — use case + API / Open Source / Mobile */
+function CapabilityBadges({ tool, variant = 'span' }: { tool: ToolCardData; variant?: 'badge' | 'span' }) {
+  const pills: { label: string; cls: string }[] = []
+
+  if (tool.use_case && USE_CASE_LABELS[tool.use_case]) {
+    pills.push({ label: USE_CASE_LABELS[tool.use_case], cls: 'bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-950 dark:text-sky-300 dark:border-sky-800' })
+  }
+  if (tool.has_api) {
+    pills.push({ label: 'API', cls: 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950 dark:text-blue-300 dark:border-blue-800' })
+  }
+  if (tool.is_open_source) {
+    pills.push({ label: 'Open Source', cls: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-800' })
+  }
+  if (tool.has_mobile_app) {
+    pills.push({ label: 'Mobile', cls: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800' })
+  }
+
+  if (pills.length === 0) return null
+
+  if (variant === 'badge') {
+    return (
+      <>
+        {pills.map((p) => (
+          <Badge key={p.label} variant="secondary" className={cn('text-[10px]', p.cls)}>{p.label}</Badge>
+        ))}
+      </>
+    )
+  }
+
+  return (
+    <>
+      {pills.map((p) => (
+        <span key={p.label} className={cn('text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border', p.cls)}>
+          {p.label}
+        </span>
+      ))}
+    </>
+  )
+}
+
 // ---------------------------------------------------------------------------
 // ToolCardList — view === 'list'
 // ---------------------------------------------------------------------------
@@ -204,8 +244,7 @@ function ToolCardList({ tool, pricingColor, pricingLabel, isWellFavored, imageEr
           <div className="flex flex-wrap gap-1">
             <PricingBadgeBadgeStyle tool={tool} pricingColor={pricingColor} pricingLabel={pricingLabel} />
           </div>
-          {tool.has_api && <Badge variant="secondary" className="text-[10px] bg-blue-50 text-blue-700 border-blue-200">API</Badge>}
-          {tool.is_open_source && <Badge variant="secondary" className="text-[10px] bg-emerald-50 text-emerald-700 border-emerald-200">Open Source</Badge>}
+          <CapabilityBadges tool={tool} variant="badge" />
           <ModelProviderBadge tool={tool} variant="badge" />
         </div>
       </div>
@@ -300,6 +339,11 @@ function ToolCardHome({ tool, compact, pricingColor, pricingLabel, isWellFavored
             </div>
           </div>
           <p className="mt-3 pb-0.5 text-base leading-[1.5] font-medium text-muted-foreground line-clamp-2 relative z-10">{tool.tagline}</p>
+
+          {/* Capability badges */}
+          <div className="mt-2 flex flex-wrap gap-1 relative z-10">
+            <CapabilityBadges tool={tool} variant="span" />
+          </div>
         </>
       )}
 
@@ -366,13 +410,8 @@ function ToolCardGrid({ tool, pricingColor, pricingLabel, screenshotUrl, isWellF
         </div>
       )}
 
-      {/* Top bar: pricing badge + wrapper badge right-aligned */}
+      {/* Top bar: pricing badge right-aligned */}
       <div className="px-5 pt-4 flex items-center justify-end gap-2 relative z-10">
-        {tool.model_provider && tool.model_provider !== 'proprietary' && (
-          <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full bg-violet-50 text-violet-700 border border-violet-200 dark:bg-violet-950 dark:text-violet-300 dark:border-violet-800">
-            {tool.is_api_wrapper ? '⚠ Wrapper' : '⚡'} {MODEL_PROVIDER_LABELS[tool.model_provider] ?? tool.model_provider}
-          </span>
-        )}
         {tool.pricing_tags && tool.pricing_tags.length > 0 ? (
           <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/20">
             {tool.pricing_tags[0]}
@@ -416,7 +455,13 @@ function ToolCardGrid({ tool, pricingColor, pricingLabel, screenshotUrl, isWellF
           </div>
         </div>
 
-        <p className="text-[14px] text-muted-foreground line-clamp-2 flex-1 leading-[1.5] relative z-10">{tool.tagline}</p>
+        <p className="text-[14px] text-muted-foreground line-clamp-2 leading-[1.5] relative z-10">{tool.tagline}</p>
+
+        {/* Capability badges */}
+        <div className="flex flex-wrap gap-1 relative z-10">
+          <CapabilityBadges tool={tool} variant="span" />
+          <ModelProviderBadge tool={tool} variant="span" />
+        </div>
 
         {/* Footer: Stack + Compare */}
         <div className="flex items-center gap-2 mt-auto pt-3 border-t border-foreground/10 relative z-10" onClick={(e) => e.stopPropagation()}>

@@ -76,6 +76,17 @@ export const MODEL_PROVIDER_LABELS: Record<string, string> = {
   other: 'Other',
 }
 
+export const USE_CASE_LABELS: Record<string, string> = {
+  'content-creation': 'Content',
+  coding: 'Coding',
+  marketing: 'Marketing',
+  design: 'Design',
+  research: 'Research',
+  video: 'Video',
+  sales: 'Sales',
+  'customer-support': 'Support',
+}
+
 export const PRICING_BADGE_COLORS: Record<string, string> = {
   free: 'bg-emerald-100 text-emerald-800 border-emerald-300',
   freemium: 'bg-sky-100 text-sky-800 border-sky-300',

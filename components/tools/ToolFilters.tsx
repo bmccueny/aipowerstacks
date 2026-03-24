@@ -54,7 +54,7 @@ export function ToolFilters({ categories }: ToolFiltersProps) {
     <div className="space-y-3">
       <div className="flex flex-wrap gap-2">
         <Select value={category || 'all'} onValueChange={(v) => updateParam('category', v)}>
-          <SelectTrigger className="w-44 bg-background border-foreground/20">
+          <SelectTrigger className="w-44 border-foreground/[0.08]">
             <SelectValue placeholder="All Categories" />
           </SelectTrigger>
           <SelectContent>
@@ -68,7 +68,7 @@ export function ToolFilters({ categories }: ToolFiltersProps) {
         </Select>
 
         <Select value={pricing || 'all'} onValueChange={(v) => updateParam('pricing', v)}>
-          <SelectTrigger className="w-32 sm:w-36 bg-background border-foreground/20">
+          <SelectTrigger className="w-32 sm:w-36 border-foreground/[0.08]">
             <SelectValue placeholder="All Pricing" />
           </SelectTrigger>
           <SelectContent>
@@ -80,7 +80,7 @@ export function ToolFilters({ categories }: ToolFiltersProps) {
         </Select>
 
         <Select value={sort} onValueChange={(v) => updateParam('sort', v)}>
-          <SelectTrigger className="w-32 sm:w-36 bg-background border-foreground/20">
+          <SelectTrigger className="w-32 sm:w-36 border-foreground/[0.08]">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
           <SelectContent>
@@ -93,7 +93,7 @@ export function ToolFilters({ categories }: ToolFiltersProps) {
         <button
           type="button"
           onClick={() => setShowMore((v) => !v)}
-          className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-md border border-foreground/20 bg-background hover:bg-foreground/5 transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-xl border border-foreground/[0.12] bg-background/60 backdrop-blur-sm hover:bg-background/80 hover:border-foreground/20 transition-all"
         >
           {showMore ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
           More filters
@@ -104,7 +104,7 @@ export function ToolFilters({ categories }: ToolFiltersProps) {
       {showMore && (
         <div className="flex flex-wrap gap-2">
           <Select value={useCase || 'all'} onValueChange={(v) => updateParam('use_case', v)}>
-            <SelectTrigger className="w-40 bg-background border-foreground/20">
+            <SelectTrigger className="w-40 border-foreground/[0.08]">
               <SelectValue placeholder="Use Case" />
             </SelectTrigger>
             <SelectContent>
@@ -116,7 +116,7 @@ export function ToolFilters({ categories }: ToolFiltersProps) {
           </Select>
 
           <Select value={teamSize || 'all'} onValueChange={(v) => updateParam('team_size', v)}>
-          <SelectTrigger className="w-36 sm:w-44 bg-background border-foreground/20">
+          <SelectTrigger className="w-36 sm:w-44 border-foreground/[0.08]">
               <SelectValue placeholder="Team Size" />
             </SelectTrigger>
             <SelectContent>
@@ -128,7 +128,7 @@ export function ToolFilters({ categories }: ToolFiltersProps) {
           </Select>
 
           <Select value={integration || 'all'} onValueChange={(v) => updateParam('integration', v)}>
-            <SelectTrigger className="w-40 bg-background border-foreground/20">
+            <SelectTrigger className="w-40 border-foreground/[0.08]">
               <SelectValue placeholder="Integration" />
             </SelectTrigger>
             <SelectContent>

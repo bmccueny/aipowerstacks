@@ -176,7 +176,7 @@ async function extractSearchIntent(query: string): Promise<string | null> {
 }
 
 const TOOL_SELECT_COLUMNS =
-  'id, name, slug, tagline, logo_url, pricing_model, pricing_details, is_verified, avg_rating, review_count, upvote_count, category_id, published_at, screenshot_urls, is_supertools, target_audience, has_api, has_mobile_app, is_open_source, trains_on_data, has_sso, security_certifications, model_provider'
+  'id, name, slug, tagline, logo_url, pricing_model, pricing_details, is_verified, avg_rating, review_count, upvote_count, category_id, published_at, screenshot_urls, is_supertools, target_audience, has_api, has_mobile_app, is_open_source, trains_on_data, has_sso, security_certifications, model_provider, use_case'
 
 /**
  * Server-side semantic search using pgvector.
