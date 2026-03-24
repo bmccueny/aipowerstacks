@@ -205,10 +205,10 @@ export function Navbar() {
         'fixed inset-0 z-40 md:hidden transition-all duration-300',
         mobileOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
       )}>
-        <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
+        <div className="absolute inset-0 bg-black/25 backdrop-blur-md" onClick={() => setMobileOpen(false)} />
 
         <div className={cn(
-          'absolute top-16 left-0 right-0 bg-background border-b border-border/40 shadow-lg transform transition-transform duration-300 max-h-[calc(100vh-4rem)] overflow-y-auto pb-[env(safe-area-inset-bottom)]',
+          'liquid-glass-sheet absolute top-16 left-0 right-0 border-b border-foreground/[0.06] transform transition-transform duration-300 max-h-[calc(100vh-4rem)] overflow-y-auto pb-[env(safe-area-inset-bottom)]',
           mobileOpen ? 'translate-y-0' : '-translate-y-full'
         )}>
           <div className="px-4 py-6">

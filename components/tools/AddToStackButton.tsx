@@ -316,7 +316,7 @@ export function AddToStackButton({
           collections.map((col) => (
             <button
               key={col.id}
-              className="w-full flex items-center gap-3 p-3 hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors rounded-lg cursor-pointer text-left"
+              className="liquid-glass-dropdown-item w-full flex items-center gap-3 p-3 cursor-pointer text-left"
               onClick={(e) => {
                 e.preventDefault()
                 e.stopPropagation()
@@ -341,7 +341,7 @@ export function AddToStackButton({
       </div>
       <div className="border-t border-border/50 pt-1 mt-1">
         <button
-          className="w-full flex items-center gap-3 p-3 hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors rounded-lg cursor-pointer text-primary text-left"
+          className="liquid-glass-dropdown-item w-full flex items-center gap-3 p-3 cursor-pointer text-primary text-left"
           onClick={(e) => {
             e.preventDefault()
             setPickerOpen(false)
@@ -394,24 +394,22 @@ export function AddToStackButton({
         )}
       </Button>
 
-      {/* ── Mobile: bottom sheet ── */}
-      {isMobile && (
-        <Sheet open={pickerOpen} onOpenChange={setPickerOpen}>
-          <SheetContent
-            side="bottom"
-            className="!bg-background/95 !backdrop-blur-2xl rounded-t-3xl px-4 pb-8 max-h-[80vh]"
-            showCloseButton
-          >
-            <SheetHeader className="pb-2">
-              <SheetTitle className="text-base font-black">Add to Stack</SheetTitle>
-              <SheetDescription className="text-xs text-muted-foreground">
-                Save <strong>{toolName}</strong> to one of your stacks.
-              </SheetDescription>
-            </SheetHeader>
-            {stackListContent}
-          </SheetContent>
-        </Sheet>
-      )}
+      {/* ── Mobile: bottom sheet (always mounted, controlled by open) ── */}
+      <Sheet open={isMobile && pickerOpen} onOpenChange={setPickerOpen}>
+        <SheetContent
+          side="bottom"
+          className="liquid-glass-sheet rounded-t-[20px] px-4 pb-8 max-h-[80vh]"
+          showCloseButton
+        >
+          <SheetHeader className="pb-2">
+            <SheetTitle className="text-base font-black">Add to Stack</SheetTitle>
+            <SheetDescription className="text-xs text-muted-foreground">
+              Save <strong>{toolName}</strong> to one of your stacks.
+            </SheetDescription>
+          </SheetHeader>
+          {stackListContent}
+        </SheetContent>
+      </Sheet>
 
       {/* ── Desktop: positioned dropdown with backdrop overlay ── */}
       {!isMobile && pickerOpen && dropdownPos && typeof document !== 'undefined' && createPortal(
@@ -423,17 +421,19 @@ export function AddToStackButton({
           />
           <div
             ref={dropdownRef}
+            data-state="open"
             style={{
               position: 'fixed',
               top: dropdownPos.top,
               left: dropdownPos.left,
+              transformOrigin: 'top right',
             }}
-            className="z-[101] w-72 p-2 rounded-lg border border-border/60 bg-background/95 dark:bg-neutral-900/95 backdrop-blur-2xl shadow-[0_25px_70px_rgba(0,0,0,0.3)] dark:shadow-[0_25px_70px_rgba(0,0,0,0.6)] animate-in fade-in-0 zoom-in-95 duration-150"
+            className="liquid-glass-dropdown z-[101] w-72 p-2"
           >
             <p className="px-3 py-2 text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
               Add {toolName} to a stack
             </p>
-            <div className="h-px bg-border/50 my-1" />
+            <div className="h-px bg-foreground/[0.06] my-1" />
             {stackListContent}
           </div>
         </>,

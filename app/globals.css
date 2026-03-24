@@ -343,6 +343,116 @@
   pointer-events: none;
 }
 
+/* ─── liquid-glass-dropdown ─── */
+.liquid-glass-dropdown {
+  position: relative;
+  isolation: isolate;
+  background: rgba(var(--lg-tint-color), var(--lg-tint-opacity));
+  backdrop-filter: blur(40px) saturate(1.4);
+  -webkit-backdrop-filter: blur(40px) saturate(1.4);
+  border: 1px solid oklch(1 0 0 / 0.12);
+  border-radius: 20px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 0 var(--lg-inner-shadow-blur) var(--lg-inner-shadow-spread) var(--lg-inner-shadow-color),
+    0 8px 32px rgba(0, 0, 0, 0.35),
+    0 0 0 0.5px rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+.liquid-glass-dropdown::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.dark .liquid-glass-dropdown {
+  border-color: oklch(1 0 0 / 0.1);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 0 var(--lg-inner-shadow-blur) var(--lg-inner-shadow-spread) var(--lg-inner-shadow-color),
+    0 8px 32px rgba(0, 0, 0, 0.5),
+    0 0 0 0.5px rgba(255, 255, 255, 0.04);
+}
+.dark .liquid-glass-dropdown::before {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+}
+
+/* Morph-from-trigger animation */
+@keyframes lg-dropdown-morph-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+    filter: blur(8px);
+  }
+  50% {
+    opacity: 1;
+    filter: blur(0px);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes lg-dropdown-morph-out {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.6);
+    filter: blur(8px);
+  }
+}
+
+.liquid-glass-dropdown[data-state='open'] {
+  animation: lg-dropdown-morph-in 280ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+.liquid-glass-dropdown[data-state='closed'] {
+  animation: lg-dropdown-morph-out 180ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Dropdown item hover with inner glass glow */
+.liquid-glass-dropdown-item {
+  border-radius: 14px;
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+}
+.liquid-glass-dropdown-item:hover,
+.liquid-glass-dropdown-item:focus-visible {
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 0 8px -3px rgba(255, 255, 255, 0.08);
+}
+.dark .liquid-glass-dropdown-item:hover,
+.dark .liquid-glass-dropdown-item:focus-visible {
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 0 8px -3px rgba(255, 255, 255, 0.06);
+}
+
+/* Mobile bottom sheet liquid glass */
+.liquid-glass-sheet {
+  background: rgba(var(--lg-tint-color), var(--lg-tint-opacity));
+  backdrop-filter: blur(40px) saturate(1.4);
+  -webkit-backdrop-filter: blur(40px) saturate(1.4);
+  border-top: 1px solid oklch(1 0 0 / 0.12);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 0 var(--lg-inner-shadow-blur) var(--lg-inner-shadow-spread) var(--lg-inner-shadow-color),
+    0 -8px 32px rgba(0, 0, 0, 0.25);
+}
+.dark .liquid-glass-sheet {
+  border-top-color: oklch(1 0 0 / 0.1);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 0 var(--lg-inner-shadow-blur) var(--lg-inner-shadow-spread) var(--lg-inner-shadow-color),
+    0 -8px 32px rgba(0, 0, 0, 0.45);
+}
+
 /* ─── glass / glass-card ─── */
 .glass,
 .glass-card {
