@@ -371,19 +371,16 @@ export function AddToStackButton({
           "relative shrink-0 whitespace-nowrap gap-2 rounded-sm font-medium transition-all add-to-stack-btn",
           iconOnly ? "w-9 h-9 p-0 flex items-center justify-center" : "w-auto max-w-full px-3 h-9 brutalist-card-effect",
           alreadyInAStack ? 'text-primary border-primary/40' : '',
-          justAdded ? 'bg-primary/8 border-primary/50' : '',
+          justAdded ? 'bg-primary/10 border-primary/40' : '',
           className
         )}
         onClick={handleTriggerClick}
         disabled={loading}
       >
-        {justAdded && (
-          <span className="pointer-events-none absolute inset-0 rounded-md bg-primary/5 animate-stack-success-ring" />
-        )}
         {loading ? (
           <Loader2 className="h-5 w-5 animate-spin" />
         ) : alreadyInAStack ? (
-          <Check className={cn("h-5 w-5 text-primary", justAdded ? 'animate-stack-success-icon' : '')} />
+          <Check className="h-5 w-5 text-primary" />
         ) : (
           <Layers className="h-5 w-5" />
         )}
