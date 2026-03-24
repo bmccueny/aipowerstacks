@@ -92,25 +92,29 @@ function PricingBadgeBadgeStyle({
   pricingColor: string
   pricingLabel: string
 }) {
+  const href = `/tools?pricing=${tool.pricing_model}`
   if (tool.pricing_tags && tool.pricing_tags.length > 0) {
     return (
       <>
         {tool.pricing_tags.map((tag) => (
-          <Badge
-            key={tag}
-            variant="secondary"
-            className="text-[10px] bg-stone-100 text-stone-600 border-stone-200 uppercase font-bold"
-          >
-            {tag}
-          </Badge>
+          <Link key={tag} href={href} onClick={(e) => e.stopPropagation()}>
+            <Badge
+              variant="secondary"
+              className="text-[10px] bg-stone-100 text-stone-600 border-stone-200 uppercase font-bold hover:opacity-80 transition-opacity cursor-pointer"
+            >
+              {tag}
+            </Badge>
+          </Link>
         ))}
       </>
     )
   }
   return (
-    <Badge variant="outline" className={`text-[11px] ${pricingColor}`}>
-      {pricingLabel}
-    </Badge>
+    <Link href={href} onClick={(e) => e.stopPropagation()}>
+      <Badge variant="outline" className={`text-[11px] hover:opacity-80 transition-opacity cursor-pointer ${pricingColor}`}>
+        {pricingLabel}
+      </Badge>
+    </Link>
   )
 }
 
@@ -126,24 +130,27 @@ function PricingBadgeSpanStyle({
   pricingLabel: string
   limit?: number
 }) {
+  const href = `/tools?pricing=${tool.pricing_model}`
   if (tool.pricing_tags && tool.pricing_tags.length > 0) {
     return (
       <>
         {(limit ? tool.pricing_tags.slice(0, limit) : tool.pricing_tags).map((tag) => (
-          <span
+          <Link
             key={tag}
-            className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20"
+            href={href}
+            onClick={(e) => e.stopPropagation()}
+            className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 hover:opacity-80 transition-opacity cursor-pointer"
           >
             {tag}
-          </span>
+          </Link>
         ))}
       </>
     )
   }
   return (
-    <span className={cn('text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border', pricingColor)}>
+    <Link href={href} onClick={(e) => e.stopPropagation()} className={cn('text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border hover:opacity-80 transition-opacity cursor-pointer', pricingColor)}>
       {pricingLabel}
-    </span>
+    </Link>
   )
 }
 
@@ -378,15 +385,17 @@ function ToolCardHome({ tool, compact, pricingColor, pricingLabel, isWellFavored
         {compact ? (
           <>
             <div className="flex flex-wrap gap-1 flex-1 relative z-10">
+              <Link href={`/tools?pricing=${tool.pricing_model}`} onClick={(e) => e.stopPropagation()}>
               {tool.pricing_tags && tool.pricing_tags.length > 0 ? (
-                <Badge variant="secondary" className="bg-stone-100 text-stone-600 border-stone-200 uppercase font-black text-[10px] h-6 px-2.5 leading-none">
+                <Badge variant="secondary" className="bg-stone-100 text-stone-600 border-stone-200 uppercase font-black text-[10px] h-6 px-2.5 leading-none hover:opacity-80 transition-opacity cursor-pointer">
                   {tool.pricing_tags[0]}
                 </Badge>
               ) : (
-                <Badge variant="outline" className={cn('font-black uppercase text-[10px] h-6 px-2.5', pricingColor)}>
+                <Badge variant="outline" className={cn('font-black uppercase text-[10px] h-6 px-2.5 hover:opacity-80 transition-opacity cursor-pointer', pricingColor)}>
                   {pricingLabel}
                 </Badge>
               )}
+              </Link>
             </div>
             <div className="flex items-center gap-2 relative z-10">
               <a
@@ -436,15 +445,17 @@ function ToolCardGrid({ tool, pricingColor, pricingLabel, screenshotUrl, isWellF
 
       {/* Top bar: pricing badge right-aligned */}
       <div className="px-5 pt-4 flex items-center justify-end gap-2 relative z-10">
-        {tool.pricing_tags && tool.pricing_tags.length > 0 ? (
-          <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/20">
-            {tool.pricing_tags[0]}
-          </span>
-        ) : (
-          <span className={cn('text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full border', pricingColor)}>
-            {pricingLabel}
-          </span>
-        )}
+        <Link href={`/tools?pricing=${tool.pricing_model}`} onClick={(e) => e.stopPropagation()}>
+          {tool.pricing_tags && tool.pricing_tags.length > 0 ? (
+            <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 hover:opacity-80 transition-opacity cursor-pointer">
+              {tool.pricing_tags[0]}
+            </span>
+          ) : (
+            <span className={cn('text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full border hover:opacity-80 transition-opacity cursor-pointer', pricingColor)}>
+              {pricingLabel}
+            </span>
+          )}
+        </Link>
       </div>
 
       <div className="px-5 pb-5 flex flex-col gap-3 flex-1">
