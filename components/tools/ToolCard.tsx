@@ -209,9 +209,9 @@ function CapabilityBadges({ tool, variant = 'span' }: { tool: ToolCardData; vari
     pills.push({ label: 'Local + Cloud', cls: 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950 dark:text-purple-300 dark:border-purple-800', href: '/tools?deployment_type=both' })
   }
 
-  // GitHub badge — links externally to the repo
+  // GitHub badge — links to filtered directory of all GitHub tools
   const isGitHub = tool.website_url?.includes('github.com')
-  const gitHubPill = isGitHub ? { label: 'GitHub', cls: 'bg-neutral-100 text-neutral-800 border-neutral-300 dark:bg-neutral-800 dark:text-neutral-200 dark:border-neutral-600', href: tool.website_url, external: true } : null
+  const gitHubPill = isGitHub ? { label: 'GitHub', cls: 'bg-neutral-100 text-neutral-800 border-neutral-300 dark:bg-neutral-800 dark:text-neutral-200 dark:border-neutral-600', href: '/tools?open_source=true' } : null
 
   if (pills.length === 0 && !gitHubPill) return null
 
@@ -224,11 +224,11 @@ function CapabilityBadges({ tool, variant = 'span' }: { tool: ToolCardData; vari
           </Link>
         ))}
         {gitHubPill && (
-          <a href={gitHubPill.href} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}>
+          <Link href={gitHubPill.href} onClick={(e) => e.stopPropagation()}>
             <Badge variant="secondary" className={cn('text-[10px] hover:opacity-80 transition-opacity cursor-pointer gap-1', gitHubPill.cls)}>
               <Github className="h-3 w-3" />{gitHubPill.label}
             </Badge>
-          </a>
+          </Link>
         )}
       </>
     )
@@ -242,9 +242,9 @@ function CapabilityBadges({ tool, variant = 'span' }: { tool: ToolCardData; vari
         </Link>
       ))}
       {gitHubPill && (
-        <a href={gitHubPill.href} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className={cn('text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border hover:opacity-80 transition-opacity cursor-pointer inline-flex items-center gap-1', gitHubPill.cls)}>
+        <Link href={gitHubPill.href} onClick={(e) => e.stopPropagation()} className={cn('text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border hover:opacity-80 transition-opacity cursor-pointer inline-flex items-center gap-1', gitHubPill.cls)}>
           <Github className="h-3 w-3" />{gitHubPill.label}
-        </a>
+        </Link>
       )}
     </>
   )
@@ -389,7 +389,6 @@ function ToolCardHome({ tool, compact, pricingColor, pricingLabel, isWellFavored
           {/* Capability badges */}
           <div className="mt-2 flex flex-wrap gap-1 items-center relative z-10">
             <CapabilityBadges tool={tool} variant="span" />
-            <StaleIndicator tool={tool} />
           </div>
         </>
       )}
