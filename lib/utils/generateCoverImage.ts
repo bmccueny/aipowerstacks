@@ -194,7 +194,7 @@ function escapeXml(s: string): string {
 
 const VISUAL_STYLE_PROMPTS: Record<string, { scene: string; typography: string }> = {
   'photorealistic': {
-    scene: `1. A person with a dramatic facial expression (shocked, excited, jaw-dropped) — reference a real celebrity then modify 2-3 features so it's unique
+    scene: `1. A person with a dramatic facial expression — IMPORTANT: each image must feature a DIFFERENT person. Randomly pick one: a woman resembling a young Lupita Nyong'o, a man resembling Oscar Isaac, a woman resembling Florence Pugh, a man resembling Dev Patel, a woman resembling Zendaya, a man resembling Pedro Pascal. Modify 2-3 facial features so they are unique. NEVER reuse the same face.
 2. A vivid, article-relevant scene or prop that creates visual storytelling (NOT abstract AI imagery)
 3. Hyper-realistic details, 8k resolution, professional cinematic lighting
 4. Vibrant saturated colors with a complementary color pair (orange/teal, red/blue, yellow/purple)
@@ -227,7 +227,7 @@ const VISUAL_STYLE_PROMPTS: Record<string, { scene: string; typography: string }
   },
 
   'youtube-thumbnail': {
-    scene: `1. A person with a dramatic facial expression (shocked, excited, jaw-dropped) — reference a real celebrity then modify 2-3 features so it's unique
+    scene: `1. A person with a dramatic facial expression — IMPORTANT: each image must feature a DIFFERENT person. Randomly pick one: a woman resembling Margot Robbie, a man resembling Chris Hemsworth, a woman resembling Anya Taylor-Joy, a man resembling Keanu Reeves, a woman resembling Saoirse Ronan, a man resembling John Boyega. Modify 2-3 facial features so they are unique. NEVER reuse the same face.
 2. A vivid, article-relevant scene or prop that creates visual storytelling (NOT abstract AI imagery)
 3. Hyper-realistic details, 8k resolution, professional cinematic lighting
 4. Vibrant saturated colors with a complementary color pair (orange/teal, red/blue, yellow/purple)
@@ -324,15 +324,18 @@ SUMMARY: ${excerpt}
 
 Return TWO things in this exact format:
 
-HEADLINE: [2-3 ALL CAPS power words, e.g., "GAME OVER", "ITS FREE", "$0 COST"] | KEYWORD: [the ONE most important word to emphasize] | COLOR: [one bright accent color: yellow, red, lime, cyan, orange, magenta]
+HEADLINE: [1-3 ALL CAPS power words] | KEYWORD: [the ONE most important word to emphasize] | COLOR: [one bright accent color: yellow, red, lime, cyan, orange, magenta]
 PROMPT: [A single vivid paragraph, 3-5 sentences max]
 
-HEADLINE RULES:
-- EXACTLY 2 or 3 short punchy words, ALL CAPS. NEVER more than 3 words.
-- Use short words (max 7 letters each). Prefer: FREE, SECRET, DEAD, OVER, GONE, INSANE, NEW, WILD, $0
+HEADLINE RULES — CRITICAL, FOLLOW EXACTLY:
+- MAXIMUM 3 words. Can be 1 word, 2 words, or 3 words. NEVER 4 or more.
+- Each word must be SHORT (max 7 letters). Prefer: FREE, DEAD, OVER, GONE, NEW, WILD, $0, INSANE, WHY, NO, WOW, RIP
+- ALL CAPS only
 - Must create a curiosity gap related to the article
-- KEYWORD is the single most impactful word — it will be rendered BIGGER and in the accent COLOR
+- KEYWORD is the single most impactful word from the headline — it will be rendered BIGGER and in the accent COLOR
 - COLOR should match the energy (yellow for money/success, red for danger/urgency, lime for growth, cyan for tech)
+- Examples of GOOD headlines: "GAME OVER", "ITS FREE", "WHY", "NO WAY", "RIP", "$0 COST", "WILD"
+- Examples of BAD headlines (too many words): "AI TOOLS ARE GREAT NOW", "THE BEST NEW AI TOOLS"
 
 SCENE RULES — your prompt must describe:
 ${style.scene}
@@ -360,7 +363,9 @@ Reply with ONLY the two lines. Nothing else.`,
     const promptMatch = response.match(/PROMPT:\s*([\s\S]+)/i)
 
     const headlineParts = headlineLine.split('|').map((s: string) => s.trim())
-    const headlineWords = headlineParts[0]?.replace(/HEADLINE:\s*/i, '').trim() ?? ''
+    const rawHeadline = headlineParts[0]?.replace(/HEADLINE:\s*/i, '').trim() ?? ''
+    // HARD LIMIT: max 3 words in headline
+    const headlineWords = rawHeadline.split(/\s+/).slice(0, 3).join(' ')
     const keyword = headlineParts.find((p: string) => /KEYWORD:/i.test(p))?.replace(/KEYWORD:\s*/i, '').trim() ?? ''
     const accentColor = headlineParts.find((p: string) => /COLOR:/i.test(p))?.replace(/COLOR:\s*/i, '').trim() ?? 'yellow'
     const imagePrompt = promptMatch?.[1]?.trim() ?? ''
