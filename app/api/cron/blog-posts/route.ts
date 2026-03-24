@@ -512,16 +512,20 @@ ${twitterContext || 'No Twitter data available today.'}
 == SCRAPED SOURCE CONTENT (for deeper context) ==
 ${scrapedContent || 'No additional scraped content available.'}
 
-REQUIREMENTS:
-1. Write a compelling, opinionated blog post (600 to 1000 words) about a specific angle within "${topic}"
-2. The post should feel timely, referencing current discussions and trends
-3. Include practical takeaways for builders, founders, or professionals
-4. Write in HTML format (use <h2>, <h3>, <p>, <ul>/<li>, <blockquote>, <strong>, <em> tags)
-5. Do NOT include <h1> (the title is rendered separately)
-6. Reference specific tools, projects, or discussions from the source material when relevant
-7. Include 3 to 5 relevant tags (lowercase, single words or hyphenated compounds)
-8. Estimate reading time in minutes (typically 3 to 5)
-9. INTERNAL LINKING: When you mention a tool that exists on our site, link the FIRST mention using <a href="/tools/SLUG">Tool Name</a>. Max 3-4 tool links per article. Only link tools that exist in the list below. Do NOT force links where they don't fit naturally.
+SEO REQUIREMENTS (CRITICAL — this post must rank on Google):
+1. TARGET KEYWORD: Pick ONE specific long-tail search query that people are actively Googling related to "${topic}". Examples: "best AI tools for [use case] 2026", "[tool] vs [tool] comparison", "how to use AI for [task]", "free AI [category] tools". The title MUST contain this keyword naturally.
+2. Title must be under 60 characters for Google SERPs. Include the year (2026) when relevant. Use power words (best, free, guide, vs, how to).
+3. Write 800 to 1200 words (longer content ranks better for informational queries).
+4. Structure with clear H2 headers that include secondary keywords. Google uses H2s for featured snippets.
+5. Include at least ONE comparison table, numbered list, or structured data section. These get rich snippets.
+6. The excerpt/meta description must be 150-160 characters, include the target keyword, and compel clicks.
+7. Include a FAQ-style section at the end with 2-3 questions people actually search for (use "People Also Ask" style questions as H3s with direct answers).
+8. Write in HTML format (use <h2>, <h3>, <p>, <ul>/<li>, <blockquote>, <strong>, <em>, <table> tags)
+9. Do NOT include <h1> (the title is rendered separately)
+10. Reference specific tools, projects, or discussions from the source material when relevant
+11. Include 3 to 5 relevant tags (lowercase, single words or hyphenated compounds)
+12. Estimate reading time in minutes (typically 4 to 6)
+13. INTERNAL LINKING: When you mention a tool that exists on our site, link the FIRST mention using <a href="/tools/SLUG">Tool Name</a>. Include 4-6 tool links per article. Link to our compare page (/compare) or browse page (/tools) where natural. Only link tools from the list below.
 
 == TOOLS ON OUR SITE (name -> URL path) ==
 ${toolList}
@@ -545,9 +549,9 @@ STRICT FORMATTING RULES:
 
 Respond in EXACTLY this JSON format (no extra text before or after):
 {
-  "title": "<compelling headline, max 80 chars>",
-  "excerpt": "<1-2 sentence summary, max 200 chars>",
-  "content": "<full HTML blog post body>",
+  "title": "<SEO-optimized headline, max 60 chars, includes target keyword and year>",
+  "excerpt": "<meta description, 150-160 chars, includes target keyword, compels clicks>",
+  "content": "<full HTML blog post body with H2s, comparison tables, FAQ section, internal links>",
   "tags": ["tag1", "tag2", "tag3"],
   "reading_time_min": <number>,
   "topic_category": "${topic}"
