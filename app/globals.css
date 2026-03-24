@@ -347,16 +347,16 @@
 .liquid-glass-dropdown {
   position: relative;
   isolation: isolate;
-  background: rgba(var(--lg-tint-color), var(--lg-tint-opacity));
+  background: oklch(0.99 0 0 / 0.82);
   backdrop-filter: blur(40px) saturate(1.4);
   -webkit-backdrop-filter: blur(40px) saturate(1.4);
-  border: 1px solid oklch(1 0 0 / 0.12);
+  border: 1px solid oklch(1 0 0 / 0.15);
   border-radius: 20px;
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
     inset 0 0 var(--lg-inner-shadow-blur) var(--lg-inner-shadow-spread) var(--lg-inner-shadow-color),
-    0 8px 32px rgba(0, 0, 0, 0.35),
-    0 0 0 0.5px rgba(255, 255, 255, 0.06);
+    0 8px 32px rgba(0, 0, 0, 0.2),
+    0 0 0 0.5px rgba(255, 255, 255, 0.08);
 }
 .liquid-glass-dropdown::before {
   content: '';
@@ -371,11 +371,12 @@
 }
 
 .dark .liquid-glass-dropdown {
+  background: oklch(0.15 0.005 260 / 0.88);
   border-color: oklch(1 0 0 / 0.1);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
     inset 0 0 var(--lg-inner-shadow-blur) var(--lg-inner-shadow-spread) var(--lg-inner-shadow-color),
-    0 8px 32px rgba(0, 0, 0, 0.5),
+    0 8px 32px rgba(0, 0, 0, 0.6),
     0 0 0 0.5px rgba(255, 255, 255, 0.04);
 }
 .dark .liquid-glass-dropdown::before {
@@ -435,21 +436,22 @@
 
 /* Mobile bottom sheet liquid glass */
 .liquid-glass-sheet {
-  background: rgba(var(--lg-tint-color), var(--lg-tint-opacity));
+  background: oklch(0.99 0 0 / 0.88);
   backdrop-filter: blur(40px) saturate(1.4);
   -webkit-backdrop-filter: blur(40px) saturate(1.4);
-  border-top: 1px solid oklch(1 0 0 / 0.12);
+  border-top: 1px solid oklch(1 0 0 / 0.15);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
     inset 0 0 var(--lg-inner-shadow-blur) var(--lg-inner-shadow-spread) var(--lg-inner-shadow-color),
-    0 -8px 32px rgba(0, 0, 0, 0.25);
+    0 -8px 32px rgba(0, 0, 0, 0.15);
 }
 .dark .liquid-glass-sheet {
+  background: oklch(0.15 0.005 260 / 0.92);
   border-top-color: oklch(1 0 0 / 0.1);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
     inset 0 0 var(--lg-inner-shadow-blur) var(--lg-inner-shadow-spread) var(--lg-inner-shadow-color),
-    0 -8px 32px rgba(0, 0, 0, 0.45);
+    0 -8px 32px rgba(0, 0, 0, 0.5);
 }
 
 /* ─── glass / glass-card ─── */
