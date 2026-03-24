@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Star, ExternalLink, Clock, Github } from 'lucide-react'
+import { Star, ExternalLink, Github } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import type { ToolCardData } from '@/lib/types'
 import { PRICING_BADGE_COLORS, PRICING_LABELS, MODEL_PROVIDER_LABELS, USE_CASE_LABELS } from '@/lib/constants'
@@ -12,7 +12,7 @@ import { VerifiedBadge } from '@/components/ui/VerifiedBadge'
 import { AddToStackButton } from './AddToStackButton'
 import { AddToCompareButton } from './AddToCompareButton'
 // isWellFavoredTool removed — badge was too noisy on cards
-import { getFreshnessLevel } from '@/lib/tools/freshness'
+// freshness indicator moved to detail page only
 import { cn } from '@/lib/utils'
 
 // ---------------------------------------------------------------------------
@@ -211,7 +211,7 @@ function CapabilityBadges({ tool, variant = 'span' }: { tool: ToolCardData; vari
 
   // GitHub badge — links to filtered directory of all GitHub tools
   const isGitHub = tool.website_url?.includes('github.com')
-  const gitHubPill = isGitHub ? { label: 'GitHub', cls: 'bg-neutral-100 text-neutral-800 border-neutral-300 dark:bg-neutral-800 dark:text-neutral-200 dark:border-neutral-600', href: '/tools?open_source=true' } : null
+  const gitHubPill = isGitHub ? { label: 'GitHub', cls: 'bg-neutral-100 text-neutral-800 border-neutral-300 dark:bg-neutral-800 dark:text-neutral-200 dark:border-neutral-600', href: '/tools?source=github' } : null
 
   if (pills.length === 0 && !gitHubPill) return null
 
@@ -247,19 +247,6 @@ function CapabilityBadges({ tool, variant = 'span' }: { tool: ToolCardData; vari
         </Link>
       )}
     </>
-  )
-}
-
-/** Subtle stale data indicator for cards */
-function StaleIndicator({ tool }: { tool: ToolCardData }) {
-  const updatedAt = (tool as Record<string, unknown>).updated_at as string | null
-  const level = getFreshnessLevel(updatedAt)
-  if (level !== 'stale') return null
-  return (
-    <span className="text-[10px] text-amber-500/70 dark:text-amber-400/60 flex items-center gap-1">
-      <Clock className="h-3 w-3" />
-      Data may be outdated
-    </span>
   )
 }
 
@@ -510,7 +497,6 @@ function ToolCardGrid({ tool, pricingColor, pricingLabel, screenshotUrl, isWellF
         <div className="flex flex-wrap gap-1 items-center relative z-10">
           <CapabilityBadges tool={tool} variant="span" />
           <ModelProviderBadge tool={tool} variant="span" />
-          <StaleIndicator tool={tool} />
         </div>
 
         {/* Footer: Stack + Compare */}

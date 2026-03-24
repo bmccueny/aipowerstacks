@@ -32,6 +32,7 @@ interface ToolsPageProps {
     enterprise_ready?: string
     model_provider?: string
     deployment_type?: string
+    source?: string
     sort?: string
     view?: string
     page?: string
@@ -58,6 +59,7 @@ export async function generateMetadata({ searchParams }: ToolsPageProps): Promis
     params.enterprise_ready ||
     params.model_provider ||
     params.deployment_type ||
+    params.source ||
     params.sort ||
     params.view
   )
@@ -118,6 +120,7 @@ export default async function ToolsPage({ searchParams }: ToolsPageProps) {
       enterpriseReady: params.enterprise_ready === 'true',
       modelProvider: params.model_provider,
       deploymentType: params.deployment_type,
+      source: params.source,
       sort: params.sort ?? 'relevance',
       page,
     }),

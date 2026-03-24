@@ -247,6 +247,7 @@ export async function searchTools({
   enterpriseReady,
   modelProvider,
   deploymentType,
+  source,
   sort = 'relevance',
   page = 1,
 }: {
@@ -265,6 +266,7 @@ export async function searchTools({
   enterpriseReady?: boolean
   modelProvider?: string
   deploymentType?: string
+  source?: string
   sort?: string
   page?: number
 }): Promise<{ tools: ToolSearchResult[]; total: number }> {
@@ -316,6 +318,7 @@ export async function searchTools({
         if (audience) filtered = filtered.filter(t => (t as FilterableTool).target_audience === audience)
         if (modelProvider) filtered = filtered.filter(t => (t as FilterableTool).model_provider === modelProvider)
         if (deploymentType) filtered = filtered.filter(t => (t as FilterableTool).deployment_type === deploymentType)
+        if (source === 'github') filtered = filtered.filter(t => ((t as FilterableTool).website_url as string)?.includes('github.com'))
 
         if (filtered.length > 0) {
           return { tools: filtered.slice(0, PAGE_SIZE), total: filtered.length }
@@ -410,6 +413,7 @@ export async function searchTools({
     if (enterpriseReady) fallback = fallback.eq('has_sso', true)
     if (modelProvider) fallback = fallback.eq('model_provider', modelProvider)
     if (deploymentType) fallback = fallback.eq('deployment_type', deploymentType as 'cloud' | 'self-hosted' | 'both')
+    if (source === 'github') fallback = fallback.like('website_url', '%github.com%')
 
     if (sort === 'rating') {
       fallback = fallback.order('avg_rating', { ascending: false }).order('review_count', { ascending: false })
@@ -455,6 +459,7 @@ export async function searchTools({
   if (enterpriseReady) builder = builder.eq('has_sso', true)
   if (modelProvider) builder = builder.eq('model_provider', modelProvider)
   if (deploymentType) builder = builder.eq('deployment_type', deploymentType as 'cloud' | 'self-hosted' | 'both')
+  if (source === 'github') builder = builder.like('website_url', '%github.com%')
 
   // Sort
   if (sort === 'rating') {
