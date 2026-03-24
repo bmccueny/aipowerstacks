@@ -9,9 +9,21 @@ export const size = {
 
 export const contentType = 'image/png'
 
+// Load Inter font from Google Fonts for Satori (no system fonts on Vercel)
+const fontUrl = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap'
+async function loadFont(): Promise<ArrayBuffer> {
+  const css = await (await fetch(fontUrl)).text()
+  const url = css.match(/src: url\(([^)]+)\)/)?.[1]
+  if (!url) throw new Error('Font URL not found')
+  return (await fetch(url)).arrayBuffer()
+}
+
 export default async function Image({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const tool = await getToolBySlug(slug)
+
+  let fontData: ArrayBuffer | undefined
+  try { fontData = await loadFont() } catch {}
 
   if (!tool) {
     return new ImageResponse(
@@ -115,6 +127,9 @@ export default async function Image({ params }: { params: Promise<{ slug: string
     ),
     {
       ...size,
+      ...(fontData && {
+        fonts: [{ name: 'Inter', data: fontData, style: 'normal' as const, weight: 700 as const }],
+      }),
     }
   )
 }
