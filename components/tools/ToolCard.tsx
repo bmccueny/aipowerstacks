@@ -147,7 +147,7 @@ function PricingBadgeSpanStyle({
   )
 }
 
-/** Model-provider badge shared across views. */
+/** Model-provider badge — clickable, links to filtered browse page */
 function ModelProviderBadge({
   tool,
   variant = 'span',
@@ -157,46 +157,49 @@ function ModelProviderBadge({
 }) {
   if (!tool.model_provider || tool.model_provider === 'proprietary') return null
   const label = `${tool.is_api_wrapper ? '⚠ Wrapper' : variant === 'badge' ? 'Powered by' : '⚡'} ${MODEL_PROVIDER_LABELS[tool.model_provider] ?? tool.model_provider}`
+  const href = `/tools?model_provider=${tool.model_provider}`
 
   if (variant === 'badge') {
     return (
-      <Badge
-        variant="secondary"
-        className="text-[10px] bg-violet-50 text-violet-700 border-violet-200 dark:bg-violet-950 dark:text-violet-300 dark:border-violet-800"
-      >
-        {label}
-      </Badge>
+      <Link href={href} onClick={(e) => e.stopPropagation()}>
+        <Badge
+          variant="secondary"
+          className="text-[10px] bg-violet-50 text-violet-700 border-violet-200 dark:bg-violet-950 dark:text-violet-300 dark:border-violet-800 hover:opacity-80 transition-opacity cursor-pointer"
+        >
+          {label}
+        </Badge>
+      </Link>
     )
   }
 
   return (
-    <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-violet-50 text-violet-700 border border-violet-200 dark:bg-violet-950 dark:text-violet-300 dark:border-violet-800">
+    <Link href={href} onClick={(e) => e.stopPropagation()} className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-violet-50 text-violet-700 border border-violet-200 dark:bg-violet-950 dark:text-violet-300 dark:border-violet-800 hover:opacity-80 transition-opacity cursor-pointer">
       {label}
-    </span>
+    </Link>
   )
 }
 
-/** Capability pills — use case + API / Open Source / Mobile */
+/** Capability pills — clickable, link to filtered browse page */
 function CapabilityBadges({ tool, variant = 'span' }: { tool: ToolCardData; variant?: 'badge' | 'span' }) {
-  const pills: { label: string; cls: string }[] = []
+  const pills: { label: string; cls: string; href: string }[] = []
 
   if (tool.use_case && USE_CASE_LABELS[tool.use_case]) {
-    pills.push({ label: USE_CASE_LABELS[tool.use_case], cls: 'bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-950 dark:text-sky-300 dark:border-sky-800' })
+    pills.push({ label: USE_CASE_LABELS[tool.use_case], cls: 'bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-950 dark:text-sky-300 dark:border-sky-800', href: `/tools?use_case=${tool.use_case}` })
   }
   if (tool.has_api) {
-    pills.push({ label: 'API', cls: 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950 dark:text-blue-300 dark:border-blue-800' })
+    pills.push({ label: 'API', cls: 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950 dark:text-blue-300 dark:border-blue-800', href: '/tools?has_api=true' })
   }
   if (tool.is_open_source) {
-    pills.push({ label: 'Open Source', cls: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-800' })
+    pills.push({ label: 'Open Source', cls: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-800', href: '/tools?open_source=true' })
   }
   if (tool.has_mobile_app) {
-    pills.push({ label: 'Mobile', cls: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800' })
+    pills.push({ label: 'Mobile', cls: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800', href: '/tools?has_mobile=true' })
   }
   const dt = (tool as Record<string, unknown>).deployment_type as string | null
   if (dt === 'self-hosted') {
-    pills.push({ label: 'Self-Hosted', cls: 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950 dark:text-purple-300 dark:border-purple-800' })
+    pills.push({ label: 'Self-Hosted', cls: 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950 dark:text-purple-300 dark:border-purple-800', href: '/tools?deployment_type=self-hosted' })
   } else if (dt === 'both') {
-    pills.push({ label: 'Local + Cloud', cls: 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950 dark:text-purple-300 dark:border-purple-800' })
+    pills.push({ label: 'Local + Cloud', cls: 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950 dark:text-purple-300 dark:border-purple-800', href: '/tools?deployment_type=both' })
   }
 
   if (pills.length === 0) return null
@@ -205,7 +208,9 @@ function CapabilityBadges({ tool, variant = 'span' }: { tool: ToolCardData; vari
     return (
       <>
         {pills.map((p) => (
-          <Badge key={p.label} variant="secondary" className={cn('text-[10px]', p.cls)}>{p.label}</Badge>
+          <Link key={p.label} href={p.href} onClick={(e) => e.stopPropagation()}>
+            <Badge variant="secondary" className={cn('text-[10px] hover:opacity-80 transition-opacity cursor-pointer', p.cls)}>{p.label}</Badge>
+          </Link>
         ))}
       </>
     )
@@ -214,9 +219,9 @@ function CapabilityBadges({ tool, variant = 'span' }: { tool: ToolCardData; vari
   return (
     <>
       {pills.map((p) => (
-        <span key={p.label} className={cn('text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border', p.cls)}>
+        <Link key={p.label} href={p.href} onClick={(e) => e.stopPropagation()} className={cn('text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border hover:opacity-80 transition-opacity cursor-pointer', p.cls)}>
           {p.label}
-        </span>
+        </Link>
       ))}
     </>
   )
