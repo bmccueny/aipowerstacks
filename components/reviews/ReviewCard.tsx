@@ -173,10 +173,6 @@ export function ReviewCard({ review, currentUserId }: ReviewCardProps) {
       <div className="flex items-start justify-between gap-3 mb-2">
         <div className="flex items-center gap-2">
           <StarRating rating={review.rating} size="sm" />
-          {review.is_verified && <VerifiedBadge size="xs" showLabel />}
-          {review.profiles?.role === 'editor' && (
-            <Badge variant="outline" className="text-[10px] border-sky-300 bg-sky-100 text-sky-800">Editor</Badge>
-          )}
           {review.status === 'pending' && (
             <Badge variant="outline" className="text-[10px] border-amber-300 bg-amber-100 text-amber-800">Pending Approval</Badge>
           )}
@@ -229,9 +225,6 @@ export function ReviewCard({ review, currentUserId }: ReviewCardProps) {
           <div className="flex flex-col">
             <div className="flex items-center gap-1.5 mb-0.5">
               <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider leading-none">Reviewer</span>
-              {review.profiles?.is_identity_verified && (
-                <VerifiedBadge size="xs" showLabel label="Verified Pro" />
-              )}
             </div>
             <div className="flex items-center gap-2">
               <p className="text-sm font-bold text-foreground leading-tight">
