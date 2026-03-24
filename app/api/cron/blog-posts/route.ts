@@ -607,7 +607,7 @@ Respond in EXACTLY this JSON format (no extra text before or after):
 
 /* ── Route handler ─────────────────────────────────────────────────────────── */
 
-export const maxDuration = 60 // Vercel Hobby plan limit
+export const maxDuration = 300 // Allow up to 5 minutes for image generation
 
 export async function GET(request: Request) {
   const cronSecret = process.env.CRON_SECRET

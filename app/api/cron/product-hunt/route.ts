@@ -175,7 +175,7 @@ Return ONLY a valid JSON object — no markdown fences, no explanation:
   }
 }
 
-export const maxDuration = 60
+export const maxDuration = 120
 
 export async function GET(request: Request) {
   const cronSecret = process.env.CRON_SECRET
