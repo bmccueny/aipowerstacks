@@ -3,10 +3,10 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Star, ExternalLink, Clock, Zap, AlertTriangle } from 'lucide-react'
+import { Star, ExternalLink, Clock } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import type { ToolCardData } from '@/lib/types'
-import { PRICING_BADGE_COLORS, PRICING_LABELS, MODEL_PROVIDER_LABELS, USE_CASE_LABELS, TIME_TO_VALUE_LABELS } from '@/lib/constants'
+import { PRICING_BADGE_COLORS, PRICING_LABELS, MODEL_PROVIDER_LABELS, USE_CASE_LABELS } from '@/lib/constants'
 import { WellFavoredBadge } from './WellFavoredBadge'
 import { VerifiedBadge } from '@/components/ui/VerifiedBadge'
 import { AddToStackButton } from './AddToStackButton'
@@ -235,31 +235,6 @@ function StaleIndicator({ tool }: { tool: ToolCardData }) {
   )
 }
 
-/** Time to value indicator */
-function TimeToValueBadge({ tool }: { tool: ToolCardData }) {
-  const ttv = (tool as Record<string, unknown>).time_to_value as string | null
-  if (!ttv || !TIME_TO_VALUE_LABELS[ttv]) return null
-  const { label, cls } = TIME_TO_VALUE_LABELS[ttv]
-  return (
-    <span className={cn('text-[10px] font-bold flex items-center gap-1', cls)}>
-      <Zap className="h-3 w-3" />
-      {label}
-    </span>
-  )
-}
-
-/** "Not for" warning */
-function NotForWarning({ tool }: { tool: ToolCardData }) {
-  const notFor = (tool as Record<string, unknown>).not_for as string | null
-  if (!notFor) return null
-  return (
-    <p className="text-[10px] text-red-400/70 dark:text-red-400/50 flex items-center gap-1 relative z-10">
-      <AlertTriangle className="h-3 w-3 shrink-0" />
-      <span className="line-clamp-1">{notFor}</span>
-    </p>
-  )
-}
-
 // ---------------------------------------------------------------------------
 // ToolCardList — view === 'list'
 // ---------------------------------------------------------------------------
@@ -388,10 +363,8 @@ function ToolCardHome({ tool, compact, pricingColor, pricingLabel, isWellFavored
           {/* Capability badges */}
           <div className="mt-2 flex flex-wrap gap-1 items-center relative z-10">
             <CapabilityBadges tool={tool} variant="span" />
-            <TimeToValueBadge tool={tool} />
             <StaleIndicator tool={tool} />
           </div>
-          <NotForWarning tool={tool} />
         </>
       )}
 
@@ -509,11 +482,8 @@ function ToolCardGrid({ tool, pricingColor, pricingLabel, screenshotUrl, isWellF
         <div className="flex flex-wrap gap-1 items-center relative z-10">
           <CapabilityBadges tool={tool} variant="span" />
           <ModelProviderBadge tool={tool} variant="span" />
-          <TimeToValueBadge tool={tool} />
           <StaleIndicator tool={tool} />
         </div>
-
-        <NotForWarning tool={tool} />
 
         {/* Footer: Stack + Compare */}
         <div className="flex items-center gap-2 mt-auto pt-3 border-t border-foreground/10 relative z-10" onClick={(e) => e.stopPropagation()}>
