@@ -16,6 +16,7 @@ export type BlogPostSummary = {
     display_name: string | null
     username: string | null
     avatar_url: string | null
+    bio?: string | null
   } | null
 }
 
@@ -52,7 +53,7 @@ export async function getPublishedPosts(page = 1, category?: string) {
   if (authorIds.length > 0) {
     const { data: authors } = await supabase
       .from('profiles')
-      .select('id, display_name, username, avatar_url')
+      .select('id, display_name, username, avatar_url, bio')
       .in('id', authorIds)
     
     if (authors) {
@@ -80,7 +81,7 @@ export async function getBlogPostBySlug(slug: string) {
   // Fetch author
   const { data: author } = await supabase
     .from('profiles')
-    .select('display_name, username, avatar_url')
+    .select('display_name, username, avatar_url, bio')
     .eq('id', post.author_id)
     .single()
 
@@ -109,7 +110,7 @@ export async function getFeaturedPost() {
   // Fetch author
   const { data: author } = await supabase
     .from('profiles')
-    .select('display_name, username, avatar_url')
+    .select('display_name, username, avatar_url, bio')
     .eq('id', post.author_id)
     .single()
 
@@ -133,7 +134,7 @@ export async function getLatestPosts(limit = 3): Promise<BlogPostSummary[]> {
   if (authorIds.length > 0) {
     const { data: authors } = await supabase
       .from('profiles')
-      .select('id, display_name, username, avatar_url')
+      .select('id, display_name, username, avatar_url, bio')
       .in('id', authorIds)
 
     if (authors) {
@@ -173,7 +174,7 @@ export async function getLatestBriefings(limit = 3): Promise<BlogPostSummary[]> 
   if (authorIds.length > 0) {
     const { data: authors } = await supabase
       .from('profiles')
-      .select('id, display_name, username, avatar_url')
+      .select('id, display_name, username, avatar_url, bio')
       .in('id', authorIds)
     
     if (authors) {

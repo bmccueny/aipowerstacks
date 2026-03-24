@@ -110,6 +110,19 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   const relativeTime = post.published_at ? timeAgo(post.published_at) : null
   const wasUpdated = post.updated_at && post.published_at && post.updated_at !== post.published_at
 
+  // Extract FAQ questions from content (H3s followed by paragraphs)
+  const faqMatches = [...safeContent.matchAll(/<h3[^>]*>([^<]+)<\/h3>\s*<p>([^<]+(?:<[^/][^>]*>[^<]*<\/[^>]+>)*[^<]*)<\/p>/gi)]
+  const faqItems = faqMatches
+    .filter(m => m[1].trim().endsWith('?'))
+    .map(m => ({
+      '@type': 'Question' as const,
+      name: m[1].trim(),
+      acceptedAnswer: { '@type': 'Answer' as const, text: m[2].replace(/<[^>]+>/g, '').trim() },
+    }))
+
+  const authorName = post.author?.display_name || 'AIPowerStacks Team'
+  const authorBio = post.author?.bio || `AI analyst and editor at AIPowerStacks`
+
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Article',
@@ -117,16 +130,45 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     description: post.excerpt,
     image: coverImageUrl,
     datePublished: post.published_at,
-    dateModified: post.updated_at,
+    dateModified: post.updated_at || post.published_at,
     url: `${SITE_URL}/blog/${post.slug}`,
     mainEntityOfPage: { '@type': 'WebPage', '@id': `${SITE_URL}/blog/${post.slug}` },
-    author: { '@type': 'Person', name: post.author?.display_name || 'AIPowerStacks Team' },
-    publisher: { '@type': 'Organization', name: 'AIPowerStacks', logo: { '@type': 'ImageObject', url: `${SITE_URL}/logo.png` } },
+    wordCount: safeContent.replace(/<[^>]+>/g, '').split(/\s+/).length,
+    author: {
+      '@type': 'Person',
+      name: authorName,
+      description: authorBio,
+      url: `${SITE_URL}/blog`,
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'AIPowerStacks',
+      url: SITE_URL,
+      logo: { '@type': 'ImageObject', url: `${SITE_URL}/logo.png` },
+    },
   }
+
+  const breadcrumbLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+      { '@type': 'ListItem', position: 2, name: 'Blog', item: `${SITE_URL}/blog` },
+      { '@type': 'ListItem', position: 3, name: post.title, item: `${SITE_URL}/blog/${post.slug}` },
+    ],
+  }
+
+  const faqLd = faqItems.length > 0 ? {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqItems,
+  } : null
 
   return (
     <>
       <JsonLd data={jsonLd} />
+      <JsonLd data={breadcrumbLd} />
+      {faqLd && <JsonLd data={faqLd} />}
       <ReadingProgressBar />
 
       <article className="page-shell max-w-7xl mx-auto">
