@@ -20,21 +20,7 @@ const nextConfig: NextConfig = {
   },
   images: {
     remotePatterns: [
-      { protocol: 'https', hostname: '**.supabase.co' },
-      { protocol: 'https', hostname: '**.supabase.in' },
-      { protocol: 'https', hostname: 'www.aixploria.com' },
-      { protocol: 'https', hostname: 's2.googleusercontent.com' },
-      { protocol: 'https', hostname: 'cdn.arstechnica.net' },
-      { protocol: 'https', hostname: 'o.aolcdn.com' },
-      { protocol: 'https', hostname: 'images.ctfassets.net' },
-      { protocol: 'https', hostname: 'the-decoder.com' },
-      { protocol: 'https', hostname: 'venturebeat.com' },
-      { protocol: 'https', hostname: 'image.thum.io' },
-      { protocol: 'https', hostname: 'www.google.com' },
-      { protocol: 'https', hostname: 'avatars.githubusercontent.com' },
-      { protocol: 'https', hostname: 'ph-files.imgix.net' },
-      { protocol: 'https', hostname: 'custom.typingmind.com' },
-      { protocol: 'https', hostname: 'nexos.ai' },
+      { protocol: 'https', hostname: '**' },
     ],
   },
 }
