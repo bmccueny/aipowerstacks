@@ -5,7 +5,7 @@ import { generateCoverImage } from '@/lib/utils/generateCoverImage'
 /* ── Editor personas (same as editor-reviews) ─────────────────────────────── */
 
 const EDITORS: Record<string, { id: string; voice: string; beat: string; visualStyle: string }> = {
-  'Andrew Ng': {
+  'Rina Takahashi': {
     id: 'c131993d-8710-43f9-91ef-fb194d7113c0',
     voice:
       'Measured, technically precise, educational lens. References ML concepts. ' +
@@ -13,7 +13,7 @@ const EDITORS: Record<string, { id: string; voice: string; beat: string; visualS
     beat: 'ML research, model architectures, training techniques, AI education',
     visualStyle: 'photorealistic',
   },
-  'Cassie Kozyrkov': {
+  'Tomás Herrera': {
     id: '54cd616d-c866-4f41-8ec9-f6cd57190b4a',
     voice:
       'Decision-science framing. Analytically skeptical, calls out false confidence. ' +
@@ -21,7 +21,7 @@ const EDITORS: Record<string, { id: string; voice: string; beat: string; visualS
     beat: 'data science, AI decision-making, statistical reasoning, AI hype vs reality',
     visualStyle: 'data-viz',
   },
-  'Ethan Mollick': {
+  'Kofi Asante': {
     id: '8d0cf351-70ee-428c-bc76-164f1ee1b929',
     voice:
       'Optimistic about AI-human collaboration. References research and workplace trends. ' +
@@ -29,7 +29,7 @@ const EDITORS: Record<string, { id: string; voice: string; beat: string; visualS
     beat: 'AI and work, productivity experiments, human-AI collaboration, education',
     visualStyle: 'editorial-illustration',
   },
-  'Zain Kahn': {
+  'Mila Orozco': {
     id: '21b72dfb-882c-44ec-afc0-3a7f5391af70',
     voice:
       'Practical, educational, productivity-focused. Direct and enthusiastic when impressed. ' +
@@ -37,7 +37,7 @@ const EDITORS: Record<string, { id: string; voice: string; beat: string; visualS
     beat: 'AI productivity tools, automation, business use cases, workflows',
     visualStyle: 'youtube-thumbnail',
   },
-  'Marcus Thompson': {
+  'Idris Mensah': {
     id: '4cc6e534-b024-4bf4-bd26-c382412e5802',
     voice:
       'Bootstrapped SaaS founder. Direct, pricing-aware, respects simplicity. ' +
@@ -45,7 +45,7 @@ const EDITORS: Record<string, { id: string; voice: string; beat: string; visualS
     beat: 'AI for startups, indie tools, open source, pricing, developer experience',
     visualStyle: 'retro-pixel',
   },
-  'Lena Fischer': {
+  'Suki Watanabe': {
     id: '6e9bf129-5598-4947-9282-c4fe5ed40ef7',
     voice:
       'Berlin UX designer. Evaluates interface quality as much as output quality. ' +
@@ -53,7 +53,7 @@ const EDITORS: Record<string, { id: string; voice: string; beat: string; visualS
     beat: 'AI design tools, UX of AI products, creative AI, interface design',
     visualStyle: 'minimalist-3d',
   },
-  'Aisha Okonkwo': {
+  'Yara Dominguez': {
     id: 'be2d6e6d-5ac7-4eed-a37e-1125dd05f964',
     voice:
       'Content strategist and growth marketer. Real workflow perspective. ' +
@@ -61,7 +61,7 @@ const EDITORS: Record<string, { id: string; voice: string; beat: string; visualS
     beat: 'AI content creation, marketing AI, social media AI, growth tools',
     visualStyle: 'pop-art',
   },
-  'Dev Patel': {
+  'Niko Petrov': {
     id: '1a089886-3a67-4332-8fc9-849561897b8c',
     voice:
       'Full-stack developer. Tests the API, reads the docs, checks GitHub issues. ' +
@@ -69,7 +69,7 @@ const EDITORS: Record<string, { id: string; voice: string; beat: string; visualS
     beat: 'AI coding tools, APIs, developer tools, open source AI, local models',
     visualStyle: 'cyberpunk-anime',
   },
-  'Sofia Reyes': {
+  'Amara Chen': {
     id: '1c882cdc-fcbd-4ce1-9441-9514bfbde5c8',
     voice:
       'Startup operator / COO. Systems lens. Cares about team adoption and async workflows. ' +

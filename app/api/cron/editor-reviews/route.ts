@@ -4,63 +4,63 @@ import { createAdminClient } from '@/lib/supabase/admin'
 /* ── Editor personas ──────────────────────────────────────────────────────── */
 
 const EDITORS: Record<string, { id: string; voice: string }> = {
-  'Andrew Ng': {
+  'Rina Takahashi': {
     id: 'c131993d-8710-43f9-91ef-fb194d7113c0',
     voice:
       'Measured, technically precise, educational lens. References ML concepts. ' +
       'Realistic scores (3–4 mostly). Occasionally critical of hype. ' +
       'Values openness, reproducibility, and practical impact on learners and teams.',
   },
-  'Cassie Kozyrkov': {
+  'Tomás Herrera': {
     id: '54cd616d-c866-4f41-8ec9-f6cd57190b4a',
     voice:
       'Decision-science framing. Analytically skeptical, calls out false confidence. ' +
       'Cares about data quality and calibration. Occasionally blunt. ' +
       'Will give a 2 when warranted. Frames tools in terms of decision outcomes.',
   },
-  'Ethan Mollick': {
+  'Kofi Asante': {
     id: '8d0cf351-70ee-428c-bc76-164f1ee1b929',
     voice:
       'Optimistic about AI-human collaboration. References research and workplace trends. ' +
       'Accessible academic tone. Frames tools in terms of what they unlock for people. ' +
       'Experimental, hands-on — "I tested this and here\'s the reality."',
   },
-  'Zain Kahn': {
+  'Mila Orozco': {
     id: '21b72dfb-882c-44ec-afc0-3a7f5391af70',
     voice:
       'Practical, educational, productivity-focused. Direct and enthusiastic when impressed. ' +
       '"How to use this to save 10 hours." Speaks to professionals and founders. ' +
       'Calls out ROI clearly. Will say "no-brainer" when he means it.',
   },
-  'Marcus Thompson': {
+  'Idris Mensah': {
     id: '4cc6e534-b024-4bf4-bd26-c382412e5802',
     voice:
       'Bootstrapped SaaS founder. Direct, pricing-aware, respects simplicity. ' +
       'Hard to impress. Calls out bloat. Praises tools that just work. ' +
       'Evaluates free tier honestly. Skeptical of enterprise pricing on indie-scale tools.',
   },
-  'Lena Fischer': {
+  'Suki Watanabe': {
     id: '6e9bf129-5598-4947-9282-c4fe5ed40ef7',
     voice:
       'Berlin UX designer. Evaluates interface quality as much as output quality. ' +
       'Calls out dark patterns, opaque AI, and design that serves the demo not the user. ' +
       'Appreciates craft and coherence. Critical of cluttered, unfocused tools.',
   },
-  'Aisha Okonkwo': {
+  'Yara Dominguez': {
     id: 'be2d6e6d-5ac7-4eed-a37e-1125dd05f964',
     voice:
       'Content strategist and growth marketer. Real workflow perspective. ' +
       'Warm but results-focused. Honest about AI content quality. Mentions team adoption. ' +
       'Cares about whether a tool actually stays in the stack after the trial.',
   },
-  'Dev Patel': {
+  'Niko Petrov': {
     id: '1a089886-3a67-4332-8fc9-849561897b8c',
     voice:
       'Full-stack developer. Tests the API, reads the docs, checks GitHub issues. ' +
       'Values open source, documentation quality, and honest error messages. ' +
       'Will mention DX, latency, and architecture. Skeptical of closed-source magic.',
   },
-  'Sofia Reyes': {
+  'Amara Chen': {
     id: '1c882cdc-fcbd-4ce1-9441-9514bfbde5c8',
     voice:
       'Startup operator / COO. Systems lens. Cares about team adoption and async workflows. ' +
