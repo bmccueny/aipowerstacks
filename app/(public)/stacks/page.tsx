@@ -3,11 +3,13 @@ import Image from 'next/image'
 import type { Metadata } from 'next'
 import { SITE_URL } from '@/lib/constants/site'
 import { createClient } from '@/lib/supabase/server'
-import { Layers, Zap, Users, Eye, Bookmark, Trophy } from 'lucide-react'
+import { Layers, Zap, Users, Eye, Bookmark, Trophy, Search, ChevronLeft, ChevronRight } from 'lucide-react'
 import { SaveStackButton } from '@/components/stacks/SaveStackButton'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 
 export const revalidate = 0
+
+const PAGE_SIZE = 12
 
 export const metadata: Metadata = {
   title: 'Power Stacks - Curated AI Tool Collections',
@@ -30,10 +32,19 @@ export const metadata: Metadata = {
   },
 }
 
-export default async function StacksPage() {
+export default async function StacksPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string; q?: string }>
+}) {
+  const params = await searchParams
+  const page = Math.max(1, parseInt(params.page ?? '1'))
+  const query = params.q?.trim() ?? ''
+  const offset = (page - 1) * PAGE_SIZE
+
   const supabase = await createClient()
 
-  const { data: stacks, error } = await supabase
+  let stackQuery = supabase
     .from('collections')
     .select(`
       id, name, description, share_slug, created_at, user_id,
@@ -41,15 +52,23 @@ export default async function StacksPage() {
       collection_items (
         tools:tool_id (id, name, logo_url)
       )
-    `)
+    `, { count: 'exact' })
     .eq('is_public', true)
+
+  if (query) {
+    stackQuery = stackQuery.or(`name.ilike.%${query}%,description.ilike.%${query}%`)
+  }
+
+  const { data: stacks, count, error } = await stackQuery
     .order('view_count', { ascending: false })
     .order('created_at', { ascending: false })
-    .limit(48)
+    .range(offset, offset + PAGE_SIZE - 1)
 
   if (error) {
     console.error('Supabase error fetching stacks:', error.message)
   }
+
+  const totalPages = Math.ceil((count ?? 0) / PAGE_SIZE)
 
   const now = new Date().toISOString()
   const { data: activeChallenge } = await supabase
@@ -61,7 +80,6 @@ export default async function StacksPage() {
     .limit(1)
     .maybeSingle()
 
-  // Fetch profiles for these stacks separately to avoid join issues
   type StackRow = NonNullable<typeof stacks>[number]
   type StackCollectionItem = StackRow['collection_items'][number]
   type StackToolPreview = NonNullable<StackCollectionItem['tools']>
@@ -87,6 +105,14 @@ export default async function StacksPage() {
     toolCount: (s.collection_items ?? []).length,
   }))
 
+  function buildUrl(p: number, q?: string) {
+    const params = new URLSearchParams()
+    if (p > 1) params.set('page', String(p))
+    if (q) params.set('q', q)
+    const qs = params.toString()
+    return `/stacks${qs ? `?${qs}` : ''}`
+  }
+
   return (
     <div className="page-shell">
 
@@ -100,14 +126,28 @@ export default async function StacksPage() {
           Community-curated collections of AI tools for every workflow. Browse, save, and build your own.
         </p>
         <div className="flex items-center justify-center gap-6 mt-4 text-sm text-muted-foreground">
-          <span><strong className="text-foreground">{enriched.length}</strong> public stacks</span>
+          <span><strong className="text-foreground">{count ?? 0}</strong> public stacks</span>
           <span className="text-foreground/20">·</span>
           <span className="flex items-center gap-1.5"><Users className="h-3.5 w-3.5" /> Community curated</span>
         </div>
       </div>
 
+      {/* Search */}
+      <form action="/stacks" method="GET" className="mb-6">
+        <div className="relative max-w-md mx-auto">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <input
+            type="text"
+            name="q"
+            defaultValue={query}
+            placeholder="Search stacks..."
+            className="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl border border-foreground/[0.12] bg-background/60 backdrop-blur-sm focus:outline-none focus:border-foreground/30 focus:ring-2 focus:ring-ring/40 transition-all"
+          />
+        </div>
+      </form>
+
       {/* Active Challenge Banner */}
-      {activeChallenge && (
+      {activeChallenge && page === 1 && !query && (
         <Link href={`/stacks/challenges/${activeChallenge.id}`}>
           <div className="mb-8 glass-card rounded-md overflow-hidden">
             <div className="h-1 bg-gradient-to-r from-amber-400/60 via-amber-400 to-amber-400/60" />
@@ -128,22 +168,38 @@ export default async function StacksPage() {
         </Link>
       )}
 
+      {/* Search results info */}
+      {query && (
+        <div className="mb-4 flex items-center gap-3">
+          <p className="text-sm text-muted-foreground">
+            {count ?? 0} result{(count ?? 0) !== 1 ? 's' : ''} for &ldquo;{query}&rdquo;
+          </p>
+          <Link href="/stacks" className="text-xs text-primary hover:underline">Clear search</Link>
+        </div>
+      )}
+
       {/* Grid */}
       {enriched.length === 0 ? (
         <div className="glass-card rounded-md p-16 text-center border-dashed">
           <Layers className="h-12 w-12 text-muted-foreground/20 mx-auto mb-4" />
-          <h2 className="text-xl font-bold mb-2">No public stacks yet</h2>
-          <p className="text-sm text-muted-foreground mb-6">Be the first to create and share a Power Stack.</p>
-          <Link href="/dashboard" className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline">
-            <Zap className="h-4 w-4" /> Go to Dashboard
-          </Link>
+          <h2 className="text-xl font-bold mb-2">{query ? 'No stacks found' : 'No public stacks yet'}</h2>
+          <p className="text-sm text-muted-foreground mb-6">
+            {query ? `Try a different search term.` : 'Be the first to create and share a Power Stack.'}
+          </p>
+          {query ? (
+            <Link href="/stacks" className="text-sm font-semibold text-primary hover:underline">Clear search</Link>
+          ) : (
+            <Link href="/dashboard" className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline">
+              <Zap className="h-4 w-4" /> Go to Dashboard
+            </Link>
+          )}
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {enriched.map((stack) => {
             const creator = stack.profiles
             const toolIds = (stack.collection_items ?? []).map((i: StackCollectionItem) => i.tools?.id).filter((id): id is string => Boolean(id))
-            
+
             return (
               <div
                 key={stack.id}
@@ -243,6 +299,41 @@ export default async function StacksPage() {
               </div>
             )
           })}
+        </div>
+      )}
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-3 mt-8">
+          {page > 1 ? (
+            <Link
+              href={buildUrl(page - 1, query || undefined)}
+              className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-xl border border-foreground/[0.12] bg-background/60 backdrop-blur-sm hover:bg-background/80 transition-all"
+            >
+              <ChevronLeft className="h-4 w-4" /> Previous
+            </Link>
+          ) : (
+            <span className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-xl border border-foreground/[0.06] text-muted-foreground/40 cursor-not-allowed">
+              <ChevronLeft className="h-4 w-4" /> Previous
+            </span>
+          )}
+
+          <span className="text-sm text-muted-foreground">
+            Page {page} of {totalPages}
+          </span>
+
+          {page < totalPages ? (
+            <Link
+              href={buildUrl(page + 1, query || undefined)}
+              className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-xl border border-foreground/[0.12] bg-background/60 backdrop-blur-sm hover:bg-background/80 transition-all"
+            >
+              Next <ChevronRight className="h-4 w-4" />
+            </Link>
+          ) : (
+            <span className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-xl border border-foreground/[0.06] text-muted-foreground/40 cursor-not-allowed">
+              Next <ChevronRight className="h-4 w-4" />
+            </span>
+          )}
         </div>
       )}
 
