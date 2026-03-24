@@ -974,43 +974,23 @@
 
 /* ── Add to Stack button ── */
 .add-to-stack-btn:hover:not(:disabled) {
-  border-color: var(--burn-color-40) !important;
+  border-color: var(--burn-color-25);
   color: var(--burn-color);
-  transform: translateY(-2px) scale(1.04);
-  box-shadow:
-    0 0 12px 2px var(--burn-color-40),
-    0 0 28px 6px var(--burn-color-20),
-    0 4px 20px -2px var(--burn-color-20),
-    inset 0 0 8px 0 var(--burn-color-10);
+  background: var(--burn-color-06);
 }
 
 .add-to-stack-btn:active:not(:disabled) {
-  transform: translateY(0px) scale(0.98);
-  box-shadow:
-    0 0 8px 1px var(--burn-color-60),
-    0 0 20px 4px var(--burn-color-40),
-    inset 0 0 12px 0 var(--burn-color-20);
+  background: var(--burn-color-10);
 }
 
 .dark .add-to-stack-btn:hover:not(:disabled) {
-  border-color: var(--burn-color-60) !important;
+  border-color: var(--burn-color-40);
   color: oklch(0.82 0.18 22);
-  transform: translateY(-2px) scale(1.04);
-  box-shadow:
-    0 0 14px 3px var(--burn-color-40),
-    0 0 36px 8px var(--burn-color-20),
-    0 0 60px 16px var(--burn-color-10),
-    0 4px 24px -2px var(--burn-color-20),
-    inset 0 0 10px 0 var(--burn-color-10);
+  background: var(--burn-color-06);
 }
 
 .dark .add-to-stack-btn:active:not(:disabled) {
-  transform: translateY(0px) scale(0.98);
-  box-shadow:
-    0 0 10px 2px var(--burn-color-60),
-    0 0 24px 6px var(--burn-color-40),
-    0 0 48px 12px var(--burn-color-20),
-    inset 0 0 14px 0 var(--burn-color-20);
+  background: var(--burn-color-10);
 }
 
 /* ── Burn glow cards (articles, etc.) — slow ember, no movement ── */

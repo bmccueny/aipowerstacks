@@ -368,7 +368,7 @@ export function AddToStackButton({
         variant="outline"
         size="sm"
         className={cn(
-          "relative shrink-0 whitespace-nowrap gap-2 rounded-sm font-medium transition-all add-to-stack-btn",
+          "relative shrink-0 whitespace-nowrap gap-2 rounded-sm font-medium transition-colors add-to-stack-btn",
           iconOnly ? "w-9 h-9 p-0 flex items-center justify-center" : "w-auto max-w-full px-3 h-9 brutalist-card-effect",
           alreadyInAStack ? 'text-primary border-primary/40' : '',
           justAdded ? 'bg-primary/10 border-primary/40' : '',
