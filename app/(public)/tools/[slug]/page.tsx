@@ -507,6 +507,20 @@ export default async function ToolDetailPage({ params }: Props) {
 
               <h3 className="text-sm font-semibold mb-3">Listing Details</h3>
               <dl className="space-y-2 text-sm">
+                {tool.time_to_value && (
+                  <div className="flex justify-between gap-3">
+                    <dt className="text-muted-foreground">Time to Value</dt>
+                    <dd className={`text-xs font-bold ${tool.time_to_value === 'instant' || tool.time_to_value === 'minutes' ? 'text-emerald-600 dark:text-emerald-400' : tool.time_to_value === 'hours' ? 'text-amber-600 dark:text-amber-400' : 'text-orange-600 dark:text-orange-400'}`}>
+                      {tool.time_to_value === 'instant' ? '⚡ First win in seconds' : tool.time_to_value === 'minutes' ? '⚡ First win in minutes' : tool.time_to_value === 'hours' ? '🕐 Set up in hours' : tool.time_to_value === 'days' ? '📅 Takes days' : '📅 Weeks to full value'}
+                    </dd>
+                  </div>
+                )}
+                {tool.not_for && (
+                  <div className="flex justify-between gap-3">
+                    <dt className="text-muted-foreground">Not For</dt>
+                    <dd className="text-xs text-red-500/80 dark:text-red-400/70 text-right">{tool.not_for}</dd>
+                  </div>
+                )}
                 <div className="flex justify-between gap-3">
                   <dt className="text-muted-foreground">Pricing</dt>
                   <dd className="flex flex-col items-end gap-1">

@@ -101,6 +101,22 @@ export const FEATURE_FILTERS = [
   { key: 'enterprise_ready', label: 'Enterprise', param: 'enterprise_ready' },
 ] as const
 
+export const TIME_TO_VALUE_OPTIONS = [
+  { value: 'instant', label: 'Instant (seconds)' },
+  { value: 'minutes', label: 'Minutes' },
+  { value: 'hours', label: 'Hours' },
+  { value: 'days', label: 'Days' },
+  { value: 'weeks', label: 'Weeks' },
+] as const
+
+export const TIME_TO_VALUE_LABELS: Record<string, { label: string; cls: string }> = {
+  instant: { label: 'First win in seconds', cls: 'text-emerald-600 dark:text-emerald-400' },
+  minutes: { label: 'First win in minutes', cls: 'text-emerald-600 dark:text-emerald-400' },
+  hours: { label: 'Set up in hours', cls: 'text-amber-600 dark:text-amber-400' },
+  days: { label: 'Takes days to set up', cls: 'text-orange-600 dark:text-orange-400' },
+  weeks: { label: 'Weeks to full value', cls: 'text-orange-600 dark:text-orange-400' },
+}
+
 export const PRICING_BADGE_COLORS: Record<string, string> = {
   free: 'bg-emerald-100 text-emerald-800 border-emerald-300',
   freemium: 'bg-sky-100 text-sky-800 border-sky-300',

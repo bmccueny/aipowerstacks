@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { INTEGRATION_OPTIONS, PRICING_MODELS, TEAM_SIZE_OPTIONS, USE_CASE_OPTIONS, MODEL_PROVIDER_OPTIONS } from '@/lib/constants'
+import { INTEGRATION_OPTIONS, PRICING_MODELS, TEAM_SIZE_OPTIONS, USE_CASE_OPTIONS, MODEL_PROVIDER_OPTIONS, TIME_TO_VALUE_OPTIONS } from '@/lib/constants'
 import { DeleteToolButton } from './DeleteToolButton'
 
 interface Category { id: string; name: string }
@@ -33,6 +33,8 @@ interface ToolFormProps {
     model_provider: string | null
     is_api_wrapper: boolean
     wrapper_details: string | null
+    time_to_value: string | null
+    not_for: string | null
   }
 }
 
@@ -62,6 +64,8 @@ export function ToolForm({ categories, tool }: ToolFormProps) {
     model_provider: tool?.model_provider ?? '',
     is_api_wrapper: tool?.is_api_wrapper ?? false,
     wrapper_details: tool?.wrapper_details ?? '',
+    time_to_value: tool?.time_to_value ?? '',
+    not_for: tool?.not_for ?? '',
   })
 
   const set = (k: keyof typeof form) =>
@@ -100,6 +104,8 @@ export function ToolForm({ categories, tool }: ToolFormProps) {
           : null,
         model_provider: form.model_provider || null,
         wrapper_details: form.wrapper_details || null,
+        time_to_value: form.time_to_value || null,
+        not_for: form.not_for || null,
       }),
     })
 
@@ -221,6 +227,21 @@ export function ToolForm({ categories, tool }: ToolFormProps) {
         <div>
           <label className="text-sm font-medium mb-1.5 block">Wrapper Details</label>
           <Input value={form.wrapper_details} onChange={set('wrapper_details')} placeholder="e.g. Uses GPT-4 Turbo + Whisper" className={inputCls} />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label className="text-sm font-medium mb-1.5 block">Time to Value</label>
+          <select value={form.time_to_value} onChange={set('time_to_value')}
+            className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus-visible:border-primary/50">
+            <option value="">Not set</option>
+            {TIME_TO_VALUE_OPTIONS.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
+          </select>
+        </div>
+        <div>
+          <label className="text-sm font-medium mb-1.5 block">Not For (who should avoid this tool?)</label>
+          <Input value={form.not_for} onChange={set('not_for')} placeholder="e.g. Not for non-technical users" className={inputCls} />
         </div>
       </div>
 
