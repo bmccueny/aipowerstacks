@@ -139,6 +139,9 @@ export type Database = {
           admin_review_video_url: string | null
           admin_review_notes: string | null
           admin_review_at: string | null
+          deployment_type: 'cloud' | 'self-hosted' | 'both' | null
+          needs_review: boolean
+          needs_review_reason: string | null
           created_at: string
           updated_at: string
         }
@@ -186,6 +189,9 @@ export type Database = {
           admin_review_video_url?: string | null
           admin_review_notes?: string | null
           admin_review_at?: string | null
+          deployment_type?: 'cloud' | 'self-hosted' | 'both' | null
+          needs_review?: boolean
+          needs_review_reason?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -231,6 +237,9 @@ export type Database = {
           admin_review_video_url?: string | null
           admin_review_notes?: string | null
           admin_review_at?: string | null
+          deployment_type?: 'cloud' | 'self-hosted' | 'both' | null
+          needs_review?: boolean
+          needs_review_reason?: string | null
           updated_at?: string
         }
         Relationships: []

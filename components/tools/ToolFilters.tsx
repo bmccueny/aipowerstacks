@@ -6,7 +6,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge'
 import { ChevronDown, ChevronUp, X } from 'lucide-react'
 import type { Category } from '@/lib/types'
-import { INTEGRATION_OPTIONS, PRICING_MODELS, SORT_OPTIONS, TEAM_SIZE_OPTIONS, USE_CASE_OPTIONS } from '@/lib/constants'
+import { INTEGRATION_OPTIONS, PRICING_MODELS, SORT_OPTIONS, TEAM_SIZE_OPTIONS, USE_CASE_OPTIONS, MODEL_PROVIDER_OPTIONS, DEPLOYMENT_TYPE_OPTIONS, FEATURE_FILTERS } from '@/lib/constants'
+import { cn } from '@/lib/utils'
 
 interface ToolFiltersProps {
   categories: Category[]
@@ -23,6 +24,8 @@ export function ToolFilters({ categories }: ToolFiltersProps) {
   const useCase = searchParams.get('use_case') ?? ''
   const teamSize = searchParams.get('team_size') ?? ''
   const integration = searchParams.get('integration') ?? ''
+  const modelProvider = searchParams.get('model_provider') ?? ''
+  const deploymentType = searchParams.get('deployment_type') ?? ''
   const sort = searchParams.get('sort') ?? 'relevance'
 
   const updateParam = (key: string, value: string) => {
@@ -31,6 +34,17 @@ export function ToolFilters({ categories }: ToolFiltersProps) {
       params.set(key, value)
     } else {
       params.delete(key)
+    }
+    params.delete('page')
+    router.push(`${pathname}?${params.toString()}`)
+  }
+
+  const toggleParam = (key: string) => {
+    const params = new URLSearchParams(searchParams.toString())
+    if (params.get(key) === 'true') {
+      params.delete(key)
+    } else {
+      params.set(key, 'true')
     }
     params.delete('page')
     router.push(`${pathname}?${params.toString()}`)
@@ -46,12 +60,18 @@ export function ToolFilters({ categories }: ToolFiltersProps) {
     useCase && { key: 'use_case', value: useCase, label: `Use case: ${useCase}` },
     teamSize && { key: 'team_size', value: teamSize, label: `Team size: ${teamSize}` },
     integration && { key: 'integration', value: integration, label: `Integration: ${integration}` },
+    modelProvider && { key: 'model_provider', value: modelProvider, label: `Provider: ${modelProvider}` },
+    deploymentType && { key: 'deployment_type', value: deploymentType, label: `Deploy: ${deploymentType}` },
+    ...FEATURE_FILTERS
+      .filter(f => searchParams.get(f.param) === 'true')
+      .map(f => ({ key: f.param, value: 'true', label: f.label })),
   ].filter(Boolean) as { key: string; value: string; label: string }[]
 
-  const hasSecondaryActive = !!(useCase || teamSize || integration)
+  const hasSecondaryActive = !!(useCase || teamSize || integration || modelProvider || deploymentType)
 
   return (
     <div className="space-y-3">
+      {/* Primary filters */}
       <div className="flex flex-wrap gap-2">
         <Select value={category || 'all'} onValueChange={(v) => updateParam('category', v)}>
           <SelectTrigger className="w-44 border-foreground/[0.08]">
@@ -101,6 +121,29 @@ export function ToolFilters({ categories }: ToolFiltersProps) {
         </button>
       </div>
 
+      {/* Feature toggle chips — always visible */}
+      <div className="flex flex-wrap gap-1.5">
+        {FEATURE_FILTERS.map((f) => {
+          const active = searchParams.get(f.param) === 'true'
+          return (
+            <button
+              key={f.param}
+              type="button"
+              onClick={() => toggleParam(f.param)}
+              className={cn(
+                'px-3 py-1.5 text-xs font-bold uppercase tracking-wider rounded-full border transition-all',
+                active
+                  ? 'bg-primary/15 text-primary border-primary/30'
+                  : 'bg-background/60 backdrop-blur-sm text-muted-foreground border-foreground/[0.08] hover:border-foreground/20 hover:text-foreground'
+              )}
+            >
+              {f.label}
+            </button>
+          )
+        })}
+      </div>
+
+      {/* Secondary filters */}
       {showMore && (
         <div className="flex flex-wrap gap-2">
           <Select value={useCase || 'all'} onValueChange={(v) => updateParam('use_case', v)}>
@@ -116,7 +159,7 @@ export function ToolFilters({ categories }: ToolFiltersProps) {
           </Select>
 
           <Select value={teamSize || 'all'} onValueChange={(v) => updateParam('team_size', v)}>
-          <SelectTrigger className="w-36 sm:w-44 border-foreground/[0.08]">
+            <SelectTrigger className="w-36 sm:w-44 border-foreground/[0.08]">
               <SelectValue placeholder="Team Size" />
             </SelectTrigger>
             <SelectContent>
@@ -138,9 +181,34 @@ export function ToolFilters({ categories }: ToolFiltersProps) {
               ))}
             </SelectContent>
           </Select>
+
+          <Select value={modelProvider || 'all'} onValueChange={(v) => updateParam('model_provider', v)}>
+            <SelectTrigger className="w-40 border-foreground/[0.08]">
+              <SelectValue placeholder="AI Provider" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Providers</SelectItem>
+              {MODEL_PROVIDER_OPTIONS.map((item) => (
+                <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Select value={deploymentType || 'all'} onValueChange={(v) => updateParam('deployment_type', v)}>
+            <SelectTrigger className="w-36 border-foreground/[0.08]">
+              <SelectValue placeholder="Deployment" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Types</SelectItem>
+              {DEPLOYMENT_TYPE_OPTIONS.map((item) => (
+                <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       )}
 
+      {/* Active filter badges */}
       {activeFilters.length > 0 && (
         <div className="flex flex-wrap items-center gap-2">
           {activeFilters.map((filter) => (

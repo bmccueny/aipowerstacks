@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Star, ExternalLink } from 'lucide-react'
+import { Star, ExternalLink, Clock } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import type { ToolCardData } from '@/lib/types'
 import { PRICING_BADGE_COLORS, PRICING_LABELS, MODEL_PROVIDER_LABELS, USE_CASE_LABELS } from '@/lib/constants'
@@ -12,6 +12,7 @@ import { VerifiedBadge } from '@/components/ui/VerifiedBadge'
 import { AddToStackButton } from './AddToStackButton'
 import { AddToCompareButton } from './AddToCompareButton'
 import { isWellFavoredTool } from '@/lib/tools/well-favored'
+import { getFreshnessLevel } from '@/lib/tools/freshness'
 import { cn } from '@/lib/utils'
 
 // ---------------------------------------------------------------------------
@@ -191,6 +192,12 @@ function CapabilityBadges({ tool, variant = 'span' }: { tool: ToolCardData; vari
   if (tool.has_mobile_app) {
     pills.push({ label: 'Mobile', cls: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800' })
   }
+  const dt = (tool as Record<string, unknown>).deployment_type as string | null
+  if (dt === 'self-hosted') {
+    pills.push({ label: 'Self-Hosted', cls: 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950 dark:text-purple-300 dark:border-purple-800' })
+  } else if (dt === 'both') {
+    pills.push({ label: 'Local + Cloud', cls: 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950 dark:text-purple-300 dark:border-purple-800' })
+  }
 
   if (pills.length === 0) return null
 
@@ -212,6 +219,19 @@ function CapabilityBadges({ tool, variant = 'span' }: { tool: ToolCardData; vari
         </span>
       ))}
     </>
+  )
+}
+
+/** Subtle stale data indicator for cards */
+function StaleIndicator({ tool }: { tool: ToolCardData }) {
+  const updatedAt = (tool as Record<string, unknown>).updated_at as string | null
+  const level = getFreshnessLevel(updatedAt)
+  if (level !== 'stale') return null
+  return (
+    <span className="text-[10px] text-amber-500/70 dark:text-amber-400/60 flex items-center gap-1">
+      <Clock className="h-3 w-3" />
+      Data may be outdated
+    </span>
   )
 }
 
@@ -343,6 +363,7 @@ function ToolCardHome({ tool, compact, pricingColor, pricingLabel, isWellFavored
           {/* Capability badges */}
           <div className="mt-2 flex flex-wrap gap-1 relative z-10">
             <CapabilityBadges tool={tool} variant="span" />
+            <StaleIndicator tool={tool} />
           </div>
         </>
       )}
@@ -458,9 +479,10 @@ function ToolCardGrid({ tool, pricingColor, pricingLabel, screenshotUrl, isWellF
         <p className="text-[14px] text-muted-foreground line-clamp-2 leading-[1.5] relative z-10">{tool.tagline}</p>
 
         {/* Capability badges */}
-        <div className="flex flex-wrap gap-1 relative z-10">
+        <div className="flex flex-wrap gap-1 items-center relative z-10">
           <CapabilityBadges tool={tool} variant="span" />
           <ModelProviderBadge tool={tool} variant="span" />
+          <StaleIndicator tool={tool} />
         </div>
 
         {/* Footer: Stack + Compare */}

@@ -26,7 +26,12 @@ interface ToolsPageProps {
     audience?: string
     has_api?: string
     has_mobile?: string
+    open_source?: string
     is_open_source?: string
+    privacy_first?: string
+    enterprise_ready?: string
+    model_provider?: string
+    deployment_type?: string
     sort?: string
     view?: string
     page?: string
@@ -48,6 +53,11 @@ export async function generateMetadata({ searchParams }: ToolsPageProps): Promis
     params.has_api ||
     params.has_mobile ||
     params.is_open_source ||
+    params.open_source ||
+    params.privacy_first ||
+    params.enterprise_ready ||
+    params.model_provider ||
+    params.deployment_type ||
     params.sort ||
     params.view
   )
@@ -103,7 +113,11 @@ export default async function ToolsPage({ searchParams }: ToolsPageProps) {
       audience: params.audience,
       hasApi: params.has_api === 'true',
       hasMobile: params.has_mobile === 'true',
-      isOpenSource: params.is_open_source === 'true',
+      isOpenSource: params.open_source === 'true' || params.is_open_source === 'true',
+      privacyFirst: params.privacy_first === 'true',
+      enterpriseReady: params.enterprise_ready === 'true',
+      modelProvider: params.model_provider,
+      deploymentType: params.deployment_type,
       sort: params.sort ?? 'relevance',
       page,
     }),

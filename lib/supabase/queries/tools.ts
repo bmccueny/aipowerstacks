@@ -176,7 +176,7 @@ async function extractSearchIntent(query: string): Promise<string | null> {
 }
 
 const TOOL_SELECT_COLUMNS =
-  'id, name, slug, tagline, logo_url, pricing_model, pricing_details, is_verified, avg_rating, review_count, upvote_count, category_id, published_at, screenshot_urls, is_supertools, target_audience, has_api, has_mobile_app, is_open_source, trains_on_data, has_sso, security_certifications, model_provider, use_case'
+  'id, name, slug, tagline, logo_url, pricing_model, pricing_details, is_verified, avg_rating, review_count, upvote_count, category_id, published_at, screenshot_urls, is_supertools, target_audience, has_api, has_mobile_app, is_open_source, trains_on_data, has_sso, security_certifications, model_provider, use_case, updated_at, deployment_type'
 
 /**
  * Server-side semantic search using pgvector.
@@ -245,6 +245,8 @@ export async function searchTools({
   isOpenSource,
   privacyFirst,
   enterpriseReady,
+  modelProvider,
+  deploymentType,
   sort = 'relevance',
   page = 1,
 }: {
@@ -261,6 +263,8 @@ export async function searchTools({
   isOpenSource?: boolean
   privacyFirst?: boolean
   enterpriseReady?: boolean
+  modelProvider?: string
+  deploymentType?: string
   sort?: string
   page?: number
 }): Promise<{ tools: ToolSearchResult[]; total: number }> {
@@ -310,6 +314,8 @@ export async function searchTools({
         if (hasMobile) filtered = filtered.filter(t => (t as FilterableTool).has_mobile_app === true)
         if (isOpenSource) filtered = filtered.filter(t => (t as FilterableTool).is_open_source === true)
         if (audience) filtered = filtered.filter(t => (t as FilterableTool).target_audience === audience)
+        if (modelProvider) filtered = filtered.filter(t => (t as FilterableTool).model_provider === modelProvider)
+        if (deploymentType) filtered = filtered.filter(t => (t as FilterableTool).deployment_type === deploymentType)
 
         if (filtered.length > 0) {
           return { tools: filtered.slice(0, PAGE_SIZE), total: filtered.length }
@@ -402,6 +408,8 @@ export async function searchTools({
     if (isOpenSource) fallback = fallback.eq('is_open_source', true)
     if (privacyFirst) fallback = fallback.eq('trains_on_data', false)
     if (enterpriseReady) fallback = fallback.eq('has_sso', true)
+    if (modelProvider) fallback = fallback.eq('model_provider', modelProvider)
+    if (deploymentType) fallback = fallback.eq('deployment_type', deploymentType as 'cloud' | 'self-hosted' | 'both')
 
     if (sort === 'rating') {
       fallback = fallback.order('avg_rating', { ascending: false }).order('review_count', { ascending: false })
@@ -445,6 +453,8 @@ export async function searchTools({
   if (isOpenSource) builder = builder.eq('is_open_source', true)
   if (privacyFirst) builder = builder.eq('trains_on_data', false)
   if (enterpriseReady) builder = builder.eq('has_sso', true)
+  if (modelProvider) builder = builder.eq('model_provider', modelProvider)
+  if (deploymentType) builder = builder.eq('deployment_type', deploymentType as 'cloud' | 'self-hosted' | 'both')
 
   // Sort
   if (sort === 'rating') {

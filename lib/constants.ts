@@ -87,6 +87,20 @@ export const USE_CASE_LABELS: Record<string, string> = {
   'customer-support': 'Support',
 }
 
+export const DEPLOYMENT_TYPE_OPTIONS = [
+  { value: 'cloud', label: 'Cloud' },
+  { value: 'self-hosted', label: 'Self-Hosted' },
+  { value: 'both', label: 'Local + Cloud' },
+] as const
+
+export const FEATURE_FILTERS = [
+  { key: 'has_api', label: 'API', param: 'has_api' },
+  { key: 'has_mobile', label: 'Mobile', param: 'has_mobile' },
+  { key: 'open_source', label: 'Open Source', param: 'open_source' },
+  { key: 'privacy_first', label: 'Privacy-First', param: 'privacy_first' },
+  { key: 'enterprise_ready', label: 'Enterprise', param: 'enterprise_ready' },
+] as const
+
 export const PRICING_BADGE_COLORS: Record<string, string> = {
   free: 'bg-emerald-100 text-emerald-800 border-emerald-300',
   freemium: 'bg-sky-100 text-sky-800 border-sky-300',

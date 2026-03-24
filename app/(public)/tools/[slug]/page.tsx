@@ -118,7 +118,10 @@ export default async function ToolDetailPage({ params }: Props) {
       ? 'Recently updated'
       : daysSinceUpdate <= 30
         ? 'Updated this month'
-        : 'Older data'
+        : daysSinceUpdate <= 90
+          ? 'Older data'
+          : 'May be outdated'
+  const isStale = daysSinceUpdate !== null && daysSinceUpdate > 90
   const updatedDateText = updatedAt
     ? new Intl.DateTimeFormat('en-US', {
       month: 'short',
@@ -202,7 +205,7 @@ export default async function ToolDetailPage({ params }: Props) {
                     </Badge>
                   </Link>
                 )}
-                <Badge variant="outline" className="border-foreground/30 bg-background/80">{freshnessLabel}</Badge>
+                <Badge variant="outline" className={isStale ? 'border-amber-400/50 bg-amber-50/50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-500/30' : 'border-foreground/30 bg-background/80'}>{freshnessLabel}</Badge>
               </div>
               <div className="space-y-1 mb-4 text-xs text-muted-foreground">
                 {tool.is_verified ? (
