@@ -25,9 +25,10 @@ interface ReviewCardProps {
     helpful_count: number
     created_at: string
     status: string
-    profiles?: { 
-      display_name: string | null; 
-      avatar_url: string | null; 
+    profiles?: {
+      display_name: string | null;
+      avatar_url: string | null;
+      username?: string | null;
       role?: string | null;
       linkedin_url?: string | null;
       github_url?: string | null;
@@ -227,9 +228,15 @@ export function ReviewCard({ review, currentUserId }: ReviewCardProps) {
               <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider leading-none">Reviewer</span>
             </div>
             <div className="flex items-center gap-2">
-              <p className="text-sm font-bold text-foreground leading-tight">
-                {review.profiles?.display_name ?? 'Anonymous'}
-              </p>
+              {review.profiles?.username ? (
+                <a href={`/curators/${review.profiles.username}`} className="text-sm font-bold text-foreground leading-tight hover:text-primary transition-colors">
+                  {review.profiles.display_name ?? 'Anonymous'}
+                </a>
+              ) : (
+                <p className="text-sm font-bold text-foreground leading-tight">
+                  {review.profiles?.display_name ?? 'Anonymous'}
+                </p>
+              )}
               <div className="flex items-center gap-1.5">
                 {review.profiles?.linkedin_url && (
                   <a href={review.profiles.linkedin_url} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-[#0077b5] transition-colors">

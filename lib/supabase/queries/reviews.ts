@@ -30,12 +30,13 @@ export async function getReviewsByTool(toolId: string, currentUserId?: string): 
 
   const { data: profiles } = await supabase
     .from('profiles')
-    .select('id, display_name, avatar_url, role')
+    .select('id, display_name, avatar_url, username, role')
     .in('id', userIds)
 
   const profileMap = new Map((profiles ?? []).map((p) => [p.id, {
     display_name: p.display_name,
     avatar_url: p.avatar_url,
+    username: p.username,
     role: p.role,
   }]))
 
