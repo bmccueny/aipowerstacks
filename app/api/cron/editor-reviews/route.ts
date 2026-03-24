@@ -199,9 +199,10 @@ OTHER RULES:
 - Reference SPECIFIC features or pricing from the website content above. Do not invent features.
 - 2 to 3 sentences. That is it. Do not write more.
 - No markdown formatting. Plain text only.
-- NEVER use em dashes, en dashes, or spaced hyphens. No \u2014 \u2013 or " - " anywhere. Use commas, periods, or colons instead.
-- Hyphens are ONLY allowed inside compound words (e.g. "open-source", "real-time"). Never as punctuation between clauses.
-- NEVER use semicolons. Use periods or commas instead.
+- NEVER use em dashes, en dashes, or spaced hyphens. No \u2014 \u2013 or " - " or "--" anywhere. Use commas or periods instead.
+- Hyphens ONLY inside compound words (e.g. "open-source"). Never as punctuation.
+- NEVER use semicolons.
+- Write like a real person on Reddit, not a polished journalist. Include minor grammar imperfections: skip an apostrophe sometimes (dont, its, youre), use lowercase where formal writing wouldnt, start a sentence with "and" or "but", use casual phrases like "honestly", "tbh", "imo". The review should sound like someone typing quickly, not editing carefully.
 
 Respond in EXACTLY this JSON format (no extra text):
 {"rating": <number>, "body": "<review text>"}`,
