@@ -7,11 +7,11 @@ import { Star, ExternalLink, Clock } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import type { ToolCardData } from '@/lib/types'
 import { PRICING_BADGE_COLORS, PRICING_LABELS, MODEL_PROVIDER_LABELS, USE_CASE_LABELS } from '@/lib/constants'
-import { WellFavoredBadge } from './WellFavoredBadge'
+// WellFavoredBadge removed — too cluttered on cards
 import { VerifiedBadge } from '@/components/ui/VerifiedBadge'
 import { AddToStackButton } from './AddToStackButton'
 import { AddToCompareButton } from './AddToCompareButton'
-import { isWellFavoredTool } from '@/lib/tools/well-favored'
+// isWellFavoredTool removed — badge was too noisy on cards
 import { getFreshnessLevel } from '@/lib/tools/freshness'
 import { cn } from '@/lib/utils'
 
@@ -33,7 +33,7 @@ interface ResolvedToolProps {
   pricingColor: string
   pricingLabel: string
   screenshotUrl: string | null
-  isWellFavored: boolean
+  isWellFavored?: boolean
   imageError: boolean
   setImageError: (v: boolean) => void
   hasBeenHovered: boolean
@@ -260,8 +260,7 @@ function ToolCardList({ tool, pricingColor, pricingLabel, isWellFavored, imageEr
         </div>
         <p className="text-[14px] leading-[1.45] text-muted-foreground truncate mt-0.5 relative z-10">{tool.tagline}</p>
         <div className="mt-1.5 flex flex-wrap items-center gap-1.5 relative z-10">
-          {isWellFavored && <WellFavoredBadge className="shrink-0" sparkle={hasBeenHovered} />}
-          <div className="flex flex-wrap gap-1">
+<div className="flex flex-wrap gap-1">
             <PricingBadgeBadgeStyle tool={tool} pricingColor={pricingColor} pricingLabel={pricingLabel} />
           </div>
           <CapabilityBadges tool={tool} variant="badge" />
@@ -350,8 +349,7 @@ function ToolCardHome({ tool, compact, pricingColor, pricingLabel, isWellFavored
                     <span className="text-[11px] text-muted-foreground">({tool.review_count})</span>
                   </>
                 ) : null}
-                {isWellFavored ? <WellFavoredBadge sparkle={hasBeenHovered} /> : null}
-                <div className="flex flex-wrap gap-1">
+<div className="flex flex-wrap gap-1">
                   <PricingBadgeSpanStyle tool={tool} pricingColor={pricingColor} pricingLabel={pricingLabel} limit={1} />
                   <ModelProviderBadge tool={tool} variant="span" />
                 </div>
@@ -471,7 +469,6 @@ function ToolCardGrid({ tool, pricingColor, pricingLabel, screenshotUrl, isWellF
               ) : (
                 <span className="text-[12px] text-muted-foreground/50">No reviews yet</span>
               )}
-              {isWellFavored && <WellFavoredBadge sparkle={hasBeenHovered} className="ml-1" />}
             </div>
           </div>
         </div>
@@ -505,7 +502,7 @@ export function ToolCard({ tool, view = 'grid', cardStyle = 'default', compact =
   const pricingColor = PRICING_BADGE_COLORS[tool.pricing_model] ?? PRICING_BADGE_COLORS.unknown
   const pricingLabel = PRICING_LABELS[tool.pricing_model] ?? 'Unknown'
   const screenshotUrl = (tool.screenshot_urls as string[] | null)?.[0] ?? null
-  const wellFavored = isWellFavoredTool(tool)
+  const wellFavored = false
 
   const shared: ResolvedToolProps = {
     tool,
