@@ -28,7 +28,7 @@ export default async function TrackerPage() {
   // Get all tools for the search picker
   const { data: tools } = await supabase
     .from('tools')
-    .select('id, name, slug, logo_url')
+    .select('id, name, slug, logo_url, pricing_model, pricing_details')
     .eq('status', 'published')
     .order('name')
 
@@ -45,7 +45,7 @@ export default async function TrackerPage() {
         </p>
       </div>
 
-      <TrackerClient tools={(tools || []).map(t => ({ id: t.id, name: t.name, slug: t.slug, logo_url: t.logo_url }))} />
+      <TrackerClient tools={(tools || []).map(t => ({ id: t.id, name: t.name, slug: t.slug, logo_url: t.logo_url, pricing_model: t.pricing_model || 'unknown', pricing_details: t.pricing_details, starting_price: null }))} />
     </div>
   )
 }
