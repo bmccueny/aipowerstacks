@@ -15,7 +15,8 @@ async function loadFont(): Promise<ArrayBuffer | undefined> {
 }
 
 export default async function Image({ searchParams }: { searchParams: Promise<{ tools?: string }> }) {
-  const { tools: toolsParam } = await searchParams
+  const params = await searchParams ?? {}
+  const toolsParam = params.tools
   const slugs = (toolsParam ?? '')
     .split(',')
     .map(s => s.trim().toLowerCase())
