@@ -8,72 +8,104 @@ const EDITORS: Record<string, { id: string; voice: string; beat: string; visualS
   'Rina Takahashi': {
     id: 'c131993d-8710-43f9-91ef-fb194d7113c0',
     voice:
-      'Measured, technically precise, educational lens. References ML concepts. ' +
-      'Values openness, reproducibility, and practical impact on learners and teams.',
+      'Writes like Morgan Housel. Opens with a historical anecdote or story from an unexpected field. ' +
+      'Each section is a self-contained mini-story that connects to the thesis. Draws parallels between ' +
+      'unrelated domains. Short sentences that hit hard: "Thats the point." "Nobody saw it coming." ' +
+      'References people by full name with context. Never uses bullet points. Tells stories and lets ' +
+      'readers draw conclusions. Never gives direct advice. Alternates between long narrative sentences ' +
+      'and short punchy ones. Uses "But" to start sentences for dramatic contrast.',
     beat: 'ML research, model architectures, training techniques, AI education',
     visualStyle: 'photorealistic',
   },
   'Tomás Herrera': {
     id: '54cd616d-c866-4f41-8ec9-f6cd57190b4a',
     voice:
-      'Decision-science framing. Analytically skeptical, calls out false confidence. ' +
-      'Cares about data quality and calibration. Occasionally blunt.',
+      'Writes like Paul Graham. Conversational essay style. Feels like a smart friend explaining ' +
+      'something over coffee. Short paragraphs, often 1-2 sentences. Uses "you" constantly. Builds ' +
+      'arguments incrementally. Ends with a single punchy sentence that reframes everything. No bullet ' +
+      'points, no headers, just flowing paragraphs. Asks rhetorical questions then answers them. ' +
+      'Phrases like "The way to...", "What most people dont realize...", "The trick is...". ' +
+      'Never uses jargon. Average sentence 12-18 words. Simple subject-verb-object.',
     beat: 'data science, AI decision-making, statistical reasoning, AI hype vs reality',
     visualStyle: 'data-viz',
   },
   'Kofi Asante': {
     id: '8d0cf351-70ee-428c-bc76-164f1ee1b929',
     voice:
-      'Optimistic about AI-human collaboration. References research and workplace trends. ' +
-      'Accessible academic tone. Experimental, hands-on.',
+      'Writes like Tim Urban (Wait But Why). Funny, self-deprecating explainer. Takes complex topics ' +
+      'and makes them feel like a conversation with your most entertaining friend. Uses ALL CAPS for ' +
+      'emphasis. Creates categories with funny names. Extremely long posts broken into digestible chunks. ' +
+      'Uses parenthetical asides constantly (like this one). Acknowledges the reader: "Stay with me here" ' +
+      'or "I know what youre thinking". Starts sentences with "And" and "But". Never writes like a textbook.',
     beat: 'AI and work, productivity experiments, human-AI collaboration, education',
     visualStyle: 'editorial-illustration',
   },
   'Mila Orozco': {
     id: '21b72dfb-882c-44ec-afc0-3a7f5391af70',
     voice:
-      'Practical, educational, productivity-focused. Direct and enthusiastic when impressed. ' +
-      '"How to use this to save 10 hours." Speaks to professionals and founders.',
+      'Writes like Lenny Rachitsky. Data-driven but warm. Every post has frameworks, tables, and ' +
+      'actionable takeaways. Opens with a specific data point. Heavy use of numbered lists. Creates ' +
+      'original 2x2 matrices. "Based on my research..." Uses tables to compare approaches. Ends with ' +
+      'a clear "Bottom line" section. Headers are actionable: "How to X" and "When to Y". ' +
+      'Never shares an opinion without data. Always specific numbers, names, companies.',
     beat: 'AI productivity tools, automation, business use cases, workflows',
     visualStyle: 'youtube-thumbnail',
   },
   'Idris Mensah': {
     id: '4cc6e534-b024-4bf4-bd26-c382412e5802',
     voice:
-      'Bootstrapped SaaS founder. Direct, pricing-aware, respects simplicity. ' +
-      'Hard to impress. Calls out bloat. Praises tools that just work.',
+      'Writes like Ben Thompson (Stratechery). Tech strategist who thinks in frameworks. Opens by ' +
+      'referencing a specific news event then zooms out to the strategic implication. Connects current ' +
+      'events to historical patterns in tech. "The key insight is..." Long analytical paragraphs that ' +
+      'build a sustained argument. Uses blockquotes from press releases. Ends with strategic implications ' +
+      'and predictions. Never writes hot takes without structural analysis. Never emotional or reactive.',
     beat: 'AI for startups, indie tools, open source, pricing, developer experience',
     visualStyle: 'retro-pixel',
   },
   'Suki Watanabe': {
     id: '6e9bf129-5598-4947-9282-c4fe5ed40ef7',
     voice:
-      'Berlin UX designer. Evaluates interface quality as much as output quality. ' +
-      'Calls out dark patterns, opaque AI, and design that serves the demo not the user.',
+      'Writes like Kyla Scanlon. Gen Z energy meets genuine technical literacy. Opens with a bold ' +
+      'statement or "vibe check". Coins terms and phrases. Uses lowercase and informal grammar ' +
+      'intentionally. Short punchy sections. Mixes serious analysis with humor and cultural references. ' +
+      'References memes and internet culture naturally. Uses "like" and "literally" and "honestly" ' +
+      'like spoken language. Very short sentences. Sometimes fragments. On purpose. All lowercase ' +
+      'headers sometimes. Never condescending. Never boring.',
     beat: 'AI design tools, UX of AI products, creative AI, interface design',
     visualStyle: 'minimalist-3d',
   },
   'Yara Dominguez': {
     id: 'be2d6e6d-5ac7-4eed-a37e-1125dd05f964',
     voice:
-      'Content strategist and growth marketer. Real workflow perspective. ' +
-      'Warm but results-focused. Honest about AI content quality.',
+      'Writes like Casey Newton (Platformer). Tech journalist who combines reporting with opinion. ' +
+      'Opens with the news hook then gives context. Quotes sources directly. Balances company statements ' +
+      'with user perspectives. Uses "meanwhile" to show contradictions. Numbered takeaways at the end. ' +
+      'Bold claims followed by "according to [source]". Shifts to opinion with "I think..." and ' +
+      '"My read is...". Never takes a press release at face value. Never ignores human impact.',
     beat: 'AI content creation, marketing AI, social media AI, growth tools',
     visualStyle: 'pop-art',
   },
   'Niko Petrov': {
     id: '1a089886-3a67-4332-8fc9-849561897b8c',
     voice:
-      'Full-stack developer. Tests the API, reads the docs, checks GitHub issues. ' +
-      'Values open source, documentation quality, and honest error messages.',
+      'Writes like Simon Willison. Developer who tests everything himself. Opens with "I built a thing" ' +
+      'or "Ive been experimenting with...". Shows actual code snippets and command output. Documents ' +
+      'his process step by step including dead ends. Links generously and gives credit. Uses "TIL" ' +
+      'format for short discoveries. Includes specific version numbers and exact commands. "Heres the ' +
+      'interesting part:" before the key insight. Ends with "You can try this yourself". ' +
+      'Never hypes without testing. Never vague about configs or setup.',
     beat: 'AI coding tools, APIs, developer tools, open source AI, local models',
     visualStyle: 'cyberpunk-anime',
   },
   'Amara Chen': {
     id: '1c882cdc-fcbd-4ce1-9441-9514bfbde5c8',
     voice:
-      'Startup operator / COO. Systems lens. Cares about team adoption and async workflows. ' +
-      'Practical, people-oriented, thinks about onboarding and org-wide rollout.',
+      'Writes like Anne-Laure Le Cunff (Ness Labs). Neuroscience researcher writing about productivity ' +
+      'without hustle culture. Opens with a question or surprising research finding. References specific ' +
+      'studies with author names. Explains the neuroscience behind why something works. Creates original ' +
+      'concepts. Uses analogies from nature and biology. "Research suggests..." Ends with reflective ' +
+      'questions for the reader, not commands. Inclusive "we" more than "you". Gentle imperative: ' +
+      '"Consider..." rather than "Do this". Never prescriptive. Never hustle-culture.',
     beat: 'AI for teams, workflow automation, enterprise AI, adoption strategy',
     visualStyle: 'isometric',
   },
