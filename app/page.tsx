@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowRight, ChevronRight, Newspaper, Sparkles, ShieldCheck, TrendingUp, Layers } from 'lucide-react'
+import { ArrowRight, ChevronRight, Newspaper, Sparkles, ShieldCheck, TrendingUp, Layers, DollarSign } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Navbar } from '@/components/layout/Navbar'
@@ -31,8 +31,8 @@ type BlogNewsItem = {
 }
 
 export const metadata = {
-  title: 'AIPowerStacks | Discover & Compare AI Tools',
-  description: 'Discover and compare AI tools side-by-side. Filter by use case, pricing, and integrations. Verified listings, real user reviews, and daily updates.',
+  title: 'AIPowerStacks | Discover, Compare & Track AI Tools',
+  description: 'Track your AI subscriptions, compare tools side-by-side, and find the right stack for your workflow. 480+ tools, real reviews, cost tracking.',
   alternates: {
     canonical: '/',
   },
@@ -105,13 +105,13 @@ export default async function HomePage() {
         <section className="px-4 max-w-4xl mx-auto w-full pt-20 pb-8">
           <div className="text-center mb-10">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/8 border border-primary/15 text-primary text-xs font-semibold uppercase tracking-widest mb-6">
-              {toolCount.toLocaleString()}+ Verified Tools
+              {toolCount.toLocaleString()}+ Tools Tracked
             </div>
             <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-foreground mb-5 leading-[1.1]">
-              The AI Tool Intelligence<br className="hidden md:block" /> Platform
+              How much are you<br className="hidden md:block" /> spending on AI?
             </h1>
             <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
-              Compare, evaluate, and shortlist AI tools across {categoryCount}+ categories — with verified reviews and daily updates.
+              Track your AI subscriptions, compare tools side-by-side, and build the perfect stack. Stop paying for tools that overlap.
             </p>
           </div>
 
@@ -120,34 +120,41 @@ export default async function HomePage() {
             <HeroSearch toolCount={siteStats.toolCount} />
           </div>
 
-          {/* Quick Actions */}
+          {/* Quick Actions — lead with tracker */}
           <div className="flex flex-wrap justify-center gap-3 mb-12">
             <Link
-              href="/tools"
+              href="/tracker"
               className="px-5 py-2.5 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-primary/90 transition-colors flex items-center gap-2"
             >
-              Browse All Tools
+              <DollarSign className="h-3.5 w-3.5" />
+              Track My AI Spend
+            </Link>
+            <Link
+              href="/tools"
+              className="px-5 py-2.5 rounded-lg text-sm font-semibold border border-border text-foreground hover:bg-muted transition-colors flex items-center gap-2"
+            >
+              Browse Tools
               <ArrowRight className="h-3.5 w-3.5" />
             </Link>
             <Link
-              href="/tools?pricing=free"
+              href="/compare"
               className="px-5 py-2.5 rounded-lg text-sm font-semibold border border-border text-foreground hover:bg-muted transition-colors"
             >
-              Free Tools Only
+              Compare Side-by-Side
             </Link>
           </div>
 
-          {/* Stats */}
-          <div className="grid grid-cols-3 divide-x divide-border border border-border rounded-xl max-w-sm mx-auto overflow-hidden">
-            <div className="text-center py-4 px-2">
+          {/* Value props */}
+          <div className="grid grid-cols-3 gap-4 max-w-lg mx-auto">
+            <div className="text-center">
               <div className="text-lg sm:text-xl font-bold text-foreground">{toolCount.toLocaleString()}+</div>
               <div className="text-xs text-muted-foreground mt-0.5">Tools</div>
             </div>
-            <div className="text-center py-4 px-2">
+            <div className="text-center">
               <div className="text-lg sm:text-xl font-bold text-foreground">{reviewCount.toLocaleString()}+</div>
               <div className="text-xs text-muted-foreground mt-0.5">Reviews</div>
             </div>
-            <div className="text-center py-4 px-2">
+            <div className="text-center">
               <div className="text-lg sm:text-xl font-bold text-foreground">{categoryCount}+</div>
               <div className="text-xs text-muted-foreground mt-0.5">Categories</div>
             </div>
