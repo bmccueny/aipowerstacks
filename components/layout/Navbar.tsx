@@ -22,6 +22,7 @@ const navLinks = [
   { href: '/categories', label: 'Categories' },
   { href: '/compare', label: 'Compare' },
   { href: '/stacks', label: 'Stacks' },
+  { href: '/tracker', label: 'Tracker' },
   { href: '/blog', label: 'Blog' },
 ]
 
