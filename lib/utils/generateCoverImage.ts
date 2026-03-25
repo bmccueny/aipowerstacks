@@ -329,13 +329,15 @@ PROMPT: [A single vivid paragraph, 3-5 sentences max]
 
 HEADLINE RULES — CRITICAL, FOLLOW EXACTLY:
 - MAXIMUM 3 words. Can be 1 word, 2 words, or 3 words. NEVER 4 or more.
-- Each word must be SHORT (max 7 letters). Prefer: FREE, DEAD, OVER, GONE, NEW, WILD, $0, INSANE, WHY, NO, WOW, RIP
+- Each word must be SHORT (max 7 letters). Prefer: FREE, DEAD, OVER, GONE, NEW, WILD, $0, INSANE, WHY, NO, WOW, RIP, BROKE, FIRED, QUIT, LEAKED, FAKE, SCAM
 - ALL CAPS only
-- Must create a curiosity gap related to the article
+- NEVER use the word "AI" in the headline. Every article is about AI so it adds nothing. Use a more specific, surprising word instead.
+- NEVER use the word "TOOLS" or "BOOST" — too generic.
+- Must create a curiosity gap related to the article's SPECIFIC angle, not just "AI is cool"
 - KEYWORD is the single most impactful word from the headline — it will be rendered BIGGER and in the accent COLOR
 - COLOR should match the energy (yellow for money/success, red for danger/urgency, lime for growth, cyan for tech)
-- Examples of GOOD headlines: "GAME OVER", "ITS FREE", "WHY", "NO WAY", "RIP", "$0 COST", "WILD"
-- Examples of BAD headlines (too many words): "AI TOOLS ARE GREAT NOW", "THE BEST NEW AI TOOLS"
+- Examples of GOOD headlines: "GAME OVER", "ITS FREE", "WHY", "NO WAY", "RIP", "$0 COST", "WILD", "THEY QUIT", "BROKE IT"
+- Examples of BAD headlines: "AI TOOLS", "BEST AI", "AI BOOST", "AI REVOLUTION" — all too generic
 
 SCENE RULES — your prompt must describe:
 ${style.scene}
@@ -364,8 +366,8 @@ Reply with ONLY the two lines. Nothing else.`,
 
     const headlineParts = headlineLine.split('|').map((s: string) => s.trim())
     const rawHeadline = headlineParts[0]?.replace(/HEADLINE:\s*/i, '').trim() ?? ''
-    // HARD LIMIT: max 3 words in headline
-    const headlineWords = rawHeadline.split(/\s+/).slice(0, 3).join(' ')
+    // HARD LIMIT: max 3 words, strip banned generic words
+    const headlineWords = rawHeadline.split(/\s+/).filter((w: string) => !['AI', 'TOOLS', 'BOOST'].includes(w.toUpperCase())).slice(0, 3).join(' ') || 'GAME OVER'
     const keyword = headlineParts.find((p: string) => /KEYWORD:/i.test(p))?.replace(/KEYWORD:\s*/i, '').trim() ?? ''
     const accentColor = headlineParts.find((p: string) => /COLOR:/i.test(p))?.replace(/COLOR:\s*/i, '').trim() ?? 'yellow'
     const imagePrompt = promptMatch?.[1]?.trim() ?? ''
