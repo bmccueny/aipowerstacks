@@ -136,8 +136,8 @@ export function TrackerClient({ tools }: { tools: ToolOption[] }) {
         </div>
       </div>
 
-      {/* Add subscription */}
-      <div className="glass-card rounded-xl p-6">
+      {/* Add subscription — z-20 so dropdown overlays the list below */}
+      <div className="glass-card rounded-xl p-6 relative z-20">
         <h2 className="text-lg font-bold mb-4">Add a subscription</h2>
 
         {!selectedTool ? (
