@@ -515,7 +515,7 @@ ${scrapedContent || 'No additional scraped content available.'}
 SEO REQUIREMENTS (CRITICAL — this post must rank on Google):
 1. TARGET KEYWORD: Pick ONE specific long-tail search query that people are actively Googling related to "${topic}". Examples: "best AI tools for [use case] 2026", "[tool] vs [tool] comparison", "how to use AI for [task]", "free AI [category] tools". The title MUST contain this keyword naturally.
 2. Title must be under 60 characters for Google SERPs. Include the year (2026) when relevant. Use power words (best, free, guide, vs, how to).
-3. Write 800 to 1200 words (longer content ranks better for informational queries).
+3. Write 1500 to 2500 words. This is NON-NEGOTIABLE. Short posts do not rank. Google's top results average 1,800 words. Include enough depth, examples, and analysis to fill this length naturally. Do NOT pad with filler. Add more sections, more comparisons, more practical advice.
 4. Structure with clear H2 headers that include secondary keywords. Google uses H2s for featured snippets.
 5. Include at least ONE comparison table, numbered list, or structured data section. These get rich snippets.
 6. The excerpt/meta description must be 150-160 characters, include the target keyword, and compel clicks.
@@ -524,7 +524,7 @@ SEO REQUIREMENTS (CRITICAL — this post must rank on Google):
 9. Do NOT include <h1> (the title is rendered separately)
 10. Reference specific tools, projects, or discussions from the source material when relevant
 11. Include 3 to 5 relevant tags (lowercase, single words or hyphenated compounds)
-12. Estimate reading time in minutes (typically 4 to 6)
+12. Estimate reading time in minutes (typically 6 to 10 for 1500-2500 word posts)
 13. INTERNAL LINKING: When you mention a tool that exists on our site, link the FIRST mention using <a href="/tools/SLUG">Tool Name</a>. Include 4-6 tool links per article. Link to our compare page (/compare) or browse page (/tools) where natural. Only link tools from the list below.
 
 == TOOLS ON OUR SITE (name -> URL path) ==
@@ -546,6 +546,8 @@ STRICT FORMATTING RULES:
 - Write in a conversational but informed tone
 - No fluff, no filler, no "In this article we will discuss..."
 - Start with a strong hook, not a generic opener
+- BANNED WORDS (these scream AI-generated): seamless, leverage, robust, nuanced, landscape, paradigm, delve, utilize, holistic, multifaceted, furthermore, tapestry. Use simple alternatives instead.
+- Write like a real person who types fast. Skip an apostrophe sometimes (dont, its, youre), use lowercase, start sentences with "and" or "but", use casual phrases like "honestly" and "imo".
 
 Respond in EXACTLY this JSON format (no extra text before or after):
 {
@@ -565,7 +567,7 @@ Respond in EXACTLY this JSON format (no extra text before or after):
     },
     body: JSON.stringify({
       model: 'grok-3-mini-fast',
-      max_tokens: 4000,
+      max_tokens: 10000,
       temperature: 0.85,
       messages: [{ role: 'user', content: prompt }],
     }),
