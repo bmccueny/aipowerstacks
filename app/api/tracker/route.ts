@@ -27,7 +27,7 @@ export async function POST(request: Request) {
   const body = await request.json()
   const { tool_id, monthly_cost } = body
 
-  if (!tool_id || !monthly_cost || monthly_cost <= 0) {
+  if (!tool_id || monthly_cost == null || monthly_cost < 0) {
     return NextResponse.json({ error: 'tool_id and monthly_cost are required' }, { status: 400 })
   }
 
