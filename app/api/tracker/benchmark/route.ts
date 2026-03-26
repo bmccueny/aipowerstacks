@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 function subs(supabase: any) { return supabase.from('user_subscriptions') }
 
 // Industry benchmarks when we don't have enough users for real data
-const INDUSTRY_AVG = 89 // typical individual AI spend/mo
+const INDUSTRY_AVG = 150 // typical individual AI spend/mo
 const INDUSTRY_TEAM_AVG = 245 // typical team AI spend/mo
 
 export async function GET() {
