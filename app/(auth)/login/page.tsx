@@ -18,6 +18,14 @@ export default function LoginPage() {
   useEffect(() => {
     const value = new URLSearchParams(window.location.search).get('redirectTo')
     if (value) setRedirectTo(value)
+
+    // If already logged in, redirect immediately
+    const supabase = createClient()
+    supabase.auth.getUser().then(({ data }) => {
+      if (data?.user) {
+        window.location.href = value || '/dashboard'
+      }
+    })
   }, [])
 
   const handleLogin = async (e: React.FormEvent) => {
