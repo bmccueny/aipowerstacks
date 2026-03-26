@@ -90,7 +90,7 @@ export default async function HomePage() {
             </p>
           </div>
 
-          <CostCalculator tools={(calcToolsResult.data || []).map(t => ({ id: t.id, name: t.name, slug: t.slug, logo_url: t.logo_url, pricing_model: t.pricing_model }))} />
+          <CostCalculator tools={(calcToolsResult.data || []).map(t => ({ id: t.id, name: t.name, slug: t.slug, logo_url: t.logo_url, pricing_model: t.pricing_model }))} isLoggedIn={!!user} />
         </section>
 
         {/* ═══ PROOF: Social proof stats ═══ */}

@@ -48,7 +48,7 @@ function getComparison(yearly: number): string | null {
   return null
 }
 
-export function CostCalculator({ tools }: { tools: QuickTool[] }) {
+export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLoggedIn?: boolean }) {
   const [added, setAdded] = useState<AddedTool[]>([])
   const [search, setSearch] = useState('')
   const [showDropdown, setShowDropdown] = useState(false)
@@ -401,7 +401,10 @@ export function CostCalculator({ tools }: { tools: QuickTool[] }) {
             We&apos;ll show you which ones to cut.
           </p>
           <Link
-            href={`/login?redirectTo=${encodeURIComponent(`/tracker?import=${added.map(t => `${t.slug}:${t.price}`).join(',')}`)}`}
+            href={isLoggedIn
+              ? `/tracker?import=${added.map(t => `${t.slug}:${t.price}`).join(',')}`
+              : `/login?redirectTo=${encodeURIComponent(`/tracker?import=${added.map(t => `${t.slug}:${t.price}`).join(',')}`)}`
+            }
             className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors"
           >
             Get My Savings Report
