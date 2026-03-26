@@ -34,16 +34,31 @@ type CurrentTool = {
 export function StackOptimizer({ currentTools }: { currentTools: CurrentTool[] }) {
   const [optimized, setOptimized] = useState<OptimizedStack | null>(null)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const [mode, setMode] = useState<'savings' | 'performance' | null>(null)
 
-  const generate = (m: 'savings' | 'performance') => {
+  const generate = async (m: 'savings' | 'performance') => {
     setMode(m)
     setLoading(true)
     setOptimized(null)
-    fetch(`/api/tracker/optimize?mode=${m}`)
-      .then(r => r.json())
-      .then(d => { setOptimized(d.optimized || null); setLoading(false) })
-      .catch(() => setLoading(false))
+    setError(null)
+    try {
+      const res = await fetch(`/api/tracker/optimize?mode=${m}`)
+      if (!res.ok) {
+        setError(`Failed to generate (${res.status})`)
+        setLoading(false)
+        return
+      }
+      const d = await res.json()
+      if (d.error) {
+        setError(d.error)
+      } else {
+        setOptimized(d.optimized || null)
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Network error')
+    }
+    setLoading(false)
   }
 
   if (currentTools.length < 2) return null
@@ -92,6 +107,20 @@ export function StackOptimizer({ currentTools }: { currentTools: CurrentTool[] }
             </p>
             <p className="text-xs text-muted-foreground mt-1">Comparing {currentTools.length} tools against our database</p>
           </div>
+        </div>
+      )}
+
+      {/* Error */}
+      {error && !loading && (
+        <div className="rounded-xl border border-destructive/20 bg-destructive/[0.04] p-4 text-center">
+          <p className="text-sm text-destructive font-semibold mb-2">Couldn&apos;t generate optimization</p>
+          <p className="text-xs text-muted-foreground mb-3">{error}</p>
+          <button
+            onClick={() => { setError(null); setMode(null) }}
+            className="text-xs font-semibold text-primary hover:underline"
+          >
+            Try again
+          </button>
         </div>
       )}
 

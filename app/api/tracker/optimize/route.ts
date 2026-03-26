@@ -97,7 +97,9 @@ export async function GET(request: Request) {
     ? 'Pick the BEST-RATED, most capable tool in each category regardless of cost. Prioritize ratings, review count, and feature set. Cost is secondary.'
     : 'Pick the CHEAPEST tool in each category that still gets the job done. Prioritize savings but don\'t suggest tools rated below 3.5 stars or with fewer than 3 reviews — those are too risky.'
 
-  const message = await anthropic.messages.create({
+  let message
+  try {
+    message = await anthropic.messages.create({
     model: 'claude-sonnet-4-20250514',
     max_tokens: 800,
     messages: [{
@@ -128,7 +130,10 @@ Respond in this exact JSON format (no markdown, no backticks, just raw JSON):
   "summary": "One sentence summary of the optimized stack"
 }`
     }],
-  })
+    })
+  } catch (err) {
+    return NextResponse.json({ optimized: null, error: `AI call failed: ${err instanceof Error ? err.message : String(err)}` })
+  }
 
   const responseText = message.content[0].type === 'text' ? message.content[0].text : ''
 
