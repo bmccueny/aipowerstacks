@@ -435,7 +435,7 @@ function ToolCardGrid({ tool, pricingColor, pricingLabel, screenshotUrl, isWellF
       className="relative card-directory h-full flex flex-col group"
     >
       {screenshotUrl && (
-        <div className="relative h-40 border-b border-foreground/10 shrink-0 overflow-hidden rounded-t-[14px]">
+        <div className="relative h-40 border-b border-foreground/10 shrink-0 overflow-hidden rounded-t-[14px] hidden sm:block">
           <Image
             src={screenshotUrl}
             alt={`${tool.name} screenshot`}
@@ -493,10 +493,18 @@ function ToolCardGrid({ tool, pricingColor, pricingLabel, screenshotUrl, isWellF
 
         <p className="text-[14px] text-muted-foreground line-clamp-2 leading-[1.5] relative z-10">{tool.tagline}</p>
 
-        {/* Capability badges */}
+        {/* Single most relevant badge — keep cards clean */}
         <div className="flex flex-wrap gap-1 items-center relative z-10">
-          <CapabilityBadges tool={tool} variant="span" />
-          <ModelProviderBadge tool={tool} variant="span" />
+          {tool.use_case && USE_CASE_LABELS[tool.use_case] && (
+            <Link href={`/tools?use_case=${tool.use_case}`} onClick={(e) => e.stopPropagation()} className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-950 dark:text-sky-300 dark:border-sky-800 hover:opacity-80 transition-opacity cursor-pointer">
+              {USE_CASE_LABELS[tool.use_case]}
+            </Link>
+          )}
+          {tool.is_open_source && (
+            <Link href="/tools?open_source=true" onClick={(e) => e.stopPropagation()} className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-800 hover:opacity-80 transition-opacity cursor-pointer">
+              Open Source
+            </Link>
+          )}
         </div>
 
         {/* Footer: Stack + Compare */}

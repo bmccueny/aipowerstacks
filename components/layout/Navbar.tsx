@@ -19,11 +19,15 @@ import { cn } from '@/lib/utils'
 
 const navLinks = [
   { href: '/tools', label: 'Browse' },
-  { href: '/categories', label: 'Categories' },
-  { href: '/compare', label: 'Compare' },
-  { href: '/stacks', label: 'Stacks' },
   { href: '/tracker', label: 'Tracker' },
+  { href: '/compare', label: 'Compare' },
   { href: '/blog', label: 'Blog' },
+]
+
+const moreLinks = [
+  { href: '/categories', label: 'Categories' },
+  { href: '/stacks', label: 'Stacks' },
+  { href: '/matchmaker', label: 'AI Matchmaker' },
 ]
 
 export function Navbar() {
@@ -103,7 +107,7 @@ export function Navbar() {
                   key={link.href}
                   href={link.href}
                   className={cn(
-                    'px-4 py-2 text-sm font-semibold rounded-lg transition-all duration-200 hover:scale-105',
+                    'px-4 py-2 text-sm font-semibold rounded-lg transition-all duration-200',
                     pathname === link.href || pathname.startsWith(link.href + '/')
                       ? 'text-primary bg-primary/10'
                       : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800'
@@ -112,6 +116,18 @@ export function Navbar() {
                   {link.label}
                 </Link>
               ))}
+              <DropdownMenu>
+                <DropdownMenuTrigger className="px-4 py-2 text-sm font-semibold rounded-lg text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 outline-none">
+                  More
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {moreLinks.map((link) => (
+                    <DropdownMenuItem key={link.href} asChild>
+                      <Link href={link.href} className="cursor-pointer">{link.label}</Link>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
 
             {/* Right Side */}
@@ -215,7 +231,7 @@ export function Navbar() {
           <div className="px-4 py-6">
             {/* Mobile Navigation */}
             <nav className="space-y-1">
-              {navLinks.map((link) => (
+              {[...navLinks, ...moreLinks].map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
