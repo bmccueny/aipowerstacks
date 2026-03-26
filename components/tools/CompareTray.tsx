@@ -49,7 +49,7 @@ export function CompareTray() {
             <span
               key={`empty-${i}`}
               className={cn(
-                'border border-dashed border-white/15 rounded-sm px-2.5 py-1 text-sm font-bold text-white/20 whitespace-nowrap shrink-0',
+                'border border-dashed border-white/15 rounded-xl px-2.5 py-1 text-sm font-bold text-white/20 whitespace-nowrap shrink-0',
                 'hidden sm:block'
               )}
             >
@@ -62,7 +62,7 @@ export function CompareTray() {
           {items.length >= 2 && (
             <button
               onClick={() => router.push(compareHref)}
-              className="h-9 px-4 bg-primary text-white font-black text-xs uppercase tracking-widest hover:bg-primary/90 transition-colors rounded-sm border-2 border-primary whitespace-nowrap"
+              className="h-9 px-4 bg-primary text-white font-bold text-xs hover:bg-primary/90 transition-colors rounded-xl whitespace-nowrap"
             >
               Compare Now →
             </button>

@@ -88,7 +88,7 @@ export function ToolSearch() {
               key={term}
               type="button"
               onClick={() => applyRecent(term)}
-              className="rounded-full border border-black/25 px-3 py-2 text-[11px] text-muted-foreground hover:text-foreground hover:border-black/45 transition-colors"
+              className="rounded-full border border-foreground/10 px-3 py-2 text-[11px] text-muted-foreground hover:text-foreground hover:border-foreground/25 transition-colors"
             >
               {term}
             </button>

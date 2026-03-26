@@ -5,7 +5,7 @@ import { Slot } from "radix-ui"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "btn-hover inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[4px] text-sm font-semibold transition-colors disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 aria-invalid:border-destructive border border-black",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-semibold transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 aria-invalid:border-destructive border border-foreground/10",
   {
     variants: {
       variant: {
@@ -13,12 +13,12 @@ const buttonVariants = cva(
         destructive:
           "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20",
         outline:
-          "bg-background text-foreground hover:bg-accent",
+          "bg-background text-foreground border-foreground/15 hover:bg-accent hover:border-foreground/25",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/85",
         ghost:
-          "border-transparent shadow-none hover:border-black hover:bg-accent",
-        link: "text-primary underline-offset-4 hover:underline border-transparent shadow-none hover:translate-x-0 hover:translate-y-0 hover:shadow-none",
+          "border-transparent shadow-none hover:bg-accent",
+        link: "text-primary underline-offset-4 hover:underline border-transparent shadow-none",
       },
       size: {
         default: "h-10 px-5 py-2 has-[>svg]:px-3",

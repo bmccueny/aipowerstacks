@@ -53,7 +53,7 @@ export function BlueprintRequestModal({ children }: { children: React.ReactNode 
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] rounded-[4px] border-[1px] border-foreground">
+      <DialogContent className="sm:max-w-[425px] rounded-2xl border border-foreground/10 backdrop-blur-xl bg-background/90">
         {!submitted ? (
           <>
             <DialogHeader>
@@ -71,7 +71,7 @@ export function BlueprintRequestModal({ children }: { children: React.ReactNode 
                 <textarea 
                   required
                   placeholder="e.g. A faceless YouTube channel for AI news..."
-                  className="w-full min-h-[100px] rounded-[4px] border-[1px] border-foreground bg-background p-3 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 transition-all"
+                  className="w-full min-h-[100px] rounded-xl border border-foreground/10 bg-background p-3 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 transition-all"
                   value={goal}
                   onChange={(e) => setGoal(e.target.value)}
                 />
@@ -82,7 +82,7 @@ export function BlueprintRequestModal({ children }: { children: React.ReactNode 
                   required
                   type="email" 
                   placeholder="notifications@yourbrand.com"
-                  className="!rounded-[4px] border-foreground"
+                  className="!rounded-xl !border-foreground/10"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />

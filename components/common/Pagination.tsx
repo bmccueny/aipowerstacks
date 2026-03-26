@@ -38,7 +38,7 @@ export function Pagination({ page, hasMore, paramName = 'page' }: PaginationProp
           variant="outline"
           size="sm"
           disabled
-          className="border-black/25 hover:border-black/45"
+          className=""
         >
           <ChevronLeft className="h-4 w-4" />
           Previous
@@ -47,7 +47,7 @@ export function Pagination({ page, hasMore, paramName = 'page' }: PaginationProp
         <Button
           variant="outline"
           size="sm"
-          className="border-black/25 hover:border-black/45"
+          className=""
           asChild
         >
           <Link href={prevHref}>
@@ -62,7 +62,7 @@ export function Pagination({ page, hasMore, paramName = 'page' }: PaginationProp
           variant="outline"
           size="sm"
           disabled
-          className="border-black/25 hover:border-black/45"
+          className=""
         >
           Next
           <ChevronRight className="h-4 w-4" />
@@ -71,7 +71,7 @@ export function Pagination({ page, hasMore, paramName = 'page' }: PaginationProp
         <Button
           variant="outline"
           size="sm"
-          className="border-black/25 hover:border-black/45"
+          className=""
           asChild
         >
           <Link href={nextHref}>

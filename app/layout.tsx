@@ -133,7 +133,13 @@ export default function RootLayout({
         <div className="relative z-[1]">
           {children}
         </div>
-        <Toaster richColors position="top-center" />
+        <Toaster
+          richColors
+          position="top-center"
+          toastOptions={{
+            className: '!rounded-2xl !border-foreground/10 !backdrop-blur-xl !bg-background/80 !shadow-xl',
+          }}
+        />
         <Analytics />
         <SpeedInsights />
       </body>

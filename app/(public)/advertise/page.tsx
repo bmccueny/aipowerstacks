@@ -49,7 +49,7 @@ export default function AdvertisePage() {
       <div className="grid sm:grid-cols-2 gap-4 mb-10">
         {perks.map(({ icon: Icon, title, desc }) => (
           <div key={title} className="gum-card rounded-[10px] p-5 flex gap-4 items-start">
-            <div className="h-9 w-9 shrink-0 rounded-lg border-2 border-black bg-primary/10 flex items-center justify-center">
+            <div className="h-9 w-9 shrink-0 rounded-xl border border-foreground/10 bg-primary/10 flex items-center justify-center">
               <Icon className="h-4 w-4" />
             </div>
             <div>
