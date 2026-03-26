@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Star, ExternalLink, Github } from 'lucide-react'
+import { Star, ExternalLink, Github, DollarSign } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import type { ToolCardData } from '@/lib/types'
 import { PRICING_BADGE_COLORS, PRICING_LABELS, MODEL_PROVIDER_LABELS, USE_CASE_LABELS } from '@/lib/constants'
@@ -507,9 +507,15 @@ function ToolCardGrid({ tool, pricingColor, pricingLabel, screenshotUrl, isWellF
           )}
         </div>
 
-        {/* Footer: Stack + Compare */}
+        {/* Footer: Track + Compare */}
         <div className="flex items-center gap-2 mt-auto pt-3 border-t border-foreground/10 relative z-10" onClick={(e) => e.stopPropagation()}>
-          <AddToStackButton toolId={tool.id} toolName={tool.name} className="flex-1" />
+          <Link
+            href="/tracker"
+            className="flex-1 h-9 flex items-center justify-center gap-1.5 text-xs font-semibold rounded-lg border border-foreground/[0.12] bg-background/60 hover:bg-primary/5 hover:border-primary/30 hover:text-primary transition-all"
+          >
+            <DollarSign className="h-3.5 w-3.5" />
+            Track This
+          </Link>
           <AddToCompareButton slug={tool.slug} name={tool.name} iconOnly />
         </div>
       </div>

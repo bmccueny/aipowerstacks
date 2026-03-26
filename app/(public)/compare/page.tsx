@@ -26,6 +26,39 @@ import { CompareTableLazy } from '@/components/tools/CompareTableLazy'
 
 const MAX_TOOLS = 4
 
+function CostInsight({ tools }: { tools: { name: string; pricing_model: string; pricing_details: string | null }[] }) {
+  if (tools.length < 2) return null
+  const prices = tools.map(t => {
+    const pd = t.pricing_details || ''
+    const match = pd.match(/\$(\d+)/)
+    if (match) return parseInt(match[1])
+    if (t.pricing_model === 'free') return 0
+    if (t.pricing_model === 'freemium') return 0
+    return null
+  })
+  if (!prices.every(p => p !== null)) return null
+  const valid = prices as number[]
+  const cheapest = Math.min(...valid)
+  const cheapIdx = valid.indexOf(cheapest)
+  const most = Math.max(...valid)
+  const savings = (most - cheapest) * 12
+
+  if (savings <= 0) return (
+    <div className="mb-6 rounded-xl border border-primary/20 bg-primary/[0.03] p-4 text-center">
+      <p className="text-sm"><strong>Same price.</strong> Both cost ${valid[0]}/mo. Pick based on features, not price.</p>
+    </div>
+  )
+
+  return (
+    <div className="mb-6 rounded-xl border border-emerald-400/20 bg-emerald-400/[0.03] p-4 text-center">
+      <p className="text-sm">
+        <strong className="text-emerald-600 dark:text-emerald-400">Save ${savings}/year</strong> by choosing {tools[cheapIdx].name} (${cheapest}/mo) over the most expensive option (${most}/mo).
+      </p>
+      <Link href="/tracker" className="text-xs text-primary hover:underline mt-1 inline-block">Track both in your budget →</Link>
+    </div>
+  )
+}
+
 export async function generateMetadata({
   searchParams,
 }: {
@@ -268,7 +301,10 @@ export default async function ComparePage({
             </div>
           </div>
         ) : (
-          <CompareTableLazy tools={tools as unknown as import('@/lib/types').ToolWithTags[]} />
+          <>
+            <CostInsight tools={tools} />
+            <CompareTableLazy tools={tools as unknown as import('@/lib/types').ToolWithTags[]} />
+          </>
         )}
       </div>
     </div>
