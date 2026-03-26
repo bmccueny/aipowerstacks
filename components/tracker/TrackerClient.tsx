@@ -55,7 +55,7 @@ const USE_CASE_NAMES: Record<string, string> = {
   'customer-support': 'Customer Support',
 }
 
-export function TrackerClient({ tools, autoAddSlug }: { tools: ToolOption[]; autoAddSlug?: string }) {
+export function TrackerClient({ tools, autoAddSlug, importTools }: { tools: ToolOption[]; autoAddSlug?: string; importTools?: string }) {
   const [subs, setSubs] = useState<Subscription[]>([])
   const [loading, setLoading] = useState(true)
   const [adding, setAdding] = useState(false)
@@ -88,6 +88,42 @@ export function TrackerClient({ tools, autoAddSlug }: { tools: ToolOption[]; aut
       setSelectedTool(match)
     }
   }, [autoAddSlug, autoAddHandled, loading, subs, tools])
+
+  // Bulk import tools from ?import=slug:price,slug:price (from homepage calculator)
+  useEffect(() => {
+    if (autoAddHandled || loading || !importTools) return
+    setAutoAddHandled(true)
+    const alreadyTracked = new Set(subs.map(s => s.tool_id))
+    const entries = importTools.split(',').map(entry => {
+      const [slug, priceStr] = entry.split(':')
+      return { slug, price: parseFloat(priceStr) || 0 }
+    }).filter(e => e.slug)
+
+    const toAdd = entries
+      .map(e => ({ tool: tools.find(t => t.slug === e.slug), price: e.price }))
+      .filter((e): e is { tool: ToolOption; price: number } => e.tool != null && !alreadyTracked.has(e.tool.id))
+
+    if (toAdd.length === 0) return
+
+    // Add all tools in parallel
+    Promise.all(
+      toAdd.map(({ tool, price }) =>
+        fetch('/api/tracker', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ tool_id: tool.id, monthly_cost: price }),
+        })
+      )
+    ).then(() => {
+      // Refresh subs list
+      fetch('/api/tracker')
+        .then(r => r.json())
+        .then(d => {
+          setSubs(d.subscriptions || [])
+          toast.success(`Added ${toAdd.length} subscriptions from your calculator`)
+        })
+    })
+  }, [importTools, autoAddHandled, loading, subs, tools])
 
   // Close dropdown on outside click
   useEffect(() => {

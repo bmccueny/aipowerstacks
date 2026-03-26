@@ -20,9 +20,9 @@ export const metadata: Metadata = {
 export default async function TrackerPage({
   searchParams,
 }: {
-  searchParams: Promise<{ add?: string }>
+  searchParams: Promise<{ add?: string; import?: string }>
 }) {
-  const { add: addSlug } = await searchParams
+  const { add: addSlug, import: importParam } = await searchParams
 
   const supabase = await createClient()
   let user = null
@@ -34,7 +34,8 @@ export default async function TrackerPage({
   }
 
   if (!user) {
-    redirect(`/login?redirectTo=/tracker${addSlug ? `?add=${addSlug}` : ''}`)
+    const trackerParams = importParam ? `?import=${importParam}` : addSlug ? `?add=${addSlug}` : ''
+    redirect(`/login?redirectTo=${encodeURIComponent(`/tracker${trackerParams}`)}`)
   }
 
   // Get all tools for the search picker
@@ -60,6 +61,7 @@ export default async function TrackerPage({
       <TrackerClient
         tools={(tools || []).map(t => ({ id: t.id, name: t.name, slug: t.slug, logo_url: t.logo_url, pricing_model: t.pricing_model || 'unknown', pricing_details: t.pricing_details, starting_price: null }))}
         autoAddSlug={addSlug}
+        importTools={importParam}
       />
     </div>
   )

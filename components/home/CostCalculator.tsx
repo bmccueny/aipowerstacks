@@ -402,7 +402,7 @@ export function CostCalculator({ tools }: { tools: QuickTool[] }) {
             We&apos;ll show you which ones to cut.
           </p>
           <Link
-            href="/login?redirectTo=/tracker"
+            href={`/login?redirectTo=${encodeURIComponent(`/tracker?import=${added.map(t => `${t.slug}:${t.price}`).join(',')}`)}`}
             className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors"
           >
             Get My Savings Report
