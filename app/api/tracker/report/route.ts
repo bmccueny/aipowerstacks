@@ -108,7 +108,7 @@ export async function GET() {
         savingsIfKeepBest,
       }
     })
-    .filter(o => o.tools.length >= 2)
+    .filter(o => o.savingsIfKeepBest > 0)
     .sort((a, b) => b.savingsIfKeepBest - a.savingsIfKeepBest)
 
   // ── 2. Premium overlap — only suggest tier downgrades when the user
