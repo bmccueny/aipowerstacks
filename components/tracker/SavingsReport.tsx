@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Loader2, TrendingDown, AlertTriangle, ArrowRight, ArrowDown, ChevronDown, ChevronUp } from 'lucide-react'
 
-type OverlapTool = { name: string; slug: string; logo_url: string | null; cost: number; rating: number; reviews: number }
-type Overlap = { label: string; tools: OverlapTool[]; totalCost: number; savingsIfKeepOne: number }
+type OverlapTool = { name: string; slug: string; logo_url: string | null; cost: number; rating: number; reviews: number; score: number }
+type Overlap = { label: string; tools: OverlapTool[]; topPick: string; topPickSlug: string; totalCost: number; savingsIfKeepBest: number }
 type PremiumOverlapTool = { name: string; slug: string; cost: number; cheapestTier: string; cheapestCost: number }
 type PremiumOverlap = { label: string; tools: PremiumOverlapTool[]; totalCost: number; savingsIfDowngradeRest: number }
 
@@ -127,37 +127,43 @@ export function SavingsReport() {
                   <div className="flex items-center justify-between mb-3">
                     <p className="text-sm font-bold">{overlap.label}</p>
                     <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
-                      Save ${overlap.savingsIfKeepOne}/yr
+                      Save ${overlap.savingsIfKeepBest}/yr
                     </span>
                   </div>
                   <p className="text-xs text-muted-foreground mb-3">
-                    These tools do the same thing. Keep your favorite, drop the rest.
+                    Based on ratings, <strong className="text-foreground">{overlap.topPick}</strong> is the strongest in this group. If you only need one {overlap.label.toLowerCase()} tool, the others are candidates to drop.
                   </p>
-                  <div className="space-y-2 mb-3">
-                    {overlap.tools.map((tool, j) => (
-                      <div key={j} className="flex items-center gap-3 bg-background/50 rounded-lg px-3 py-2">
-                        <div className="h-7 w-7 rounded-md overflow-hidden flex items-center justify-center shrink-0">
-                          {tool.logo_url ? (
-                            <img src={tool.logo_url} alt="" className="w-7 h-7 object-contain" />
-                          ) : (
-                            <span className="w-7 h-7 rounded-md bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary">{tool.name[0]}</span>
-                          )}
-                        </div>
-                        <span className="text-sm font-medium flex-1">{tool.name}</span>
-                        {tool.rating > 0 && (
-                          <span className="text-xs text-muted-foreground">
-                            ★ {tool.rating.toFixed(1)} ({tool.reviews})
+                  <div className="space-y-1.5 mb-3">
+                    {overlap.tools.map((tool, j) => {
+                      const isTopPick = j === 0
+                      return (
+                        <div key={j} className={`flex items-center gap-3 rounded-lg px-3 py-2 ${isTopPick ? 'bg-emerald-400/[0.06] border border-emerald-400/15' : 'bg-background/50'}`}>
+                          <div className="h-7 w-7 rounded-md overflow-hidden flex items-center justify-center shrink-0">
+                            {tool.logo_url ? (
+                              <img src={tool.logo_url} alt="" className="w-7 h-7 object-contain" />
+                            ) : (
+                              <span className="w-7 h-7 rounded-md bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary">{tool.name[0]}</span>
+                            )}
+                          </div>
+                          <span className="text-sm font-medium flex-1">
+                            {tool.name}
+                            {isTopPick && <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 ml-1.5">TOP RATED</span>}
                           </span>
-                        )}
-                        <span className="text-sm font-bold">${tool.cost}/mo</span>
-                      </div>
-                    ))}
+                          {tool.rating > 0 && (
+                            <span className={`text-xs ${isTopPick ? 'text-emerald-600 dark:text-emerald-400 font-semibold' : 'text-muted-foreground'}`}>
+                              ★ {tool.rating.toFixed(1)} ({tool.reviews})
+                            </span>
+                          )}
+                          <span className="text-sm font-bold">${tool.cost}/mo</span>
+                        </div>
+                      )
+                    })}
                   </div>
                   <Link
                     href={`/compare?tools=${overlap.tools.map(t => t.slug).join(',')}`}
                     className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline"
                   >
-                    Compare side-by-side to decide <ArrowRight className="h-3 w-3" />
+                    Compare features to decide <ArrowRight className="h-3 w-3" />
                   </Link>
                 </div>
               ))}

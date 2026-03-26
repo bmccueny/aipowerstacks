@@ -70,10 +70,6 @@ export async function GET() {
   const overlaps = Array.from(categoryGroups.entries())
     .filter(([, items]) => items.length >= 2)
     .map(([catId, items]) => {
-      const costs = items.map(s => Number(s.monthly_cost)).sort((a, b) => a - b)
-      const cheapest = costs[0]
-      const savingsIfKeepOne = (items.reduce((s, i) => s + Number(i.monthly_cost), 0) - cheapest) * 12
-
       // Use shared use_case label or category name
       const useCases = new Set(items.map(s => s.tools?.use_case).filter(Boolean))
       const sharedUseCase = useCases.size === 1 ? [...useCases][0] : null
@@ -81,22 +77,39 @@ export async function GET() {
         ? USE_CASE_LABELS[sharedUseCase] || sharedUseCase
         : catNameMap.get(catId) || 'Similar Tools'
 
-      return {
-        label,
-        tools: items.map(s => ({
+      // Score each tool: rating weighted by review confidence
+      // A 4.8 with 50 reviews > a 5.0 with 1 review
+      const scored = items.map(s => {
+        const rating = s.tools?.avg_rating || 0
+        const reviews = s.tools?.review_count || 0
+        const confidence = Math.log2(reviews + 1)
+        return {
           name: s.tools?.name || '?',
           slug: s.tools?.slug || '',
           logo_url: s.tools?.logo_url,
           cost: Number(s.monthly_cost),
-          rating: s.tools?.avg_rating || 0,
-          reviews: s.tools?.review_count || 0,
-        })),
-        totalCost: items.reduce((s, i) => s + Number(i.monthly_cost), 0),
-        savingsIfKeepOne,
+          rating,
+          reviews,
+          score: rating * confidence,
+        }
+      }).sort((a, b) => b.score - a.score)
+
+      const topPick = scored[0]
+      const totalCost = scored.reduce((s, t) => s + t.cost, 0)
+      // Savings = drop everything except the top-rated tool
+      const savingsIfKeepBest = Math.round((totalCost - topPick.cost) * 12)
+
+      return {
+        label,
+        tools: scored,
+        topPick: topPick.name,
+        topPickSlug: topPick.slug,
+        totalCost,
+        savingsIfKeepBest,
       }
     })
-    .filter(o => o.savingsIfKeepOne > 0)
-    .sort((a, b) => b.savingsIfKeepOne - a.savingsIfKeepOne)
+    .filter(o => o.savingsIfKeepBest > 0)
+    .sort((a, b) => b.savingsIfKeepBest - a.savingsIfKeepBest)
 
   // ── 2. Premium overlap — only suggest tier downgrades when the user
   // is paying top-tier on MULTIPLE tools in the same category.
@@ -195,7 +208,7 @@ export async function GET() {
   }
 
   // ── 4. Total potential savings
-  const overlapSavings = overlaps.reduce((s, o) => s + o.savingsIfKeepOne, 0)
+  const overlapSavings = overlaps.reduce((s, o) => s + o.savingsIfKeepBest, 0)
   const premiumSavings = premiumOverlaps.reduce((s, p) => s + p.savingsIfDowngradeRest, 0)
   const totalPotentialSavings = overlapSavings + premiumSavings
 
