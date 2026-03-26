@@ -26,7 +26,6 @@ const navLinks = [
 
 const moreLinks = [
   { href: '/categories', label: 'Categories' },
-  { href: '/matchmaker', label: 'AI Matchmaker' },
 ]
 
 export function Navbar() {
