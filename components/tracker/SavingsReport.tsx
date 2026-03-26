@@ -33,6 +33,9 @@ export function SavingsReport() {
   const [report, setReport] = useState<Report | null>(null)
   const [loading, setLoading] = useState(true)
   const [expanded, setExpanded] = useState(true)
+  const [aiAnalysis, setAiAnalysis] = useState<string | null>(null)
+  const [aiLoading, setAiLoading] = useState(false)
+  const [aiRequested, setAiRequested] = useState(false)
 
   useEffect(() => {
     fetch('/api/tracker/report')
@@ -40,6 +43,15 @@ export function SavingsReport() {
       .then(d => { setReport(d.report || null); setLoading(false) })
       .catch(() => setLoading(false))
   }, [])
+
+  const requestAnalysis = () => {
+    setAiLoading(true)
+    setAiRequested(true)
+    fetch('/api/tracker/analyze')
+      .then(r => r.json())
+      .then(d => { setAiAnalysis(d.analysis || null); setAiLoading(false) })
+      .catch(() => setAiLoading(false))
+  }
 
   if (loading) {
     return (
@@ -106,6 +118,41 @@ export function SavingsReport() {
               </>
             )}
           </div>
+
+          {/* AI Analysis */}
+          {!aiRequested ? (
+            <button
+              onClick={requestAnalysis}
+              className="w-full rounded-xl border border-primary/20 bg-gradient-to-b from-primary/[0.04] to-transparent p-5 text-center hover:border-primary/30 transition-all cursor-pointer group"
+            >
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <svg className="h-4 w-4 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" /></svg>
+                <span className="text-sm font-bold group-hover:text-primary transition-colors">Run AI Analysis</span>
+              </div>
+              <p className="text-xs text-muted-foreground">Get a personalized breakdown of your stack from Claude</p>
+            </button>
+          ) : aiLoading ? (
+            <div className="rounded-xl border border-primary/15 bg-gradient-to-b from-primary/[0.03] to-transparent p-6 text-center space-y-3">
+              <div className="relative h-8 w-8 mx-auto">
+                <div className="absolute inset-0 rounded-full border-2 border-primary/20" />
+                <div className="absolute inset-0 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+              </div>
+              <div>
+                <p className="text-sm font-bold">Claude is analyzing your stack...</p>
+                <p className="text-xs text-muted-foreground mt-1">Checking each tool, comparing capabilities, finding waste</p>
+              </div>
+            </div>
+          ) : aiAnalysis ? (
+            <div className="rounded-xl border border-primary/15 bg-gradient-to-b from-primary/[0.03] to-transparent p-5">
+              <div className="flex items-center gap-2 mb-3">
+                <svg className="h-4 w-4 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" /></svg>
+                <span className="text-xs font-bold uppercase tracking-wider text-primary">AI Analysis</span>
+              </div>
+              <div className="text-sm text-foreground/90 leading-relaxed whitespace-pre-line">
+                {aiAnalysis}
+              </div>
+            </div>
+          ) : null}
 
           {/* Spend summary */}
           <div className="rounded-xl border border-foreground/[0.06] p-4">
