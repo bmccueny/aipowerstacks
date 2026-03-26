@@ -93,9 +93,10 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'iframe', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'figure', 'figcaption', 'video', 'source', 'picture']),
     allowedAttributes: {
       ...sanitizeHtml.defaults.allowedAttributes,
-      '*': ['class', 'id', 'style'],
+      '*': ['class', 'id'],
+      div: ['class', 'id', 'style'],
       img: ['src', 'alt', 'width', 'height', 'loading'],
-      iframe: ['src', 'width', 'height', 'allow', 'allowfullscreen', 'title', 'frameborder'],
+      iframe: ['src', 'width', 'height', 'allow', 'allowfullscreen', 'title', 'frameborder', 'style'],
       a: ['href', 'target', 'rel'],
       source: ['src', 'type'],
       video: ['src', 'controls', 'width', 'height'],

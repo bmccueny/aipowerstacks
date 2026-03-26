@@ -804,6 +804,10 @@
   animation: liquid-float 6s ease-in-out infinite;
 }
 
+@keyframes glass-glow {
+  0%, 100% { box-shadow: 0 0 8px rgba(255,255,255,0.05); }
+  50% { box-shadow: 0 0 16px rgba(255,255,255,0.1); }
+}
 .animate-glass-glow {
   animation: glass-glow 4s ease-in-out infinite;
 }

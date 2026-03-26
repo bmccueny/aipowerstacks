@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowRight, ChevronRight, Newspaper, Sparkles, ShieldCheck, TrendingUp, Layers, DollarSign } from 'lucide-react'
+import { ArrowRight, ChevronRight, Newspaper, Layers, DollarSign } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Navbar } from '@/components/layout/Navbar'
@@ -102,7 +102,7 @@ export default async function HomePage() {
         }} />
 
         {/* Hero Section */}
-        <section className="px-4 max-w-4xl mx-auto w-full pt-20 pb-8">
+        <section className="px-4 max-w-4xl mx-auto w-full pt-8 sm:pt-16 pb-8">
           <div className="text-center mb-10">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/8 border border-primary/15 text-primary text-xs font-semibold uppercase tracking-widest mb-6">
               {toolCount.toLocaleString()}+ Tools Tracked
@@ -268,7 +268,7 @@ export default async function HomePage() {
                         {tool.logo_url ? (
                           <Image src={tool.logo_url} alt={tool.name} width={28} height={28} className="object-contain" />
                         ) : (
-                          <span className="text-xs font-bold text-primary">{tool.name[0]}</span>
+                          <span className="text-xs font-bold text-primary">{tool.name?.[0] || '?'}</span>
                         )}
                       </div>
                       <span className="text-sm font-medium">{tool.name}</span>
@@ -334,10 +334,10 @@ export default async function HomePage() {
               </div>
               <NewsletterBanner source="homepage-mid" tone="light" />
             </div>
-            <div className="p-8 sm:p-10 flex flex-col justify-center gap-4 bg-zinc-900 md:border-l border-t md:border-t-0 border-foreground">
+            <div className="p-8 sm:p-10 flex flex-col justify-center gap-4 bg-foreground/[0.03] dark:bg-foreground/[0.06] md:border-l border-t md:border-t-0 border-border">
               <div>
-                <h2 className="text-xl font-bold text-white">Built an AI tool? Get discovered.</h2>
-                <p className="text-sm text-white/60 mt-1">Put your tool in front of {toolCount >= 1000 ? `${Math.floor(toolCount / 1000)}k+` : 'thousands of'} founders, developers, and buyers actively comparing solutions.</p>
+                <h2 className="text-xl font-bold text-foreground">Built an AI tool? Get discovered.</h2>
+                <p className="text-sm text-muted-foreground mt-1">Put your tool in front of {toolCount >= 1000 ? `${Math.floor(toolCount / 1000)}k+` : 'thousands of'} founders, developers, and buyers actively comparing solutions.</p>
               </div>
               <Link
                 href="/submit"

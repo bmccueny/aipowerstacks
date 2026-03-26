@@ -61,7 +61,7 @@ function ToolCardLogo({
 }) {
   if (!logoUrl || imageError) {
     return (
-      <span className={cn('font-black text-primary uppercase', compact ? 'text-base' : 'text-base')}>
+      <span className={cn('font-black text-primary uppercase', compact ? 'text-sm' : 'text-base')}>
         {name[0]}
       </span>
     )

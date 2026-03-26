@@ -7,7 +7,7 @@ import { Layers, Zap, Users, Eye, Bookmark, Trophy, Search, ChevronLeft, Chevron
 import { SaveStackButton } from '@/components/stacks/SaveStackButton'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 
-export const revalidate = 0
+export const revalidate = 60
 
 const PAGE_SIZE = 12
 
@@ -56,7 +56,8 @@ export default async function StacksPage({
     .eq('is_public', true)
 
   if (query) {
-    stackQuery = stackQuery.or(`name.ilike.%${query}%,description.ilike.%${query}%`)
+    const sanitized = query.replace(/[,%()]/g, '')
+    if (sanitized) stackQuery = stackQuery.or(`name.ilike.%${sanitized}%,description.ilike.%${sanitized}%`)
   }
 
   const { data: stacks, count, error } = await stackQuery

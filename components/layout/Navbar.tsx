@@ -32,8 +32,8 @@ export function Navbar() {
   const supabase = createClient()
 
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [user, setUser] = useState<any>(null)
-  const [profile, setProfile] = useState<any>(null)
+  const [user, setUser] = useState<{ id: string; email?: string; user_metadata?: Record<string, string> } | null>(null)
+  const [profile, setProfile] = useState<{ avatar_url: string | null; display_name: string | null } | null>(null)
 
   useEffect(() => {
     const fetchProfile = async (userId: string) => {

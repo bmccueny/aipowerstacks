@@ -243,7 +243,7 @@ export default async function ToolDetailPage({ params }: Props) {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pb-20 lg:pb-0">
           <div className="lg:col-span-2 space-y-6">
             <div className="glass-card rounded-md p-6">
               <h2 className="text-lg font-semibold mb-3">About {tool.name}</h2>
