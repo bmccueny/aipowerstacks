@@ -80,7 +80,7 @@ export function CostCalculator({ tools }: { tools: QuickTool[] }) {
                 value={search}
                 onChange={e => { setSearch(e.target.value); setShowDropdown(true) }}
                 onFocus={() => { if (search.length > 1) setShowDropdown(true) }}
-                className="w-full pl-10 pr-4 py-3.5 text-sm rounded-2xl border border-foreground/[0.1] bg-background focus:outline-none focus:border-primary/40 focus:ring-2 focus:ring-primary/20 transition-all"
+                className="w-full pl-10 pr-4 py-3.5 text-base sm:text-sm rounded-2xl border border-foreground/[0.1] bg-background focus:outline-none focus:border-primary/40 focus:ring-2 focus:ring-primary/20 transition-all"
               />
             </div>
             {showDropdown && filtered.length > 0 && (
