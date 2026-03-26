@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
-import { X, Search, ArrowRight, Check } from 'lucide-react'
+import { X, Search, ArrowRight, Check, Loader2 } from 'lucide-react'
 
 type QuickTool = {
   id: string
@@ -57,6 +57,8 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
   const [showSearch, setShowSearch] = useState(false)
   const [editingTierId, setEditingTierId] = useState<string | null>(null)
   const [editTiers, setEditTiers] = useState<{ tier_name: string; monthly_price: number }[]>([])
+  const [loadingToolId, setLoadingToolId] = useState<string | null>(null)
+  const [tiersLoading, setTiersLoading] = useState(false)
   const wrapperRef = useRef<HTMLDivElement>(null)
 
   // Build the popular tools grid from props
@@ -77,10 +79,11 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
   // Load tiers when tool selected
   useEffect(() => {
     if (!selectedTool) { setTiers([]); return }
+    setTiersLoading(true)
     fetch(`/api/tracker/tiers?tool_id=${selectedTool.id}`)
       .then(r => r.json())
-      .then(d => setTiers(d.tiers || []))
-      .catch(() => setTiers([]))
+      .then(d => { setTiers(d.tiers || []); setTiersLoading(false) })
+      .catch(() => { setTiers([]); setTiersLoading(false) })
   }, [selectedTool])
 
   const addedIds = new Set(added.map(t => t.id))
@@ -97,7 +100,7 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
   }
 
   const quickAdd = (tool: QuickTool) => {
-    // Fetch tiers and auto-add at most popular tier
+    setLoadingToolId(tool.id)
     fetch(`/api/tracker/tiers?tool_id=${tool.id}`)
       .then(r => r.json())
       .then(d => {
@@ -111,12 +114,13 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
             tier: defaultTier.tier_name,
           }])
         } else {
-          // No tiers found — open tier picker so user enters their price
           selectTool(tool)
         }
+        setLoadingToolId(null)
       })
       .catch(() => {
         selectTool(tool)
+        setLoadingToolId(null)
       })
   }
 
@@ -188,23 +192,32 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
           <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
             {popularTools.map(tool => {
               const isAdded = addedIds.has(tool.id)
+              const isLoading = loadingToolId === tool.id
               return (
                 <button
                   key={tool.id}
                   type="button"
+                  disabled={isLoading}
                   onClick={() => isAdded ? remove(tool.id) : quickAdd(tool)}
                   className={`relative p-3 rounded-xl border transition-all text-center cursor-pointer group ${
-                    isAdded
-                      ? 'border-primary/40 bg-primary/5'
-                      : 'border-foreground/[0.06] hover:border-primary/30 hover:bg-primary/[0.02]'
+                    isLoading
+                      ? 'border-primary/30 bg-primary/[0.03] animate-pulse'
+                      : isAdded
+                        ? 'border-primary/40 bg-primary/5'
+                        : 'border-foreground/[0.06] hover:border-primary/30 hover:bg-primary/[0.02]'
                   }`}
                 >
-                  {isAdded && (
+                  {isLoading && (
+                    <div className="absolute top-1.5 right-1.5 h-4 w-4 rounded-full bg-primary/80 flex items-center justify-center">
+                      <Loader2 className="h-2.5 w-2.5 text-white animate-spin" />
+                    </div>
+                  )}
+                  {isAdded && !isLoading && (
                     <div className="absolute top-1.5 right-1.5 h-4 w-4 rounded-full bg-primary flex items-center justify-center">
                       <Check className="h-2.5 w-2.5 text-white" />
                     </div>
                   )}
-                  <div className="h-8 w-8 mx-auto mb-1.5 flex items-center justify-center">
+                  <div className={`h-8 w-8 mx-auto mb-1.5 flex items-center justify-center ${isLoading ? 'opacity-50' : ''}`}>
                     {tool.logo_url ? (
                       <img src={tool.logo_url} alt="" className="w-8 h-8 rounded-lg object-contain" />
                     ) : (
@@ -287,6 +300,12 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
             </button>
           </div>
           <p className="text-xs text-muted-foreground mb-2">What do you pay?</p>
+          {tiersLoading ? (
+            <div className="flex items-center gap-2 py-3">
+              <Loader2 className="h-4 w-4 animate-spin text-primary" />
+              <span className="text-xs text-muted-foreground">Loading plans...</span>
+            </div>
+          ) : (
           <div className="flex flex-wrap gap-2">
             {tiers.length > 0 ? tiers.map(tier => (
               <button
@@ -313,6 +332,7 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
               </>
             )}
           </div>
+          )}
         </div>
       )}
 

@@ -43,9 +43,20 @@ export function SavingsReport() {
 
   if (loading) {
     return (
-      <div className="rounded-xl border border-foreground/[0.06] p-8 text-center">
-        <Loader2 className="h-5 w-5 animate-spin mx-auto text-muted-foreground mb-2" />
-        <p className="text-sm text-muted-foreground">Generating your savings report...</p>
+      <div className="rounded-2xl border border-primary/15 bg-gradient-to-b from-primary/[0.03] to-transparent p-8 text-center space-y-4">
+        <div className="relative h-10 w-10 mx-auto">
+          <div className="absolute inset-0 rounded-full border-2 border-primary/20" />
+          <div className="absolute inset-0 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+        </div>
+        <div>
+          <p className="text-sm font-bold">Analyzing your stack...</p>
+          <p className="text-xs text-muted-foreground mt-1">Checking for overlap, comparing tiers, benchmarking spend</p>
+        </div>
+        <div className="flex justify-center gap-1">
+          <div className="h-1 w-8 rounded-full bg-primary/20 overflow-hidden"><div className="h-full w-full bg-primary animate-pulse" style={{ animationDelay: '0ms' }} /></div>
+          <div className="h-1 w-8 rounded-full bg-primary/20 overflow-hidden"><div className="h-full w-full bg-primary animate-pulse" style={{ animationDelay: '200ms' }} /></div>
+          <div className="h-1 w-8 rounded-full bg-primary/20 overflow-hidden"><div className="h-full w-full bg-primary animate-pulse" style={{ animationDelay: '400ms' }} /></div>
+        </div>
       </div>
     )
   }
