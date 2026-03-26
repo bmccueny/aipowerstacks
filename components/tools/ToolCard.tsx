@@ -510,7 +510,7 @@ function ToolCardGrid({ tool, pricingColor, pricingLabel, screenshotUrl, isWellF
         {/* Footer: Track + Compare */}
         <div className="flex items-center gap-2 mt-auto pt-3 border-t border-foreground/10 relative z-10" onClick={(e) => e.stopPropagation()}>
           <Link
-            href="/tracker"
+            href={`/tracker?add=${tool.slug}`}
             className="flex-1 h-9 flex items-center justify-center gap-1.5 text-xs font-semibold rounded-lg border border-foreground/[0.12] bg-background/60 hover:bg-primary/5 hover:border-primary/30 hover:text-primary transition-all"
           >
             <DollarSign className="h-3.5 w-3.5" />

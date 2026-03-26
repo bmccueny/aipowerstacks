@@ -30,7 +30,7 @@ type PricingTier = {
   features: string | null
 }
 
-export function TrackerClient({ tools }: { tools: ToolOption[] }) {
+export function TrackerClient({ tools, autoAddSlug }: { tools: ToolOption[]; autoAddSlug?: string }) {
   const [subs, setSubs] = useState<Subscription[]>([])
   const [loading, setLoading] = useState(true)
   const [adding, setAdding] = useState(false)
@@ -40,6 +40,7 @@ export function TrackerClient({ tools }: { tools: ToolOption[] }) {
   const [customCost, setCustomCost] = useState('')
   const [search, setSearch] = useState('')
   const [showDropdown, setShowDropdown] = useState(false)
+  const [autoAddHandled, setAutoAddHandled] = useState(false)
   const wrapperRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -48,6 +49,17 @@ export function TrackerClient({ tools }: { tools: ToolOption[] }) {
       .then(d => { setSubs(d.subscriptions || []); setLoading(false) })
       .catch(() => setLoading(false))
   }, [])
+
+  // Auto-select tool from ?add= query param after subs load
+  useEffect(() => {
+    if (autoAddHandled || loading || !autoAddSlug) return
+    setAutoAddHandled(true)
+    const alreadyTracked = new Set(subs.map(s => s.tool_id))
+    const match = tools.find(t => t.slug === autoAddSlug && !alreadyTracked.has(t.id))
+    if (match) {
+      setSelectedTool(match)
+    }
+  }, [autoAddSlug, autoAddHandled, loading, subs, tools])
 
   // Close dropdown on outside click
   useEffect(() => {

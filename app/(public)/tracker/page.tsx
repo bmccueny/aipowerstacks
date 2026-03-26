@@ -17,7 +17,13 @@ export const metadata: Metadata = {
   },
 }
 
-export default async function TrackerPage() {
+export default async function TrackerPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ add?: string }>
+}) {
+  const { add: addSlug } = await searchParams
+
   const supabase = await createClient()
   let user = null
   try {
@@ -28,7 +34,7 @@ export default async function TrackerPage() {
   }
 
   if (!user) {
-    redirect('/login?redirectTo=/tracker')
+    redirect(`/login?redirectTo=/tracker${addSlug ? `?add=${addSlug}` : ''}`)
   }
 
   // Get all tools for the search picker
@@ -51,7 +57,10 @@ export default async function TrackerPage() {
         </p>
       </div>
 
-      <TrackerClient tools={(tools || []).map(t => ({ id: t.id, name: t.name, slug: t.slug, logo_url: t.logo_url, pricing_model: t.pricing_model || 'unknown', pricing_details: t.pricing_details, starting_price: null }))} />
+      <TrackerClient
+        tools={(tools || []).map(t => ({ id: t.id, name: t.name, slug: t.slug, logo_url: t.logo_url, pricing_model: t.pricing_model || 'unknown', pricing_details: t.pricing_details, starting_price: null }))}
+        autoAddSlug={addSlug}
+      />
     </div>
   )
 }
