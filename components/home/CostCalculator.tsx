@@ -84,7 +84,7 @@ export function CostCalculator({ tools }: { tools: QuickTool[] }) {
               />
             </div>
             {showDropdown && filtered.length > 0 && (
-              <div className="absolute top-full left-0 right-0 z-[100] mt-2 bg-background border border-border rounded-xl shadow-2xl max-h-64 overflow-y-auto">
+              <div className="absolute top-full left-0 right-0 z-[100] mt-2 bg-white dark:bg-neutral-900 border border-border rounded-xl shadow-2xl max-h-64 overflow-y-auto">
                 {filtered.map(t => (
                   <div
                     key={t.id}

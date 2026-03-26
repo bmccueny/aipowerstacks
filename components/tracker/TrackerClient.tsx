@@ -166,7 +166,7 @@ export function TrackerClient({ tools, autoAddSlug }: { tools: ToolOption[]; aut
               />
             </div>
             {showDropdown && filteredTools.length > 0 && (
-              <div className="absolute top-full left-0 right-0 z-[100] mt-2 bg-background border border-border rounded-xl shadow-2xl max-h-80 overflow-y-auto">
+              <div className="absolute top-full left-0 right-0 z-[100] mt-2 bg-white dark:bg-neutral-900 border border-border rounded-xl shadow-2xl max-h-80 overflow-y-auto">
                 {filteredTools.map(t => (
                   <div
                     key={t.id}
