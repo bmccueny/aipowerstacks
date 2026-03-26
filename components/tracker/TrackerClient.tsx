@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { Plus, Trash2, DollarSign, TrendingUp, Loader2, Search, X } from 'lucide-react'
+import { Plus, Trash2, DollarSign, TrendingUp, Loader2, Search, X, AlertTriangle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
@@ -13,7 +13,7 @@ type Subscription = {
   monthly_cost: number
   billing_cycle: string
   created_at: string
-  tools: { name: string; slug: string; logo_url: string | null; pricing_model: string } | null
+  tools: { name: string; slug: string; logo_url: string | null; pricing_model: string; use_case?: string | null; category_id?: string | null } | null
 }
 
 type ToolOption = {
@@ -292,6 +292,69 @@ export function TrackerClient({ tools }: { tools: ToolOption[] }) {
           ))}
         </div>
       )}
+
+      {/* Overlap detection */}
+      {subs.length >= 2 && (() => {
+        // Group by use_case
+        const USE_CASE_NAMES: Record<string, string> = {
+          'content-creation': 'Content Creation',
+          coding: 'Coding & Development',
+          marketing: 'Marketing',
+          design: 'Design',
+          research: 'Research',
+          video: 'Video',
+          sales: 'Sales',
+          'customer-support': 'Customer Support',
+        }
+
+        const groups: Record<string, Subscription[]> = {}
+        for (const sub of subs) {
+          const uc = sub.tools?.use_case
+          if (!uc) continue
+          if (!groups[uc]) groups[uc] = []
+          groups[uc].push(sub)
+        }
+
+        const overlaps = Object.entries(groups)
+          .filter(([, items]) => items.length >= 2 && items.some(s => Number(s.monthly_cost) > 0))
+          .map(([useCase, items]) => ({
+            useCase,
+            label: USE_CASE_NAMES[useCase] || useCase,
+            tools: items,
+            totalCost: items.reduce((sum, s) => sum + Number(s.monthly_cost), 0),
+          }))
+
+        if (overlaps.length === 0) return null
+
+        return (
+          <div className="space-y-3">
+            <h3 className="text-sm font-bold flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4 text-amber-500" />
+              Potential Overlap Detected
+            </h3>
+            {overlaps.map(overlap => (
+              <div key={overlap.useCase} className="rounded-xl border border-amber-400/20 bg-amber-400/[0.03] p-4">
+                <p className="text-sm font-bold mb-1">
+                  {overlap.tools.length} {overlap.label} tools — ${overlap.totalCost}/mo
+                </p>
+                <p className="text-xs text-muted-foreground mb-2">
+                  Youre paying for {overlap.tools.map(t => t.tools?.name).join(', ')}. Do you need all of them?
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {overlap.tools.map(t => (
+                    <span key={t.id} className="text-xs px-2 py-1 rounded-lg bg-amber-400/10 border border-amber-400/20">
+                      {t.tools?.name} · ${Number(t.monthly_cost)}
+                    </span>
+                  ))}
+                </div>
+                <Link href={`/compare?tools=${overlap.tools.map(t => t.tools?.slug).join(',')}`} className="text-xs text-primary hover:underline mt-2 inline-block">
+                  Compare these tools side-by-side →
+                </Link>
+              </div>
+            ))}
+          </div>
+        )
+      })()}
     </div>
   )
 }

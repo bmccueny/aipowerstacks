@@ -1,105 +1,205 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
-import { DollarSign } from 'lucide-react'
+import { DollarSign, Plus, X, Search, ArrowRight } from 'lucide-react'
 
 type QuickTool = {
+  id: string
   name: string
-  logo: string | null
-  price: number
   slug: string
+  logo_url: string | null
+  pricing_model: string
 }
 
-const QUICK_TOOLS: QuickTool[] = [
-  { name: 'ChatGPT', logo: 'https://www.google.com/s2/favicons?domain=chatgpt.com&sz=64', price: 20, slug: 'chatgpt' },
-  { name: 'Claude', logo: 'https://www.google.com/s2/favicons?domain=claude.ai&sz=64', price: 20, slug: 'claude-code' },
-  { name: 'Cursor', logo: 'https://www.google.com/s2/favicons?domain=cursor.com&sz=64', price: 20, slug: 'cursor-editor' },
-  { name: 'Midjourney', logo: 'https://www.google.com/s2/favicons?domain=midjourney.com&sz=64', price: 30, slug: 'midjourney-v7' },
-  { name: 'Copilot', logo: 'https://www.google.com/s2/favicons?domain=github.com&sz=64', price: 10, slug: 'github-copilot' },
-  { name: 'Perplexity', logo: 'https://www.google.com/s2/favicons?domain=perplexity.ai&sz=64', price: 20, slug: 'perplexity-ai' },
-  { name: 'Zapier', logo: 'https://www.google.com/s2/favicons?domain=zapier.com&sz=64', price: 20, slug: 'zapier' },
-  { name: 'Notion AI', logo: 'https://www.google.com/s2/favicons?domain=notion.com&sz=64', price: 10, slug: 'notion-ai' },
-  { name: 'Grammarly', logo: 'https://www.google.com/s2/favicons?domain=grammarly.com&sz=64', price: 12, slug: 'grammarly' },
-  { name: 'Canva', logo: 'https://www.google.com/s2/favicons?domain=canva.com&sz=64', price: 13, slug: 'canva' },
-]
+type AddedTool = QuickTool & { price: number; tier: string }
 
-export function CostCalculator() {
-  const [selected, setSelected] = useState<Set<string>>(new Set())
+export function CostCalculator({ tools }: { tools: QuickTool[] }) {
+  const [added, setAdded] = useState<AddedTool[]>([])
+  const [search, setSearch] = useState('')
+  const [showDropdown, setShowDropdown] = useState(false)
+  const [selectedTool, setSelectedTool] = useState<QuickTool | null>(null)
+  const [tiers, setTiers] = useState<{ tier_name: string; monthly_price: number }[]>([])
+  const wrapperRef = useRef<HTMLDivElement>(null)
 
-  const toggle = (slug: string) => {
-    setSelected(prev => {
-      const next = new Set(prev)
-      if (next.has(slug)) next.delete(slug)
-      else next.add(slug)
-      return next
-    })
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
+        setShowDropdown(false)
+      }
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
+
+  // Load tiers when tool selected
+  useEffect(() => {
+    if (!selectedTool) { setTiers([]); return }
+    fetch(`/api/tracker/tiers?tool_id=${selectedTool.id}`)
+      .then(r => r.json())
+      .then(d => setTiers(d.tiers || []))
+      .catch(() => setTiers([]))
+  }, [selectedTool])
+
+  const addedIds = new Set(added.map(t => t.id))
+
+  const filtered = search.length > 1
+    ? tools.filter(t => t.name.toLowerCase().includes(search.toLowerCase()) && !addedIds.has(t.id)).slice(0, 6)
+    : []
+
+  const selectTool = (tool: QuickTool) => {
+    setSelectedTool(tool)
+    setSearch('')
+    setShowDropdown(false)
   }
 
-  const total = QUICK_TOOLS.filter(t => selected.has(t.slug)).reduce((sum, t) => sum + t.price, 0)
+  const addWithTier = (price: number, tierName: string) => {
+    if (!selectedTool) return
+    setAdded(prev => [...prev, { ...selectedTool, price, tier: tierName }])
+    setSelectedTool(null)
+  }
+
+  const remove = (id: string) => {
+    setAdded(prev => prev.filter(t => t.id !== id))
+  }
+
+  const total = added.reduce((sum, t) => sum + t.price, 0)
   const yearly = total * 12
 
   return (
-    <div className="max-w-2xl mx-auto">
-      {/* Tool grid */}
-      <div className="flex flex-wrap justify-center gap-2 mb-6">
-        {QUICK_TOOLS.map(tool => {
-          const active = selected.has(tool.slug)
-          return (
-            <button
-              key={tool.slug}
-              type="button"
-              onClick={() => toggle(tool.slug)}
-              className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium border transition-all ${
-                active
-                  ? 'border-primary bg-primary/10 text-primary'
-                  : 'border-foreground/[0.08] bg-background/60 text-muted-foreground hover:border-foreground/20 hover:text-foreground'
-              }`}
-            >
-              {tool.logo && <img src={tool.logo} alt="" className="w-5 h-5 rounded" />}
-              <span>{tool.name}</span>
-              <span className={`text-xs ${active ? 'text-primary' : 'text-muted-foreground/60'}`}>${tool.price}</span>
-            </button>
-          )
-        })}
-      </div>
-
-      {/* Running total */}
-      <div className={`rounded-2xl border p-6 text-center transition-all ${
-        total > 0
-          ? 'border-primary/20 bg-primary/[0.03]'
-          : 'border-foreground/[0.06] bg-background/40'
-      }`}>
-        {total > 0 ? (
+    <div className="max-w-xl mx-auto">
+      {/* Search + add */}
+      <div ref={wrapperRef} className="relative mb-4">
+        {!selectedTool ? (
           <>
-            <p className="text-xs text-muted-foreground uppercase tracking-widest mb-2">Your monthly AI spend</p>
-            <p className="text-4xl sm:text-5xl font-black text-foreground">${total}<span className="text-lg text-muted-foreground font-normal">/mo</span></p>
-            <p className="text-sm text-muted-foreground mt-1">${yearly}/year across {selected.size} tool{selected.size !== 1 ? 's' : ''}</p>
+            <div className="relative">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+              <input
+                type="text"
+                placeholder="What AI tools do you pay for?"
+                value={search}
+                onChange={e => { setSearch(e.target.value); setShowDropdown(true) }}
+                onFocus={() => { if (search.length > 1) setShowDropdown(true) }}
+                className="w-full pl-10 pr-4 py-3.5 text-sm rounded-2xl border border-foreground/[0.1] bg-background focus:outline-none focus:border-primary/40 focus:ring-2 focus:ring-primary/20 transition-all"
+              />
+            </div>
+            {showDropdown && filtered.length > 0 && (
+              <div className="absolute top-full left-0 right-0 z-[100] mt-2 bg-background border border-border rounded-xl shadow-2xl max-h-64 overflow-y-auto">
+                {filtered.map(t => (
+                  <div
+                    key={t.id}
+                    role="button"
+                    tabIndex={0}
+                    onMouseDown={e => { e.preventDefault(); selectTool(t) }}
+                    className="px-4 py-3 flex items-center gap-3 hover:bg-muted/80 cursor-pointer border-b border-border/20 last:border-0"
+                  >
+                    {t.logo_url ? (
+                      <img src={t.logo_url} alt="" className="w-7 h-7 rounded-lg object-contain shrink-0" />
+                    ) : (
+                      <span className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center text-xs font-bold text-primary shrink-0">{t.name[0]}</span>
+                    )}
+                    <span className="font-medium text-sm flex-1">{t.name}</span>
+                    <Plus className="h-4 w-4 text-muted-foreground" />
+                  </div>
+                ))}
+              </div>
+            )}
           </>
         ) : (
-          <>
-            <DollarSign className="h-8 w-8 text-muted-foreground/30 mx-auto mb-2" />
-            <p className="text-muted-foreground text-sm">Tap the tools you pay for</p>
-          </>
+          <div className="rounded-2xl border border-primary/20 bg-primary/[0.02] p-4">
+            <div className="flex items-center gap-3 mb-3">
+              {selectedTool.logo_url ? (
+                <img src={selectedTool.logo_url} alt="" className="w-8 h-8 rounded-lg object-contain" />
+              ) : (
+                <span className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-sm font-bold text-primary">{selectedTool.name[0]}</span>
+              )}
+              <span className="font-bold text-sm flex-1">{selectedTool.name}</span>
+              <button onClick={() => setSelectedTool(null)} className="p-1 hover:bg-muted rounded-lg">
+                <X className="h-4 w-4 text-muted-foreground" />
+              </button>
+            </div>
+            <p className="text-xs text-muted-foreground mb-2">What do you pay?</p>
+            <div className="flex flex-wrap gap-2">
+              {tiers.length > 0 ? tiers.map(tier => (
+                <button
+                  key={tier.tier_name}
+                  type="button"
+                  onClick={() => addWithTier(tier.monthly_price, tier.tier_name)}
+                  className="px-3 py-1.5 rounded-lg border border-border hover:border-primary/40 hover:bg-primary/5 text-sm transition-all cursor-pointer"
+                >
+                  <span className="font-bold">{tier.monthly_price === 0 ? 'Free' : `$${tier.monthly_price}`}</span>
+                  <span className="text-xs text-muted-foreground ml-1">{tier.tier_name}</span>
+                </button>
+              )) : (
+                <>
+                  {[0, 10, 20, 50].map(p => (
+                    <button
+                      key={p}
+                      type="button"
+                      onClick={() => addWithTier(p, p === 0 ? 'Free' : `$${p}/mo`)}
+                      className="px-3 py-1.5 rounded-lg border border-border hover:border-primary/40 hover:bg-primary/5 text-sm font-bold transition-all cursor-pointer"
+                    >
+                      {p === 0 ? 'Free' : `$${p}`}
+                    </button>
+                  ))}
+                </>
+              )}
+            </div>
+          </div>
         )}
       </div>
 
+      {/* Receipt — running list */}
+      {added.length > 0 && (
+        <div className="rounded-2xl border border-foreground/[0.06] divide-y divide-foreground/[0.06] mb-4">
+          {added.map(tool => (
+            <div key={tool.id} className="flex items-center gap-3 px-4 py-2.5">
+              {tool.logo_url ? (
+                <img src={tool.logo_url} alt="" className="w-6 h-6 rounded object-contain shrink-0" />
+              ) : (
+                <span className="w-6 h-6 rounded bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary shrink-0">{tool.name[0]}</span>
+              )}
+              <span className="text-sm font-medium flex-1 truncate">{tool.name}</span>
+              <span className="text-xs text-muted-foreground">{tool.tier}</span>
+              <span className="text-sm font-bold w-16 text-right">{tool.price === 0 ? 'Free' : `$${tool.price}`}</span>
+              <button onClick={() => remove(tool.id)} className="p-0.5 hover:text-destructive transition-colors">
+                <X className="h-3.5 w-3.5 text-muted-foreground" />
+              </button>
+            </div>
+          ))}
+          {/* Total */}
+          <div className="flex items-center justify-between px-4 py-3 bg-foreground/[0.02]">
+            <span className="text-sm font-bold">Monthly total</span>
+            <span className="text-xl font-black">${total}<span className="text-sm text-muted-foreground font-normal">/mo</span></span>
+          </div>
+          <div className="flex items-center justify-between px-4 py-2 bg-foreground/[0.02]">
+            <span className="text-xs text-muted-foreground">Annual cost</span>
+            <span className="text-sm font-bold text-muted-foreground">${yearly}/year</span>
+          </div>
+        </div>
+      )}
+
       {/* CTA */}
-      <div className="mt-5 flex flex-col sm:flex-row items-center justify-center gap-3">
-        <Link
-          href={total > 0 ? '/login?redirectTo=/tracker' : '/tracker'}
-          className="px-6 py-2.5 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-primary/90 transition-colors flex items-center gap-2"
-        >
-          <DollarSign className="h-4 w-4" />
-          {total > 0 ? 'Save & Track Over Time' : 'Start Tracking'}
-        </Link>
-        <Link
-          href="/tools"
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-        >
-          or browse all tools →
-        </Link>
-      </div>
+      {added.length >= 2 && (
+        <div className="text-center">
+          <p className="text-sm text-muted-foreground mb-3">
+            Thats <strong className="text-foreground">${yearly}/year</strong> on {added.length} tools. Want to find where youre overspending?
+          </p>
+          <Link
+            href="/login?redirectTo=/tracker"
+            className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors"
+          >
+            Save & Track Over Time
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+      )}
+
+      {added.length === 0 && (
+        <p className="text-center text-xs text-muted-foreground mt-2">
+          Search for any tool. See your total AI spend in seconds.
+        </p>
+      )}
     </div>
   )
 }

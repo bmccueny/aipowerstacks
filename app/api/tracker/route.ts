@@ -11,7 +11,7 @@ export async function GET() {
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { data, error } = await subs(supabase)
-    .select('id, tool_id, monthly_cost, billing_cycle, created_at, tools:tool_id(name, slug, logo_url, pricing_model)')
+    .select('id, tool_id, monthly_cost, billing_cycle, created_at, tools:tool_id(name, slug, logo_url, pricing_model, use_case, category_id)')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
 

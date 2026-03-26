@@ -49,6 +49,13 @@ export default async function HomePage() {
     // Corrupted auth cookie
   }
 
+  // All tools for calculator search
+  const calcToolsQuery = supabase
+    .from('tools')
+    .select('id, name, slug, logo_url, pricing_model')
+    .eq('status', 'published')
+    .order('name')
+
   // Trending: tools with highest view counts (proxy for current interest)
   const trendingQuery = supabase
     .from('tools')
@@ -58,7 +65,7 @@ export default async function HomePage() {
     .order('view_count', { ascending: false })
     .limit(8)
 
-  const [categories, latestTools, superTools, latestPosts, siteStats, stacksResult, featuredStack, trendingResult] = await Promise.all([
+  const [categories, latestTools, superTools, latestPosts, siteStats, stacksResult, featuredStack, trendingResult, calcToolsResult] = await Promise.all([
     getAllCategories(),
     getLatestTools(6),
     getSuperTools(6),
@@ -69,6 +76,7 @@ export default async function HomePage() {
       : Promise.resolve({ count: 0 }),
     getFeaturedStack(),
     trendingQuery,
+    calcToolsQuery,
   ])
 
   const hasStacks = (stacksResult.count ?? 0) > 0
@@ -119,11 +127,11 @@ export default async function HomePage() {
               How much is AI costing you?
             </h1>
             <p className="text-base text-muted-foreground max-w-md mx-auto">
-              Tap the tools you pay for. See your total. Track it over time.
+              Add your tools. See the total. Find where youre overspending.
             </p>
           </div>
 
-          <CostCalculator />
+          <CostCalculator tools={(calcToolsResult.data || []).map(t => ({ id: t.id, name: t.name, slug: t.slug, logo_url: t.logo_url, pricing_model: t.pricing_model }))} />
 
           {/* Stats */}
           <div className="grid grid-cols-3 gap-4 max-w-sm mx-auto mt-10">
