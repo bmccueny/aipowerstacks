@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Loader2, Eye, EyeOff, ArrowRight } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
@@ -9,6 +9,7 @@ import { BrandMark } from '@/components/common/BrandMark'
 import { useLiquidGlass } from '@/hooks/useLiquidGlass'
 
 export default function RegisterPage() {
+  const [redirectTo, setRedirectTo] = useState('/dashboard')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
@@ -17,6 +18,11 @@ export default function RegisterPage() {
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
   const [showPass, setShowPass] = useState(false)
+
+  useEffect(() => {
+    const value = new URLSearchParams(window.location.search).get('redirectTo')
+    if (value) setRedirectTo(value)
+  }, [])
 
   const strength = password.length === 0 ? 0 : password.length < 8 ? 1 : password.length < 12 ? 2 : 3
   const strengthColors = ['', 'bg-destructive', 'bg-yellow-500', 'bg-emerald-500']
@@ -35,7 +41,7 @@ export default function RegisterPage() {
           full_name: name,
           username: username.toLowerCase().replace(/[^a-z0-9_]/g, ''),
         },
-        emailRedirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
+        emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirectTo)}`,
       },
     })
     if (error) {
@@ -59,7 +65,7 @@ export default function RegisterPage() {
   const handleGoogle = async () => {
     const supabase = createClient()
     const callback = new URL(`${window.location.origin}/auth/callback`)
-    callback.searchParams.set('next', '/dashboard')
+    callback.searchParams.set('next', redirectTo)
     await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: { redirectTo: callback.toString() },
@@ -285,7 +291,7 @@ export default function RegisterPage() {
       <div className="animate-in-stagger text-center space-y-4" style={{ animationDelay: '440ms' }}>
         <p className="text-sm text-muted-foreground">
           Already have an account?{' '}
-          <Link href="/login" className="text-primary font-bold hover:underline">Sign in</Link>
+          <Link href={`/login${redirectTo !== '/dashboard' ? `?redirectTo=${encodeURIComponent(redirectTo)}` : ''}`} className="text-primary font-bold hover:underline">Sign in</Link>
         </p>
         <div className="flex justify-center gap-6 text-xs text-muted-foreground/50">
           <Link href="/terms" className="hover:text-foreground transition-colors">Terms</Link>

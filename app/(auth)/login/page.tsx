@@ -187,7 +187,7 @@ export default function LoginPage() {
       <div className="animate-in-stagger text-center space-y-4" style={{ animationDelay: '380ms' }}>
         <p className="text-sm text-muted-foreground">
           Don&apos;t have an account?{' '}
-          <Link href="/register" className="text-primary font-bold hover:underline">Sign up</Link>
+          <Link href={`/register${redirectTo !== '/dashboard' ? `?redirectTo=${encodeURIComponent(redirectTo)}` : ''}`} className="text-primary font-bold hover:underline">Sign up</Link>
         </p>
         <div className="flex justify-center gap-6 text-xs text-muted-foreground/50">
           <Link href="/terms" className="hover:text-foreground transition-colors">Terms</Link>
