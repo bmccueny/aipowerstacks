@@ -53,7 +53,7 @@ export default async function TrackerPage({
         </div>
         <h1 className="text-3xl sm:text-4xl font-black mb-2">AI Subscription Tracker</h1>
         <p className="text-muted-foreground max-w-lg mx-auto">
-          Track every AI tool you pay for. See your total monthly spend at a glance.
+          Add your tools. We&apos;ll find the overlap, flag cheaper alternatives, and tell you what to cancel.
         </p>
       </div>
 

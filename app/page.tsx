@@ -86,7 +86,7 @@ export default async function HomePage() {
               How much is AI costing you?
             </h1>
             <p className="text-base text-muted-foreground max-w-md mx-auto">
-              Add your tools. See the total. Find where you&apos;re overspending.
+              Add your tools. We&apos;ll tell you which ones to cancel.
             </p>
           </div>
 
@@ -150,11 +150,11 @@ export default async function HomePage() {
         <section className="px-4 max-w-3xl mx-auto w-full">
           <div className="relative overflow-hidden rounded-xl border border-primary/20 bg-primary/[0.03] p-8 sm:p-10 text-center">
             <h2 className="text-2xl sm:text-3xl font-black mb-3">
-              Stop guessing. Start tracking.
+              Find out which tools to cancel.
             </h2>
             <p className="text-sm text-muted-foreground max-w-md mx-auto mb-6">
-              Add your subscriptions, see your total monthly spend, and get alerts
-              when you&apos;re paying for tools that overlap.
+              Track your subscriptions. We&apos;ll flag overlap, suggest cheaper alternatives,
+              and show you exactly where to cut.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-3">
               <Link href={user ? '/tracker' : '/login?redirectTo=/tracker'}>

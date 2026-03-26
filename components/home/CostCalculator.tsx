@@ -183,13 +183,13 @@ export function CostCalculator({ tools }: { tools: QuickTool[] }) {
       {added.length >= 2 && (
         <div className="text-center">
           <p className="text-sm text-muted-foreground mb-3">
-            Thats <strong className="text-foreground">${yearly}/year</strong> on {added.length} tools. Want to find where youre overspending?
+            Thats <strong className="text-foreground">${yearly}/year</strong> on {added.length} tools. We&apos;ll show you which ones to cut.
           </p>
           <Link
             href="/login?redirectTo=/tracker"
             className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors"
           >
-            Save & Track Over Time
+            Get My Savings Report
             <ArrowRight className="h-4 w-4" />
           </Link>
         </div>

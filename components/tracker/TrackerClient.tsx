@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
-import { Plus, Trash2, DollarSign, TrendingUp, Loader2, Search, X, AlertTriangle } from 'lucide-react'
+import { useState, useEffect, useRef, useCallback } from 'react'
+import { Plus, Trash2, DollarSign, TrendingUp, TrendingDown, Loader2, Search, X, AlertTriangle, ArrowRight, Lightbulb, ChevronDown, ChevronUp } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
@@ -30,6 +30,31 @@ type PricingTier = {
   features: string | null
 }
 
+type Insight = {
+  type: string
+  title: string
+  body: string
+  action?: { label: string; href: string }
+}
+
+type Benchmark = {
+  avgMonthly: number
+  userCount: number
+  percentile: number
+  userTotal: number
+}
+
+const USE_CASE_NAMES: Record<string, string> = {
+  'content-creation': 'Content Creation',
+  coding: 'Coding & Development',
+  marketing: 'Marketing',
+  design: 'Design',
+  research: 'Research',
+  video: 'Video',
+  sales: 'Sales',
+  'customer-support': 'Customer Support',
+}
+
 export function TrackerClient({ tools, autoAddSlug }: { tools: ToolOption[]; autoAddSlug?: string }) {
   const [subs, setSubs] = useState<Subscription[]>([])
   const [loading, setLoading] = useState(true)
@@ -41,6 +66,9 @@ export function TrackerClient({ tools, autoAddSlug }: { tools: ToolOption[]; aut
   const [search, setSearch] = useState('')
   const [showDropdown, setShowDropdown] = useState(false)
   const [autoAddHandled, setAutoAddHandled] = useState(false)
+  const [insights, setInsights] = useState<Record<string, Insight[]>>({})
+  const [benchmark, setBenchmark] = useState<Benchmark | null>(null)
+  const [expandedInsights, setExpandedInsights] = useState<Set<string>>(new Set())
   const wrapperRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -82,6 +110,30 @@ export function TrackerClient({ tools, autoAddSlug }: { tools: ToolOption[]; aut
       .catch(() => setTiersLoading(false))
   }, [selectedTool])
 
+  // Fetch benchmark when subs change
+  const fetchBenchmark = useCallback(() => {
+    if (subs.length === 0) { setBenchmark(null); return }
+    fetch('/api/tracker/benchmark')
+      .then(r => r.json())
+      .then(d => setBenchmark(d))
+      .catch(() => setBenchmark(null))
+  }, [subs.length])
+
+  useEffect(() => { fetchBenchmark() }, [fetchBenchmark])
+
+  // Fetch insights for a specific tool after it's added
+  const fetchInsights = (toolId: string) => {
+    fetch(`/api/tracker/insights?tool_id=${toolId}`)
+      .then(r => r.json())
+      .then(d => {
+        if (d.insights && d.insights.length > 0) {
+          setInsights(prev => ({ ...prev, [toolId]: d.insights }))
+          setExpandedInsights(prev => new Set(prev).add(toolId))
+        }
+      })
+      .catch(() => {})
+  }
+
   const selectTool = (tool: ToolOption) => {
     setSelectedTool(tool)
     setSearch('')
@@ -91,10 +143,11 @@ export function TrackerClient({ tools, autoAddSlug }: { tools: ToolOption[]; aut
   const addSub = async (price: number) => {
     if (!selectedTool || price < 0) return
     setAdding(true)
+    const toolId = selectedTool.id
     const res = await fetch('/api/tracker', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ tool_id: selectedTool.id, monthly_cost: price }),
+      body: JSON.stringify({ tool_id: toolId, monthly_cost: price }),
     })
     if (res.ok) {
       const data = await (await fetch('/api/tracker')).json()
@@ -102,18 +155,33 @@ export function TrackerClient({ tools, autoAddSlug }: { tools: ToolOption[]; aut
       setSelectedTool(null)
       setCustomCost('')
       toast.success('Subscription added')
+      fetchInsights(toolId)
     } else {
       toast.error('Failed to add')
     }
     setAdding(false)
   }
 
-  const removeSub = async (id: string) => {
+  const removeSub = async (id: string, toolId: string) => {
     const res = await fetch(`/api/tracker?id=${id}`, { method: 'DELETE' })
     if (res.ok) {
       setSubs(prev => prev.filter(s => s.id !== id))
+      setInsights(prev => {
+        const next = { ...prev }
+        delete next[toolId]
+        return next
+      })
       toast.success('Removed')
     }
+  }
+
+  const toggleInsights = (toolId: string) => {
+    setExpandedInsights(prev => {
+      const next = new Set(prev)
+      if (next.has(toolId)) next.delete(toolId)
+      else next.add(toolId)
+      return next
+    })
   }
 
   const total = subs.reduce((sum, s) => sum + Number(s.monthly_cost), 0)
@@ -124,29 +192,83 @@ export function TrackerClient({ tools, autoAddSlug }: { tools: ToolOption[]; aut
     ? tools.filter(t => t.name.toLowerCase().includes(search.toLowerCase()) && !alreadyTracked.has(t.id)).slice(0, 10)
     : []
 
+  // Compute overlaps
+  const overlaps = subs.length >= 2 ? (() => {
+    const groups: Record<string, Subscription[]> = {}
+    for (const sub of subs) {
+      const uc = sub.tools?.use_case
+      if (!uc) continue
+      if (!groups[uc]) groups[uc] = []
+      groups[uc].push(sub)
+    }
+    return Object.entries(groups)
+      .filter(([, items]) => items.length >= 2 && items.some(s => Number(s.monthly_cost) > 0))
+      .map(([useCase, items]) => ({
+        useCase,
+        label: USE_CASE_NAMES[useCase] || useCase,
+        tools: items,
+        totalCost: items.reduce((sum, s) => sum + Number(s.monthly_cost), 0),
+      }))
+  })() : []
+
+  // Potential savings from overlaps
+  const overlapSavings = overlaps.reduce((sum, o) => {
+    const costs = o.tools.map(t => Number(t.monthly_cost)).sort((a, b) => a - b)
+    // Could save everything except the cheapest
+    return sum + costs.slice(1).reduce((s, c) => s + c, 0)
+  }, 0)
+
   if (loading) {
     return <div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Cost summary */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="glass-card rounded-xl p-6 text-center">
-          <DollarSign className="h-6 w-6 text-primary mx-auto mb-2" />
-          <p className="text-3xl font-black">${total.toFixed(2)}</p>
-          <p className="text-xs text-muted-foreground mt-1">per month</p>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="glass-card rounded-xl p-5 text-center">
+          <DollarSign className="h-5 w-5 text-primary mx-auto mb-1.5" />
+          <p className="text-2xl font-black">${total.toFixed(0)}</p>
+          <p className="text-[10px] text-muted-foreground mt-1">per month</p>
         </div>
-        <div className="glass-card rounded-xl p-6 text-center">
-          <TrendingUp className="h-6 w-6 text-amber-500 mx-auto mb-2" />
-          <p className="text-3xl font-black">${yearly.toFixed(0)}</p>
-          <p className="text-xs text-muted-foreground mt-1">per year</p>
+        <div className="glass-card rounded-xl p-5 text-center">
+          <TrendingUp className="h-5 w-5 text-amber-500 mx-auto mb-1.5" />
+          <p className="text-2xl font-black">${yearly.toFixed(0)}</p>
+          <p className="text-[10px] text-muted-foreground mt-1">per year</p>
         </div>
-        <div className="glass-card rounded-xl p-6 text-center">
-          <p className="text-3xl font-black">{subs.length}</p>
-          <p className="text-xs text-muted-foreground mt-1">active subscriptions</p>
+        <div className="glass-card rounded-xl p-5 text-center">
+          <p className="text-2xl font-black">{subs.length}</p>
+          <p className="text-[10px] text-muted-foreground mt-1">subscriptions</p>
         </div>
+        {overlapSavings > 0 ? (
+          <div className="rounded-xl p-5 text-center border border-emerald-400/20 bg-emerald-400/[0.04]">
+            <TrendingDown className="h-5 w-5 text-emerald-500 mx-auto mb-1.5" />
+            <p className="text-2xl font-black text-emerald-600 dark:text-emerald-400">${(overlapSavings * 12).toFixed(0)}</p>
+            <p className="text-[10px] text-muted-foreground mt-1">potential yearly savings</p>
+          </div>
+        ) : (
+          <div className="glass-card rounded-xl p-5 text-center">
+            <p className="text-2xl font-black">$0</p>
+            <p className="text-[10px] text-muted-foreground mt-1">overlap waste</p>
+          </div>
+        )}
       </div>
+
+      {/* Benchmark bar */}
+      {benchmark && subs.length >= 2 && (
+        <div className="rounded-xl border border-foreground/[0.06] bg-foreground/[0.02] px-5 py-3 flex items-center gap-3 text-sm">
+          <Lightbulb className="h-4 w-4 text-amber-500 shrink-0" />
+          <p className="text-muted-foreground">
+            {benchmark.percentile >= 70 ? (
+              <>You spend more than <strong className="text-foreground">{benchmark.percentile}%</strong> of tracked users. Average is <strong className="text-foreground">${benchmark.avgMonthly}/mo</strong>.</>
+            ) : benchmark.percentile <= 30 ? (
+              <>You spend less than <strong className="text-foreground">{100 - benchmark.percentile}%</strong> of tracked users. You&apos;re lean.</>
+            ) : (
+              <>Average AI spend across tracked users: <strong className="text-foreground">${benchmark.avgMonthly}/mo</strong>. You&apos;re at ${total.toFixed(0)}/mo.</>
+            )}
+          </p>
+        </div>
+      )}
 
       {/* Add subscription — z-20 so dropdown overlays the list below */}
       <div className="glass-card rounded-xl p-6 relative z-20">
@@ -269,7 +391,40 @@ export function TrackerClient({ tools, autoAddSlug }: { tools: ToolOption[]; aut
         )}
       </div>
 
-      {/* Subscription list */}
+      {/* Overlap warnings — inline, prominent */}
+      {overlaps.length > 0 && (
+        <div className="space-y-3">
+          <h3 className="text-sm font-bold flex items-center gap-2">
+            <AlertTriangle className="h-4 w-4 text-amber-500" />
+            We found overlap in your stack
+          </h3>
+          {overlaps.map(overlap => (
+            <div key={overlap.useCase} className="rounded-xl border border-amber-400/20 bg-amber-400/[0.03] p-4">
+              <p className="text-sm font-bold mb-1">
+                {overlap.tools.length} {overlap.label} tools — ${overlap.totalCost}/mo
+              </p>
+              <p className="text-xs text-muted-foreground mb-3">
+                You&apos;re paying for {overlap.tools.map(t => t.tools?.name).join(' + ')}. You could save <strong className="text-foreground">${((overlap.totalCost - Math.min(...overlap.tools.map(t => Number(t.monthly_cost)))) * 12).toFixed(0)}/year</strong> by keeping just one.
+              </p>
+              <div className="flex flex-wrap gap-2 mb-3">
+                {overlap.tools.map(t => (
+                  <span key={t.id} className="text-xs px-2.5 py-1 rounded-lg bg-amber-400/10 border border-amber-400/20 font-medium">
+                    {t.tools?.name} · ${Number(t.monthly_cost)}/mo
+                  </span>
+                ))}
+              </div>
+              <Link
+                href={`/compare?tools=${overlap.tools.map(t => t.tools?.slug).join(',')}`}
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline"
+              >
+                Compare side-by-side to decide <ArrowRight className="h-3 w-3" />
+              </Link>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Subscription list with inline insights */}
       {subs.length === 0 ? (
         <div className="glass-card rounded-xl p-12 text-center">
           <DollarSign className="h-10 w-10 text-muted-foreground/20 mx-auto mb-3" />
@@ -278,95 +433,78 @@ export function TrackerClient({ tools, autoAddSlug }: { tools: ToolOption[]; aut
         </div>
       ) : (
         <div className="space-y-2">
-          {subs.map(sub => (
-            <div key={sub.id} className="glass-card rounded-xl px-5 py-4 flex items-center gap-4">
-              <div className="h-10 w-10 rounded-lg bg-muted overflow-hidden flex items-center justify-center shrink-0">
-                {sub.tools?.logo_url ? (
-                  <img src={sub.tools.logo_url} alt="" className="w-10 h-10 object-contain" />
-                ) : (
-                  <span className="text-sm font-bold text-primary">{sub.tools?.name?.[0] || '?'}</span>
+          {subs.map(sub => {
+            const toolInsights = insights[sub.tool_id]
+            const isExpanded = expandedInsights.has(sub.tool_id)
+
+            return (
+              <div key={sub.id}>
+                <div className="glass-card rounded-xl px-5 py-4 flex items-center gap-4">
+                  <div className="h-10 w-10 rounded-lg bg-muted overflow-hidden flex items-center justify-center shrink-0">
+                    {sub.tools?.logo_url ? (
+                      <img src={sub.tools.logo_url} alt="" className="w-10 h-10 object-contain" />
+                    ) : (
+                      <span className="text-sm font-bold text-primary">{sub.tools?.name?.[0] || '?'}</span>
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <Link href={`/tools/${sub.tools?.slug || ''}`} className="font-bold text-sm hover:text-primary transition-colors">
+                      {sub.tools?.name || 'Unknown Tool'}
+                    </Link>
+                    <p className="text-xs text-muted-foreground">{sub.tools?.pricing_model || 'paid'}</p>
+                  </div>
+
+                  {/* Insight toggle */}
+                  {toolInsights && toolInsights.length > 0 && (
+                    <button
+                      onClick={() => toggleInsights(sub.tool_id)}
+                      className="flex items-center gap-1 text-[10px] font-semibold text-amber-600 dark:text-amber-400 hover:underline shrink-0"
+                    >
+                      <Lightbulb className="h-3 w-3" />
+                      {toolInsights.length} tip{toolInsights.length > 1 ? 's' : ''}
+                      {isExpanded ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                    </button>
+                  )}
+
+                  <p className="text-lg font-black shrink-0">
+                    {Number(sub.monthly_cost) === 0 ? 'Free' : `$${Number(sub.monthly_cost).toFixed(2)}`}
+                    {Number(sub.monthly_cost) > 0 && <span className="text-xs text-muted-foreground font-normal">/mo</span>}
+                  </p>
+                  <button onClick={() => removeSub(sub.id, sub.tool_id)} className="text-muted-foreground hover:text-destructive transition-colors shrink-0 p-1">
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+
+                {/* Inline insights panel */}
+                {toolInsights && isExpanded && (
+                  <div className="ml-14 mt-1 space-y-2 mb-2">
+                    {toolInsights.map((insight, i) => (
+                      <div
+                        key={i}
+                        className={`rounded-lg px-4 py-3 text-xs border ${
+                          insight.type === 'cheaper_alternative'
+                            ? 'border-emerald-400/20 bg-emerald-400/[0.04]'
+                            : insight.type === 'tier_check'
+                              ? 'border-amber-400/20 bg-amber-400/[0.04]'
+                              : 'border-blue-400/20 bg-blue-400/[0.04]'
+                        }`}
+                      >
+                        <p className="font-semibold mb-0.5">{insight.title}</p>
+                        <p className="text-muted-foreground">{insight.body}</p>
+                        {insight.action && (
+                          <Link href={insight.action.href} className="inline-flex items-center gap-1 text-primary font-semibold hover:underline mt-1.5">
+                            {insight.action.label} <ArrowRight className="h-3 w-3" />
+                          </Link>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 )}
               </div>
-              <div className="flex-1 min-w-0">
-                <Link href={`/tools/${sub.tools?.slug || ''}`} className="font-bold text-sm hover:text-primary transition-colors">
-                  {sub.tools?.name || 'Unknown Tool'}
-                </Link>
-                <p className="text-xs text-muted-foreground">{sub.tools?.pricing_model || 'paid'}</p>
-              </div>
-              <p className="text-lg font-black shrink-0">
-                {Number(sub.monthly_cost) === 0 ? 'Free' : `$${Number(sub.monthly_cost).toFixed(2)}`}
-                {Number(sub.monthly_cost) > 0 && <span className="text-xs text-muted-foreground font-normal">/mo</span>}
-              </p>
-              <button onClick={() => removeSub(sub.id)} className="text-muted-foreground hover:text-destructive transition-colors shrink-0 p-1">
-                <Trash2 className="h-4 w-4" />
-              </button>
-            </div>
-          ))}
+            )
+          })}
         </div>
       )}
-
-      {/* Overlap detection */}
-      {subs.length >= 2 && (() => {
-        // Group by use_case
-        const USE_CASE_NAMES: Record<string, string> = {
-          'content-creation': 'Content Creation',
-          coding: 'Coding & Development',
-          marketing: 'Marketing',
-          design: 'Design',
-          research: 'Research',
-          video: 'Video',
-          sales: 'Sales',
-          'customer-support': 'Customer Support',
-        }
-
-        const groups: Record<string, Subscription[]> = {}
-        for (const sub of subs) {
-          const uc = sub.tools?.use_case
-          if (!uc) continue
-          if (!groups[uc]) groups[uc] = []
-          groups[uc].push(sub)
-        }
-
-        const overlaps = Object.entries(groups)
-          .filter(([, items]) => items.length >= 2 && items.some(s => Number(s.monthly_cost) > 0))
-          .map(([useCase, items]) => ({
-            useCase,
-            label: USE_CASE_NAMES[useCase] || useCase,
-            tools: items,
-            totalCost: items.reduce((sum, s) => sum + Number(s.monthly_cost), 0),
-          }))
-
-        if (overlaps.length === 0) return null
-
-        return (
-          <div className="space-y-3">
-            <h3 className="text-sm font-bold flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4 text-amber-500" />
-              Potential Overlap Detected
-            </h3>
-            {overlaps.map(overlap => (
-              <div key={overlap.useCase} className="rounded-xl border border-amber-400/20 bg-amber-400/[0.03] p-4">
-                <p className="text-sm font-bold mb-1">
-                  {overlap.tools.length} {overlap.label} tools — ${overlap.totalCost}/mo
-                </p>
-                <p className="text-xs text-muted-foreground mb-2">
-                  Youre paying for {overlap.tools.map(t => t.tools?.name).join(', ')}. Do you need all of them?
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {overlap.tools.map(t => (
-                    <span key={t.id} className="text-xs px-2 py-1 rounded-lg bg-amber-400/10 border border-amber-400/20">
-                      {t.tools?.name} · ${Number(t.monthly_cost)}
-                    </span>
-                  ))}
-                </div>
-                <Link href={`/compare?tools=${overlap.tools.map(t => t.tools?.slug).join(',')}`} className="text-xs text-primary hover:underline mt-2 inline-block">
-                  Compare these tools side-by-side →
-                </Link>
-              </div>
-            ))}
-          </div>
-        )
-      })()}
     </div>
   )
 }
