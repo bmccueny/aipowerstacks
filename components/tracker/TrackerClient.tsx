@@ -560,7 +560,7 @@ export function TrackerClient({ tools, autoAddSlug, importTools }: { tools: Tool
       )}
 
       {/* Savings report — the whole point */}
-      {subs.length >= 2 && <SavingsReport />}
+      {subs.length >= 2 && <SavingsReport key={subs.map(s => s.id).join(',')} />}
     </div>
   )
 }
