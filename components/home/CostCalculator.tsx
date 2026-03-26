@@ -102,7 +102,6 @@ export function CostCalculator({ tools }: { tools: QuickTool[] }) {
       .then(r => r.json())
       .then(d => {
         const tierList = d.tiers || []
-        // Pick the cheapest paid tier, or free if none
         const paidTiers = tierList.filter((t: { monthly_price: number }) => t.monthly_price > 0)
         const defaultTier = paidTiers[0] || tierList[0]
         if (defaultTier) {
@@ -112,12 +111,12 @@ export function CostCalculator({ tools }: { tools: QuickTool[] }) {
             tier: defaultTier.tier_name,
           }])
         } else {
-          // No tiers found, default to $20
-          setAdded(prev => [...prev, { ...tool, price: 20, tier: 'Pro' }])
+          // No tiers found — open tier picker so user enters their price
+          selectTool(tool)
         }
       })
       .catch(() => {
-        setAdded(prev => [...prev, { ...tool, price: 20, tier: 'Pro' }])
+        selectTool(tool)
       })
   }
 
