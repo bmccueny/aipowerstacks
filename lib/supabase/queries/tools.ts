@@ -503,15 +503,139 @@ export async function getToolBySlug(slug: string): Promise<ToolWithTags | null> 
   return data as unknown as ToolWithTags
 }
 
-export async function getSiteStats(): Promise<{ toolCount: number; reviewCount: number }> {
+export async function getSiteStats(): Promise<{ toolCount: number; reviewCount: number; toolsWithPricing: number; trackedSpend: number }> {
   const supabase = await createClient()
-  const [toolsResult, reviewsResult] = await Promise.allSettled([
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const sb = supabase as any
+  const [toolsResult, reviewsResult, pricingResult, spendResult] = await Promise.allSettled([
     supabase.from('tools').select('*', { count: 'exact', head: true }).eq('status', 'published'),
     supabase.from('reviews').select('*', { count: 'exact', head: true }).eq('status', 'published'),
+    sb.from('tool_pricing_tiers').select('tool_id', { count: 'exact', head: true }),
+    sb.from('user_subscriptions').select('monthly_cost'),
   ])
   const toolCount = toolsResult.status === 'fulfilled' ? toolsResult.value.count ?? 0 : 0
   const reviewCount = reviewsResult.status === 'fulfilled' ? reviewsResult.value.count ?? 0 : 0
-  return { toolCount, reviewCount }
+  const toolsWithPricing = pricingResult.status === 'fulfilled' ? pricingResult.value.count ?? 0 : 0
+
+  let trackedSpend = 0
+  if (spendResult.status === 'fulfilled' && spendResult.value.data) {
+    trackedSpend = spendResult.value.data.reduce((sum: number, row: { monthly_cost: number }) => sum + Number(row.monthly_cost), 0)
+  }
+
+  return { toolCount, reviewCount, toolsWithPricing, trackedSpend }
+}
+
+/** Tools most frequently tracked in user subscriptions, with their avg price */
+export async function getMostTrackedTools(limit = 8) {
+  const supabase = await createClient()
+
+  // user_subscriptions isn't in generated types — cast to bypass
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: rawSubs } = await (supabase as any)
+    .from('user_subscriptions')
+    .select('tool_id, monthly_cost, tools:tool_id(name, slug, logo_url, pricing_model, use_case)')
+
+  const subs = rawSubs as { tool_id: string; monthly_cost: number; tools: Record<string, unknown> }[] | null
+
+  if (!subs || subs.length === 0) {
+    // Fallback: show tools with most pricing tiers (popular enough to have pricing data)
+    const { data: popular } = await supabase
+      .from('tools')
+      .select('id, name, slug, logo_url, pricing_model, use_case')
+      .eq('status', 'published')
+      .in('pricing_model', ['paid', 'freemium'])
+      .order('view_count', { ascending: false })
+      .limit(limit)
+
+    return (popular ?? []).map(t => ({
+      id: t.id,
+      name: t.name,
+      slug: t.slug,
+      logo_url: t.logo_url,
+      pricing_model: t.pricing_model,
+      use_case: t.use_case as string | null,
+      tracker_count: 0,
+      avg_cost: 0,
+    }))
+  }
+
+  // Aggregate by tool
+  const toolMap = new Map<string, { count: number; totalCost: number; tool: Record<string, unknown> }>()
+  for (const sub of subs) {
+    const existing = toolMap.get(sub.tool_id)
+    const tool = sub.tools as unknown as Record<string, unknown>
+    if (existing) {
+      existing.count++
+      existing.totalCost += Number(sub.monthly_cost)
+    } else {
+      toolMap.set(sub.tool_id, { count: 1, totalCost: Number(sub.monthly_cost), tool })
+    }
+  }
+
+  return Array.from(toolMap.entries())
+    .sort((a, b) => b[1].count - a[1].count)
+    .slice(0, limit)
+    .map(([id, { count, totalCost, tool }]) => ({
+      id,
+      name: tool.name as string,
+      slug: tool.slug as string,
+      logo_url: tool.logo_url as string | null,
+      pricing_model: tool.pricing_model as string,
+      use_case: (tool.use_case as string) || null,
+      tracker_count: count,
+      avg_cost: Math.round(totalCost / count),
+    }))
+}
+
+/** Find common overlap categories for the teaser */
+export async function getOverlapExamples() {
+  const supabase = await createClient()
+
+  const USE_CASE_LABELS: Record<string, string> = {
+    coding: 'Coding & Development',
+    'content-creation': 'Content Creation',
+    marketing: 'Marketing',
+    design: 'Design',
+    research: 'Research',
+    video: 'Video',
+    sales: 'Sales',
+  }
+
+  // Get paid tools grouped by use_case with their cheapest tier
+  const { data: tools } = await supabase
+    .from('tools')
+    .select('id, name, slug, logo_url, use_case, pricing_model')
+    .eq('status', 'published')
+    .in('pricing_model', ['paid', 'freemium'])
+    .not('use_case', 'is', null)
+
+  if (!tools || tools.length === 0) return []
+
+  // Group by use_case
+  const groups = new Map<string, typeof tools>()
+  for (const tool of tools) {
+    const uc = tool.use_case as string
+    if (!uc || !USE_CASE_LABELS[uc]) continue
+    const list = groups.get(uc) || []
+    list.push(tool)
+    groups.set(uc, list)
+  }
+
+  // Pick top 3 categories with most paid tools
+  return Array.from(groups.entries())
+    .filter(([, items]) => items.length >= 3)
+    .sort((a, b) => b[1].length - a[1].length)
+    .slice(0, 3)
+    .map(([useCase, items]) => ({
+      useCase,
+      label: USE_CASE_LABELS[useCase] || useCase,
+      toolCount: items.length,
+      examples: items.slice(0, 4).map(t => ({
+        name: t.name,
+        slug: t.slug,
+        logo_url: t.logo_url,
+      })),
+    }))
 }
 
 export async function getLatestTools(limit = 8): Promise<ToolCardData[]> {

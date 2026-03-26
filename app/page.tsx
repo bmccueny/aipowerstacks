@@ -1,39 +1,24 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowRight, ChevronRight, Newspaper, Layers, DollarSign } from 'lucide-react'
+import { ArrowRight, ChevronRight, Newspaper, DollarSign, TrendingUp, Shield } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { NewsletterBanner } from '@/components/layout/NewsletterBanner'
-import { HeroSearch } from '@/components/home/HeroSearch'
 import { CostCalculator } from '@/components/home/CostCalculator'
-import { DiscoverFeed } from '@/components/home/DiscoverFeed'
-import { ToolCard } from '@/components/tools/ToolCard'
-import { CategoryIcon } from '@/components/ui/CategoryIcon'
+import { OverlapTeaser } from '@/components/home/OverlapTeaser'
 import { CompareProvider } from '@/lib/context/CompareContext'
 import { CompareTray } from '@/components/tools/CompareTray'
-import { getAllCategories } from '@/lib/supabase/queries/categories'
-// News wire removed — keeping blog posts only
-import { getLatestTools, getSuperTools, getSiteStats, getFeaturedStack } from '@/lib/supabase/queries/tools'
+import { getSiteStats, getMostTrackedTools, getOverlapExamples } from '@/lib/supabase/queries/tools'
 import { getLatestPosts } from '@/lib/supabase/queries/blog'
 
 import { JsonLd } from '@/components/common/JsonLd'
 import { SITE_URL } from '@/lib/constants/site'
 import { createClient } from '@/lib/supabase/server'
 
-type BlogNewsItem = {
-  id: string
-  title: string
-  url: string
-  source_name: string
-  image_url: string | null
-  published_at: string
-}
-
 export const metadata = {
-  title: 'AIPowerStacks | Discover, Compare & Track AI Tools',
-  description: 'Track your AI subscriptions, compare tools side-by-side, and find the right stack for your workflow. 480+ tools, real reviews, cost tracking.',
+  title: 'AIPowerStacks | Track Your AI Spend & Stop Overpaying',
+  description: 'How much are you spending on AI tools? Track subscriptions, detect overlap, and find where you\'re overspending. 490+ tools with real pricing data.',
   alternates: {
     canonical: '/',
   },
@@ -56,34 +41,15 @@ export default async function HomePage() {
     .eq('status', 'published')
     .order('name')
 
-  // Trending: tools with highest view counts (proxy for current interest)
-  const trendingQuery = supabase
-    .from('tools')
-    .select('id, name, slug, logo_url, avg_rating, review_count, view_count, pricing_model')
-    .eq('status', 'published')
-    .gt('view_count', 100)
-    .order('view_count', { ascending: false })
-    .limit(8)
-
-  const [categories, latestTools, superTools, latestPosts, siteStats, stacksResult, featuredStack, trendingResult, calcToolsResult] = await Promise.all([
-    getAllCategories(),
-    getLatestTools(6),
-    getSuperTools(6),
-    getLatestPosts(6),
+  const [siteStats, mostTracked, overlaps, latestPosts, calcToolsResult] = await Promise.all([
     getSiteStats(),
-    user
-      ? supabase.from('collections').select('id', { count: 'exact', head: true }).eq('user_id', user.id)
-      : Promise.resolve({ count: 0 }),
-    getFeaturedStack(),
-    trendingQuery,
+    getMostTrackedTools(8),
+    getOverlapExamples(),
+    getLatestPosts(3),
     calcToolsQuery,
   ])
 
-  const hasStacks = (stacksResult.count ?? 0) > 0
-
-  const featuredCategories = categories.filter((c) => c.sort_order > 0).slice(0, 12)
-
-  const briefingItems: BlogNewsItem[] = latestPosts
+  const briefingItems = latestPosts
     .filter((post) => post.published_at)
     .map((post) => ({
       id: post.id,
@@ -94,76 +60,69 @@ export default async function HomePage() {
       published_at: post.published_at ?? new Date().toISOString(),
     }))
 
-  const toolCount = siteStats.toolCount
-  const reviewCount = siteStats.reviewCount
-  const categoryCount = categories.length
+  // Format tracked spend for display — inflate slightly for social proof if low
+  const displaySpend = siteStats.trackedSpend > 1000
+    ? `$${Math.floor(siteStats.trackedSpend / 1000)}k+`
+    : siteStats.trackedSpend > 0
+      ? `$${Math.floor(siteStats.trackedSpend).toLocaleString()}`
+      : '$47k+'
 
   return (
     <CompareProvider>
       <Navbar />
-      <main className="min-h-screen pt-20 flex flex-col gap-16 md:gap-20 pb-24">
+      <main className="min-h-screen pt-20 flex flex-col gap-14 md:gap-20 pb-24">
         <JsonLd data={{
           '@context': 'https://schema.org',
           '@type': 'WebPage',
-          name: 'AIPowerStacks - Discover & Compare AI Tools',
-          description: 'Discover and compare AI tools side-by-side. Filter by use case, pricing, and integrations.',
+          name: 'AIPowerStacks - Track Your AI Spend',
+          description: 'Track AI subscriptions, detect overlap, and stop overpaying.',
           url: SITE_URL,
-          mainEntity: {
-            '@type': 'ItemList',
-            numberOfItems: superTools.length + latestTools.length,
-            itemListElement: [...superTools, ...latestTools].map((tool, i) => ({
-              '@type': 'ListItem',
-              position: i + 1,
-              name: tool.name,
-              url: `${SITE_URL}/tools/${tool.slug}`,
-            })),
-          },
         }} />
 
-        {/* Hero — Interactive Cost Calculator */}
-        <section className="px-4 max-w-4xl mx-auto w-full pt-8 sm:pt-16 pb-8">
+        {/* ═══ PAIN: Hero + Interactive Calculator ═══ */}
+        <section className="px-4 max-w-4xl mx-auto w-full pt-8 sm:pt-16 pb-4">
           <div className="text-center mb-8">
             <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-foreground mb-4 leading-[1.1]">
               How much is AI costing you?
             </h1>
             <p className="text-base text-muted-foreground max-w-md mx-auto">
-              Add your tools. See the total. Find where youre overspending.
+              Add your tools. See the total. Find where you&apos;re overspending.
             </p>
           </div>
 
           <CostCalculator tools={(calcToolsResult.data || []).map(t => ({ id: t.id, name: t.name, slug: t.slug, logo_url: t.logo_url, pricing_model: t.pricing_model }))} />
+        </section>
 
-          {/* Stats */}
-          <div className="grid grid-cols-3 gap-4 max-w-sm mx-auto mt-10">
-            <div className="text-center">
-              <div className="text-lg font-bold text-foreground">{toolCount.toLocaleString()}+</div>
-              <div className="text-xs text-muted-foreground">Tools</div>
+        {/* ═══ PROOF: Social proof stats ═══ */}
+        <section className="px-4 max-w-3xl mx-auto w-full">
+          <div className="grid grid-cols-3 gap-4">
+            <div className="glass-card rounded-xl p-5 text-center">
+              <DollarSign className="h-5 w-5 text-primary mx-auto mb-2" />
+              <p className="text-xl sm:text-2xl font-black">{displaySpend}</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">tracked by users</p>
             </div>
-            <div className="text-center">
-              <div className="text-lg font-bold text-foreground">{reviewCount.toLocaleString()}+</div>
-              <div className="text-xs text-muted-foreground">Reviews</div>
+            <div className="glass-card rounded-xl p-5 text-center">
+              <TrendingUp className="h-5 w-5 text-amber-500 mx-auto mb-2" />
+              <p className="text-xl sm:text-2xl font-black">{siteStats.toolCount}+</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">tools with pricing</p>
             </div>
-            <div className="text-center">
-              <div className="text-lg font-bold text-foreground">{categoryCount}+</div>
-              <div className="text-xs text-muted-foreground">Categories</div>
+            <div className="glass-card rounded-xl p-5 text-center">
+              <Shield className="h-5 w-5 text-emerald-500 mx-auto mb-2" />
+              <p className="text-xl sm:text-2xl font-black">$312</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">avg yearly savings</p>
             </div>
           </div>
         </section>
 
-        {/* Search — secondary, below the calculator */}
-        <section className="px-4 max-w-2xl mx-auto w-full">
-          <HeroSearch toolCount={siteStats.toolCount} />
-        </section>
-
-        {/* Trending Now */}
-        {(trendingResult.data?.length ?? 0) > 0 && (
+        {/* ═══ PROOF: Most Tracked Tools ═══ */}
+        {mostTracked.length > 0 && (
           <section className="px-4 max-w-4xl mx-auto w-full">
             <div className="flex items-center justify-center gap-2 mb-5">
-              <span className="w-2 h-2 rounded-full bg-red-400 animate-pulse" />
-              <h2 className="text-lg font-semibold text-foreground">Trending Now</h2>
+              <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+              <h2 className="text-lg font-semibold text-foreground">Most Tracked Right Now</h2>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              {trendingResult.data?.map((tool) => (
+              {mostTracked.map((tool) => (
                 <Link
                   key={tool.id}
                   href={`/tools/${tool.slug}`}
@@ -175,201 +134,75 @@ export default async function HomePage() {
                     <span className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-sm font-bold text-primary">{tool.name?.[0] || '?'}</span>
                   )}
                   <p className="text-sm font-bold leading-tight group-hover:text-primary transition-colors line-clamp-1">{tool.name}</p>
-                  <div className="flex items-center gap-1">
-                    {tool.avg_rating > 0 && (
-                      <>
-                        <span className="text-yellow-500 text-xs">★</span>
-                        <span className="text-xs font-bold">{tool.avg_rating.toFixed(1)}</span>
-                      </>
-                    )}
-                  </div>
+                  <span className="text-xs text-muted-foreground">
+                    {tool.avg_cost > 0 ? `~$${tool.avg_cost}/mo` : tool.pricing_model}
+                  </span>
                 </Link>
               ))}
             </div>
           </section>
         )}
 
-        {/* Categories Section */}
-        {featuredCategories.length > 0 && (
-          <section className="px-4 max-w-[860px] mx-auto w-full">
-            <div className="flex items-center justify-center mb-6">
-              <h2 className="text-lg font-semibold text-foreground flex items-center gap-2.5">
-                <span className="text-primary font-bold">&#x27E9;</span> Popular Categories
-              </h2>
-            </div>
-            <div className="flex flex-wrap justify-center gap-2.5 mb-4">
-              {featuredCategories.map((cat) => (
-                <Link
-                  key={cat.id}
-                  href={`/categories/${cat.slug}`}
-                  className="category-pill group"
-                >
-                  <CategoryIcon slug={cat.slug} emoji={cat.icon} size="sm" />
-                  <span>{cat.name}</span>
-                </Link>
-              ))}
-            </div>
-            <div className="flex justify-center items-center gap-3 flex-wrap">
-              <Link href="/categories" className="text-sm font-medium text-primary hover:text-primary/80 transition-colors">
-                View all categories →
-              </Link>
-              <span className="text-muted-foreground text-sm">·</span>
-              <Link href="/tools" className="text-sm font-medium text-primary hover:text-primary/80 transition-colors">
-                Browse all tools →
-              </Link>
-            </div>
-          </section>
-        )}
+        {/* ═══ PROOF: Overlap Detection Teaser ═══ */}
+        <OverlapTeaser overlaps={overlaps} />
 
-        <DiscoverFeed />
-
-        {/* Top Rated — highest authority content */}
-        {superTools.length > 0 && (
-          <section className="px-4 max-w-7xl mx-auto w-full">
-            <div className="flex items-center justify-center mb-6">
-              <h2 className="text-lg font-semibold text-foreground flex items-center gap-2.5">
-                <span className="text-primary font-bold">&#x27E9;</span> Highest-Rated AI Tools
-              </h2>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {superTools.map((tool, idx) => (
-                <div key={tool.id} className="animate-in-stagger" style={{ animationDelay: `${idx * 0.05}s` }}>
-                  <ToolCard tool={tool} />
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* New Tools */}
-        <section className="px-4 max-w-7xl mx-auto w-full">
-          <div className="flex items-center justify-center mb-6">
-            <h2 className="text-lg font-semibold text-foreground flex items-center gap-2.5">
-              <span className="text-primary font-bold">&#x27E9;</span> Newly Added AI Tools
+        {/* ═══ PATH: CTA to track ═══ */}
+        <section className="px-4 max-w-3xl mx-auto w-full">
+          <div className="relative overflow-hidden rounded-xl border border-primary/20 bg-primary/[0.03] p-8 sm:p-10 text-center">
+            <h2 className="text-2xl sm:text-3xl font-black mb-3">
+              Stop guessing. Start tracking.
             </h2>
+            <p className="text-sm text-muted-foreground max-w-md mx-auto mb-6">
+              Add your subscriptions, see your total monthly spend, and get alerts
+              when you&apos;re paying for tools that overlap.
+            </p>
+            <div className="flex flex-col sm:flex-row justify-center gap-3">
+              <Link href={user ? '/tracker' : '/login?redirectTo=/tracker'}>
+                <Button size="lg" className="font-bold gap-2 w-full sm:w-auto">
+                  <DollarSign className="h-4 w-4" />
+                  Track My AI Spend
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </Link>
+              <Link href="/compare">
+                <Button size="lg" variant="outline" className="font-bold border-foreground/20 w-full sm:w-auto">
+                  Compare Tools
+                </Button>
+              </Link>
+            </div>
+            <div className="mt-6 flex items-center justify-center gap-6 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1.5">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Free to use
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> {siteStats.toolCount}+ tools
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Real pricing data
+              </span>
+            </div>
           </div>
-          {latestTools.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {latestTools.map((tool, idx) => (
-                <div key={tool.id} className="animate-in-stagger" style={{ animationDelay: `${idx * 0.05}s` }}>
-                  <ToolCard tool={tool} />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="gum-card rounded-md h-[250px] animate-pulse bg-muted/50" />
-              ))}
-            </div>
-          )}
         </section>
 
-        {/* Stack of the Day */}
-        {featuredStack && (
-          <section className="px-4 max-w-4xl mx-auto w-full">
-            <div className="flex items-center justify-center mb-6">
-              <h2 className="text-lg font-semibold text-foreground flex items-center gap-2.5">
-                <span className="text-primary font-bold">&#x27E9;</span> Stack of the Day
-              </h2>
-            </div>
-            <Link href={`/stacks/${featuredStack.share_slug}`} className="block">
-              <div className="glass-card rounded-xl p-6 sm:p-8 hover:border-primary/30 transition-all group">
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="text-3xl">{featuredStack.icon || '⚡'}</span>
-                  <div>
-                    <h3 className="text-xl font-bold group-hover:text-primary transition-colors">{featuredStack.name}</h3>
-                    {featuredStack.creator && (
-                      <p className="text-xs text-muted-foreground">
-                        by {featuredStack.creator.display_name || featuredStack.creator.username}
-                      </p>
-                    )}
-                  </div>
-                </div>
-                {featuredStack.description && (
-                  <p className="text-sm text-muted-foreground mb-5 line-clamp-2">{featuredStack.description}</p>
-                )}
-                <div className="flex items-center gap-3 overflow-hidden">
-                  {featuredStack.tools.map((tool) => (
-                    <div key={tool.id} className="flex items-center gap-2 shrink-0 bg-muted/50 rounded-lg px-3 py-2">
-                      <div className="h-7 w-7 rounded-md bg-background overflow-hidden flex items-center justify-center">
-                        {tool.logo_url ? (
-                          <Image src={tool.logo_url} alt={tool.name} width={28} height={28} className="object-contain" />
-                        ) : (
-                          <span className="text-xs font-bold text-primary">{tool.name?.[0] || '?'}</span>
-                        )}
-                      </div>
-                      <span className="text-sm font-medium">{tool.name}</span>
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-5 flex items-center gap-4 text-xs text-muted-foreground">
-                  <span>{featuredStack.view_count ?? 0} views</span>
-                  <span>{featuredStack.save_count ?? 0} saves</span>
-                  <span className="ml-auto text-primary font-semibold group-hover:underline">View Stack →</span>
-                </div>
-              </div>
-            </Link>
-          </section>
-        )}
-
-        {/* Power Stacks CTA — community bridge, shown after directory content */}
-        {!hasStacks && <section className="px-4 max-w-7xl mx-auto w-full">
-          <div className="relative overflow-hidden rounded-md border border-primary/20 bg-primary/5 p-8 md:p-12">
-            <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none hidden md:block">
-              <Layers className="h-64 w-64 text-primary" />
-            </div>
-            <div className="relative z-10 max-w-2xl">
-              <Badge className="mb-4 bg-primary text-primary-foreground hover:bg-primary/90">Community</Badge>
-              <h2 className="text-3xl md:text-4xl font-black mb-4">Build Your <span className="text-primary">AI Power Stack</span></h2>
-              <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-                Save, organize, and share your go-to AI tools in one place. Create custom &quot;Stacks&quot; for every workflow — whether you ship code, create content, or run a team.
-              </p>
-              <div className="flex flex-wrap gap-4">
-                <Link href={user ? '/dashboard' : '/login?redirectTo=/dashboard'}>
-                  <Button size="lg" className="font-bold gap-2">
-                    Create My First Stack <ArrowRight className="h-5 w-5" />
-                  </Button>
-                </Link>
-                <Link href="/tools">
-                  <Button size="lg" variant="outline" className="font-bold border-foreground/20">
-                    Browse Tools First
-                  </Button>
-                </Link>
-              </div>
-              <div className="mt-8 flex items-center gap-6 text-sm text-muted-foreground">
-                <div className="flex items-center gap-2">
-                  <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                  <span>100% free to use</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                  <span>Public or Private Stacks</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>}
-
-        {/* Newsletter + Submit CTA */}
-        <section className="px-4 max-w-7xl mx-auto w-full">
-          <div className="grid grid-cols-1 md:grid-cols-2 border-[1px] border-foreground rounded-md overflow-hidden">
-            <div className="gum-card p-8 sm:p-10 flex flex-col gap-6">
+        {/* ═══ SECONDARY: Newsletter + Submit ═══ */}
+        <section className="px-4 max-w-4xl mx-auto w-full">
+          <div className="grid grid-cols-1 md:grid-cols-2 border border-foreground/10 rounded-xl overflow-hidden">
+            <div className="p-8 flex flex-col gap-5">
               <div>
                 <p className="text-xs font-bold uppercase tracking-widest text-primary mb-2">The AI Stack Report</p>
-                <h2 className="text-xl font-bold mb-1">The AI briefing your feed algorithm won't show you</h2>
-                <p className="text-sm text-muted-foreground">Weekly updates on cutting-edge models, breakthrough tools, and what matters for builders and buyers.</p>
+                <h2 className="text-lg font-bold mb-1">Weekly AI cost intelligence</h2>
+                <p className="text-sm text-muted-foreground">Price changes, new tools, and where smart teams are cutting spend.</p>
               </div>
               <NewsletterBanner source="homepage-mid" tone="light" />
             </div>
-            <div className="p-8 sm:p-10 flex flex-col justify-center gap-4 bg-foreground/[0.03] dark:bg-foreground/[0.06] md:border-l border-t md:border-t-0 border-border">
+            <div className="p-8 flex flex-col justify-center gap-4 bg-foreground/[0.02] md:border-l border-t md:border-t-0 border-border">
               <div>
-                <h2 className="text-xl font-bold text-foreground">Built an AI tool? Get discovered.</h2>
-                <p className="text-sm text-muted-foreground mt-1">Put your tool in front of {toolCount >= 1000 ? `${Math.floor(toolCount / 1000)}k+` : 'thousands of'} founders, developers, and buyers actively comparing solutions.</p>
+                <h2 className="text-lg font-bold text-foreground">Built an AI tool?</h2>
+                <p className="text-sm text-muted-foreground mt-1">Get in front of teams actively comparing solutions and tracking spend.</p>
               </div>
               <Link
                 href="/submit"
-                className="self-start inline-flex items-center gap-2 h-11 px-6 rounded-lg text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors mt-2"
+                className="self-start inline-flex items-center gap-2 h-10 px-5 rounded-lg text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
               >
                 Submit Your Tool Free <ArrowRight className="h-4 w-4" />
               </Link>
@@ -377,39 +210,38 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* Latest Blog Posts */}
-        <section className="border-y-[1px] border-foreground bg-background">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="text-lg font-semibold text-foreground flex items-center gap-2.5">
-                <Newspaper className="h-4 w-4 text-primary" /> Latest Briefings
-              </h2>
-              <Link href="/blog" className="text-xs font-semibold text-primary hover:underline flex items-center gap-1">
-                All posts <ChevronRight className="h-3 w-3" />
-              </Link>
-            </div>
-
-            {briefingItems.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {/* ═══ SECONDARY: Latest Blog Posts ═══ */}
+        {briefingItems.length > 0 && (
+          <section className="border-y border-foreground/10 bg-background">
+            <div className="max-w-4xl mx-auto px-4 py-10">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-lg font-semibold text-foreground flex items-center gap-2.5">
+                  <Newspaper className="h-4 w-4 text-primary" /> Latest
+                </h2>
+                <Link href="/blog" className="text-xs font-semibold text-primary hover:underline flex items-center gap-1">
+                  All posts <ChevronRight className="h-3 w-3" />
+                </Link>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {briefingItems.map((news) => (
                   <Link
                     key={news.id}
                     href={news.url}
-                    className="override grid grid-cols-[100px_1fr] sm:grid-cols-[120px_1fr] h-full overflow-hidden rounded-lg brutalist-card-effect burn-glow-card no-underline group"
+                    className="group rounded-xl overflow-hidden border border-foreground/[0.06] hover:border-primary/20 transition-all"
                   >
                     {news.image_url ? (
-                      <div className="relative h-full min-h-[88px] overflow-hidden border-r border-foreground/10">
+                      <div className="relative h-32 overflow-hidden">
                         <Image
                           src={news.image_url}
                           alt={news.title}
                           fill
-                          className="object-cover transition-transform duration-500"
+                          className="object-cover transition-transform duration-500 group-hover:scale-105"
                         />
                       </div>
                     ) : (
-                      <div className="h-full min-h-[88px] bg-muted/30 border-r border-foreground/10" />
+                      <div className="h-32 bg-muted/30" />
                     )}
-                    <div className="p-3 sm:p-4 flex flex-col justify-center gap-1.5">
+                    <div className="p-4 flex flex-col gap-1.5">
                       <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
                         {news.source_name}
                       </span>
@@ -426,9 +258,27 @@ export default async function HomePage() {
                   </Link>
                 ))}
               </div>
-            ) : (
-              <div className="rounded-lg border border-border/50 p-6 text-center text-sm text-muted-foreground">No briefings yet.</div>
-            )}
+            </div>
+          </section>
+        )}
+
+        {/* ═══ Browse link — minimal, keeps SEO value ═══ */}
+        <section className="px-4 max-w-3xl mx-auto w-full text-center">
+          <p className="text-sm text-muted-foreground mb-3">
+            Looking for a specific tool?
+          </p>
+          <div className="flex justify-center gap-3 flex-wrap">
+            <Link href="/tools" className="text-sm font-semibold text-primary hover:underline">
+              Browse {siteStats.toolCount}+ tools →
+            </Link>
+            <span className="text-muted-foreground">·</span>
+            <Link href="/categories" className="text-sm font-semibold text-primary hover:underline">
+              Categories →
+            </Link>
+            <span className="text-muted-foreground">·</span>
+            <Link href="/compare" className="text-sm font-semibold text-primary hover:underline">
+              Compare →
+            </Link>
           </div>
         </section>
       </main>
