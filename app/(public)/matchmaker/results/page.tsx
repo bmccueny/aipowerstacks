@@ -131,9 +131,9 @@ export default async function MatchmakerResultsPage({ searchParams }: Props) {
           </div>
 
           <div className="text-center space-y-4">
-            <Link href="/matchmaker">
+            <Link href="/tracker">
               <Button size="lg" className="gap-2 font-bold">
-                <Sparkles className="h-4 w-4" /> Build Your Own Stack
+                <Sparkles className="h-4 w-4" /> Track These in My Budget
               </Button>
             </Link>
             <p className="text-xs text-muted-foreground">

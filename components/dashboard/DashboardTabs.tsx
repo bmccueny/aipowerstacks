@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Layers, Bookmark, Star, Send, Globe, Lock, Eye } from 'lucide-react'
+import { Layers, Bookmark, Star, Send, Globe, Lock, Eye, DollarSign, ArrowRight } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { DeleteStackButton } from '@/components/tools/DeleteStackButton'
 import { CreateStackDialog } from '@/components/stacks/CreateStackDialog'
@@ -59,6 +59,20 @@ export function DashboardTabs({
 
   return (
     <div>
+      {/* Tracker upsell */}
+      <Link href="/tracker" className="block mb-6 rounded-2xl border border-primary/15 bg-gradient-to-r from-primary/[0.04] to-transparent p-4 hover:border-primary/25 transition-all group">
+        <div className="flex items-center gap-3">
+          <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+            <DollarSign className="h-5 w-5 text-primary" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-bold group-hover:text-primary transition-colors">AI Subscription Tracker</p>
+            <p className="text-xs text-muted-foreground">Track your spend, find overlap, get a savings report</p>
+          </div>
+          <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
+        </div>
+      </Link>
+
       {/* Tab bar */}
       <div ref={glassRef} className="liquid-glass glass-card rounded-xl p-1 grid grid-cols-2 sm:grid-cols-4 gap-1 mb-8 border border-white/15">
         {tabs.map(({ id, label, icon: Icon, count }) => (

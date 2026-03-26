@@ -117,6 +117,15 @@ export default async function StacksPage({
   return (
     <div className="page-shell">
 
+      {/* Tracker upsell */}
+      <div className="mb-8 rounded-2xl border border-primary/15 bg-gradient-to-b from-primary/[0.04] to-transparent p-5 text-center max-w-2xl mx-auto">
+        <p className="text-sm font-bold mb-1">Looking to track your AI spend?</p>
+        <p className="text-xs text-muted-foreground mb-3">The <Link href="/tracker" className="text-primary font-semibold hover:underline">AI Subscription Tracker</Link> shows your total cost, flags overlap, and tells you what to cut.</p>
+        <Link href="/tracker" className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline">
+          Go to Tracker →
+        </Link>
+      </div>
+
       <div className="page-hero text-center">
         <div className="inline-flex items-center gap-2 gum-pill px-3 py-1 text-xs font-semibold uppercase tracking-wide mb-4">
           <Layers className="h-3.5 w-3.5" />
