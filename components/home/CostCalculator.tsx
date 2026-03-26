@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
-import { X, Search, ArrowRight, Check, Loader2 } from 'lucide-react'
+import { X, Search, ArrowRight, Check, Loader2, Terminal, Pen, Megaphone, FlaskConical } from 'lucide-react'
 
 type QuickTool = {
   id: string
@@ -24,10 +24,10 @@ const POPULAR_SLUGS = [
 
 // Preset stacks
 const PRESETS = [
-  { label: 'Developer', emoji: '👨‍💻', slugs: ['chatgpt', 'claude-code', 'cursor-editor', 'github-copilot'] },
-  { label: 'Creator', emoji: '🎨', slugs: ['chatgpt', 'midjourney', 'canva', 'descript-ai'] },
-  { label: 'Marketer', emoji: '📈', slugs: ['chatgpt', 'jasper-brand-voice', 'copy-ai', 'semrush-one'] },
-  { label: 'Researcher', emoji: '🔬', slugs: ['chatgpt', 'perplexity-ai', 'gemini', 'notion-ai'] },
+  { label: 'Developer', icon: Terminal, color: 'text-emerald-500', slugs: ['chatgpt', 'claude-code', 'cursor-editor', 'github-copilot'] },
+  { label: 'Creator', icon: Pen, color: 'text-violet-500', slugs: ['chatgpt', 'midjourney', 'canva', 'descript-ai'] },
+  { label: 'Marketer', icon: Megaphone, color: 'text-amber-500', slugs: ['chatgpt', 'jasper-brand-voice', 'copy-ai', 'semrush-one'] },
+  { label: 'Researcher', icon: FlaskConical, color: 'text-blue-500', slugs: ['chatgpt', 'perplexity-ai', 'gemini', 'notion-ai'] },
 ]
 
 const SPEND_COMPARISONS = [
@@ -172,17 +172,20 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
       {added.length === 0 && (
         <div className="flex flex-wrap justify-center gap-2 mb-5">
           <span className="text-xs text-muted-foreground mr-1 self-center">I&apos;m a:</span>
-          {PRESETS.map(preset => (
-            <button
-              key={preset.label}
-              type="button"
-              onClick={() => applyPreset(preset)}
-              className="px-3 py-1.5 rounded-full border border-foreground/10 hover:border-primary/40 hover:bg-primary/5 text-sm transition-all cursor-pointer flex items-center gap-1.5"
-            >
-              <span>{preset.emoji}</span>
-              <span className="font-semibold">{preset.label}</span>
-            </button>
-          ))}
+          {PRESETS.map(preset => {
+            const Icon = preset.icon
+            return (
+              <button
+                key={preset.label}
+                type="button"
+                onClick={() => applyPreset(preset)}
+                className="px-3.5 py-2 rounded-full border border-foreground/10 hover:border-primary/40 hover:bg-primary/5 text-sm transition-all cursor-pointer flex items-center gap-2 group"
+              >
+                <Icon className={`h-3.5 w-3.5 ${preset.color} group-hover:scale-110 transition-transform`} />
+                <span className="font-semibold">{preset.label}</span>
+              </button>
+            )
+          })}
         </div>
       )}
 
