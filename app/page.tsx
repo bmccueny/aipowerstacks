@@ -7,6 +7,7 @@ import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { NewsletterBanner } from '@/components/layout/NewsletterBanner'
 import { HeroSearch } from '@/components/home/HeroSearch'
+import { CostCalculator } from '@/components/home/CostCalculator'
 import { DiscoverFeed } from '@/components/home/DiscoverFeed'
 import { ToolCard } from '@/components/tools/ToolCard'
 import { CategoryIcon } from '@/components/ui/CategoryIcon'
@@ -111,64 +112,39 @@ export default async function HomePage() {
           },
         }} />
 
-        {/* Hero Section */}
+        {/* Hero — Interactive Cost Calculator */}
         <section className="px-4 max-w-4xl mx-auto w-full pt-8 sm:pt-16 pb-8">
-          <div className="text-center mb-10">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/8 border border-primary/15 text-primary text-xs font-semibold uppercase tracking-widest mb-6">
-              {toolCount.toLocaleString()}+ Tools Tracked
-            </div>
-            <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-foreground mb-5 leading-[1.1]">
-              How much are you<br className="hidden md:block" /> spending on AI?
+          <div className="text-center mb-8">
+            <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-foreground mb-4 leading-[1.1]">
+              How much is AI costing you?
             </h1>
-            <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
-              Track your AI subscriptions, compare tools side-by-side, and build the perfect stack. Stop paying for tools that overlap.
+            <p className="text-base text-muted-foreground max-w-md mx-auto">
+              Tap the tools you pay for. See your total. Track it over time.
             </p>
           </div>
 
-          {/* Search Bar */}
-          <div className="max-w-2xl mx-auto mb-8">
-            <HeroSearch toolCount={siteStats.toolCount} />
-          </div>
+          <CostCalculator />
 
-          {/* Quick Actions — lead with tracker */}
-          <div className="flex flex-wrap justify-center gap-3 mb-12">
-            <Link
-              href="/tracker"
-              className="px-5 py-2.5 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-primary/90 transition-colors flex items-center gap-2"
-            >
-              <DollarSign className="h-3.5 w-3.5" />
-              Track My AI Spend
-            </Link>
-            <Link
-              href="/tools"
-              className="px-5 py-2.5 rounded-lg text-sm font-semibold border border-border text-foreground hover:bg-muted transition-colors flex items-center gap-2"
-            >
-              Browse Tools
-              <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
-            <Link
-              href="/compare"
-              className="px-5 py-2.5 rounded-lg text-sm font-semibold border border-border text-foreground hover:bg-muted transition-colors"
-            >
-              Compare Side-by-Side
-            </Link>
+          {/* Stats */}
+          <div className="grid grid-cols-3 gap-4 max-w-sm mx-auto mt-10">
+            <div className="text-center">
+              <div className="text-lg font-bold text-foreground">{toolCount.toLocaleString()}+</div>
+              <div className="text-xs text-muted-foreground">Tools</div>
+            </div>
+            <div className="text-center">
+              <div className="text-lg font-bold text-foreground">{reviewCount.toLocaleString()}+</div>
+              <div className="text-xs text-muted-foreground">Reviews</div>
+            </div>
+            <div className="text-center">
+              <div className="text-lg font-bold text-foreground">{categoryCount}+</div>
+              <div className="text-xs text-muted-foreground">Categories</div>
+            </div>
           </div>
+        </section>
 
-          {/* Value props */}
-          <div className="grid grid-cols-3 gap-4 max-w-lg mx-auto">
-            <div className="text-center">
-              <div className="text-lg sm:text-xl font-bold text-foreground">{toolCount.toLocaleString()}+</div>
-              <div className="text-xs text-muted-foreground mt-0.5">Tools</div>
-            </div>
-            <div className="text-center">
-              <div className="text-lg sm:text-xl font-bold text-foreground">{reviewCount.toLocaleString()}+</div>
-              <div className="text-xs text-muted-foreground mt-0.5">Reviews</div>
-            </div>
-            <div className="text-center">
-              <div className="text-lg sm:text-xl font-bold text-foreground">{categoryCount}+</div>
-              <div className="text-xs text-muted-foreground mt-0.5">Categories</div>
-            </div>
-          </div>
+        {/* Search — secondary, below the calculator */}
+        <section className="px-4 max-w-2xl mx-auto w-full">
+          <HeroSearch toolCount={siteStats.toolCount} />
         </section>
 
         {/* Trending Now */}
