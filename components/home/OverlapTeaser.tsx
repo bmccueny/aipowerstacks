@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { AlertTriangle, ArrowRight } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 
 type OverlapCategory = {
   useCase: string
@@ -13,49 +13,51 @@ export function OverlapTeaser({ overlaps }: { overlaps: OverlapCategory[] }) {
 
   return (
     <section className="px-4 max-w-3xl mx-auto w-full">
-      <div className="text-center mb-6">
-        <h2 className="text-lg font-bold text-foreground flex items-center justify-center gap-2">
-          <AlertTriangle className="h-4 w-4 text-amber-500" />
-          Where people overspend
+      <div className="text-center mb-8">
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber-500 mb-3">Overlap Alert</p>
+        <h2 className="text-xl sm:text-2xl font-black text-foreground">
+          Are you paying twice for the same thing?
         </h2>
-        <p className="text-sm text-muted-foreground mt-1">
-          Paying for multiple tools that do the same thing? You&apos;re not alone.
-        </p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {overlaps.map((overlap) => (
           <div
             key={overlap.useCase}
-            className="rounded-xl border border-amber-400/20 bg-amber-400/[0.03] p-5 text-center"
+            className="rounded-2xl border border-foreground/[0.06] p-5"
           >
-            <p className="text-2xl font-black text-foreground">{overlap.toolCount}</p>
-            <p className="text-sm font-semibold mt-1">{overlap.label} tools</p>
-            <p className="text-xs text-muted-foreground mt-2">
-              compete for your budget
-            </p>
-            <div className="flex justify-center gap-1 mt-3">
-              {overlap.examples.map((tool) => (
-                <div key={tool.slug} className="h-7 w-7 rounded-md bg-background border border-border overflow-hidden flex items-center justify-center">
+            <div className="flex justify-center gap-[-4px] mb-3">
+              {overlap.examples.slice(0, 4).map((tool, i) => (
+                <div
+                  key={tool.slug}
+                  className="h-9 w-9 rounded-xl bg-background border border-foreground/10 overflow-hidden flex items-center justify-center"
+                  style={{ marginLeft: i > 0 ? '-6px' : 0, zIndex: 4 - i }}
+                >
                   {tool.logo_url ? (
-                    <img src={tool.logo_url} alt="" className="w-6 h-6 object-contain" />
+                    <img src={tool.logo_url} alt="" className="w-7 h-7 object-contain" />
                   ) : (
                     <span className="text-[9px] font-bold text-primary">{tool.name[0]}</span>
                   )}
                 </div>
               ))}
             </div>
-            <Link
-              href={`/tools?use_case=${overlap.useCase}`}
-              className="text-xs text-primary hover:underline mt-3 inline-block"
-            >
-              Compare them →
-            </Link>
+            <p className="text-center font-bold text-sm mb-0.5">{overlap.label}</p>
+            <p className="text-center text-xs text-muted-foreground">
+              {overlap.toolCount} tools competing for your budget
+            </p>
+            <div className="text-center mt-3">
+              <Link
+                href={`/tools?use_case=${overlap.useCase}`}
+                className="text-xs font-semibold text-primary hover:underline"
+              >
+                Compare them →
+              </Link>
+            </div>
           </div>
         ))}
       </div>
 
-      <div className="text-center mt-6">
+      <div className="text-center mt-8">
         <Link
           href="/tracker"
           className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
