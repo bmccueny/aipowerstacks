@@ -69,7 +69,16 @@ export default async function ToolDetailPage({ params }: Props) {
 
   if (!tool) notFound()
 
-  const [reviews, alternatives, youMightLike] = await Promise.all([
+  // Find blog posts that mention this tool (by link or name)
+  const blogQuery = supabase
+    .from('blog_posts')
+    .select('title, slug, cover_image_url, published_at')
+    .eq('status', 'published')
+    .or(`content.ilike.%/tools/${tool.slug}%,content.ilike.%${tool.name}%`)
+    .order('published_at', { ascending: false })
+    .limit(3)
+
+  const [reviews, alternatives, youMightLike, featuredInResult] = await Promise.all([
     getReviewsByTool(tool.id, user?.id),
     getRelatedToolsByCategory({
       categoryId: tool.category_id,
@@ -77,7 +86,9 @@ export default async function ToolDetailPage({ params }: Props) {
       limit: 3,
     }),
     getPopularToolsExcluding([tool.id], 4),
+    blogQuery,
   ])
+  const featuredInPosts = featuredInResult.data ?? []
 
   const screenshots = Array.isArray(tool.screenshot_urls) ? tool.screenshot_urls as string[] : []
   const pricingColor = PRICING_BADGE_COLORS[tool.pricing_model] ?? PRICING_BADGE_COLORS.unknown
@@ -339,6 +350,27 @@ export default async function ToolDetailPage({ params }: Props) {
                         </Link>
                       </div>
                     </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {featuredInPosts.length > 0 && (
+              <div className="glass-card rounded-md p-6">
+                <h2 className="text-lg font-semibold mb-3">Featured in Articles</h2>
+                <div className="space-y-3">
+                  {featuredInPosts.map((post) => (
+                    <Link key={post.slug} href={`/blog/${post.slug}`} className="flex items-center gap-3 group">
+                      {post.cover_image_url && (
+                        <img src={post.cover_image_url} alt="" className="w-16 h-10 rounded-lg object-cover shrink-0" />
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-bold leading-tight group-hover:text-primary transition-colors line-clamp-2">{post.title}</p>
+                        {post.published_at && (
+                          <p className="text-xs text-muted-foreground mt-0.5">{new Date(post.published_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
+                        )}
+                      </div>
+                    </Link>
                   ))}
                 </div>
               </div>

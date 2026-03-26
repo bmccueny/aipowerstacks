@@ -48,7 +48,16 @@ export default async function HomePage() {
     // Corrupted auth cookie
   }
 
-  const [categories, latestTools, superTools, latestPosts, siteStats, stacksResult, featuredStack] = await Promise.all([
+  // Trending: tools with highest view counts (proxy for current interest)
+  const trendingQuery = supabase
+    .from('tools')
+    .select('id, name, slug, logo_url, avg_rating, review_count, view_count, pricing_model')
+    .eq('status', 'published')
+    .gt('view_count', 100)
+    .order('view_count', { ascending: false })
+    .limit(8)
+
+  const [categories, latestTools, superTools, latestPosts, siteStats, stacksResult, featuredStack, trendingResult] = await Promise.all([
     getAllCategories(),
     getLatestTools(6),
     getSuperTools(6),
@@ -58,6 +67,7 @@ export default async function HomePage() {
       ? supabase.from('collections').select('id', { count: 'exact', head: true }).eq('user_id', user.id)
       : Promise.resolve({ count: 0 }),
     getFeaturedStack(),
+    trendingQuery,
   ])
 
   const hasStacks = (stacksResult.count ?? 0) > 0
@@ -160,6 +170,40 @@ export default async function HomePage() {
             </div>
           </div>
         </section>
+
+        {/* Trending Now */}
+        {(trendingResult.data?.length ?? 0) > 0 && (
+          <section className="px-4 max-w-4xl mx-auto w-full">
+            <div className="flex items-center justify-center gap-2 mb-5">
+              <span className="w-2 h-2 rounded-full bg-red-400 animate-pulse" />
+              <h2 className="text-lg font-semibold text-foreground">Trending Now</h2>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {trendingResult.data?.map((tool) => (
+                <Link
+                  key={tool.id}
+                  href={`/tools/${tool.slug}`}
+                  className="glass-card rounded-xl p-4 flex flex-col items-center gap-2 text-center hover:border-primary/20 transition-all group"
+                >
+                  {tool.logo_url ? (
+                    <img src={tool.logo_url} alt="" className="w-10 h-10 rounded-lg object-contain" />
+                  ) : (
+                    <span className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-sm font-bold text-primary">{tool.name?.[0] || '?'}</span>
+                  )}
+                  <p className="text-sm font-bold leading-tight group-hover:text-primary transition-colors line-clamp-1">{tool.name}</p>
+                  <div className="flex items-center gap-1">
+                    {tool.avg_rating > 0 && (
+                      <>
+                        <span className="text-yellow-500 text-xs">★</span>
+                        <span className="text-xs font-bold">{tool.avg_rating.toFixed(1)}</span>
+                      </>
+                    )}
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* Categories Section */}
         {featuredCategories.length > 0 && (
