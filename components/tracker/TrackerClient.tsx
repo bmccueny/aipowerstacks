@@ -192,23 +192,34 @@ export function TrackerClient({ tools, autoAddSlug }: { tools: ToolOption[]; aut
     ? tools.filter(t => t.name.toLowerCase().includes(search.toLowerCase()) && !alreadyTracked.has(t.id)).slice(0, 10)
     : []
 
-  // Compute overlaps
+  // Compute overlaps — group by category_id (tightest match),
+  // then label with use_case for display
   const overlaps = subs.length >= 2 ? (() => {
     const groups: Record<string, Subscription[]> = {}
     for (const sub of subs) {
-      const uc = sub.tools?.use_case
-      if (!uc) continue
-      if (!groups[uc]) groups[uc] = []
-      groups[uc].push(sub)
+      // Use category_id as primary grouper — tools in the same category
+      // actually compete with each other (e.g. two code editors, two image generators)
+      const key = sub.tools?.category_id
+      if (!key) continue
+      if (!groups[key]) groups[key] = []
+      groups[key].push(sub)
     }
     return Object.entries(groups)
       .filter(([, items]) => items.length >= 2 && items.some(s => Number(s.monthly_cost) > 0))
-      .map(([useCase, items]) => ({
-        useCase,
-        label: USE_CASE_NAMES[useCase] || useCase,
-        tools: items,
-        totalCost: items.reduce((sum, s) => sum + Number(s.monthly_cost), 0),
-      }))
+      .map(([categoryId, items]) => {
+        // Use the use_case label if all tools share one, otherwise describe generically
+        const useCases = new Set(items.map(s => s.tools?.use_case).filter(Boolean))
+        const sharedUseCase = useCases.size === 1 ? [...useCases][0] : null
+        const label = sharedUseCase
+          ? (USE_CASE_NAMES[sharedUseCase] || sharedUseCase)
+          : `${items[0].tools?.name?.split(' ')[0] || 'Similar'}-category`
+        return {
+          useCase: categoryId,
+          label,
+          tools: items,
+          totalCost: items.reduce((sum, s) => sum + Number(s.monthly_cost), 0),
+        }
+      })
   })() : []
 
   // Potential savings from overlaps
@@ -398,13 +409,17 @@ export function TrackerClient({ tools, autoAddSlug }: { tools: ToolOption[]; aut
             <AlertTriangle className="h-4 w-4 text-amber-500" />
             We found overlap in your stack
           </h3>
-          {overlaps.map(overlap => (
+          {overlaps.map(overlap => {
+            const toolNames = overlap.tools.map(t => t.tools?.name).filter(Boolean)
+            const cheapest = Math.min(...overlap.tools.map(t => Number(t.monthly_cost)))
+            const savingsIfKeepOne = Math.round((overlap.totalCost - cheapest) * 12)
+            return (
             <div key={overlap.useCase} className="rounded-xl border border-amber-400/20 bg-amber-400/[0.03] p-4">
               <p className="text-sm font-bold mb-1">
                 {overlap.tools.length} {overlap.label} tools — ${overlap.totalCost}/mo
               </p>
               <p className="text-xs text-muted-foreground mb-3">
-                You&apos;re paying for {overlap.tools.map(t => t.tools?.name).join(' + ')}. You could save <strong className="text-foreground">${((overlap.totalCost - Math.min(...overlap.tools.map(t => Number(t.monthly_cost)))) * 12).toFixed(0)}/year</strong> by keeping just one.
+                {toolNames.join(', ')} all do {overlap.label.toLowerCase()}. These tools directly compete with each other. Keeping just one saves <strong className="text-foreground">${savingsIfKeepOne}/year</strong>.
               </p>
               <div className="flex flex-wrap gap-2 mb-3">
                 {overlap.tools.map(t => (
@@ -420,7 +435,8 @@ export function TrackerClient({ tools, autoAddSlug }: { tools: ToolOption[]; aut
                 Compare side-by-side to decide <ArrowRight className="h-3 w-3" />
               </Link>
             </div>
-          ))}
+            )
+          })}
         </div>
       )}
 
