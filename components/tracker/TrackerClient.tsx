@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
 import Link from 'next/link'
+import { SavingsReport } from './SavingsReport'
 
 type Subscription = {
   id: string
@@ -557,6 +558,9 @@ export function TrackerClient({ tools, autoAddSlug, importTools }: { tools: Tool
           })}
         </div>
       )}
+
+      {/* Savings report — the whole point */}
+      {subs.length >= 2 && <SavingsReport />}
     </div>
   )
 }
