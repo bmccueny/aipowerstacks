@@ -12,6 +12,15 @@ type Sub = {
 
 type Alt = { id: string; name: string; slug: string; logo_url: string | null; pricing_model: string; tagline: string | null; avg_rating: number; review_count: number }
 
+type OptTool = {
+  name: string; slug: string; logo_url: string | null; price: number
+  reason: string; action: 'keep' | 'replace' | 'drop'; replaces: string | null
+}
+
+function score(rating: number, reviews: number) {
+  return rating * Math.log2(reviews + 1)
+}
+
 export async function GET(request: Request) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -27,137 +36,93 @@ export async function GET(request: Request) {
   const subs = (rawSubs || []) as Sub[]
   if (subs.length < 2) return NextResponse.json({ optimized: null })
 
-  const catIds = [...new Set(subs.map(s => s.tools?.category_id).filter((id): id is string => id != null))]
-
-  // For each category, get alternatives with their cheapest tier
-  const optimizedTools: {
-    name: string; slug: string; logo_url: string | null; price: number
-    reason: string; action: 'keep' | 'replace'; replaces: string | null
-  }[] = []
-
+  // Group subs by category
+  const catGroups = new Map<string, Sub[]>()
+  const uncategorized: Sub[] = []
   for (const sub of subs) {
     const catId = sub.tools?.category_id
-    if (!catId) {
-      // No category — keep it, nothing to compare against
-      optimizedTools.push({
-        name: sub.tools.name, slug: sub.tools.slug, logo_url: sub.tools.logo_url,
-        price: Number(sub.monthly_cost), reason: 'No alternatives in this category',
-        action: 'keep', replaces: null,
-      })
+    if (!catId) { uncategorized.push(sub); continue }
+    const list = catGroups.get(catId) || []
+    list.push(sub)
+    catGroups.set(catId, list)
+  }
+
+  const optimizedTools: OptTool[] = []
+
+  // Uncategorized tools — always keep, nothing to compare
+  for (const sub of uncategorized) {
+    optimizedTools.push({
+      name: sub.tools.name, slug: sub.tools.slug, logo_url: sub.tools.logo_url,
+      price: Number(sub.monthly_cost), reason: 'No alternatives in this category',
+      action: 'keep', replaces: null,
+    })
+  }
+
+  // Process each category group
+  for (const [catId, items] of catGroups.entries()) {
+    if (items.length === 1) {
+      // Only one tool in this category — try to find a better/cheaper one
+      const sub = items[0]
+      const winner = await findBestAlternative(supabase, sub, catId, mode)
+      optimizedTools.push(winner)
       continue
     }
 
-    // Get alternatives in same category with decent ratings
-    const { data: alts } = await supabase
-      .from('tools')
-      .select('id, name, slug, logo_url, pricing_model, tagline, avg_rating, review_count')
-      .eq('status', 'published')
-      .eq('category_id', catId)
-      .neq('id', sub.tool_id)
-      .gte('review_count', 2)
-      .gte('avg_rating', 3.5)
-      .order('avg_rating', { ascending: false })
-      .limit(10)
-
-    const alternatives = (alts || []) as Alt[]
-
-    // Get cheapest paid tier for each alternative
-    const altIds = alternatives.map(a => a.id)
-    let cheapestByAlt = new Map<string, number>()
-    if (altIds.length > 0) {
-      const { data: tiers } = await untypedFrom(supabase, 'tool_pricing_tiers')
-        .select('tool_id, monthly_price')
-        .in('tool_id', altIds)
-        .gt('monthly_price', 0)
-        .order('monthly_price', { ascending: true })
-
-      if (tiers) {
-        for (const t of tiers) {
-          if (!cheapestByAlt.has(t.tool_id)) cheapestByAlt.set(t.tool_id, t.monthly_price)
-        }
-      }
-    }
-
-    const userCost = Number(sub.monthly_cost)
-    const userRating = sub.tools.avg_rating || 0
-    const userReviews = sub.tools.review_count || 0
-    const userScore = userRating * Math.log2(userReviews + 1)
+    // Multiple tools in same category — this is where dedup happens
+    // Step 1: Pick the best among the user's current tools
+    const scored = items.map(s => ({
+      sub: s,
+      cost: Number(s.monthly_cost),
+      sc: score(s.tools.avg_rating || 0, s.tools.review_count || 0),
+    }))
 
     if (mode === 'savings') {
-      // Find the cheapest alternative that's still decent (3.5+ stars, 2+ reviews)
-      let bestSaving: { alt: Alt; price: number } | null = null
-      for (const alt of alternatives) {
-        const altPrice = cheapestByAlt.get(alt.id)
-        // Also consider free tools
-        const effectivePrice = altPrice ?? (alt.pricing_model === 'free' ? 0 : null)
-        if (effectivePrice == null) continue
-        if (effectivePrice >= userCost) continue // Not cheaper
-        if (!bestSaving || effectivePrice < bestSaving.price) {
-          bestSaving = { alt, price: effectivePrice }
-        }
-      }
-
-      if (bestSaving && (userCost - bestSaving.price) >= 2) {
-        const savings = userCost - bestSaving.price
-        optimizedTools.push({
-          name: bestSaving.alt.name, slug: bestSaving.alt.slug, logo_url: bestSaving.alt.logo_url,
-          price: bestSaving.price,
-          reason: `$${savings}/mo cheaper. Rated ${bestSaving.alt.avg_rating.toFixed(1)} stars (${bestSaving.alt.review_count} reviews).`,
-          action: 'replace', replaces: sub.tools.name,
-        })
-      } else {
-        optimizedTools.push({
-          name: sub.tools.name, slug: sub.tools.slug, logo_url: sub.tools.logo_url,
-          price: userCost,
-          reason: userCost === 0 ? 'Already free' : 'Already the best value in this category',
-          action: 'keep', replaces: null,
-        })
-      }
+      // Keep the cheapest current tool (if tied, highest rated wins)
+      scored.sort((a, b) => a.cost - b.cost || b.sc - a.sc)
     } else {
-      // Performance mode — find the highest-rated alternative
-      let bestPerf: { alt: Alt; price: number; score: number } | null = null
-      for (const alt of alternatives) {
-        const altPrice = cheapestByAlt.get(alt.id) ?? (alt.pricing_model === 'free' ? 0 : null)
-        if (altPrice == null) continue
-        const altScore = alt.avg_rating * Math.log2(alt.review_count + 1)
-        if (!bestPerf || altScore > bestPerf.score) {
-          bestPerf = { alt, price: altPrice, score: altScore }
-        }
-      }
+      // Keep the best rated current tool
+      scored.sort((a, b) => b.sc - a.sc)
+    }
 
-      if (bestPerf && bestPerf.score > userScore * 1.1) {
-        // Alternative is meaningfully better
-        optimizedTools.push({
-          name: bestPerf.alt.name, slug: bestPerf.alt.slug, logo_url: bestPerf.alt.logo_url,
-          price: bestPerf.price,
-          reason: `Higher rated: ${bestPerf.alt.avg_rating.toFixed(1)} stars (${bestPerf.alt.review_count} reviews) vs your ${userRating.toFixed(1)} stars.`,
-          action: 'replace', replaces: sub.tools.name,
-        })
-      } else {
-        optimizedTools.push({
-          name: sub.tools.name, slug: sub.tools.slug, logo_url: sub.tools.logo_url,
-          price: userCost,
-          reason: 'Already the top-rated option in this category',
-          action: 'keep', replaces: null,
-        })
-      }
+    const keeper = scored[0]
+    const dropped = scored.slice(1)
+
+    // Step 2: Check if an external alternative beats the keeper
+    const betterExternal = await findBestAlternative(supabase, keeper.sub, catId, mode)
+
+    optimizedTools.push(betterExternal)
+
+    // Step 3: Drop the rest — these are the duplicates
+    for (const d of dropped) {
+      optimizedTools.push({
+        name: d.sub.tools.name, slug: d.sub.tools.slug, logo_url: d.sub.tools.logo_url,
+        price: d.cost, reason: `Overlaps with ${betterExternal.name} in this category`,
+        action: 'drop', replaces: null,
+      })
     }
   }
 
-  const totalOptimized = optimizedTools.reduce((s, t) => s + t.price, 0)
+  // Calculate totals (only count keep + replace, not drop)
+  const keptTools = optimizedTools.filter(t => t.action !== 'drop')
+  const droppedTools = optimizedTools.filter(t => t.action === 'drop')
+  const totalOptimized = keptTools.reduce((s, t) => s + t.price, 0)
   const totalCurrent = subs.reduce((s, sub) => s + Number(sub.monthly_cost), 0)
-  const swapCount = optimizedTools.filter(t => t.action === 'replace').length
+  const swapCount = keptTools.filter(t => t.action === 'replace').length
+  const dropCount = droppedTools.length
 
   let summary = ''
-  if (swapCount === 0) {
+  const diff = totalCurrent - totalOptimized
+  if (swapCount === 0 && dropCount === 0) {
     summary = mode === 'savings'
-      ? 'Your stack is already cost-optimized. No cheaper alternatives with good ratings found.'
-      : 'You\'re already using the top-rated tools in each category.'
+      ? 'Your stack is already cost-optimized.'
+      : 'You\'re already using the top-rated tools.'
   } else {
-    const diff = totalCurrent - totalOptimized
+    const parts: string[] = []
+    if (dropCount > 0) parts.push(`drop ${dropCount} duplicate${dropCount > 1 ? 's' : ''}`)
+    if (swapCount > 0) parts.push(`${swapCount} swap${swapCount > 1 ? 's' : ''}`)
     summary = mode === 'savings'
-      ? `${swapCount} swap${swapCount > 1 ? 's' : ''} could save you $${Math.round(diff)}/mo ($${Math.round(diff * 12)}/yr) without sacrificing quality.`
-      : `${swapCount} upgrade${swapCount > 1 ? 's' : ''} for better-rated tools${diff < 0 ? ` (+$${Math.abs(Math.round(diff))}/mo)` : diff > 0 ? ` and save $${Math.round(diff)}/mo` : ''}.`
+      ? `${parts.join(' + ')} could save you $${Math.round(diff)}/mo ($${Math.round(diff * 12)}/yr).`
+      : `${parts.join(' + ')} for a stronger stack${diff > 0 ? ` and save $${Math.round(diff)}/mo` : diff < 0 ? ` (+$${Math.abs(Math.round(diff))}/mo)` : ''}.`
   }
 
   return NextResponse.json({
@@ -167,8 +132,93 @@ export async function GET(request: Request) {
       summary,
       mode,
       current_monthly: Math.round(totalCurrent),
-      savings_monthly: Math.round(totalCurrent - totalOptimized),
-      savings_yearly: Math.round((totalCurrent - totalOptimized) * 12),
+      savings_monthly: Math.round(diff),
+      savings_yearly: Math.round(diff * 12),
     },
   })
+}
+
+async function findBestAlternative(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  sub: Sub,
+  catId: string,
+  mode: string,
+): Promise<OptTool> {
+  const userCost = Number(sub.monthly_cost)
+  const userScore = score(sub.tools.avg_rating || 0, sub.tools.review_count || 0)
+
+  const { data: alts } = await supabase
+    .from('tools')
+    .select('id, name, slug, logo_url, pricing_model, tagline, avg_rating, review_count')
+    .eq('status', 'published')
+    .eq('category_id', catId)
+    .neq('id', sub.tool_id)
+    .gte('review_count', 2)
+    .gte('avg_rating', 3.5)
+    .order('avg_rating', { ascending: false })
+    .limit(10)
+
+  const alternatives = (alts || []) as Alt[]
+  if (alternatives.length === 0) {
+    return {
+      name: sub.tools.name, slug: sub.tools.slug, logo_url: sub.tools.logo_url,
+      price: userCost, reason: 'No rated alternatives found',
+      action: 'keep', replaces: null,
+    }
+  }
+
+  // Get cheapest tier for each alt
+  const altIds = alternatives.map(a => a.id)
+  const cheapestByAlt = new Map<string, number>()
+  const { data: tiers } = await untypedFrom(supabase, 'tool_pricing_tiers')
+    .select('tool_id, monthly_price')
+    .in('tool_id', altIds)
+    .gt('monthly_price', 0)
+    .order('monthly_price', { ascending: true })
+
+  if (tiers) {
+    for (const t of tiers) {
+      if (!cheapestByAlt.has(t.tool_id)) cheapestByAlt.set(t.tool_id, t.monthly_price)
+    }
+  }
+
+  if (mode === 'savings') {
+    let best: { alt: Alt; price: number } | null = null
+    for (const alt of alternatives) {
+      const price = cheapestByAlt.get(alt.id) ?? (alt.pricing_model === 'free' ? 0 : null)
+      if (price == null || price >= userCost) continue
+      if (!best || price < best.price) best = { alt, price }
+    }
+    if (best && (userCost - best.price) >= 2) {
+      return {
+        name: best.alt.name, slug: best.alt.slug, logo_url: best.alt.logo_url,
+        price: best.price,
+        reason: `$${userCost - best.price}/mo cheaper. ${best.alt.avg_rating.toFixed(1)} stars (${best.alt.review_count} reviews).`,
+        action: 'replace', replaces: sub.tools.name,
+      }
+    }
+  } else {
+    let best: { alt: Alt; price: number; sc: number } | null = null
+    for (const alt of alternatives) {
+      const price = cheapestByAlt.get(alt.id) ?? (alt.pricing_model === 'free' ? 0 : null)
+      if (price == null) continue
+      const sc = score(alt.avg_rating, alt.review_count)
+      if (!best || sc > best.sc) best = { alt, price, sc }
+    }
+    if (best && best.sc > userScore * 1.1) {
+      return {
+        name: best.alt.name, slug: best.alt.slug, logo_url: best.alt.logo_url,
+        price: best.price,
+        reason: `Higher rated: ${best.alt.avg_rating.toFixed(1)} stars (${best.alt.review_count} reviews) vs ${(sub.tools.avg_rating || 0).toFixed(1)}.`,
+        action: 'replace', replaces: sub.tools.name,
+      }
+    }
+  }
+
+  return {
+    name: sub.tools.name, slug: sub.tools.slug, logo_url: sub.tools.logo_url,
+    price: userCost,
+    reason: mode === 'savings' ? 'Already the best value' : 'Already top-rated',
+    action: 'keep', replaces: null,
+  }
 }

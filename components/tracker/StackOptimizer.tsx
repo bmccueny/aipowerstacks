@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Loader2, Zap, Wallet, ArrowRight, ArrowDown, Equal, Repeat2 } from 'lucide-react'
+import { Loader2, Zap, Wallet, ArrowRight, X, Repeat2 } from 'lucide-react'
 
 type OptimizedTool = {
   name: string
@@ -10,7 +10,7 @@ type OptimizedTool = {
   logo_url: string | null
   price: number
   reason: string
-  action: 'keep' | 'replace'
+  action: 'keep' | 'replace' | 'drop'
   replaces: string | null
 }
 
@@ -149,33 +149,43 @@ export function StackOptimizer({ currentTools }: { currentTools: CurrentTool[] }
           </div>
 
           {/* Comparison columns */}
+          {(() => {
+            const droppedSlugs = new Set(optimized.tools.filter(t => t.action === 'drop').map(t => t.slug))
+            const keptTools = optimized.tools.filter(t => t.action !== 'drop')
+            return (
           <div className="grid grid-cols-2 gap-3">
             {/* Current stack */}
             <div>
               <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2 text-center">Your Stack</p>
               <div className="space-y-1.5">
-                {currentTools.map((tool, i) => (
-                  <div key={i} className="rounded-lg border border-foreground/[0.06] px-3 py-2 flex items-center gap-2">
-                    <div className="h-6 w-6 rounded-md overflow-hidden flex items-center justify-center shrink-0">
-                      {tool.logo_url ? (
-                        <img src={tool.logo_url} alt="" className="w-6 h-6 object-contain" />
-                      ) : (
-                        <span className="w-6 h-6 rounded-md bg-primary/10 flex items-center justify-center text-[8px] font-bold text-primary">{tool.name[0]}</span>
-                      )}
+                {currentTools.map((tool, i) => {
+                  const isDropped = droppedSlugs.has(tool.slug)
+                  return (
+                    <div key={i} className={`rounded-lg border px-3 py-2 flex items-center gap-2 ${
+                      isDropped ? 'border-destructive/20 bg-destructive/[0.03] opacity-60' : 'border-foreground/[0.06]'
+                    }`}>
+                      <div className="h-6 w-6 rounded-md overflow-hidden flex items-center justify-center shrink-0">
+                        {tool.logo_url ? (
+                          <img src={tool.logo_url} alt="" className="w-6 h-6 object-contain" />
+                        ) : (
+                          <span className="w-6 h-6 rounded-md bg-primary/10 flex items-center justify-center text-[8px] font-bold text-primary">{tool.name[0]}</span>
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className={`text-[11px] font-semibold truncate ${isDropped ? 'line-through' : ''}`}>{tool.name}</p>
+                        {isDropped && <p className="text-[9px] text-destructive">duplicate — drop</p>}
+                      </div>
+                      <span className={`text-[11px] font-bold shrink-0 ${isDropped ? 'line-through text-muted-foreground' : ''}`}>${tool.cost}</span>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[11px] font-semibold truncate">{tool.name}</p>
-                    </div>
-                    <span className="text-[11px] font-bold shrink-0">${tool.cost}</span>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
               <div className="mt-2 text-center">
                 <span className="text-sm font-black">${currentTotal}/mo</span>
               </div>
             </div>
 
-            {/* Optimized stack */}
+            {/* Optimized stack — only kept + replaced, no drops */}
             <div>
               <p className={`text-[10px] font-bold uppercase tracking-widest mb-2 text-center ${
                 mode === 'performance' ? 'text-violet-500' : 'text-emerald-500'
@@ -183,7 +193,7 @@ export function StackOptimizer({ currentTools }: { currentTools: CurrentTool[] }
                 {mode === 'performance' ? 'Best Performance' : 'Best Value'}
               </p>
               <div className="space-y-1.5">
-                {optimized.tools.map((tool, i) => {
+                {keptTools.map((tool, i) => {
                   const isNew = tool.action === 'replace'
                   return (
                     <div key={i} className={`rounded-lg px-3 py-2 flex items-center gap-2 border ${
@@ -216,6 +226,8 @@ export function StackOptimizer({ currentTools }: { currentTools: CurrentTool[] }
               </div>
             </div>
           </div>
+            )
+          })()}
 
           {/* Tool reasons */}
           {optimized.tools.filter(t => t.action === 'replace').length > 0 && (
@@ -226,6 +238,21 @@ export function StackOptimizer({ currentTools }: { currentTools: CurrentTool[] }
                   <ArrowRight className="h-3 w-3 text-primary mt-0.5 shrink-0" />
                   <p className="text-xs text-muted-foreground">
                     <strong className="text-foreground">{tool.replaces} → {tool.name}:</strong> {tool.reason}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Dropped tools reasoning */}
+          {optimized.tools.filter(t => t.action === 'drop').length > 0 && (
+            <div className="rounded-xl border border-foreground/[0.06] p-4 space-y-2">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Duplicates to drop</p>
+              {optimized.tools.filter(t => t.action === 'drop').map((tool, i) => (
+                <div key={i} className="flex items-start gap-2">
+                  <X className="h-3 w-3 text-destructive mt-0.5 shrink-0" />
+                  <p className="text-xs text-muted-foreground">
+                    <strong className="text-foreground">{tool.name} (${tool.price}/mo):</strong> {tool.reason}
                   </p>
                 </div>
               ))}
