@@ -752,14 +752,57 @@
 }
 
 .shimmer {
-  background: linear-gradient(90deg, oklch(0.95 0.01 90) 25%, oklch(0.91 0.02 90) 50%, oklch(0.95 0.01 90) 75%);
+  position: relative;
+  overflow: hidden;
+  background: oklch(0.95 0.005 90);
+  border-radius: 8px;
+}
+.shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    oklch(1 0 0 / 0.4) 30%,
+    oklch(1 0 0 / 0.6) 50%,
+    oklch(1 0 0 / 0.4) 70%,
+    transparent 100%
+  );
   background-size: 200% 100%;
-  animation: shimmer 1.4s linear infinite;
+  animation: shimmer 1.8s ease-in-out infinite;
 }
 
 .dark .shimmer {
-  background: linear-gradient(90deg, oklch(0.22 0.01 260) 25%, oklch(0.26 0.01 260) 50%, oklch(0.22 0.01 260) 75%);
+  background: oklch(0.2 0.01 260);
+}
+.dark .shimmer::after {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    oklch(1 0 0 / 0.04) 30%,
+    oklch(1 0 0 / 0.08) 50%,
+    oklch(1 0 0 / 0.04) 70%,
+    transparent 100%
+  );
   background-size: 200% 100%;
+}
+
+/* Staggered shimmer delays */
+.shimmer-delay-1 { animation-delay: 0.15s; }
+.shimmer-delay-1::after { animation-delay: 0.15s; }
+.shimmer-delay-2 { animation-delay: 0.3s; }
+.shimmer-delay-2::after { animation-delay: 0.3s; }
+.shimmer-delay-3 { animation-delay: 0.45s; }
+.shimmer-delay-3::after { animation-delay: 0.45s; }
+
+/* Skeleton pulse glow */
+@keyframes skeleton-glow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+.skeleton-glow {
+  animation: skeleton-glow 2s ease-in-out infinite;
 }
 
 .animate-vote-pop {
