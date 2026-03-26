@@ -371,7 +371,11 @@ export function TrackerClient({ tools, autoAddSlug, importTools }: { tools: Tool
               )}
               <div className="flex-1">
                 <p className="font-bold">{selectedTool.name}</p>
-                <p className="text-xs text-muted-foreground">Select your plan below</p>
+                <p className="text-xs text-muted-foreground">
+                  {tiers.some(t => t.tier_name.includes('~'))
+                    ? 'How much do you typically use?'
+                    : 'Select your plan below'}
+                </p>
               </div>
               <button onClick={() => setSelectedTool(null)} className="p-1.5 rounded-lg hover:bg-muted transition-colors">
                 <X className="h-4 w-4 text-muted-foreground" />
