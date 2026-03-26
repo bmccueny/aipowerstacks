@@ -55,6 +55,8 @@ export function CostCalculator({ tools }: { tools: QuickTool[] }) {
   const [selectedTool, setSelectedTool] = useState<QuickTool | null>(null)
   const [tiers, setTiers] = useState<{ tier_name: string; monthly_price: number }[]>([])
   const [showSearch, setShowSearch] = useState(false)
+  const [editingTierId, setEditingTierId] = useState<string | null>(null)
+  const [editTiers, setEditTiers] = useState<{ tier_name: string; monthly_price: number }[]>([])
   const wrapperRef = useRef<HTMLDivElement>(null)
 
   // Build the popular tools grid from props
@@ -127,6 +129,23 @@ export function CostCalculator({ tools }: { tools: QuickTool[] }) {
 
   const remove = (id: string) => {
     setAdded(prev => prev.filter(t => t.id !== id))
+    if (editingTierId === id) setEditingTierId(null)
+  }
+
+  const startEditTier = (toolId: string) => {
+    if (editingTierId === toolId) { setEditingTierId(null); return }
+    setEditingTierId(toolId)
+    const tool = added.find(t => t.id === toolId)
+    if (!tool) return
+    fetch(`/api/tracker/tiers?tool_id=${tool.id}`)
+      .then(r => r.json())
+      .then(d => setEditTiers(d.tiers || []))
+      .catch(() => setEditTiers([]))
+  }
+
+  const changeTier = (toolId: string, price: number, tierName: string) => {
+    setAdded(prev => prev.map(t => t.id === toolId ? { ...t, price, tier: tierName } : t))
+    setEditingTierId(null)
   }
 
   const applyPreset = (preset: typeof PRESETS[number]) => {
@@ -302,18 +321,60 @@ export function CostCalculator({ tools }: { tools: QuickTool[] }) {
       {added.length > 0 && (
         <div className="rounded-2xl border border-foreground/[0.06] divide-y divide-foreground/[0.06] mb-4">
           {added.map(tool => (
-            <div key={tool.id} className="flex items-center gap-3 px-4 py-2.5">
-              {tool.logo_url ? (
-                <img src={tool.logo_url} alt="" className="w-6 h-6 rounded object-contain shrink-0" />
-              ) : (
-                <span className="w-6 h-6 rounded bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary shrink-0">{tool.name[0]}</span>
+            <div key={tool.id}>
+              <div className="flex items-center gap-3 px-4 py-2.5">
+                {tool.logo_url ? (
+                  <img src={tool.logo_url} alt="" className="w-6 h-6 rounded object-contain shrink-0" />
+                ) : (
+                  <span className="w-6 h-6 rounded bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary shrink-0">{tool.name[0]}</span>
+                )}
+                <span className="text-sm font-medium flex-1 truncate">{tool.name}</span>
+                <button
+                  onClick={() => startEditTier(tool.id)}
+                  className="flex items-center gap-1.5 hover:bg-muted/80 px-2 py-0.5 rounded-lg transition-colors cursor-pointer"
+                >
+                  <span className="text-xs text-muted-foreground">{tool.tier}</span>
+                  <span className="text-sm font-bold">{tool.price === 0 ? 'Free' : `$${tool.price}`}</span>
+                  <span className="text-[10px] text-primary">edit</span>
+                </button>
+                <button onClick={() => remove(tool.id)} className="p-0.5 hover:text-destructive transition-colors">
+                  <X className="h-3.5 w-3.5 text-muted-foreground" />
+                </button>
+              </div>
+              {editingTierId === tool.id && (
+                <div className="px-4 pb-3 flex flex-wrap gap-1.5">
+                  {editTiers.length > 0 ? editTiers.map(tier => (
+                    <button
+                      key={tier.tier_name}
+                      type="button"
+                      onClick={() => changeTier(tool.id, tier.monthly_price, tier.tier_name)}
+                      className={`px-2.5 py-1 rounded-lg border text-xs transition-all cursor-pointer ${
+                        tool.tier === tier.tier_name
+                          ? 'border-primary/40 bg-primary/10 font-bold'
+                          : 'border-border hover:border-primary/30 hover:bg-primary/5'
+                      }`}
+                    >
+                      <span className="font-bold">{tier.monthly_price === 0 ? 'Free' : `$${tier.monthly_price}`}</span>
+                      <span className="text-muted-foreground ml-1">{tier.tier_name}</span>
+                    </button>
+                  )) : (
+                    [0, 10, 20, 50, 100, 200].map(p => (
+                      <button
+                        key={p}
+                        type="button"
+                        onClick={() => changeTier(tool.id, p, p === 0 ? 'Free' : `$${p}/mo`)}
+                        className={`px-2.5 py-1 rounded-lg border text-xs font-bold transition-all cursor-pointer ${
+                          tool.price === p
+                            ? 'border-primary/40 bg-primary/10'
+                            : 'border-border hover:border-primary/30 hover:bg-primary/5'
+                        }`}
+                      >
+                        {p === 0 ? 'Free' : `$${p}`}
+                      </button>
+                    ))
+                  )}
+                </div>
               )}
-              <span className="text-sm font-medium flex-1 truncate">{tool.name}</span>
-              <span className="text-xs text-muted-foreground">{tool.tier}</span>
-              <span className="text-sm font-bold w-16 text-right">{tool.price === 0 ? 'Free' : `$${tool.price}`}</span>
-              <button onClick={() => remove(tool.id)} className="p-0.5 hover:text-destructive transition-colors">
-                <X className="h-3.5 w-3.5 text-muted-foreground" />
-              </button>
             </div>
           ))}
           {/* Total */}
