@@ -680,28 +680,49 @@ export async function getSuperTools(limit = 8): Promise<ToolSearchResult[]> {
 export async function getSimilarTools(slugs: string[], limit = 4): Promise<ToolSearchResult[]> {
   if (slugs.length === 0) return []
   const supabase = await createClient()
-  
-  // 1. Get the category IDs of the tools being compared
+
+  // Get the category IDs and use_cases of the tools being compared
   const { data: currentTools } = await supabase
     .from('tools')
-    .select('category_id')
+    .select('category_id, use_case')
     .in('slug', slugs)
-  
+
   const categoryIds = Array.from(new Set(currentTools?.map(t => t.category_id).filter(Boolean)))
+  const useCases = Array.from(new Set(currentTools?.map(t => t.use_case).filter(Boolean)))
+  const slugFilter = `(${slugs.join(',')})`
 
-  if (categoryIds.length === 0) return []
+  // Priority 1: same use_case (tightest functional match)
+  let results: ToolSearchResult[] = []
+  if (useCases.length > 0) {
+    const { data } = await supabase
+      .from('tools')
+      .select(TOOL_SELECT_COLUMNS)
+      .in('use_case', useCases)
+      .not('slug', 'in', slugFilter)
+      .eq('status', 'published')
+      .order('avg_rating', { ascending: false })
+      .order('review_count', { ascending: false })
+      .limit(limit)
 
-  // 2. Find other tools in those categories
-  const { data } = await supabase
-    .from('tools')
-    .select(TOOL_SELECT_COLUMNS)
-    .in('category_id', categoryIds)
-    .not('slug', 'in', `(${slugs.join(',')})`)
-    .eq('status', 'published')
-    .order('upvote_count', { ascending: false })
-    .limit(limit)
+    results = (data ?? []) as unknown as ToolSearchResult[]
+  }
 
-  return (data ?? []) as unknown as ToolSearchResult[]
+  // Priority 2: fill remaining slots with same category
+  if (results.length < limit && categoryIds.length > 0) {
+    const existingSlugs = [...slugs, ...results.map(r => r.slug)]
+    const { data } = await supabase
+      .from('tools')
+      .select(TOOL_SELECT_COLUMNS)
+      .in('category_id', categoryIds)
+      .not('slug', 'in', `(${existingSlugs.join(',')})`)
+      .eq('status', 'published')
+      .order('avg_rating', { ascending: false })
+      .limit(limit - results.length)
+
+    results = [...results, ...((data ?? []) as unknown as ToolSearchResult[])]
+  }
+
+  return results.slice(0, limit)
 }
 
 export async function getToolsByCategory(categorySlug: string, page = 1): Promise<{ tools: ToolSearchResult[]; total: number }> {
