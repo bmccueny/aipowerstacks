@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
 import Link from 'next/link'
 import { SavingsReport } from './SavingsReport'
+import { StackOptimizer } from './StackOptimizer'
 
 type Subscription = {
   id: string
@@ -559,7 +560,20 @@ export function TrackerClient({ tools, autoAddSlug, importTools }: { tools: Tool
         </div>
       )}
 
-      {/* Savings report — the whole point */}
+      {/* Stack optimizer — compare your stack vs an optimized one */}
+      {subs.length >= 2 && (
+        <StackOptimizer
+          key={`opt-${subs.map(s => s.id).join(',')}`}
+          currentTools={subs.map(s => ({
+            name: s.tools?.name || '?',
+            slug: s.tools?.slug || '',
+            logo_url: s.tools?.logo_url || null,
+            cost: Number(s.monthly_cost),
+          }))}
+        />
+      )}
+
+      {/* Savings report */}
       {subs.length >= 2 && <SavingsReport key={subs.map(s => s.id).join(',')} />}
     </div>
   )
