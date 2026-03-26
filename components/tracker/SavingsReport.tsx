@@ -6,14 +6,15 @@ import { Loader2, TrendingDown, AlertTriangle, ArrowRight, ArrowDown, ChevronDow
 
 type OverlapTool = { name: string; slug: string; logo_url: string | null; cost: number; rating: number; reviews: number }
 type Overlap = { label: string; tools: OverlapTool[]; totalCost: number; savingsIfKeepOne: number }
-type TierCheck = { toolName: string; toolSlug: string; currentCost: number; cheapestTier: string; cheapestCost: number; yearlySavings: number }
+type PremiumOverlapTool = { name: string; slug: string; cost: number; cheapestTier: string; cheapestCost: number }
+type PremiumOverlap = { label: string; tools: PremiumOverlapTool[]; totalCost: number; savingsIfDowngradeRest: number }
 
 type Report = {
   totalMonthly: number
   totalYearly: number
   toolCount: number
   overlaps: Overlap[]
-  tierChecks: TierCheck[]
+  premiumOverlaps: PremiumOverlap[]
   benchmark: { avgMonthly: number; percentile: number }
   totalPotentialSavings: number
   verdict: string
@@ -163,29 +164,39 @@ export function SavingsReport() {
             </div>
           )}
 
-          {/* Tier downgrades */}
-          {report.tierChecks.length > 0 && (
+          {/* Premium overlap — paying top-tier on multiple competing tools */}
+          {report.premiumOverlaps.length > 0 && (
             <div className="space-y-3">
               <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
                 <ArrowDown className="h-3.5 w-3.5 text-blue-500" />
-                Tier downgrade opportunities
+                Premium tier overlap
               </h4>
-              {report.tierChecks.map((check, i) => (
-                <div key={i} className="rounded-xl border border-blue-400/20 bg-blue-400/[0.03] p-4 flex items-center gap-4">
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold">{check.toolName}</p>
-                    <p className="text-xs text-muted-foreground">
-                      You pay <strong className="text-foreground">${check.currentCost}/mo</strong>. The {check.cheapestTier} plan is ${check.cheapestCost}/mo. Do you use the premium features?
-                    </p>
+              {report.premiumOverlaps.map((po, i) => (
+                <div key={i} className="rounded-xl border border-blue-400/20 bg-blue-400/[0.03] p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <p className="text-sm font-bold">{po.label}</p>
+                    <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                      Save ${po.savingsIfDowngradeRest}/yr
+                    </span>
                   </div>
-                  <div className="text-right shrink-0">
-                    <p className="text-sm font-bold text-emerald-600 dark:text-emerald-400">
-                      -${check.yearlySavings}/yr
-                    </p>
-                    <Link href={`/tools/${check.toolSlug}`} className="text-[10px] text-primary hover:underline">
-                      Review plans
-                    </Link>
+                  <p className="text-xs text-muted-foreground mb-3">
+                    You&apos;re paying premium on {po.tools.length} {po.label.toLowerCase()} tools (${po.totalCost}/mo total). Pick your favorite at the top tier — downgrade or drop the rest.
+                  </p>
+                  <div className="space-y-2 mb-3">
+                    {po.tools.map((tool, j) => (
+                      <div key={j} className="flex items-center gap-3 bg-background/50 rounded-lg px-3 py-2">
+                        <span className="text-sm font-medium flex-1">{tool.name}</span>
+                        <span className="text-xs text-muted-foreground">{tool.cheapestTier} is ${tool.cheapestCost}/mo</span>
+                        <span className="text-sm font-bold">${tool.cost}/mo</span>
+                      </div>
+                    ))}
                   </div>
+                  <Link
+                    href={`/compare?tools=${po.tools.map(t => t.slug).join(',')}`}
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline"
+                  >
+                    Compare to decide which stays at Pro <ArrowRight className="h-3 w-3" />
+                  </Link>
                 </div>
               ))}
             </div>

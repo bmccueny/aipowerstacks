@@ -98,35 +98,84 @@ export async function GET() {
     .filter(o => o.savingsIfKeepOne > 0)
     .sort((a, b) => b.savingsIfKeepOne - a.savingsIfKeepOne)
 
-  // ── 2. Tier downgrade opportunities
-  const tierChecks: { toolName: string; toolSlug: string; currentCost: number; cheapestTier: string; cheapestCost: number; yearlySavings: number }[] = []
+  // ── 2. Premium overlap — only suggest tier downgrades when the user
+  // is paying top-tier on MULTIPLE tools in the same category.
+  // "You're on Pro for both Claude and ChatGPT ($400/mo). Pick one to
+  // stay Pro, drop the other to a free/basic tier."
+  // We never suggest downgrading a single tool in isolation — you don't
+  // know why they're on that tier.
+  type PremiumOverlap = {
+    label: string
+    tools: { name: string; slug: string; cost: number; cheapestTier: string; cheapestCost: number }[]
+    totalCost: number
+    savingsIfDowngradeRest: number
+  }
+  const premiumOverlaps: PremiumOverlap[] = []
 
-  for (const sub of subs) {
-    if (Number(sub.monthly_cost) === 0) continue
-    const { data: tiers } = await untypedFrom(supabase, 'tool_pricing_tiers')
-      .select('tier_name, monthly_price')
-      .eq('tool_id', sub.tool_id)
-      .gt('monthly_price', 0)
-      .order('monthly_price', { ascending: true })
-      .limit(1)
+  // For each overlap group, check if multiple tools are on premium tiers
+  for (const [catId, items] of categoryGroups.entries()) {
+    if (items.length < 2) continue
 
-    if (tiers && tiers.length > 0) {
-      const cheapest = tiers[0]
+    // Get cheapest paid tier for each tool to detect who's on a premium tier
+    const toolTierInfo: { sub: Sub; cheapestCost: number; cheapestTier: string }[] = []
+    for (const sub of items) {
       const userCost = Number(sub.monthly_cost)
-      if (userCost > cheapest.monthly_price * 1.4) {
-        tierChecks.push({
-          toolName: sub.tools?.name || '?',
-          toolSlug: sub.tools?.slug || '',
-          currentCost: userCost,
-          cheapestTier: cheapest.tier_name,
+      if (userCost === 0) continue
+
+      const { data: tiers } = await untypedFrom(supabase, 'tool_pricing_tiers')
+        .select('tier_name, monthly_price')
+        .eq('tool_id', sub.tool_id)
+        .gt('monthly_price', 0)
+        .order('monthly_price', { ascending: true })
+        .limit(1)
+
+      const cheapest = tiers?.[0]
+      if (cheapest && userCost > cheapest.monthly_price * 1.3) {
+        // This user is on a tier above the cheapest — they're "premium"
+        toolTierInfo.push({
+          sub,
           cheapestCost: cheapest.monthly_price,
-          yearlySavings: Math.round((userCost - cheapest.monthly_price) * 12),
+          cheapestTier: cheapest.tier_name,
+        })
+      }
+    }
+
+    // Only flag if 2+ tools in the same category are on premium tiers
+    if (toolTierInfo.length >= 2) {
+      // Sort by cost descending — keep the most expensive at premium,
+      // suggest downgrading the rest
+      toolTierInfo.sort((a, b) => Number(b.sub.monthly_cost) - Number(a.sub.monthly_cost))
+
+      const keepAtPremium = toolTierInfo[0]
+      const downgradeTargets = toolTierInfo.slice(1)
+      const savingsIfDowngradeRest = downgradeTargets.reduce(
+        (s, t) => s + Math.round((Number(t.sub.monthly_cost) - t.cheapestCost) * 12), 0
+      )
+
+      if (savingsIfDowngradeRest > 0) {
+        const useCases = new Set(items.map(s => s.tools?.use_case).filter(Boolean))
+        const sharedUseCase = useCases.size === 1 ? [...useCases][0] : null
+        const label = sharedUseCase
+          ? USE_CASE_LABELS[sharedUseCase] || sharedUseCase
+          : catNameMap.get(catId) || 'Similar Tools'
+
+        premiumOverlaps.push({
+          label,
+          tools: toolTierInfo.map(t => ({
+            name: t.sub.tools?.name || '?',
+            slug: t.sub.tools?.slug || '',
+            cost: Number(t.sub.monthly_cost),
+            cheapestTier: t.cheapestTier,
+            cheapestCost: t.cheapestCost,
+          })),
+          totalCost: toolTierInfo.reduce((s, t) => s + Number(t.sub.monthly_cost), 0),
+          savingsIfDowngradeRest,
         })
       }
     }
   }
 
-  tierChecks.sort((a, b) => b.yearlySavings - a.yearlySavings)
+  premiumOverlaps.sort((a, b) => b.savingsIfDowngradeRest - a.savingsIfDowngradeRest)
 
   // ── 3. Benchmark
   const { data: allSubs } = await untypedFrom(supabase, 'user_subscriptions')
@@ -147,8 +196,8 @@ export async function GET() {
 
   // ── 4. Total potential savings
   const overlapSavings = overlaps.reduce((s, o) => s + o.savingsIfKeepOne, 0)
-  const tierSavings = tierChecks.reduce((s, t) => s + t.yearlySavings, 0)
-  const totalPotentialSavings = overlapSavings + tierSavings
+  const premiumSavings = premiumOverlaps.reduce((s, p) => s + p.savingsIfDowngradeRest, 0)
+  const totalPotentialSavings = overlapSavings + premiumSavings
 
   // ── 5. Verdict
   let verdict = ''
@@ -168,7 +217,7 @@ export async function GET() {
       totalYearly,
       toolCount: subs.length,
       overlaps,
-      tierChecks,
+      premiumOverlaps,
       benchmark: { avgMonthly, percentile },
       totalPotentialSavings,
       verdict,
