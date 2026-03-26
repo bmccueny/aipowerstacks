@@ -44,6 +44,7 @@ type Benchmark = {
   userCount: number
   percentile: number
   userTotal: number
+  isIndustryBenchmark: boolean
 }
 
 const USE_CASE_NAMES: Record<string, string> = {
@@ -308,12 +309,16 @@ export function TrackerClient({ tools, autoAddSlug, importTools }: { tools: Tool
         <div className="rounded-xl border border-foreground/[0.06] bg-foreground/[0.02] px-5 py-3 flex items-center gap-3 text-sm">
           <Lightbulb className="h-4 w-4 text-amber-500 shrink-0" />
           <p className="text-muted-foreground">
-            {benchmark.percentile >= 70 ? (
+            {benchmark.isIndustryBenchmark ? (
+              total > benchmark.avgMonthly
+                ? <>The typical individual spends <strong className="text-foreground">${benchmark.avgMonthly}/mo</strong> on AI. You&apos;re at <strong className="text-foreground">${total.toFixed(0)}/mo</strong> — above average.</>
+                : <>The typical individual spends <strong className="text-foreground">${benchmark.avgMonthly}/mo</strong> on AI. You&apos;re at <strong className="text-foreground">${total.toFixed(0)}/mo</strong> — below average.</>
+            ) : benchmark.percentile >= 70 ? (
               <>You spend more than <strong className="text-foreground">{benchmark.percentile}%</strong> of tracked users. Average is <strong className="text-foreground">${benchmark.avgMonthly}/mo</strong>.</>
             ) : benchmark.percentile <= 30 ? (
               <>You spend less than <strong className="text-foreground">{100 - benchmark.percentile}%</strong> of tracked users. You&apos;re lean.</>
             ) : (
-              <>Average AI spend across tracked users: <strong className="text-foreground">${benchmark.avgMonthly}/mo</strong>. You&apos;re at ${total.toFixed(0)}/mo.</>
+              <>Average across tracked users: <strong className="text-foreground">${benchmark.avgMonthly}/mo</strong>. You&apos;re at ${total.toFixed(0)}/mo.</>
             )}
           </p>
         </div>
