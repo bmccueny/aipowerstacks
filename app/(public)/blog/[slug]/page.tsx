@@ -297,7 +297,10 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                     prose-a:text-primary prose-a:font-semibold prose-a:underline prose-a:decoration-primary/30 prose-a:underline-offset-4 hover:prose-a:decoration-primary/60 prose-a:transition-colors
                     prose-img:rounded-xl prose-img:border prose-img:border-border/20
                     prose-strong:text-foreground prose-strong:font-bold
-                    prose-code:text-primary prose-code:bg-primary/5 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:font-mono"
+                    prose-code:text-primary prose-code:bg-primary/5 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:font-mono
+                    prose-table:block prose-table:overflow-x-auto prose-table:whitespace-nowrap sm:prose-table:table sm:prose-table:whitespace-normal
+                    prose-th:px-3 prose-th:py-2 prose-th:text-left prose-th:text-sm prose-th:font-bold
+                    prose-td:px-3 prose-td:py-2 prose-td:text-sm prose-td:border-t prose-td:border-border/20"
                   dangerouslySetInnerHTML={{ __html: safeContent }}
                 />
 
