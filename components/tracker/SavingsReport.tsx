@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import { Loader2, TrendingDown, AlertTriangle, ArrowRight, ArrowDown, ChevronDown, ChevronUp, Download, Share2, Image as ImageIcon, Sparkles } from 'lucide-react'
 import { toast } from 'sonner'
@@ -40,30 +40,24 @@ const ROLE_BENCHMARKS: Record<string, number> = {
   founder: 180,
 }
 
-export function SavingsReport() {
-  const [report, setReport] = useState<Report | null>(null)
-  const [loading, setLoading] = useState(true)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function SavingsReport({ data }: { data: any }) {
   const [expanded, setExpanded] = useState(true)
-  const [aiAnalysis, setAiAnalysis] = useState<string | null>(null)
-  const [aiLoading, setAiLoading] = useState(false)
-  const [aiRequested, setAiRequested] = useState(false)
   const [role, setRole] = useState<string | null>(null)
 
-  useEffect(() => {
-    fetch('/api/tracker/report')
-      .then(r => r.json())
-      .then(d => { setReport(d.report || null); setLoading(false) })
-      .catch(() => setLoading(false))
-  }, [])
+  const report: Report | null = data ? {
+    totalMonthly: data.totalMonthly,
+    totalYearly: data.totalYearly,
+    toolCount: data.toolCount,
+    overlaps: data.overlaps,
+    premiumOverlaps: data.premiumOverlaps,
+    benchmark: data.benchmark,
+    totalPotentialSavings: data.totalPotentialSavings,
+    missingUseCases: data.missingUseCases,
+    verdict: data.verdict,
+  } : null
 
-  const requestAnalysis = () => {
-    setAiLoading(true)
-    setAiRequested(true)
-    fetch('/api/tracker/analyze')
-      .then(r => r.json())
-      .then(d => { setAiAnalysis(d.analysis || null); setAiLoading(false) })
-      .catch(() => setAiLoading(false))
-  }
+  const analysis = data?.analysis as string | null
 
   const downloadReport = () => {
     window.open('/api/tracker/export-pdf', '_blank')
@@ -93,26 +87,6 @@ export function SavingsReport() {
     } catch {
       toast.error('Could not generate report card')
     }
-  }
-
-  if (loading) {
-    return (
-      <div className="rounded-2xl border border-primary/15 bg-gradient-to-b from-primary/[0.03] to-transparent p-8 text-center space-y-4">
-        <div className="relative h-10 w-10 mx-auto">
-          <div className="absolute inset-0 rounded-full border-2 border-primary/20" />
-          <div className="absolute inset-0 rounded-full border-2 border-primary border-t-transparent animate-spin" />
-        </div>
-        <div>
-          <p className="text-sm font-bold">Analyzing your stack...</p>
-          <p className="text-xs text-muted-foreground mt-1">Checking for overlap, comparing tiers, benchmarking spend</p>
-        </div>
-        <div className="flex justify-center gap-1">
-          <div className="h-1 w-8 rounded-full bg-primary/20 overflow-hidden"><div className="h-full w-full bg-primary animate-pulse" style={{ animationDelay: '0ms' }} /></div>
-          <div className="h-1 w-8 rounded-full bg-primary/20 overflow-hidden"><div className="h-full w-full bg-primary animate-pulse" style={{ animationDelay: '200ms' }} /></div>
-          <div className="h-1 w-8 rounded-full bg-primary/20 overflow-hidden"><div className="h-full w-full bg-primary animate-pulse" style={{ animationDelay: '400ms' }} /></div>
-        </div>
-      </div>
-    )
   }
 
   if (!report || report.toolCount === 0) return null
@@ -210,37 +184,18 @@ export function SavingsReport() {
             </div>
           </div>
 
-          {/* AI Analysis */}
-          {!aiRequested ? (
-            <button
-              onClick={requestAnalysis}
-              className="w-full rounded-xl border border-primary/20 bg-gradient-to-b from-primary/[0.04] to-transparent p-5 text-center hover:border-primary/30 transition-all cursor-pointer group"
-            >
-              <div className="flex items-center justify-center gap-2 mb-1">
-                <Sparkles className="h-4 w-4 text-primary" />
-                <span className="text-sm font-bold group-hover:text-primary transition-colors">Run Stack Analysis</span>
-              </div>
-              <p className="text-xs text-muted-foreground">Get a detailed breakdown of your stack</p>
-            </button>
-          ) : aiLoading ? (
-            <div className="rounded-xl border border-primary/15 bg-gradient-to-b from-primary/[0.03] to-transparent p-6 text-center space-y-3">
-              <div className="relative h-8 w-8 mx-auto">
-                <div className="absolute inset-0 rounded-full border-2 border-primary/20" />
-                <div className="absolute inset-0 rounded-full border-2 border-primary border-t-transparent animate-spin" />
-              </div>
-              <p className="text-sm font-bold">Analyzing your stack...</p>
-            </div>
-          ) : aiAnalysis ? (
+          {/* Stack Analysis */}
+          {analysis && (
             <div className="rounded-xl border border-primary/15 bg-gradient-to-b from-primary/[0.03] to-transparent p-5">
               <div className="flex items-center gap-2 mb-3">
                 <Sparkles className="h-4 w-4 text-primary shrink-0" />
                 <span className="text-xs font-bold uppercase tracking-wider text-primary">Stack Analysis</span>
               </div>
               <div className="text-sm text-foreground/90 leading-relaxed whitespace-pre-line">
-                {aiAnalysis}
+                {analysis}
               </div>
             </div>
-          ) : null}
+          )}
 
           {/* Overlap groups */}
           {report.overlaps.length > 0 && (

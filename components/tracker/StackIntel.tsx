@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
-import { Loader2, ChevronDown, ChevronUp, Users, CalendarCheck, BarChart3, Brain, ArrowRight } from 'lucide-react'
+import { ChevronDown, ChevronUp, Users, CalendarCheck, BarChart3, Brain, ArrowRight } from 'lucide-react'
 
 type ScoreBreakdown = {
   total: number
@@ -47,31 +47,18 @@ function scoreLabel(score: number): string {
 
 const BAR_COLORS = ['bg-primary', 'bg-amber-500', 'bg-emerald-500', 'bg-violet-500', 'bg-blue-500', 'bg-rose-500', 'bg-cyan-500']
 
-export function StackIntel() {
-  const [intel, setIntel] = useState<Intel | null>(null)
-  const [loading, setLoading] = useState(true)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function StackIntel({ data }: { data: any }) {
   const [expanded, setExpanded] = useState(true)
   const [teamSize, setTeamSize] = useState(1)
 
-  useEffect(() => {
-    fetch('/api/tracker/stack-intel')
-      .then(r => r.json())
-      .then(d => { setIntel(d.intel || null); setLoading(false) })
-      .catch(() => setLoading(false))
-  }, [])
+  if (!data) return null
 
-  if (loading) {
-    return (
-      <div className="rounded-xl border border-foreground/[0.06] p-6 text-center">
-        <Loader2 className="h-5 w-5 animate-spin mx-auto text-muted-foreground mb-2" />
-        <p className="text-xs text-muted-foreground">Crunching your stack data...</p>
-      </div>
-    )
-  }
-
-  if (!intel) return null
-
-  const { score, categorySpend, annualSavings, alsoUse, teamCosts } = intel
+  const score = data.stackScore as ScoreBreakdown
+  const categorySpend = (data.categorySpend || []) as CategorySpend[]
+  const annualSavings = (data.annualSavings || []) as AnnualSaving[]
+  const alsoUse = (data.alsoUse || []) as AlsoUse[]
+  const teamCosts = (data.teamCosts || []) as TeamCost[]
   const selectedTeam = teamCosts.find(t => t.size === teamSize) || teamCosts[0]
 
   return (

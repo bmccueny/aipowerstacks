@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { Plus, Trash2, DollarSign, TrendingUp, TrendingDown, Loader2, Search, X, AlertTriangle, ArrowRight, Lightbulb, ChevronDown, ChevronUp } from 'lucide-react'
+import { Plus, Trash2, DollarSign, TrendingUp, TrendingDown, Loader2, Search, X, AlertTriangle, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
@@ -16,7 +16,7 @@ type Subscription = {
   monthly_cost: number
   billing_cycle: string
   created_at: string
-  tools: { name: string; slug: string; logo_url: string | null; pricing_model: string; use_case?: string | null; category_id?: string | null } | null
+  tools: { name: string; slug: string; logo_url: string | null; pricing_model: string; use_case?: string | null; category_id?: string | null; categories?: { name: string } | null } | null
 }
 
 type ToolOption = {
@@ -33,20 +33,6 @@ type PricingTier = {
   features: string | null
 }
 
-type Insight = {
-  type: string
-  title: string
-  body: string
-  action?: { label: string; href: string }
-}
-
-type Benchmark = {
-  avgMonthly: number
-  userCount: number
-  percentile: number
-  userTotal: number
-  isIndustryBenchmark: boolean
-}
 
 const USE_CASE_NAMES: Record<string, string> = {
   'content-creation': 'Content Creation',
@@ -70,9 +56,9 @@ export function TrackerClient({ tools, autoAddSlug, importTools }: { tools: Tool
   const [search, setSearch] = useState('')
   const [showDropdown, setShowDropdown] = useState(false)
   const [autoAddHandled, setAutoAddHandled] = useState(false)
-  const [insights, setInsights] = useState<Record<string, Insight[]>>({})
-  const [benchmark, setBenchmark] = useState<Benchmark | null>(null)
-  const [expandedInsights, setExpandedInsights] = useState<Set<string>>(new Set())
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [dashboardData, setDashboardData] = useState<any>(null)
+  const [dashboardLoading, setDashboardLoading] = useState(false)
   const wrapperRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -150,29 +136,17 @@ export function TrackerClient({ tools, autoAddSlug, importTools }: { tools: Tool
       .catch(() => setTiersLoading(false))
   }, [selectedTool])
 
-  // Fetch benchmark when subs change
-  const fetchBenchmark = useCallback(() => {
-    if (subs.length === 0) { setBenchmark(null); return }
-    fetch('/api/tracker/benchmark')
+  // Single dashboard fetch — replaces benchmark, report, stack-intel, analyze
+  const fetchDashboard = useCallback(() => {
+    if (subs.length < 2) { setDashboardData(null); return }
+    setDashboardLoading(true)
+    fetch('/api/tracker/dashboard')
       .then(r => r.json())
-      .then(d => setBenchmark(d))
-      .catch(() => setBenchmark(null))
+      .then(d => { setDashboardData(d.dashboard || null); setDashboardLoading(false) })
+      .catch(() => setDashboardLoading(false))
   }, [subs.length])
 
-  useEffect(() => { fetchBenchmark() }, [fetchBenchmark])
-
-  // Fetch insights for a specific tool after it's added
-  const fetchInsights = (toolId: string) => {
-    fetch(`/api/tracker/insights?tool_id=${toolId}`)
-      .then(r => r.json())
-      .then(d => {
-        if (d.insights && d.insights.length > 0) {
-          setInsights(prev => ({ ...prev, [toolId]: d.insights }))
-          setExpandedInsights(prev => new Set(prev).add(toolId))
-        }
-      })
-      .catch(() => {})
-  }
+  useEffect(() => { fetchDashboard() }, [fetchDashboard])
 
   const selectTool = (tool: ToolOption) => {
     setSelectedTool(tool)
@@ -195,34 +169,20 @@ export function TrackerClient({ tools, autoAddSlug, importTools }: { tools: Tool
       setSelectedTool(null)
       setCustomCost('')
       toast.success('Subscription added')
-      fetchInsights(toolId)
     } else {
       toast.error('Failed to add')
     }
     setAdding(false)
   }
 
-  const removeSub = async (id: string, toolId: string) => {
+  const removeSub = async (id: string) => {
     const res = await fetch(`/api/tracker?id=${id}`, { method: 'DELETE' })
     if (res.ok) {
       setSubs(prev => prev.filter(s => s.id !== id))
-      setInsights(prev => {
-        const next = { ...prev }
-        delete next[toolId]
-        return next
-      })
       toast.success('Removed')
     }
   }
 
-  const toggleInsights = (toolId: string) => {
-    setExpandedInsights(prev => {
-      const next = new Set(prev)
-      if (next.has(toolId)) next.delete(toolId)
-      else next.add(toolId)
-      return next
-    })
-  }
 
   const total = subs.reduce((sum, s) => sum + Number(s.monthly_cost), 0)
   const yearly = total * 12
@@ -250,9 +210,10 @@ export function TrackerClient({ tools, autoAddSlug, importTools }: { tools: Tool
         // Use the use_case label if all tools share one, otherwise describe generically
         const useCases = new Set(items.map(s => s.tools?.use_case).filter(Boolean))
         const sharedUseCase = useCases.size === 1 ? [...useCases][0] : null
+        const categoryName = items[0].tools?.categories?.name
         const label = sharedUseCase
           ? (USE_CASE_NAMES[sharedUseCase] || sharedUseCase)
-          : `${items[0].tools?.name?.split(' ')[0] || 'Similar'}-category`
+          : (categoryName || 'Similar')
         return {
           useCase: categoryId,
           label,
@@ -304,26 +265,6 @@ export function TrackerClient({ tools, autoAddSlug, importTools }: { tools: Tool
           </div>
         )}
       </div>
-
-      {/* Benchmark bar */}
-      {benchmark && subs.length >= 2 && (
-        <div className="rounded-xl border border-foreground/[0.06] bg-foreground/[0.02] px-5 py-3 flex items-center gap-3 text-sm">
-          <Lightbulb className="h-4 w-4 text-amber-500 shrink-0" />
-          <p className="text-muted-foreground">
-            {benchmark.isIndustryBenchmark ? (
-              total > benchmark.avgMonthly
-                ? <>The typical individual spends <strong className="text-foreground">${benchmark.avgMonthly}/mo</strong> on AI. You&apos;re at <strong className="text-foreground">${total.toFixed(0)}/mo</strong> — above average.</>
-                : <>The typical individual spends <strong className="text-foreground">${benchmark.avgMonthly}/mo</strong> on AI. You&apos;re at <strong className="text-foreground">${total.toFixed(0)}/mo</strong> — below average.</>
-            ) : benchmark.percentile >= 70 ? (
-              <>You spend more than <strong className="text-foreground">{benchmark.percentile}%</strong> of tracked users. Average is <strong className="text-foreground">${benchmark.avgMonthly}/mo</strong>.</>
-            ) : benchmark.percentile <= 30 ? (
-              <>You spend less than <strong className="text-foreground">{100 - benchmark.percentile}%</strong> of tracked users. You&apos;re lean.</>
-            ) : (
-              <>Average across tracked users: <strong className="text-foreground">${benchmark.avgMonthly}/mo</strong>. You&apos;re at ${total.toFixed(0)}/mo.</>
-            )}
-          </p>
-        </div>
-      )}
 
       {/* Add subscription — z-20 so dropdown overlays the list below */}
       <div className="glass-card rounded-xl p-6 relative z-20">
@@ -488,7 +429,7 @@ export function TrackerClient({ tools, autoAddSlug, importTools }: { tools: Tool
         </div>
       )}
 
-      {/* Subscription list with inline insights */}
+      {/* Subscription list */}
       {subs.length === 0 ? (
         <div className="glass-card rounded-xl p-12 text-center">
           <DollarSign className="h-10 w-10 text-muted-foreground/20 mx-auto mb-3" />
@@ -497,81 +438,49 @@ export function TrackerClient({ tools, autoAddSlug, importTools }: { tools: Tool
         </div>
       ) : (
         <div className="space-y-2">
-          {subs.map(sub => {
-            const toolInsights = insights[sub.tool_id]
-            const isExpanded = expandedInsights.has(sub.tool_id)
-
-            return (
-              <div key={sub.id}>
-                <div className="glass-card rounded-xl px-5 py-4 flex items-center gap-4">
-                  <div className="h-10 w-10 rounded-lg bg-muted overflow-hidden flex items-center justify-center shrink-0">
-                    {sub.tools?.logo_url ? (
-                      <img src={sub.tools.logo_url} alt="" className="w-10 h-10 object-contain" />
-                    ) : (
-                      <span className="text-sm font-bold text-primary">{sub.tools?.name?.[0] || '?'}</span>
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <Link href={`/tools/${sub.tools?.slug || ''}`} className="font-bold text-sm hover:text-primary transition-colors">
-                      {sub.tools?.name || 'Unknown Tool'}
-                    </Link>
-                    <p className="text-xs text-muted-foreground">{sub.tools?.pricing_model || 'paid'}</p>
-                  </div>
-
-                  {/* Insight toggle */}
-                  {toolInsights && toolInsights.length > 0 && (
-                    <button
-                      onClick={() => toggleInsights(sub.tool_id)}
-                      className="flex items-center gap-1 text-[10px] font-semibold text-amber-600 dark:text-amber-400 hover:underline shrink-0"
-                    >
-                      <Lightbulb className="h-3 w-3" />
-                      {toolInsights.length} tip{toolInsights.length > 1 ? 's' : ''}
-                      {isExpanded ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
-                    </button>
-                  )}
-
-                  <p className="text-lg font-black shrink-0">
-                    {Number(sub.monthly_cost) === 0 ? 'Free' : `$${Number(sub.monthly_cost).toFixed(2)}`}
-                    {Number(sub.monthly_cost) > 0 && <span className="text-xs text-muted-foreground font-normal">/mo</span>}
-                  </p>
-                  <button onClick={() => removeSub(sub.id, sub.tool_id)} className="text-muted-foreground hover:text-destructive transition-colors shrink-0 p-1">
-                    <Trash2 className="h-4 w-4" />
-                  </button>
-                </div>
-
-                {/* Inline insights panel */}
-                {toolInsights && isExpanded && (
-                  <div className="ml-14 mt-1 space-y-2 mb-2">
-                    {toolInsights.map((insight, i) => (
-                      <div
-                        key={i}
-                        className={`rounded-lg px-4 py-3 text-xs border ${
-                          insight.type === 'cheaper_alternative'
-                            ? 'border-emerald-400/20 bg-emerald-400/[0.04]'
-                            : insight.type === 'tier_check'
-                              ? 'border-amber-400/20 bg-amber-400/[0.04]'
-                              : 'border-blue-400/20 bg-blue-400/[0.04]'
-                        }`}
-                      >
-                        <p className="font-semibold mb-0.5">{insight.title}</p>
-                        <p className="text-muted-foreground">{insight.body}</p>
-                        {insight.action && (
-                          <Link href={insight.action.href} className="inline-flex items-center gap-1 text-primary font-semibold hover:underline mt-1.5">
-                            {insight.action.label} <ArrowRight className="h-3 w-3" />
-                          </Link>
-                        )}
-                      </div>
-                    ))}
-                  </div>
+          {subs.map(sub => (
+            <div key={sub.id} className="glass-card rounded-xl px-5 py-4 flex items-center gap-4">
+              <div className="h-10 w-10 rounded-lg bg-muted overflow-hidden flex items-center justify-center shrink-0">
+                {sub.tools?.logo_url ? (
+                  <img src={sub.tools.logo_url} alt="" className="w-10 h-10 object-contain" />
+                ) : (
+                  <span className="text-sm font-bold text-primary">{sub.tools?.name?.[0] || '?'}</span>
                 )}
               </div>
-            )
-          })}
+              <div className="flex-1 min-w-0">
+                <Link href={`/tools/${sub.tools?.slug || ''}`} className="font-bold text-sm hover:text-primary transition-colors">
+                  {sub.tools?.name || 'Unknown Tool'}
+                </Link>
+                <p className="text-xs text-muted-foreground">{sub.tools?.pricing_model || 'paid'}</p>
+              </div>
+              <p className="text-lg font-black shrink-0">
+                {Number(sub.monthly_cost) === 0 ? 'Free' : `$${Number(sub.monthly_cost).toFixed(2)}`}
+                {Number(sub.monthly_cost) > 0 && <span className="text-xs text-muted-foreground font-normal">/mo</span>}
+              </p>
+              <button onClick={() => removeSub(sub.id)} className="text-muted-foreground hover:text-destructive transition-colors shrink-0 p-1">
+                <Trash2 className="h-4 w-4" />
+              </button>
+            </div>
+          ))}
         </div>
       )}
 
-      {/* Stack intelligence — score, category breakdown, insights */}
-      {subs.length >= 2 && <StackIntel key={`intel-${subs.map(s => s.id).join(',')}`} />}
+      {/* Stack intelligence + savings report — powered by single /dashboard fetch */}
+      {subs.length >= 2 && dashboardData && (
+        <>
+          <StackIntel data={dashboardData} />
+          <SavingsReport data={dashboardData} />
+        </>
+      )}
+      {subs.length >= 2 && dashboardLoading && (
+        <div className="rounded-2xl border border-primary/15 bg-gradient-to-b from-primary/[0.03] to-transparent p-8 text-center space-y-3">
+          <div className="relative h-10 w-10 mx-auto">
+            <div className="absolute inset-0 rounded-full border-2 border-primary/20" />
+            <div className="absolute inset-0 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+          </div>
+          <p className="text-sm font-bold">Analyzing your stack...</p>
+        </div>
+      )}
 
       {/* Stack optimizer — compare your stack vs an optimized one */}
       {subs.length >= 2 && (
@@ -586,8 +495,6 @@ export function TrackerClient({ tools, autoAddSlug, importTools }: { tools: Tool
         />
       )}
 
-      {/* Savings report */}
-      {subs.length >= 2 && <SavingsReport key={subs.map(s => s.id).join(',')} />}
     </div>
   )
 }
