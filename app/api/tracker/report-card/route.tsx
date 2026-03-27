@@ -21,12 +21,14 @@ export async function GET() {
   const totalYearly = Math.round(totalMonthly * 12)
   const toolCount = subs.length
 
-  // Count overlaps
+  // Count overlaps — group by category + use_case
   const catGroups = new Map<string, number>()
   for (const sub of subs) {
     const catId = sub.tools?.category_id
     if (!catId) continue
-    catGroups.set(catId, (catGroups.get(catId) || 0) + 1)
+    const useCase = sub.tools?.use_case || 'general'
+    const groupKey = `${catId}::${useCase}`
+    catGroups.set(groupKey, (catGroups.get(groupKey) || 0) + 1)
   }
   const overlapCount = Array.from(catGroups.values()).filter(c => c >= 2).length
 

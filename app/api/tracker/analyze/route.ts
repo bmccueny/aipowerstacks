@@ -54,15 +54,17 @@ export async function GET() {
     }
   }
 
-  // Group by category — exclude usage-based subs
+  // Group by category + use_case — exclude usage-based subs
   const catGroups = new Map<string, Sub[]>()
   for (const sub of subs) {
     if (usagePrices.get(sub.tool_id)?.has(Number(sub.monthly_cost))) continue
     const catId = sub.tools?.category_id
     if (!catId) continue
-    const list = catGroups.get(catId) || []
+    const useCase = sub.tools?.use_case || 'general'
+    const groupKey = `${catId}::${useCase}`
+    const list = catGroups.get(groupKey) || []
     list.push(sub)
-    catGroups.set(catId, list)
+    catGroups.set(groupKey, list)
   }
 
   const cheapestTierByTool = new Map<string, { name: string; price: number }>()
@@ -90,8 +92,9 @@ export async function GET() {
   const overlapGroups = Array.from(catGroups.entries()).filter(([, items]) => items.length >= 2)
   if (overlapGroups.length > 0) {
     const overlapLines: string[] = []
-    for (const [catId, items] of overlapGroups) {
-      const catName = catMap.get(catId) || 'Unknown'
+    for (const [groupKey, items] of overlapGroups) {
+      const [actualCatId] = groupKey.split('::')
+      const catName = catMap.get(actualCatId) || 'Unknown'
       const names = items.map(s => s.tools.name)
       const totalCatCost = items.reduce((s, i) => s + Number(i.monthly_cost), 0)
       const scored = items.map(s => ({

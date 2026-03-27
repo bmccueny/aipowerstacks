@@ -45,22 +45,42 @@ export async function GET() {
   const totalMonthly = subs.reduce((sum, s) => sum + Number(s.monthly_cost), 0)
   const totalYearly = totalMonthly * 12
 
-  // ── 1. Find overlap groups (by category_id)
+  // ── Identify usage-based (API/token) subscriptions to exclude from overlap ──
+  const toolIds = subs.map(s => s.tool_id)
+  const { data: allTiers } = await untypedFrom(supabase, 'tool_pricing_tiers')
+    .select('tool_id, tier_name, monthly_price')
+    .in('tool_id', toolIds)
+  const usagePrices = new Map<string, Set<number>>()
+  for (const t of allTiers || []) {
+    const lower = (t.tier_name || '').toLowerCase()
+    if (lower.includes('api') || lower.includes('token')) {
+      const set = usagePrices.get(t.tool_id) || new Set()
+      set.add(t.monthly_price)
+      usagePrices.set(t.tool_id, set)
+    }
+  }
+  const isUsageBased = (sub: Sub) => usagePrices.get(sub.tool_id)?.has(Number(sub.monthly_cost)) ?? false
+
+  // ── 1. Find overlap groups (by category + use_case) — exclude usage-based subs ──
+  // Tools must share BOTH category AND use_case to be considered competing.
   const categoryGroups = new Map<string, Sub[]>()
   for (const sub of subs) {
+    if (isUsageBased(sub)) continue
     const catId = sub.tools?.category_id
     if (!catId) continue
-    const list = categoryGroups.get(catId) || []
+    const useCase = sub.tools?.use_case || 'general'
+    const groupKey = `${catId}::${useCase}`
+    const list = categoryGroups.get(groupKey) || []
     list.push(sub)
-    categoryGroups.set(catId, list)
+    categoryGroups.set(groupKey, list)
   }
 
   // Get category names
-  const catIds = Array.from(categoryGroups.keys())
+  const catIds = [...new Set(subs.map(s => s.tools?.category_id).filter((id): id is string => id != null))]
   const { data: categories } = await supabase
     .from('categories')
     .select('id, name')
-    .in('id', catIds)
+    .in('id', catIds.length > 0 ? catIds : ['none'])
 
   const catNameMap = new Map<string, string>()
   for (const cat of categories || []) {
@@ -69,13 +89,11 @@ export async function GET() {
 
   const overlaps = Array.from(categoryGroups.entries())
     .filter(([, items]) => items.length >= 2)
-    .map(([catId, items]) => {
-      // Use shared use_case label or category name
-      const useCases = new Set(items.map(s => s.tools?.use_case).filter(Boolean))
-      const sharedUseCase = useCases.size === 1 ? [...useCases][0] : null
-      const label = sharedUseCase
-        ? USE_CASE_LABELS[sharedUseCase] || sharedUseCase
-        : catNameMap.get(catId) || 'Similar Tools'
+    .map(([groupKey, items]) => {
+      const [actualCatId, groupUseCase] = groupKey.split('::')
+      const label = groupUseCase && groupUseCase !== 'general'
+        ? (USE_CASE_LABELS[groupUseCase] || groupUseCase)
+        : (catNameMap.get(actualCatId) || 'Similar Tools')
 
       // Score each tool: rating weighted by review confidence
       // A 4.8 with 50 reviews > a 5.0 with 1 review

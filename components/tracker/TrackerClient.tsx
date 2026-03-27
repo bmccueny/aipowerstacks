@@ -16,6 +16,7 @@ type Subscription = {
   monthly_cost: number
   billing_cycle: string
   created_at: string
+  is_usage_based?: boolean
   tools: { name: string; slug: string; logo_url: string | null; pricing_model: string; use_case?: string | null; category_id?: string | null; categories?: { name: string } | null } | null
 }
 
@@ -192,30 +193,29 @@ export function TrackerClient({ tools, autoAddSlug, importTools }: { tools: Tool
     ? tools.filter(t => t.name.toLowerCase().includes(search.toLowerCase()) && !alreadyTracked.has(t.id)).slice(0, 10)
     : []
 
-  // Compute overlaps — group by category_id (tightest match),
-  // then label with use_case for display
+  // Compute overlaps — group by category + use_case (tightest match).
+  // Tools must share BOTH to be considered competing.
   const overlaps = subs.length >= 2 ? (() => {
+    const fixedSubs = subs.filter(s => !s.is_usage_based)
     const groups: Record<string, Subscription[]> = {}
-    for (const sub of subs) {
-      // Use category_id as primary grouper — tools in the same category
-      // actually compete with each other (e.g. two code editors, two image generators)
-      const key = sub.tools?.category_id
-      if (!key) continue
+    for (const sub of fixedSubs) {
+      const catId = sub.tools?.category_id
+      if (!catId) continue
+      const useCase = sub.tools?.use_case || 'general'
+      const key = `${catId}::${useCase}`
       if (!groups[key]) groups[key] = []
       groups[key].push(sub)
     }
     return Object.entries(groups)
       .filter(([, items]) => items.length >= 2 && items.some(s => Number(s.monthly_cost) > 0))
-      .map(([categoryId, items]) => {
-        // Use the use_case label if all tools share one, otherwise describe generically
-        const useCases = new Set(items.map(s => s.tools?.use_case).filter(Boolean))
-        const sharedUseCase = useCases.size === 1 ? [...useCases][0] : null
+      .map(([groupKey, items]) => {
+        const [, groupUseCase] = groupKey.split('::')
         const categoryName = items[0].tools?.categories?.name
-        const label = sharedUseCase
-          ? (USE_CASE_NAMES[sharedUseCase] || sharedUseCase)
+        const label = groupUseCase && groupUseCase !== 'general'
+          ? (USE_CASE_NAMES[groupUseCase] || groupUseCase)
           : (categoryName || 'Similar')
         return {
-          useCase: categoryId,
+          useCase: groupKey,
           label,
           tools: items,
           totalCost: items.reduce((sum, s) => sum + Number(s.monthly_cost), 0),

@@ -10,24 +10,42 @@ export async function GET() {
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { data: rawSubs } = await untypedFrom(supabase, 'user_subscriptions')
-    .select('monthly_cost, tools:tool_id(name, use_case, category_id)')
+    .select('tool_id, monthly_cost, tools:tool_id(name, use_case, category_id)')
     .eq('user_id', user.id)
     .order('monthly_cost', { ascending: false })
 
-  type Sub = { monthly_cost: number; tools: { name: string; use_case: string | null; category_id: string | null } }
+  type Sub = { tool_id: string; monthly_cost: number; tools: { name: string; use_case: string | null; category_id: string | null } }
   const subs = (rawSubs || []) as Sub[]
 
   const totalMonthly = subs.reduce((s, sub) => s + Number(sub.monthly_cost), 0)
   const totalYearly = Math.round(totalMonthly * 12)
 
-  // Count overlaps
+  // Identify usage-based (API/token) subs to exclude from overlap
+  const toolIds = subs.map(s => s.tool_id)
+  const { data: allTiers } = await untypedFrom(supabase, 'tool_pricing_tiers')
+    .select('tool_id, tier_name, monthly_price')
+    .in('tool_id', toolIds.length > 0 ? toolIds : ['none'])
+  const usagePrices = new Map<string, Set<number>>()
+  for (const t of allTiers || []) {
+    const lower = (t.tier_name || '').toLowerCase()
+    if (lower.includes('api') || lower.includes('token')) {
+      const set = usagePrices.get(t.tool_id) || new Set()
+      set.add(t.monthly_price)
+      usagePrices.set(t.tool_id, set)
+    }
+  }
+
+  // Count overlaps — group by category + use_case, exclude usage-based subs
   const catGroups = new Map<string, Sub[]>()
   for (const sub of subs) {
+    if (usagePrices.get(sub.tool_id)?.has(Number(sub.monthly_cost))) continue
     const catId = sub.tools?.category_id
     if (!catId) continue
-    const list = catGroups.get(catId) || []
+    const useCase = sub.tools?.use_case || 'general'
+    const groupKey = `${catId}::${useCase}`
+    const list = catGroups.get(groupKey) || []
     list.push(sub)
-    catGroups.set(catId, list)
+    catGroups.set(groupKey, list)
   }
 
   const overlaps = Array.from(catGroups.entries())

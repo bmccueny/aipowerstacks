@@ -36,15 +36,17 @@ export async function GET(request: Request) {
   const subs = (rawSubs || []) as Sub[]
   if (subs.length < 2) return NextResponse.json({ optimized: null })
 
-  // Group subs by category
+  // Group subs by category + use_case
   const catGroups = new Map<string, Sub[]>()
   const uncategorized: Sub[] = []
   for (const sub of subs) {
     const catId = sub.tools?.category_id
     if (!catId) { uncategorized.push(sub); continue }
-    const list = catGroups.get(catId) || []
+    const useCase = sub.tools?.use_case || 'general'
+    const groupKey = `${catId}::${useCase}`
+    const list = catGroups.get(groupKey) || []
     list.push(sub)
-    catGroups.set(catId, list)
+    catGroups.set(groupKey, list)
   }
 
   const optimizedTools: OptTool[] = []

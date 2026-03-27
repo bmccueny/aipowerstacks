@@ -47,7 +47,10 @@ export async function GET() {
   const catGroupCounts = new Map<string, number>()
   for (const sub of subs) {
     const catId = sub.tools?.category_id
-    if (catId) catGroupCounts.set(catId, (catGroupCounts.get(catId) || 0) + 1)
+    if (!catId) continue
+    const useCase = sub.tools?.use_case || 'general'
+    const groupKey = `${catId}::${useCase}`
+    catGroupCounts.set(groupKey, (catGroupCounts.get(groupKey) || 0) + 1)
   }
   const overlapCount = Array.from(catGroupCounts.values()).filter(c => c >= 2).reduce((s, c) => s + (c - 1), 0)
   const efficiencyScore = Math.max(0, 25 - (overlapCount * 8))
