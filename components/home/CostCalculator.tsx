@@ -101,45 +101,32 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
 
   const quickAdd = (tool: QuickTool) => {
     setLoadingToolId(tool.id)
-    console.log('[CostCalc] quickAdd:', tool.name, tool.id)
     fetch(`/api/tracker/tiers?tool_id=${tool.id}`)
-      .then(r => {
-        console.log('[CostCalc] tiers response status:', r.status)
-        return r.json()
-      })
+      .then(r => r.json())
       .then(d => {
-        console.log('[CostCalc] tiers data:', JSON.stringify(d).slice(0, 200))
         const tierList = d.tiers || []
         const paidTiers = tierList.filter((t: { monthly_price: number }) => t.monthly_price > 0)
         const defaultTier = paidTiers[0] || tierList[0]
         if (defaultTier) {
-          console.log('[CostCalc] auto-adding with tier:', defaultTier.tier_name, defaultTier.monthly_price)
           setAdded(prev => [...prev, {
             ...tool,
             price: defaultTier.monthly_price,
             tier: defaultTier.tier_name,
           }])
         } else {
-          console.log('[CostCalc] no tiers found, showing picker')
           selectTool(tool)
         }
         setLoadingToolId(null)
       })
-      .catch((err) => {
-        console.error('[CostCalc] tiers fetch failed:', err)
+      .catch(() => {
         selectTool(tool)
         setLoadingToolId(null)
       })
   }
 
   const addWithTier = (price: number, tierName: string) => {
-    if (!selectedTool) { console.error('[CostCalc] addWithTier: no selectedTool'); return }
-    console.log('[CostCalc] addWithTier:', selectedTool.name, price, tierName)
-    setAdded(prev => {
-      const next = [...prev, { ...selectedTool, price, tier: tierName }]
-      console.log('[CostCalc] added count:', next.length)
-      return next
-    })
+    if (!selectedTool) return
+    setAdded(prev => [...prev, { ...selectedTool, price, tier: tierName }])
     setSelectedTool(null)
   }
 

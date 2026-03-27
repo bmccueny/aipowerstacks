@@ -27,7 +27,7 @@ export async function GET() {
       .select('tool_id, tier_name, monthly_price')
       .in('tool_id', toolIds)
 
-    if (tiers) {
+    if (tiers && Array.isArray(tiers)) {
       const usageTiersByTool = new Map<string, { price: number; name: string }[]>()
       for (const t of tiers) {
         const lower = (t.tier_name || '').toLowerCase()
@@ -39,7 +39,7 @@ export async function GET() {
       }
       for (const sub of data as { tool_id: string; monthly_cost: number; is_usage_based?: boolean }[]) {
         const usageTiers = usageTiersByTool.get(sub.tool_id)
-        if (usageTiers?.some(t => t.price === Number(sub.monthly_cost))) {
+        if (usageTiers?.some(t => Math.abs(t.price - Number(sub.monthly_cost)) < 0.01)) {
           sub.is_usage_based = true
         }
       }

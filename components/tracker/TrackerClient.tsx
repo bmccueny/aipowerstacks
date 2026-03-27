@@ -99,7 +99,10 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
 
   // Load subs: try API first (works if user has auth cookie), fall back to localStorage
   useEffect(() => {
-    fetch('/api/tracker')
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 10_000)
+
+    fetch('/api/tracker', { signal: controller.signal })
       .then(r => {
         if (!r.ok) throw new Error('not authed')
         return r.json()
@@ -110,17 +113,20 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
         setLoading(false)
       })
       .catch(() => {
-        // Not logged in — use localStorage
+        // Not logged in or request failed — use localStorage
         setClientLoggedIn(false)
         try {
           const stored = JSON.parse(localStorage.getItem(ANON_STORAGE_KEY) || '[]')
           setAnonSubs(stored.map((s: { tool_id: string; monthly_cost: number }) => {
             const tool = tools.find(t => t.id === s.tool_id)
             return tool ? { ...s, tool } : null
-          }).filter(Boolean))
+          }).filter((x: { tool_id: string; monthly_cost: number; tool: ToolOption } | null): x is { tool_id: string; monthly_cost: number; tool: ToolOption } => x != null))
         } catch { /* empty */ }
         setLoading(false)
       })
+      .finally(() => clearTimeout(timeout))
+
+    return () => { controller.abort(); clearTimeout(timeout) }
   }, [tools])
 
   // Auto-select tool from ?add= query param after subs load
@@ -151,7 +157,7 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
     if (toAdd.length === 0) return
 
     setImporting(true)
-    Promise.all(
+    Promise.allSettled(
       toAdd.map(({ tool, price }) =>
         fetch('/api/tracker', {
           method: 'POST',
@@ -159,14 +165,20 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
           body: JSON.stringify({ tool_id: tool.id, monthly_cost: price }),
         })
       )
-    ).then(() => {
+    ).then((results) => {
+      const succeeded = results.filter(r => r.status === 'fulfilled').length
       fetch('/api/tracker')
         .then(r => r.json())
         .then(d => {
           setSubs(d.subscriptions || [])
           setImporting(false)
-          toast.success(`Added ${toAdd.length} subscriptions from your calculator`)
+          if (succeeded === toAdd.length) {
+            toast.success(`Added ${succeeded} subscriptions from your calculator`)
+          } else {
+            toast.success(`Added ${succeeded} of ${toAdd.length} subscriptions`)
+          }
         })
+        .catch(() => setImporting(false))
     })
   }, [importTools, autoAddHandled, loading, subs, tools])
 
@@ -192,16 +204,16 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
   }, [selectedTool])
 
   // Single dashboard fetch — replaces benchmark, report, stack-intel, analyze
-  const fetchDashboard = useCallback(() => {
-    if (subs.length < 2) { setDashboardData(null); return }
+  // Re-fetch when sub count changes (additions/deletions trigger this)
+  const subsCount = subs.length
+  useEffect(() => {
+    if (subsCount < 2) { setDashboardData(null); return }
     setDashboardLoading(true)
     fetch('/api/tracker/dashboard')
       .then(r => r.json())
       .then(d => { setDashboardData(d.dashboard || null); setDashboardLoading(false) })
       .catch(() => setDashboardLoading(false))
-  }, [subs.length])
-
-  useEffect(() => { fetchDashboard() }, [fetchDashboard])
+  }, [subsCount])
 
   const selectTool = (tool: ToolOption) => {
     setSelectedTool(tool)
@@ -233,8 +245,13 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
       body: JSON.stringify({ tool_id: toolId, monthly_cost: price, use_tags: selectedIntents.length > 0 ? selectedIntents : undefined }),
     })
     if (res.ok) {
-      const data = await (await fetch('/api/tracker')).json()
-      setSubs(data.subscriptions || [])
+      try {
+        const refreshRes = await fetch('/api/tracker')
+        if (refreshRes.ok) {
+          const data = await refreshRes.json()
+          setSubs(data.subscriptions || [])
+        }
+      } catch { /* refresh failed, sub was still added */ }
       setSelectedTool(null)
       setCustomCost('')
       setSelectedIntents([])
