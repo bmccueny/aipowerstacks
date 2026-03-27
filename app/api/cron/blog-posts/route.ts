@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { generateCoverImage } from '@/lib/utils/generateCoverImage'
+import { addInternalLinks } from '@/lib/utils/blog-internal-links'
 
 /* ── Editor personas (same as editor-reviews) ─────────────────────────────── */
 
@@ -705,12 +706,15 @@ export async function GET(request: Request) {
       scrapedParts.join('\n\n'),
     )
 
+    // Post-process: catch any tool mentions the AI prompt missed
+    const linkedContent = await addInternalLinks(post.content)
+
     const { error } = await supabase.from('blog_posts').upsert(
       {
         title: post.title,
         slug: post.slug,
         excerpt: post.excerpt,
-        content: post.content,
+        content: linkedContent,
         cover_image_url: post.cover_image_url,
         author_id: editor.id,
         tags: post.tags,

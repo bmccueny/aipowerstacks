@@ -102,14 +102,30 @@ export function generateJsonLd(tool: ToolWithTags) {
     image: tool.logo_url,
     applicationCategory: tool.categories?.slug ? (CATEGORY_MAP[tool.categories.slug] ?? 'BusinessApplication') : 'BusinessApplication',
     operatingSystem: 'Any',
-    ...(tool.pricing_model === 'free' ? {
-      offers: {
-        '@type': 'Offer',
-        price: '0',
-        priceCurrency: 'USD',
-        availability: 'https://schema.org/InStock',
-      },
-    } : {}),
+    ...(() => {
+      if (tool.pricing_model === 'free') {
+        return {
+          offers: {
+            '@type': 'Offer',
+            price: '0',
+            priceCurrency: 'USD',
+            availability: 'https://schema.org/InStock',
+          },
+        }
+      }
+      if (tool.pricing_model === 'freemium' || tool.pricing_model === 'paid' || tool.pricing_model === 'trial') {
+        return {
+          offers: {
+            '@type': 'AggregateOffer',
+            priceCurrency: 'USD',
+            availability: 'https://schema.org/InStock',
+            ...(tool.pricing_model === 'freemium' ? { lowPrice: '0' } : {}),
+            ...(tool.pricing_details ? { description: tool.pricing_details } : {}),
+          },
+        }
+      }
+      return {}
+    })(),
     aggregateRating: tool.review_count > 0 ? {
       '@type': 'AggregateRating',
       ratingValue: tool.avg_rating,

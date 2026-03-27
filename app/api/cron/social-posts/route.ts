@@ -191,6 +191,26 @@ async function callGrok(prompt: string): Promise<string> {
   return text.replace(/^["']|["']$/g, '')
 }
 
+/* ── LinkedIn adaptation ──────────────────────────────────────────────────── */
+
+async function adaptForLinkedIn(twitterContent: string, postType: PostType): Promise<string> {
+  const prompt = `Rewrite this tweet as a LinkedIn post (max 500 chars). Keep the same core message but adapt the tone for a professional B2B audience. No hashtags. No emojis. No "I'm excited to announce" or "Thrilled to share" openings.
+
+Tweet: ${twitterContent}
+Post type: ${postType}
+
+RULES:
+- Professional but not corporate-speak
+- Add one extra sentence of context or insight
+- If it's a question, frame it as inviting professional discussion
+- Do NOT use em dashes, en dashes, or semicolons
+- NEVER use hashtags
+
+Respond with ONLY the LinkedIn post text, nothing else.`
+
+  return callGrok(prompt)
+}
+
 /* ── Strip any hashtags Grok may still sneak in ──────────────────────────── */
 
 function stripHashtags(text: string): string {
@@ -349,6 +369,30 @@ export async function GET(request: Request) {
         results.push({ type: postType, status: 'error', error: insertError.message })
       } else {
         results.push({ type: postType, status: 'created', content: content.slice(0, 100) })
+      }
+
+      // Generate and insert LinkedIn version
+      try {
+        const linkedInContent = stripHashtags(await adaptForLinkedIn(content, postType))
+        if (linkedInContent) {
+          const { error: liError } = await supabase.from('social_posts').insert({
+            platform: 'linkedin',
+            post_type: postType,
+            content: linkedInContent,
+            hashtags: [],
+            link_url: linkUrl,
+            link_title: linkTitle,
+            source_type: sourceType,
+            source_id: sourceId,
+            status: 'draft',
+          })
+          if (!liError) {
+            results.push({ type: `${postType}_linkedin`, status: 'created', content: linkedInContent.slice(0, 100) })
+          }
+        }
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : String(err)
+        results.push({ type: `${postType}_linkedin`, status: 'error', error: msg.slice(0, 200) })
       }
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : String(err)

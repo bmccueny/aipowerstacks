@@ -6,6 +6,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { Button } from '@/components/ui/button'
+import { NewsletterBanner } from '@/components/layout/NewsletterBanner'
 import { SITE_URL } from '@/lib/constants/site'
 import { PRICING_LABELS } from '@/lib/constants'
 
@@ -139,6 +140,17 @@ export default async function MatchmakerResultsPage({ searchParams }: Props) {
             <p className="text-xs text-muted-foreground">
               Powered by AIPowerStacks AI Matchmaker
             </p>
+          </div>
+
+          {/* ═══ Newsletter opt-in ═══ */}
+          <div className="mt-10 max-w-md mx-auto">
+            <p className="text-sm font-semibold text-foreground mb-1 text-center">
+              Get weekly updates on these tools
+            </p>
+            <p className="text-xs text-muted-foreground mb-3 text-center">
+              Price changes, new alternatives, and overlap alerts.
+            </p>
+            <NewsletterBanner source="matchmaker-results" />
           </div>
         </div>
       </main>

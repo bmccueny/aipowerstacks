@@ -21,7 +21,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .eq('status', 'published')
       .gt('review_count', 0)
       .order('review_count', { ascending: false })
-      .limit(40),
+      .limit(200),
   ])
 
   const settled = <T,>(r: PromiseSettledResult<{ data: T | null }>) =>
@@ -71,8 +71,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
   const vsUrls: MetadataRoute.Sitemap = []
   for (const [, catTools] of vsByCategory) {
-    for (let i = 0; i < catTools.length && vsUrls.length < 50; i++) {
-      for (let j = i + 1; j < catTools.length && vsUrls.length < 50; j++) {
+    for (let i = 0; i < catTools.length && vsUrls.length < 500; i++) {
+      for (let j = i + 1; j < catTools.length && vsUrls.length < 500; j++) {
         vsUrls.push({
           url: `${BASE_URL}/compare/${catTools[i].slug}-vs-${catTools[j].slug}`,
           lastModified: new Date(Math.max(
