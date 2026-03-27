@@ -10,10 +10,25 @@ export async function GET() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const { data, error } = await subs(supabase)
+  // Try with use_tags first, fall back without if column doesn't exist yet
+  let data = null
+  let error = null
+  const result = await subs(supabase)
     .select('id, tool_id, monthly_cost, billing_cycle, created_at, use_tags, tools:tool_id(name, slug, logo_url, pricing_model, use_case, category_id, categories:category_id(name))')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
+  data = result.data
+  error = result.error
+
+  if (error) {
+    // Retry without use_tags in case column doesn't exist
+    const fallback = await subs(supabase)
+      .select('id, tool_id, monthly_cost, billing_cycle, created_at, tools:tool_id(name, slug, logo_url, pricing_model, use_case, category_id, categories:category_id(name))')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
+    data = fallback.data
+    error = fallback.error
+  }
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
@@ -66,14 +81,29 @@ export async function POST(request: Request) {
     tool_id,
     monthly_cost: parseFloat(monthly_cost),
   }
+
+  // Try with use_tags first, retry without if column doesn't exist
   if (Array.isArray(use_tags) && use_tags.length > 0) {
     row.use_tags = use_tags
   }
 
-  const { data, error } = await subs(supabase)
+  let { data: insertData, error: insertError } = await subs(supabase)
     .upsert(row, { onConflict: 'user_id,tool_id' })
     .select('id')
     .single()
+
+  if (insertError && row.use_tags) {
+    delete row.use_tags
+    const retry = await subs(supabase)
+      .upsert(row, { onConflict: 'user_id,tool_id' })
+      .select('id')
+      .single()
+    insertData = retry.data
+    insertError = retry.error
+  }
+
+  const data = insertData
+  const error = insertError
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json({ id: data.id })
