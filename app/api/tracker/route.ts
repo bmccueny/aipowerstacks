@@ -11,7 +11,7 @@ export async function GET() {
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { data, error } = await subs(supabase)
-    .select('id, tool_id, monthly_cost, billing_cycle, created_at, tools:tool_id(name, slug, logo_url, pricing_model, use_case, category_id, categories:category_id(name))')
+    .select('id, tool_id, monthly_cost, billing_cycle, created_at, use_tags, tools:tool_id(name, slug, logo_url, pricing_model, use_case, category_id, categories:category_id(name))')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
 
@@ -55,18 +55,23 @@ export async function POST(request: Request) {
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const body = await request.json()
-  const { tool_id, monthly_cost } = body
+  const { tool_id, monthly_cost, use_tags } = body
 
   if (!tool_id || monthly_cost == null || monthly_cost < 0) {
     return NextResponse.json({ error: 'tool_id and monthly_cost are required' }, { status: 400 })
   }
 
+  const row: Record<string, unknown> = {
+    user_id: user.id,
+    tool_id,
+    monthly_cost: parseFloat(monthly_cost),
+  }
+  if (Array.isArray(use_tags) && use_tags.length > 0) {
+    row.use_tags = use_tags
+  }
+
   const { data, error } = await subs(supabase)
-    .upsert({
-      user_id: user.id,
-      tool_id,
-      monthly_cost: parseFloat(monthly_cost),
-    }, { onConflict: 'user_id,tool_id' })
+    .upsert(row, { onConflict: 'user_id,tool_id' })
     .select('id')
     .single()
 

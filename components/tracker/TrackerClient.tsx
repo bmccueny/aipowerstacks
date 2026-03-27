@@ -9,6 +9,7 @@ import Link from 'next/link'
 import { SavingsReport } from './SavingsReport'
 import { StackOptimizer } from './StackOptimizer'
 import { StackIntel } from './StackIntel'
+import { SpendChart } from './SpendChart'
 
 type Subscription = {
   id: string
@@ -17,6 +18,7 @@ type Subscription = {
   billing_cycle: string
   created_at: string
   is_usage_based?: boolean
+  use_tags?: string[] | null
   tools: { name: string; slug: string; logo_url: string | null; pricing_model: string; use_case?: string | null; category_id?: string | null; categories?: { name: string } | null } | null
 }
 
@@ -37,6 +39,17 @@ type PopularTool = {
 
 const ANON_STORAGE_KEY = 'aips_tracker_anon'
 const ANON_LIMIT = 3
+
+const INTENT_TAGS = [
+  { value: 'coding', label: 'Coding', icon: '⌨️' },
+  { value: 'writing', label: 'Writing', icon: '✍️' },
+  { value: 'research', label: 'Research', icon: '🔬' },
+  { value: 'chat', label: 'Chat / Q&A', icon: '💬' },
+  { value: 'design', label: 'Design', icon: '🎨' },
+  { value: 'marketing', label: 'Marketing', icon: '📈' },
+  { value: 'video', label: 'Video / Audio', icon: '🎬' },
+  { value: 'data', label: 'Data / Analytics', icon: '📊' },
+]
 
 const STARTER_BUNDLES = [
   { label: 'Developer Stack', icon: '⌨️', slugs: ['cursor-editor', 'claude-code', 'github-copilot'] },
@@ -72,6 +85,7 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
   const [tiers, setTiers] = useState<PricingTier[]>([])
   const [tiersLoading, setTiersLoading] = useState(false)
   const [customCost, setCustomCost] = useState('')
+  const [selectedIntents, setSelectedIntents] = useState<string[]>([])
   const [search, setSearch] = useState('')
   const [showDropdown, setShowDropdown] = useState(false)
   const [autoAddHandled, setAutoAddHandled] = useState(false)
@@ -202,6 +216,7 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
       localStorage.setItem(ANON_STORAGE_KEY, JSON.stringify(newAnon.map(s => ({ tool_id: s.tool_id, monthly_cost: s.monthly_cost }))))
       setSelectedTool(null)
       setCustomCost('')
+      setSelectedIntents([])
       toast.success('Subscription added')
       setAdding(false)
       return
@@ -211,13 +226,14 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
     const res = await fetch('/api/tracker', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ tool_id: toolId, monthly_cost: price }),
+      body: JSON.stringify({ tool_id: toolId, monthly_cost: price, use_tags: selectedIntents.length > 0 ? selectedIntents : undefined }),
     })
     if (res.ok) {
       const data = await (await fetch('/api/tracker')).json()
       setSubs(data.subscriptions || [])
       setSelectedTool(null)
       setCustomCost('')
+      setSelectedIntents([])
       toast.success('Subscription added')
     } else {
       toast.error('Failed to add')
@@ -269,27 +285,53 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
     ? tools.filter(t => t.name.toLowerCase().includes(search.toLowerCase()) && !alreadyTracked.has(t.id)).slice(0, 10)
     : []
 
-  // Compute overlaps — group by category + use_case (tightest match).
-  // Tools must share BOTH to be considered competing.
+  // Compute overlaps — group by intent tags (preferred) or category + use_case (fallback).
+  // Intent tags catch overlaps like ChatGPT vs Claude that share "chat" intent
+  // even if they're in different categories.
   const overlaps = subs.length >= 2 ? (() => {
     const fixedSubs = subs.filter(s => !s.is_usage_based)
     const groups: Record<string, Subscription[]> = {}
+
     for (const sub of fixedSubs) {
-      const catId = sub.tools?.category_id
-      if (!catId) continue
-      const useCase = sub.tools?.use_case || 'general'
-      const key = `${catId}::${useCase}`
-      if (!groups[key]) groups[key] = []
-      groups[key].push(sub)
+      const tags = sub.use_tags && sub.use_tags.length > 0 ? sub.use_tags : null
+
+      if (tags) {
+        // Intent-based grouping: each tag creates a group
+        for (const tag of tags) {
+          const key = `intent::${tag}`
+          if (!groups[key]) groups[key] = []
+          groups[key].push(sub)
+        }
+      } else {
+        // Fallback: category + use_case grouping
+        const catId = sub.tools?.category_id
+        if (!catId) continue
+        const useCase = sub.tools?.use_case || 'general'
+        const key = `cat::${catId}::${useCase}`
+        if (!groups[key]) groups[key] = []
+        groups[key].push(sub)
+      }
     }
+
+    // Deduplicate: a tool pair may appear in multiple intent groups
+    const seen = new Set<string>()
     return Object.entries(groups)
       .filter(([, items]) => items.length >= 2 && items.some(s => Number(s.monthly_cost) > 0))
       .map(([groupKey, items]) => {
-        const [, groupUseCase] = groupKey.split('::')
+        const pairKey = items.map(s => s.tool_id).sort().join(',')
+        if (seen.has(pairKey)) return null
+        seen.add(pairKey)
+
+        const isIntent = groupKey.startsWith('intent::')
+        const tag = isIntent ? groupKey.split('::')[1] : null
+        const intentLabel = tag ? (INTENT_TAGS.find(t => t.value === tag)?.label || tag) : null
         const categoryName = items[0].tools?.categories?.name
-        const label = groupUseCase && groupUseCase !== 'general'
-          ? (USE_CASE_NAMES[groupUseCase] || groupUseCase)
-          : (categoryName || 'Similar')
+        const fallbackUseCase = groupKey.split('::').pop()
+        const label = intentLabel
+          || (fallbackUseCase && fallbackUseCase !== 'general' ? (USE_CASE_NAMES[fallbackUseCase] || fallbackUseCase) : null)
+          || categoryName
+          || 'Similar'
+
         return {
           useCase: groupKey,
           label,
@@ -297,6 +339,7 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
           totalCost: items.reduce((sum, s) => sum + Number(s.monthly_cost), 0),
         }
       })
+      .filter(Boolean) as { useCase: string; label: string; tools: Subscription[]; totalCost: number }[]
   })() : []
 
   // Potential savings from overlaps
@@ -420,6 +463,29 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
               <button onClick={() => setSelectedTool(null)} className="p-1.5 rounded-lg hover:bg-muted transition-colors">
                 <X className="h-4 w-4 text-muted-foreground" />
               </button>
+            </div>
+
+            {/* Intent tags — what do you use this for? */}
+            <div className="mb-4">
+              <p className="text-xs font-semibold text-muted-foreground mb-2">What do you use it for?</p>
+              <div className="flex flex-wrap gap-1.5">
+                {INTENT_TAGS.map(tag => (
+                  <button
+                    key={tag.value}
+                    type="button"
+                    onClick={() => setSelectedIntents(prev =>
+                      prev.includes(tag.value) ? prev.filter(t => t !== tag.value) : [...prev, tag.value]
+                    )}
+                    className={`inline-flex items-center gap-1 h-7 px-2.5 rounded-full border text-xs font-semibold transition-all ${
+                      selectedIntents.includes(tag.value)
+                        ? 'border-primary/40 bg-primary/10 text-primary'
+                        : 'border-foreground/10 hover:border-foreground/20 text-muted-foreground'
+                    }`}
+                  >
+                    <span className="text-sm">{tag.icon}</span> {tag.label}
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* Pricing tiers */}
@@ -618,6 +684,15 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
           </Link>
         )}
         </>
+      )}
+
+      {/* Spend history chart */}
+      {subs.length >= 2 && (
+        <SpendChart subscriptions={subs.map(s => ({
+          created_at: s.created_at,
+          monthly_cost: Number(s.monthly_cost),
+          tools: s.tools ? { name: s.tools.name } : null,
+        }))} />
       )}
 
       {/* Stack intelligence + savings report — powered by single /dashboard fetch */}
