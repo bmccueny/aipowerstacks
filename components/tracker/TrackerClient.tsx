@@ -475,29 +475,6 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
               </button>
             </div>
 
-            {/* Intent tags — what do you use this for? */}
-            <div className="mb-4">
-              <p className="text-xs font-semibold text-muted-foreground mb-2">What do you use it for?</p>
-              <div className="flex flex-wrap gap-1.5">
-                {INTENT_TAGS.map(tag => (
-                  <button
-                    key={tag.value}
-                    type="button"
-                    onClick={() => setSelectedIntents(prev =>
-                      prev.includes(tag.value) ? prev.filter(t => t !== tag.value) : [...prev, tag.value]
-                    )}
-                    className={`inline-flex items-center gap-1 h-7 px-2.5 rounded-full border text-xs font-semibold transition-all ${
-                      selectedIntents.includes(tag.value)
-                        ? 'border-primary/40 bg-primary/10 text-primary'
-                        : 'border-foreground/10 hover:border-foreground/20 text-muted-foreground'
-                    }`}
-                  >
-                    <span className="text-sm">{tag.icon}</span> {tag.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
             {/* Pricing tiers */}
             {tiersLoading ? (
               <div className="flex justify-center py-6"><Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /></div>
