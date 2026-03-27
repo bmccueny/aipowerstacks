@@ -210,9 +210,15 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
     if (subsCount < 2) { setDashboardData(null); return }
     setDashboardLoading(true)
     fetch('/api/tracker/dashboard')
-      .then(r => r.json())
+      .then(r => {
+        if (!r.ok) throw new Error(`Dashboard ${r.status}`)
+        return r.json()
+      })
       .then(d => { setDashboardData(d.dashboard || null); setDashboardLoading(false) })
-      .catch(() => setDashboardLoading(false))
+      .catch(() => {
+        setDashboardData(null)
+        setDashboardLoading(false)
+      })
   }, [subsCount])
 
   const selectTool = (tool: ToolOption) => {
@@ -670,8 +676,8 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
           </div>
         )}
 
-        {/* Save your stack CTA for anonymous users */}
-        {!clientLoggedIn && anonSubs.length > 0 && (
+        {/* Save your stack CTA for anonymous users — only after loading completes */}
+        {!loading && !clientLoggedIn && anonSubs.length > 0 && (
           <Link href={`/login?redirectTo=${encodeURIComponent('/tracker')}`} className="block">
             <div className="rounded-xl border border-primary/30 bg-gradient-to-r from-primary/[0.06] to-primary/[0.02] p-5 text-center hover:border-primary/50 transition-all cursor-pointer">
               <p className="text-sm font-bold text-primary mb-1">Save your stack &amp; unlock full analysis</p>
@@ -683,7 +689,7 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
       )}
 
       {/* Spend history chart */}
-      {subs.length >= 2 && (
+      {subsCount >= 2 && (
         <SpendChart subscriptions={subs.map(s => ({
           created_at: s.created_at,
           monthly_cost: Number(s.monthly_cost),
@@ -692,13 +698,18 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
       )}
 
       {/* Stack intelligence + savings report — powered by single /dashboard fetch */}
-      {subs.length >= 2 && dashboardData && (
+      {subsCount >= 2 && dashboardData && (
         <>
           <StackIntel data={dashboardData} />
           <SavingsReport data={dashboardData} />
         </>
       )}
-      {subs.length >= 2 && dashboardLoading && (
+      {subsCount >= 2 && !dashboardData && !dashboardLoading && clientLoggedIn && (
+        <div className="rounded-xl border border-foreground/[0.06] p-5 text-center">
+          <p className="text-sm text-muted-foreground">Analysis could not be loaded. Try refreshing the page.</p>
+        </div>
+      )}
+      {subsCount >= 2 && dashboardLoading && (
         <div className="space-y-4">
           <div className="rounded-xl border border-foreground/[0.06] p-4 flex items-center gap-3">
             <div className="h-10 w-10 rounded-full bg-muted animate-pulse shrink-0" />
@@ -715,7 +726,7 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
       )}
 
       {/* Stack optimizer — compare your stack vs an optimized one */}
-      {subs.length >= 2 && (
+      {subsCount >= 2 && (
         <div id="stack-optimizer">
         <StackOptimizer
           key={`opt-${subs.map(s => s.id).join(',')}`}
