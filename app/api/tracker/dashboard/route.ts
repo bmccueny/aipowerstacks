@@ -49,20 +49,43 @@ export async function GET() {
   const totalMonthly = subs.reduce((s, sub) => s + Number(sub.monthly_cost), 0)
   const totalYearly = Math.round(totalMonthly * 12)
 
+  // ── Identify usage-based (API/token) subscriptions to exclude from overlap ──
+  const toolIds = subs.map(s => s.tool_id)
+  const { data: usageTiers } = await untypedFrom(supabase, 'tool_pricing_tiers')
+    .select('tool_id, tier_name, monthly_price')
+    .in('tool_id', toolIds)
+  const usagePrices = new Map<string, Set<number>>()
+  for (const t of usageTiers || []) {
+    const lower = (t.tier_name || '').toLowerCase()
+    if (lower.includes('api') || lower.includes('token')) {
+      const set = usagePrices.get(t.tool_id) || new Set()
+      set.add(t.monthly_price)
+      usagePrices.set(t.tool_id, set)
+    }
+  }
+  const isUsageBased = (sub: Sub) => usagePrices.get(sub.tool_id)?.has(Number(sub.monthly_cost)) ?? false
+
   // ── Single fetch for categories ──
   const catIds = [...new Set(subs.map(s => s.tools?.category_id).filter((id): id is string => id != null))]
   const { data: categories } = await supabase.from('categories').select('id, name').in('id', catIds.length > 0 ? catIds : ['none'])
   const catMap = new Map<string, string>()
   for (const cat of categories || []) catMap.set(cat.id, cat.name)
 
-  // ── Group by category (reused by overlaps, score, spend breakdown) ──
+  // ── Group by category + use_case (tightest overlap detection) ──
+  // Tools must share BOTH category AND use_case to be considered competing.
+  // e.g. Grammarly (writing, content-creation) vs Jasper (writing, marketing)
+  // are in the same category but serve different purposes — not overlap.
+  // Exclude usage-based subs — pay-per-use doesn't compete with flat subscriptions.
   const catGroups = new Map<string, Sub[]>()
   for (const sub of subs) {
+    if (isUsageBased(sub)) continue
     const catId = sub.tools?.category_id
     if (!catId) continue
-    const list = catGroups.get(catId) || []
+    const useCase = sub.tools?.use_case || 'general'
+    const groupKey = `${catId}::${useCase}`
+    const list = catGroups.get(groupKey) || []
     list.push(sub)
-    catGroups.set(catId, list)
+    catGroups.set(groupKey, list)
   }
 
   // ═══ 1. STACK HEALTH SCORE ═══
@@ -106,12 +129,12 @@ export async function GET() {
   // ═══ 3. OVERLAPS (with ratings) ═══
   const overlaps = Array.from(catGroups.entries())
     .filter(([, items]) => items.length >= 2)
-    .map(([catId, items]) => {
-      const useCases = new Set(items.map(s => s.tools?.use_case).filter(Boolean))
-      const sharedUseCase = useCases.size === 1 ? [...useCases][0] : null
-      const label = sharedUseCase
-        ? (USE_CASE_LABELS[sharedUseCase] || sharedUseCase)
-        : catMap.get(catId) || 'Similar Tools'
+    .map(([groupKey, items]) => {
+      const [actualCatId, groupUseCase] = groupKey.split('::')
+      const useCaseLabel = groupUseCase && groupUseCase !== 'general'
+        ? (USE_CASE_LABELS[groupUseCase] || groupUseCase)
+        : null
+      const label = useCaseLabel || catMap.get(actualCatId) || 'Similar Tools'
 
       const scored = items.map(s => ({
         name: s.tools?.name || '?', slug: s.tools?.slug || '', logo_url: s.tools?.logo_url,
@@ -146,7 +169,7 @@ export async function GET() {
   }
 
   const premiumOverlaps: { label: string; tools: { name: string; slug: string; cost: number; cheapestTier: string; cheapestCost: number }[]; totalCost: number; savingsIfDowngradeRest: number }[] = []
-  for (const [catId, items] of catGroups.entries()) {
+  for (const [groupKey, items] of catGroups.entries()) {
     if (items.length < 2) continue
     const premiumItems = items.filter(s => {
       const cheapest = cheapestTierByTool.get(s.tool_id)
@@ -160,8 +183,9 @@ export async function GET() {
         return s + (ch ? Math.round((Number(t.monthly_cost) - ch.price) * 12) : 0)
       }, 0)
       if (savingsIfDowngradeRest > 0) {
-        const useCases = new Set(items.map(s => s.tools?.use_case).filter(Boolean))
-        const label = useCases.size === 1 ? (USE_CASE_LABELS[[...useCases][0] as string] || [...useCases][0]) : catMap.get(catId) || 'Similar Tools'
+        const [actualCatId2, groupUseCase2] = groupKey.split('::')
+        const ucLabel = groupUseCase2 && groupUseCase2 !== 'general' ? (USE_CASE_LABELS[groupUseCase2] || groupUseCase2) : null
+        const label = ucLabel || catMap.get(actualCatId2) || 'Similar Tools'
         premiumOverlaps.push({
           label: label as string,
           tools: premiumItems.map(t => ({ name: t.tools.name, slug: t.tools.slug, cost: Number(t.monthly_cost), cheapestTier: cheapestTierByTool.get(t.tool_id)?.name || '?', cheapestCost: cheapestTierByTool.get(t.tool_id)?.price || 0 })),
@@ -270,8 +294,9 @@ export async function GET() {
   const overlapGroups = Array.from(catGroups.entries()).filter(([, items]) => items.length >= 2)
   if (overlapGroups.length > 0) {
     const lines: string[] = []
-    for (const [catId, items] of overlapGroups) {
-      const catName = catMap.get(catId) || 'Unknown'
+    for (const [groupKey, items] of overlapGroups) {
+      const [aCatId, aUseCase] = groupKey.split('::')
+      const catName = (aUseCase && aUseCase !== 'general' ? (USE_CASE_LABELS[aUseCase] || aUseCase) : null) || catMap.get(aCatId) || 'Unknown'
       const names = items.map(s => s.tools.name)
       const totalCatCost = items.reduce((s, i) => s + Number(i.monthly_cost), 0)
       const scored2 = items.map(s => ({ name: s.tools.name, rating: s.tools.avg_rating, reviews: s.tools.review_count, cost: Number(s.monthly_cost) })).sort((a, b) => score(b.rating, b.reviews) - score(a.rating, a.reviews))

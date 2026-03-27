@@ -37,22 +37,33 @@ export async function GET() {
   const totalMonthly = subs.reduce((s, sub) => s + Number(sub.monthly_cost), 0)
   const totalYearly = totalMonthly * 12
 
-  // Group by category
+  // Get tier info for all tools
+  const allToolIds = subs.map(s => s.tool_id)
+  const { data: allTiers } = await untypedFrom(supabase, 'tool_pricing_tiers')
+    .select('tool_id, tier_name, monthly_price')
+    .in('tool_id', allToolIds)
+
+  // Identify usage-based (API/token) subs to exclude from overlap
+  const usagePrices = new Map<string, Set<number>>()
+  for (const t of allTiers || []) {
+    const lower = (t.tier_name || '').toLowerCase()
+    if (lower.includes('api') || lower.includes('token')) {
+      const set = usagePrices.get(t.tool_id) || new Set()
+      set.add(t.monthly_price)
+      usagePrices.set(t.tool_id, set)
+    }
+  }
+
+  // Group by category — exclude usage-based subs
   const catGroups = new Map<string, Sub[]>()
   for (const sub of subs) {
+    if (usagePrices.get(sub.tool_id)?.has(Number(sub.monthly_cost))) continue
     const catId = sub.tools?.category_id
     if (!catId) continue
     const list = catGroups.get(catId) || []
     list.push(sub)
     catGroups.set(catId, list)
   }
-
-  // Get tier info for all tools
-  const allToolIds = subs.map(s => s.tool_id)
-  const { data: allTiers } = await untypedFrom(supabase, 'tool_pricing_tiers')
-    .select('tool_id, tier_name, monthly_price')
-    .in('tool_id', allToolIds)
-    .order('monthly_price', { ascending: true })
 
   const cheapestTierByTool = new Map<string, { name: string; price: number }>()
   const tierCountByTool = new Map<string, number>()
