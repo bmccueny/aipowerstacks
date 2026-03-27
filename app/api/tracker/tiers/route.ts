@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const toolId = searchParams.get('tool_id')
   if (!toolId) return NextResponse.json({ tiers: [] })
 
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data, error } = await (supabase as any)

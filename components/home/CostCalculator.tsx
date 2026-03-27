@@ -273,7 +273,8 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
                   role="button"
                   tabIndex={0}
                   onMouseDown={e => { e.preventDefault(); selectTool(t) }}
-                  className="px-4 py-3 flex items-center gap-3 hover:bg-muted/80 cursor-pointer border-b border-border/20 last:border-0"
+                  onTouchEnd={e => { e.preventDefault(); selectTool(t) }}
+                  className="px-4 py-3 flex items-center gap-3 hover:bg-muted/80 active:bg-muted cursor-pointer border-b border-border/20 last:border-0"
                 >
                   {t.logo_url ? (
                     <img src={t.logo_url} alt="" className="w-7 h-7 rounded-lg object-contain shrink-0" />
