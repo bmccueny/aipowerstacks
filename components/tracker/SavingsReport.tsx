@@ -2,12 +2,14 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Loader2, TrendingDown, AlertTriangle, ArrowRight, ArrowDown, ChevronDown, ChevronUp } from 'lucide-react'
+import { Loader2, TrendingDown, AlertTriangle, ArrowRight, ArrowDown, ChevronDown, ChevronUp, Download, Share2, Image as ImageIcon, Sparkles } from 'lucide-react'
+import { toast } from 'sonner'
 
 type OverlapTool = { name: string; slug: string; logo_url: string | null; cost: number; rating: number; reviews: number; score: number }
 type Overlap = { label: string; tools: OverlapTool[]; topPick: string; topPickSlug: string; totalCost: number; savingsIfKeepBest: number }
 type PremiumOverlapTool = { name: string; slug: string; cost: number; cheapestTier: string; cheapestCost: number }
 type PremiumOverlap = { label: string; tools: PremiumOverlapTool[]; totalCost: number; savingsIfDowngradeRest: number }
+type MissingUseCase = { useCase: string; label: string; topTool: { name: string; slug: string; logo_url: string | null; avg_rating: number; review_count: number; cheapest_price: number } | null }
 
 type Report = {
   totalMonthly: number
@@ -17,6 +19,7 @@ type Report = {
   premiumOverlaps: PremiumOverlap[]
   benchmark: { avgMonthly: number; percentile: number }
   totalPotentialSavings: number
+  missingUseCases: MissingUseCase[]
   verdict: string
 }
 
@@ -29,6 +32,14 @@ const COMPARISONS = [
   { threshold: 3000, text: 'a month of rent' },
 ]
 
+const ROLE_BENCHMARKS: Record<string, number> = {
+  developer: 120,
+  marketer: 165,
+  creator: 140,
+  researcher: 95,
+  founder: 180,
+}
+
 export function SavingsReport() {
   const [report, setReport] = useState<Report | null>(null)
   const [loading, setLoading] = useState(true)
@@ -36,6 +47,7 @@ export function SavingsReport() {
   const [aiAnalysis, setAiAnalysis] = useState<string | null>(null)
   const [aiLoading, setAiLoading] = useState(false)
   const [aiRequested, setAiRequested] = useState(false)
+  const [role, setRole] = useState<string | null>(null)
 
   useEffect(() => {
     fetch('/api/tracker/report')
@@ -51,6 +63,36 @@ export function SavingsReport() {
       .then(r => r.json())
       .then(d => { setAiAnalysis(d.analysis || null); setAiLoading(false) })
       .catch(() => setAiLoading(false))
+  }
+
+  const downloadReport = () => {
+    window.open('/api/tracker/export-pdf', '_blank')
+    toast.success('Report downloaded')
+  }
+
+  const shareReportCard = async () => {
+    try {
+      const res = await fetch('/api/tracker/report-card')
+      const blob = await res.blob()
+      if (navigator.share && navigator.canShare?.({ files: [new File([blob], 'ai-spend.png', { type: 'image/png' })] })) {
+        await navigator.share({
+          title: 'My AI Spend Report',
+          text: `I spend $${report?.totalMonthly}/mo on AI tools. How about you?`,
+          files: [new File([blob], 'ai-spend.png', { type: 'image/png' })],
+        })
+      } else {
+        // Fallback: download the image
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = 'ai-spend-report.png'
+        a.click()
+        URL.revokeObjectURL(url)
+        toast.success('Report card downloaded — share it on social!')
+      }
+    } catch {
+      toast.error('Could not generate report card')
+    }
   }
 
   if (loading) {
@@ -76,20 +118,30 @@ export function SavingsReport() {
   if (!report || report.toolCount === 0) return null
 
   const savingsComparison = COMPARISONS.filter(c => report.totalPotentialSavings >= c.threshold).pop()
+  const roleAvg = role ? ROLE_BENCHMARKS[role] : null
 
   return (
     <div className="space-y-4">
-      {/* Header */}
-      <button
-        onClick={() => setExpanded(!expanded)}
-        className="w-full flex items-center justify-between"
-      >
-        <h3 className="text-sm font-bold flex items-center gap-2">
-          <TrendingDown className="h-4 w-4 text-emerald-500" />
-          Your Savings Report
-        </h3>
-        {expanded ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
-      </button>
+      {/* Header + actions */}
+      <div className="flex items-center justify-between">
+        <button onClick={() => setExpanded(!expanded)} className="flex items-center gap-2">
+          <h3 className="text-sm font-bold flex items-center gap-2">
+            <TrendingDown className="h-4 w-4 text-emerald-500" />
+            Your Savings Report
+          </h3>
+          {expanded ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
+        </button>
+        {expanded && (
+          <div className="flex items-center gap-1.5">
+            <button onClick={shareReportCard} className="h-8 w-8 rounded-lg border border-foreground/10 flex items-center justify-center hover:bg-muted/50 transition-colors" title="Share report card">
+              <ImageIcon className="h-3.5 w-3.5 text-muted-foreground" />
+            </button>
+            <button onClick={downloadReport} className="h-8 w-8 rounded-lg border border-foreground/10 flex items-center justify-center hover:bg-muted/50 transition-colors" title="Download report">
+              <Download className="h-3.5 w-3.5 text-muted-foreground" />
+            </button>
+          </div>
+        )}
+      </div>
 
       {expanded && (
         <div className="space-y-4">
@@ -119,6 +171,45 @@ export function SavingsReport() {
             )}
           </div>
 
+          {/* Role selector + benchmark */}
+          <div className="rounded-xl border border-foreground/[0.06] p-4">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Your spend vs benchmark</span>
+              <div className="flex gap-1">
+                {Object.keys(ROLE_BENCHMARKS).map(r => (
+                  <button
+                    key={r}
+                    onClick={() => setRole(role === r ? null : r)}
+                    className={`px-2.5 py-1 rounded-lg text-[10px] font-semibold transition-all ${
+                      role === r ? 'bg-primary/10 text-primary border border-primary/30' : 'border border-foreground/[0.06] text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
+                    {r.charAt(0).toUpperCase() + r.slice(1)}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm">
+                <strong className="text-foreground">${report.totalMonthly}/mo</strong>
+                <span className="text-muted-foreground"> · ${report.totalYearly}/yr</span>
+              </span>
+              <span className="text-xs">
+                {roleAvg ? (
+                  report.totalMonthly > roleAvg
+                    ? <span className="text-amber-500 font-semibold">Above avg for {role}s (${roleAvg}/mo)</span>
+                    : <span className="text-emerald-500 font-semibold">Below avg for {role}s (${roleAvg}/mo)</span>
+                ) : (
+                  report.benchmark.percentile >= 70
+                    ? <span className="text-amber-500 font-semibold">Top {100 - report.benchmark.percentile}% spender</span>
+                    : report.benchmark.percentile <= 30
+                      ? <span className="text-emerald-500 font-semibold">Below average</span>
+                      : <span className="text-muted-foreground">Average range</span>
+                )}
+              </span>
+            </div>
+          </div>
+
           {/* AI Analysis */}
           {!aiRequested ? (
             <button
@@ -126,10 +217,10 @@ export function SavingsReport() {
               className="w-full rounded-xl border border-primary/20 bg-gradient-to-b from-primary/[0.04] to-transparent p-5 text-center hover:border-primary/30 transition-all cursor-pointer group"
             >
               <div className="flex items-center justify-center gap-2 mb-1">
-                <svg className="h-4 w-4 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" /></svg>
-                <span className="text-sm font-bold group-hover:text-primary transition-colors">Run AI Analysis</span>
+                <Sparkles className="h-4 w-4 text-primary" />
+                <span className="text-sm font-bold group-hover:text-primary transition-colors">Run Stack Analysis</span>
               </div>
-              <p className="text-xs text-muted-foreground">Get a personalized breakdown of your stack from Claude</p>
+              <p className="text-xs text-muted-foreground">Get a detailed breakdown of your stack</p>
             </button>
           ) : aiLoading ? (
             <div className="rounded-xl border border-primary/15 bg-gradient-to-b from-primary/[0.03] to-transparent p-6 text-center space-y-3">
@@ -137,41 +228,19 @@ export function SavingsReport() {
                 <div className="absolute inset-0 rounded-full border-2 border-primary/20" />
                 <div className="absolute inset-0 rounded-full border-2 border-primary border-t-transparent animate-spin" />
               </div>
-              <div>
-                <p className="text-sm font-bold">Claude is analyzing your stack...</p>
-                <p className="text-xs text-muted-foreground mt-1">Checking each tool, comparing capabilities, finding waste</p>
-              </div>
+              <p className="text-sm font-bold">Analyzing your stack...</p>
             </div>
           ) : aiAnalysis ? (
             <div className="rounded-xl border border-primary/15 bg-gradient-to-b from-primary/[0.03] to-transparent p-5">
               <div className="flex items-center gap-2 mb-3">
-                <svg className="h-4 w-4 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" /></svg>
-                <span className="text-xs font-bold uppercase tracking-wider text-primary">AI Analysis</span>
+                <Sparkles className="h-4 w-4 text-primary shrink-0" />
+                <span className="text-xs font-bold uppercase tracking-wider text-primary">Stack Analysis</span>
               </div>
               <div className="text-sm text-foreground/90 leading-relaxed whitespace-pre-line">
                 {aiAnalysis}
               </div>
             </div>
           ) : null}
-
-          {/* Spend summary */}
-          <div className="rounded-xl border border-foreground/[0.06] p-4">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Your spend</span>
-              <span className="text-sm font-bold">${report.totalMonthly}/mo · ${report.totalYearly}/yr</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-xs text-muted-foreground">vs average user</span>
-              <span className="text-xs">
-                {report.benchmark.percentile >= 70
-                  ? <span className="text-amber-500 font-semibold">Top {100 - report.benchmark.percentile}% spender (avg ${report.benchmark.avgMonthly}/mo)</span>
-                  : report.benchmark.percentile <= 30
-                    ? <span className="text-emerald-500 font-semibold">Below average — you&apos;re lean</span>
-                    : <span className="text-muted-foreground">Average range (${report.benchmark.avgMonthly}/mo avg)</span>
-                }
-              </span>
-            </div>
-          </div>
 
           {/* Overlap groups */}
           {report.overlaps.length > 0 && (
@@ -228,7 +297,7 @@ export function SavingsReport() {
             </div>
           )}
 
-          {/* Premium overlap — paying top-tier on multiple competing tools */}
+          {/* Premium overlap */}
           {report.premiumOverlaps.length > 0 && (
             <div className="space-y-3">
               <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
@@ -263,6 +332,41 @@ export function SavingsReport() {
                   </Link>
                 </div>
               ))}
+            </div>
+          )}
+
+          {/* What you're missing */}
+          {report.missingUseCases && report.missingUseCases.length > 0 && (
+            <div className="space-y-3">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                <Sparkles className="h-3.5 w-3.5 text-violet-500" />
+                You might also want
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {report.missingUseCases.slice(0, 4).map((mc, i) => (
+                  mc.topTool && (
+                    <Link
+                      key={i}
+                      href={`/tools/${mc.topTool.slug}`}
+                      className="rounded-xl border border-foreground/[0.06] p-3 flex items-center gap-3 hover:border-primary/20 transition-all group"
+                    >
+                      <div className="h-9 w-9 rounded-lg overflow-hidden flex items-center justify-center shrink-0">
+                        {mc.topTool.logo_url ? (
+                          <img src={mc.topTool.logo_url} alt="" className="w-9 h-9 object-contain" />
+                        ) : (
+                          <span className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">{mc.topTool.name[0]}</span>
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-bold group-hover:text-primary transition-colors truncate">{mc.topTool.name}</p>
+                        <p className="text-[10px] text-muted-foreground">
+                          {mc.label} · ★ {mc.topTool.avg_rating.toFixed(1)} · {mc.topTool.cheapest_price > 0 ? `from $${mc.topTool.cheapest_price}/mo` : 'Free'}
+                        </p>
+                      </div>
+                    </Link>
+                  )
+                ))}
+              </div>
             </div>
           )}
 

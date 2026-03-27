@@ -207,7 +207,59 @@ export async function GET() {
     percentile = totals.length > 1 ? Math.round((belowCount / totals.length) * 100) : 50
   }
 
-  // ── 4. Total potential savings
+  // ── 4. What you're missing — use_case gaps
+  const ALL_USE_CASES: Record<string, string> = {
+    coding: 'Coding & Development',
+    'content-creation': 'Content Creation',
+    marketing: 'Marketing',
+    design: 'Design',
+    research: 'Research',
+    video: 'Video',
+    sales: 'Sales',
+  }
+
+  const userUseCases = new Set(subs.map(s => s.tools?.use_case).filter(Boolean))
+  const missingUseCases: { useCase: string; label: string; topTool: { name: string; slug: string; logo_url: string | null; avg_rating: number; review_count: number; cheapest_price: number } | null }[] = []
+
+  // Find use_cases the user doesn't have, suggest top tool in each
+  for (const [uc, label] of Object.entries(ALL_USE_CASES)) {
+    if (userUseCases.has(uc)) continue
+
+    const { data: topInCategory } = await supabase
+      .from('tools')
+      .select('id, name, slug, logo_url, avg_rating, review_count')
+      .eq('status', 'published')
+      .eq('use_case', uc)
+      .gte('review_count', 3)
+      .order('avg_rating', { ascending: false })
+      .limit(1)
+
+    if (topInCategory && topInCategory.length > 0) {
+      const tool = topInCategory[0]
+      // Get cheapest tier
+      const { data: tiers } = await untypedFrom(supabase, 'tool_pricing_tiers')
+        .select('monthly_price')
+        .eq('tool_id', tool.id)
+        .gt('monthly_price', 0)
+        .order('monthly_price', { ascending: true })
+        .limit(1)
+
+      missingUseCases.push({
+        useCase: uc,
+        label,
+        topTool: {
+          name: tool.name,
+          slug: tool.slug,
+          logo_url: tool.logo_url,
+          avg_rating: tool.avg_rating,
+          review_count: tool.review_count,
+          cheapest_price: tiers?.[0]?.monthly_price || 0,
+        },
+      })
+    }
+  }
+
+  // ── 5. Total potential savings
   const overlapSavings = overlaps.reduce((s, o) => s + o.savingsIfKeepBest, 0)
   const premiumSavings = premiumOverlaps.reduce((s, p) => s + p.savingsIfDowngradeRest, 0)
   const totalPotentialSavings = overlapSavings + premiumSavings
@@ -233,6 +285,7 @@ export async function GET() {
       premiumOverlaps,
       benchmark: { avgMonthly, percentile },
       totalPotentialSavings,
+      missingUseCases,
       verdict,
     },
   })
