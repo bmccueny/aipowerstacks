@@ -103,22 +103,9 @@ export default async function ToolDetailPage({ params }: Props) {
   const pricingColor = PRICING_BADGE_COLORS[tool.pricing_model] ?? PRICING_BADGE_COLORS.unknown
   const pricingLabel = PRICING_LABELS[tool.pricing_model] ?? 'Unknown'
 
-  const pros = (tool.pros && tool.pros.length > 0) 
-    ? tool.pros 
-    : [
-        tool.is_verified ? 'Verified listing with core tool details reviewed by the editorial team.' : null,
-        tool.pricing_model === 'free' || tool.pricing_model === 'freemium' ? 'Accessible pricing model for early testing.' : null,
-        tool.review_count > 0 && tool.avg_rating >= 4 ? `Strong user sentiment with a ${tool.avg_rating.toFixed(1)} average rating.` : null,
-        tool.integrations && tool.integrations.length > 0 ? `Integration support includes ${tool.integrations.slice(0, 3).map((item) => labelize(item)).filter(Boolean).join(', ')}.` : null,
-      ].filter(Boolean) as string[]
+  const pros = (tool.pros && tool.pros.length > 0) ? tool.pros : []
 
-  const cons = (tool.cons && tool.cons.length > 0)
-    ? tool.cons
-    : [
-        !tool.pricing_details ? 'Pricing details are limited and may require visiting the official website.' : null,
-        tool.review_count < 3 ? 'Limited public review volume, so performance may vary by workflow.' : null,
-        screenshots.length === 0 ? 'No screenshots provided for quick visual evaluation.' : null,
-      ].filter(Boolean) as string[]
+  const cons = (tool.cons && tool.cons.length > 0) ? tool.cons : []
 
   const showProsConsSection = pros.length > 0 || cons.length > 0
 
