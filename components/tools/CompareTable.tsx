@@ -45,6 +45,23 @@ export function CompareTable({ tools }: CompareTableProps) {
   const [canScrollRight, setCanScrollRight] = useState(false)
   const slugs = tools.map(t => t.slug)
   const emptySlots = MAX_TOOLS - tools.length
+  const [tiersByTool, setTiersByTool] = useState<Record<string, { tier_name: string; monthly_price: number }[]>>({})
+
+  // Fetch pricing tiers for all compared tools
+  useEffect(() => {
+    Promise.all(
+      tools.map(t =>
+        fetch(`/api/tracker/tiers?tool_id=${t.id}`)
+          .then(r => r.json())
+          .then(d => ({ id: t.id, tiers: d.tiers || [] }))
+          .catch(() => ({ id: t.id, tiers: [] }))
+      )
+    ).then(results => {
+      const map: Record<string, { tier_name: string; monthly_price: number }[]> = {}
+      for (const r of results) map[r.id] = r.tiers
+      setTiersByTool(map)
+    })
+  }, [tools])
 
   useEffect(() => {
     const el = scrollRef.current
@@ -202,6 +219,29 @@ export function CompareTable({ tools }: CompareTableProps) {
                     </span>
                   </td>
                 ))}
+              </CompareRow>
+              <CompareRow label="Plans" emptySlots={e}>
+                {tools.map((tool) => {
+                  const tiers = tiersByTool[tool.id] || []
+                  return (
+                    <td key={tool.id} className={CELL_CN}>
+                      {tiers.length > 0 ? (
+                        <div className="space-y-1">
+                          {tiers.map(tier => (
+                            <div key={tier.tier_name} className="flex items-center justify-between gap-2">
+                              <span className="text-[10px] sm:text-xs text-muted-foreground truncate">{tier.tier_name}</span>
+                              <span className="text-[10px] sm:text-xs font-bold shrink-0">
+                                {tier.monthly_price === 0 ? 'Free' : `$${tier.monthly_price}`}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <span className="text-[10px] text-muted-foreground/40">No pricing data</span>
+                      )}
+                    </td>
+                  )
+                })}
               </CompareRow>
               <CompareRow label="Tags" emptySlots={e}>
                 {tools.map((tool) => (
