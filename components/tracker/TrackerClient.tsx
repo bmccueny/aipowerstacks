@@ -95,24 +95,33 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
   const [importing, setImporting] = useState(false)
   const wrapperRef = useRef<HTMLDivElement>(null)
 
-  // Load anonymous subs from localStorage or real subs from API
+  const [clientLoggedIn, setClientLoggedIn] = useState(isLoggedIn)
+
+  // Load subs: try API first (works if user has auth cookie), fall back to localStorage
   useEffect(() => {
-    if (isLoggedIn) {
-      fetch('/api/tracker')
-        .then(r => r.json())
-        .then(d => { setSubs(d.subscriptions || []); setLoading(false) })
-        .catch(() => setLoading(false))
-    } else {
-      try {
-        const stored = JSON.parse(localStorage.getItem(ANON_STORAGE_KEY) || '[]')
-        setAnonSubs(stored.map((s: { tool_id: string; monthly_cost: number }) => {
-          const tool = tools.find(t => t.id === s.tool_id)
-          return tool ? { ...s, tool } : null
-        }).filter(Boolean))
-      } catch { /* empty */ }
-      setLoading(false)
-    }
-  }, [isLoggedIn, tools])
+    fetch('/api/tracker')
+      .then(r => {
+        if (!r.ok) throw new Error('not authed')
+        return r.json()
+      })
+      .then(d => {
+        setSubs(d.subscriptions || [])
+        setClientLoggedIn(true)
+        setLoading(false)
+      })
+      .catch(() => {
+        // Not logged in — use localStorage
+        setClientLoggedIn(false)
+        try {
+          const stored = JSON.parse(localStorage.getItem(ANON_STORAGE_KEY) || '[]')
+          setAnonSubs(stored.map((s: { tool_id: string; monthly_cost: number }) => {
+            const tool = tools.find(t => t.id === s.tool_id)
+            return tool ? { ...s, tool } : null
+          }).filter(Boolean))
+        } catch { /* empty */ }
+        setLoading(false)
+      })
+  }, [tools])
 
   // Auto-select tool from ?add= query param after subs load
   useEffect(() => {
@@ -204,7 +213,7 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
     if (!selectedTool || price < 0) return
     setAdding(true)
 
-    if (!isLoggedIn) {
+    if (!clientLoggedIn) {
       // Anonymous mode: store in localStorage (max ANON_LIMIT)
       if (anonSubs.length >= ANON_LIMIT) {
         toast.error(`Sign in to track more than ${ANON_LIMIT} tools`)
@@ -242,7 +251,7 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
   }
 
   const removeSub = async (id: string) => {
-    if (!isLoggedIn) {
+    if (!clientLoggedIn) {
       const newAnon = anonSubs.filter(s => s.tool_id !== id)
       setAnonSubs(newAnon)
       localStorage.setItem(ANON_STORAGE_KEY, JSON.stringify(newAnon.map(s => ({ tool_id: s.tool_id, monthly_cost: s.monthly_cost }))))
@@ -273,7 +282,7 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
 
 
   // Merge authenticated and anonymous subs for display
-  const effectiveSubs = isLoggedIn ? subs : []
+  const effectiveSubs = clientLoggedIn ? subs : []
   const anonTotal = anonSubs.reduce((sum, s) => sum + s.monthly_cost, 0)
   const total = effectiveSubs.reduce((sum, s) => sum + Number(s.monthly_cost), 0) + anonTotal
   const yearly = total * 12
@@ -380,7 +389,7 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
       )}
 
       {/* Optimizer banner — surface early when savings detected */}
-      {overlapSavings > 0 && effectiveCount >= 3 && isLoggedIn && (
+      {overlapSavings > 0 && effectiveCount >= 3 && clientLoggedIn && (
         <div className="rounded-xl border border-primary/20 bg-gradient-to-r from-primary/[0.04] to-emerald-500/[0.04] p-4 flex items-center gap-4">
           <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
             <TrendingDown className="h-5 w-5 text-primary" />
@@ -673,7 +682,7 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
         )}
 
         {/* Save your stack CTA for anonymous users */}
-        {!isLoggedIn && anonSubs.length > 0 && (
+        {!clientLoggedIn && anonSubs.length > 0 && (
           <Link href={`/login?redirectTo=${encodeURIComponent('/tracker')}`} className="block">
             <div className="rounded-xl border border-primary/30 bg-gradient-to-r from-primary/[0.06] to-primary/[0.02] p-5 text-center hover:border-primary/50 transition-all cursor-pointer">
               <p className="text-sm font-bold text-primary mb-1">Save your stack &amp; unlock full analysis</p>
