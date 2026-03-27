@@ -8,6 +8,7 @@ import { toast } from 'sonner'
 import Link from 'next/link'
 import { SavingsReport } from './SavingsReport'
 import { StackOptimizer } from './StackOptimizer'
+import { StackIntel } from './StackIntel'
 
 type Subscription = {
   id: string
@@ -568,6 +569,9 @@ export function TrackerClient({ tools, autoAddSlug, importTools }: { tools: Tool
           })}
         </div>
       )}
+
+      {/* Stack intelligence — score, category breakdown, insights */}
+      {subs.length >= 2 && <StackIntel key={`intel-${subs.map(s => s.id).join(',')}`} />}
 
       {/* Stack optimizer — compare your stack vs an optimized one */}
       {subs.length >= 2 && (
