@@ -96,6 +96,19 @@ export function SavingsReport({ data }: { data: any }) {
 
   return (
     <div className="space-y-4">
+      {/* Stack Analysis — always visible */}
+      {analysis && (
+        <div className="rounded-xl border border-primary/15 bg-gradient-to-b from-primary/[0.03] to-transparent p-5">
+          <div className="flex items-center gap-2 mb-3">
+            <Sparkles className="h-4 w-4 text-primary shrink-0" />
+            <span className="text-xs font-bold uppercase tracking-wider text-primary">Stack Analysis</span>
+          </div>
+          <div className="text-sm text-foreground/90 leading-relaxed whitespace-pre-line">
+            {analysis}
+          </div>
+        </div>
+      )}
+
       {/* Header + actions */}
       <div className="flex items-center justify-between">
         <button onClick={() => setExpanded(!expanded)} className="flex items-center gap-2">
@@ -189,19 +202,6 @@ export function SavingsReport({ data }: { data: any }) {
               </span>
             </div>
           </div>
-
-          {/* Stack Analysis */}
-          {analysis && (
-            <div className="rounded-xl border border-primary/15 bg-gradient-to-b from-primary/[0.03] to-transparent p-5">
-              <div className="flex items-center gap-2 mb-3">
-                <Sparkles className="h-4 w-4 text-primary shrink-0" />
-                <span className="text-xs font-bold uppercase tracking-wider text-primary">Stack Analysis</span>
-              </div>
-              <div className="text-sm text-foreground/90 leading-relaxed whitespace-pre-line">
-                {analysis}
-              </div>
-            </div>
-          )}
 
           {/* Overlap groups */}
           {report.overlaps.length > 0 && (
