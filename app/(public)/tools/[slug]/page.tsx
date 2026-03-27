@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { ChevronRight, ExternalLink, Star, Tag, TrendingDown, TrendingUp, Check, X, Zap } from 'lucide-react'
+import { ChevronRight, ExternalLink, Star, Tag, TrendingDown, TrendingUp, Check, X, Zap, DollarSign } from 'lucide-react'
 import { VerifiedBadge } from '@/components/ui/VerifiedBadge'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -78,7 +78,14 @@ export default async function ToolDetailPage({ params }: Props) {
     .order('published_at', { ascending: false })
     .limit(3)
 
-  const [reviews, alternatives, youMightLike, featuredInResult] = await Promise.all([
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const tiersQuery = (supabase as any)
+    .from('tool_pricing_tiers')
+    .select('tier_name, monthly_price, features')
+    .eq('tool_id', tool.id)
+    .order('sort_order', { ascending: true })
+
+  const [reviews, alternatives, youMightLike, featuredInResult, tiersResult] = await Promise.all([
     getReviewsByTool(tool.id, user?.id),
     getRelatedToolsByCategory({
       categoryId: tool.category_id,
@@ -87,7 +94,9 @@ export default async function ToolDetailPage({ params }: Props) {
     }),
     getPopularToolsExcluding([tool.id], 4),
     blogQuery,
+    tiersQuery,
   ])
+  const pricingTiers = (tiersResult.data || []) as { tier_name: string; monthly_price: number; features: string | null }[]
   const featuredInPosts = featuredInResult.data ?? []
 
   const screenshots = Array.isArray(tool.screenshot_urls) ? tool.screenshot_urls as string[] : []
@@ -172,9 +181,9 @@ export default async function ToolDetailPage({ params }: Props) {
           <span className="text-foreground">{tool.name}</span>
         </nav>
 
-        <div className="rounded-md border-2 border-amber-500/40 bg-amber-500/5 p-6 mb-6">
+        <div className="rounded-2xl border border-foreground/[0.08] bg-foreground/[0.02] p-6 mb-6">
           <div className="flex flex-col sm:flex-row gap-6">
-            <div className="h-24 w-24 shrink-0 rounded-md border border-foreground/15 bg-background overflow-hidden flex items-center justify-center">
+            <div className="h-24 w-24 shrink-0 rounded-xl border border-foreground/10 bg-background overflow-hidden flex items-center justify-center">
               {tool.logo_url ? (
                 <Image src={tool.logo_url} alt={tool.name} width={96} height={96} className="object-cover" />
               ) : (
@@ -183,7 +192,7 @@ export default async function ToolDetailPage({ params }: Props) {
             </div>
             <div className="flex-1">
               <div className="flex flex-wrap items-start gap-2 mb-2">
-                <h1 className="text-3xl font-black text-amber-700 dark:text-amber-400">{tool.name}</h1>
+                <h1 className="text-3xl font-black">{tool.name}</h1>
                 {tool.verified_by_admin && (
                   <VerifiedBadge size="sm" showLabel label="Expert Verified" />
                 )}
@@ -256,7 +265,7 @@ export default async function ToolDetailPage({ params }: Props) {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pb-20 lg:pb-0">
           <div className="lg:col-span-2 space-y-6">
-            <div className="glass-card rounded-md p-6">
+            <div className="glass-card rounded-xl p-6">
               <h2 className="text-lg font-semibold mb-3">About {tool.name}</h2>
               <div className="flex flex-wrap gap-1.5 mb-4 items-center">
                 <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground mr-1">Pricing:</span>
@@ -278,7 +287,7 @@ export default async function ToolDetailPage({ params }: Props) {
             {showProsConsSection && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {pros.length > 0 && (
-                  <div className="glass-card rounded-md p-5">
+                  <div className="glass-card rounded-xl p-5">
                     <h2 className="text-base font-semibold mb-3">Pros</h2>
                     <ul className="space-y-2 text-sm text-muted-foreground">
                       {pros.map((item) => (
@@ -291,7 +300,7 @@ export default async function ToolDetailPage({ params }: Props) {
                   </div>
                 )}
                 {cons.length > 0 && (
-                  <div className="glass-card rounded-md p-5">
+                  <div className="glass-card rounded-xl p-5">
                     <h2 className="text-base font-semibold mb-3">Cons</h2>
                     <ul className="space-y-2 text-sm text-muted-foreground">
                       {cons.map((item) => (
@@ -307,7 +316,7 @@ export default async function ToolDetailPage({ params }: Props) {
             )}
 
             {bestFor.length > 0 && (
-              <div className="glass-card rounded-md p-6">
+              <div className="glass-card rounded-xl p-6">
                 <h2 className="text-lg font-semibold mb-3">Best For</h2>
                 <ul className="space-y-2">
                   {bestFor.map((uc) => (
@@ -321,11 +330,11 @@ export default async function ToolDetailPage({ params }: Props) {
             )}
 
             {alternatives.length > 0 && (
-              <div className="glass-card rounded-md p-6">
+              <div className="glass-card rounded-xl p-6">
                 <h2 className="text-lg font-semibold mb-3">Alternatives</h2>
                 <div className="space-y-3">
                   {alternatives.map((alt) => (
-                    <div key={alt.id} className="border border-foreground/20 rounded-md p-3 flex items-center justify-between gap-4">
+                    <div key={alt.id} className="border border-foreground/10 rounded-xl p-3 flex items-center justify-between gap-4">
                       <div className="min-w-0 flex items-center gap-3">
                         <div className="h-9 w-9 shrink-0 rounded-lg bg-muted overflow-hidden flex items-center justify-center">
                           {alt.logo_url ? (
@@ -356,7 +365,7 @@ export default async function ToolDetailPage({ params }: Props) {
             )}
 
             {featuredInPosts.length > 0 && (
-              <div className="glass-card rounded-md p-6">
+              <div className="glass-card rounded-xl p-6">
                 <h2 className="text-lg font-semibold mb-3">Featured in Articles</h2>
                 <div className="space-y-3">
                   {featuredInPosts.map((post) => (
@@ -377,14 +386,14 @@ export default async function ToolDetailPage({ params }: Props) {
             )}
 
             {youMightLike.length > 0 && (
-              <div className="glass-card rounded-md p-6">
+              <div className="glass-card rounded-xl p-6">
                 <h2 className="text-lg font-semibold mb-3">You Might Also Like</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {youMightLike.map((rec) => (
                     <Link
                       key={rec.id}
                       href={`/tools/${rec.slug}`}
-                      className="border border-foreground/10 rounded-md p-3 flex items-center gap-3 hover:border-primary/30 transition-all group"
+                      className="border border-foreground/[0.06] rounded-xl p-3 flex items-center gap-3 hover:border-primary/30 transition-all group"
                     >
                       <div className="h-9 w-9 shrink-0 rounded-lg bg-muted overflow-hidden flex items-center justify-center">
                         {rec.logo_url ? (
@@ -404,7 +413,7 @@ export default async function ToolDetailPage({ params }: Props) {
             )}
 
             {screenshots.length > 0 && (
-              <div className="glass-card rounded-md p-6">
+              <div className="glass-card rounded-xl p-6">
                 <h2 className="text-lg font-semibold mb-3">Screenshots</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {screenshots.map((url, i) => (
@@ -425,7 +434,7 @@ export default async function ToolDetailPage({ params }: Props) {
               />
             )}
 
-            <div id="reviews" className="glass-card rounded-md p-6">
+            <div id="reviews" className="glass-card rounded-xl p-6">
               <h2 className="text-lg font-semibold mb-4">Reviews</h2>
               {reviews.length === 0 ? (
                 <p className="text-muted-foreground text-sm">No published reviews yet. Be the first to submit one.</p>
@@ -452,7 +461,7 @@ export default async function ToolDetailPage({ params }: Props) {
           </div>
 
           <div className="space-y-4 lg:sticky lg:top-24 self-start">
-            <div className="glass-card rounded-md p-5 space-y-3 hidden lg:block">
+            <div className="glass-card rounded-xl p-5 space-y-3 hidden lg:block">
               <h3 className="text-sm font-semibold">Try This Tool</h3>
               <a href={tool.website_url} target="_blank" rel="noopener noreferrer" className="block">
                 <Button className="w-full h-11 gap-2">
@@ -460,14 +469,46 @@ export default async function ToolDetailPage({ params }: Props) {
                   <ExternalLink className="h-4 w-4" />
                 </Button>
               </a>
-              <p className="text-xs text-muted-foreground">Build your AI workflow by adding this tool to a stack, then compare options side-by-side.</p>
-              <AddToStackButton toolId={tool.id} toolName={tool.name} className="h-11 w-full" />
+              <Link href={`/tracker?add=${tool.slug}`} className="block">
+                <Button variant="outline" className="w-full h-11 gap-2">
+                  <DollarSign className="h-4 w-4" />
+                  Track This
+                </Button>
+              </Link>
               <AddToCompareButton slug={tool.slug} name={tool.name} fullWidth />
               <BookmarkButton toolId={tool.id} />
             </div>
 
+            {/* Pricing tiers */}
+            {pricingTiers.length > 0 && (
+              <div className="glass-card rounded-xl p-5">
+                <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
+                  <DollarSign className="h-4 w-4 text-primary" /> Plans & Pricing
+                </h3>
+                <div className="space-y-2">
+                  {pricingTiers.map((tier) => (
+                    <div key={tier.tier_name} className="flex items-center justify-between py-2 border-b border-foreground/[0.06] last:border-0">
+                      <div className="min-w-0">
+                        <p className="text-sm font-semibold">{tier.tier_name}</p>
+                        {tier.features && <p className="text-[10px] text-muted-foreground truncate max-w-[160px]">{tier.features}</p>}
+                      </div>
+                      <span className="text-sm font-black shrink-0">
+                        {tier.monthly_price === 0 ? 'Free' : `$${tier.monthly_price}/mo`}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <Link
+                  href={`/tracker?add=${tool.slug}`}
+                  className="block mt-3 text-center text-xs font-semibold text-primary hover:underline"
+                >
+                  Track this in your budget →
+                </Link>
+              </div>
+            )}
+
             {tool.tool_tags && tool.tool_tags.length > 0 && (
-              <div className="glass-card rounded-md p-5">
+              <div className="glass-card rounded-xl p-5">
                 <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
                   <Tag className="h-4 w-4" /> Tags
                 </h3>
@@ -481,7 +522,7 @@ export default async function ToolDetailPage({ params }: Props) {
               </div>
             )}
 
-            <div className="glass-card rounded-md p-5">
+            <div className="glass-card rounded-xl p-5">
               <h3 className="text-sm font-semibold mb-3">Technical Specs</h3>
               <dl className="space-y-2 text-sm mb-6">
                 <div className="flex justify-between gap-3">
@@ -648,19 +689,20 @@ export default async function ToolDetailPage({ params }: Props) {
         </div>
       </div>
 
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-[60] border-t border-foreground/15 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/85 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-[60] border-t border-foreground/10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/85 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
         <div className="flex items-center gap-2">
           <a href={tool.website_url} target="_blank" rel="noopener noreferrer" className="flex-1">
             <Button className="w-full h-11 gap-2">
-              Visit Website
+              Visit
               <ExternalLink className="h-4 w-4" />
             </Button>
           </a>
-          <AddToStackButton
-            toolId={tool.id}
-            toolName={tool.name}
-            className="h-11 flex-1 !max-w-none"
-          />
+          <Link href={`/tracker?add=${tool.slug}`} className="flex-1">
+            <Button variant="outline" className="w-full h-11 gap-1.5">
+              <DollarSign className="h-4 w-4" />
+              Track
+            </Button>
+          </Link>
           <Link href={compareHref} className="flex-1">
             <Button variant="outline" className="w-full h-11">Compare</Button>
           </Link>
