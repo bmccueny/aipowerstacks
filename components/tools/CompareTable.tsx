@@ -30,6 +30,21 @@ function labelize(value: string | null | undefined) {
   return value.split('-').map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ')
 }
 
+/** Strip pricing/plan fragments from pricing_details, keeping only the description. */
+function extractDescription(details: string | null | undefined): string | null {
+  if (!details || details === 'N/A') return null
+  // Remove fragments like "Free tier; paid from $20/month." or "From $19" or "$10/month."
+  const cleaned = details
+    .replace(/free\s*tier[;,.]?\s*/gi, '')
+    .replace(/(paid\s+)?from\s+\$[\d,.]+\s*\/?\s*(mo(?:nth)?|yr|year|seat)?[;,.]?\s*/gi, '')
+    .replace(/(starts?\s+at\s+)?\$[\d,.]+\s*\/?\s*(mo(?:nth)?|yr|year|seat)?\s*(\([^)]*\))?[;,.]?\s*/gi, '')
+    .replace(/free[;,.]?\s*/gi, '')
+    .replace(/freemium[;,.]?\s*/gi, '')
+    .replace(/\s*[;,]\s*$/, '')
+    .trim()
+  return cleaned.length > 5 ? cleaned : null
+}
+
 function valuesDiffer(tools: ToolWithTags[], accessor: (t: ToolWithTags) => string | number | boolean | null | undefined): boolean {
   if (tools.length < 2) return false
   const vals = tools.map(t => { const v = accessor(t); return v == null ? '' : String(v) })
@@ -212,13 +227,16 @@ export function CompareTable({ tools }: CompareTableProps) {
                 })}
               </CompareRow>
               <CompareRow label="Details" emptySlots={e} stripe>
-                {tools.map((tool) => (
-                  <td key={tool.id} className={CELL_CN}>
-                    <span className="text-[10px] sm:text-xs text-muted-foreground leading-snug">
-                      {tool.pricing_details && tool.pricing_details !== 'N/A' ? tool.pricing_details : 'N/A'}
-                    </span>
-                  </td>
-                ))}
+                {tools.map((tool) => {
+                  const desc = extractDescription(tool.pricing_details)
+                  return (
+                    <td key={tool.id} className={CELL_CN}>
+                      <span className="text-[10px] sm:text-xs text-muted-foreground leading-snug">
+                        {desc ?? 'N/A'}
+                      </span>
+                    </td>
+                  )
+                })}
               </CompareRow>
               <CompareRow label="Plans" emptySlots={e}>
                 {tools.map((tool) => {
