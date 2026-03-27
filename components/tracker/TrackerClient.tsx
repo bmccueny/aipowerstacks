@@ -214,12 +214,7 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
     setAdding(true)
 
     if (!clientLoggedIn) {
-      // Anonymous mode: store in localStorage (max ANON_LIMIT)
-      if (anonSubs.length >= ANON_LIMIT) {
-        toast.error(`Sign in to track more than ${ANON_LIMIT} tools`)
-        setAdding(false)
-        return
-      }
+      // Anonymous mode: store in localStorage
       const newAnon = [...anonSubs, { tool_id: selectedTool.id, monthly_cost: price, tool: selectedTool }]
       setAnonSubs(newAnon)
       localStorage.setItem(ANON_STORAGE_KEY, JSON.stringify(newAnon.map(s => ({ tool_id: s.tool_id, monthly_cost: s.monthly_cost }))))
@@ -664,9 +659,6 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
             <div className="rounded-xl border border-primary/30 bg-gradient-to-r from-primary/[0.06] to-primary/[0.02] p-5 text-center hover:border-primary/50 transition-all cursor-pointer">
               <p className="text-sm font-bold text-primary mb-1">Save your stack &amp; unlock full analysis</p>
               <p className="text-xs text-muted-foreground">Sign in to access overlap detection, savings reports, and AI-powered optimization</p>
-              {anonSubs.length >= ANON_LIMIT && (
-                <p className="text-xs text-primary/70 mt-2 font-semibold">You&apos;ve hit the {ANON_LIMIT}-tool limit. Sign in to track unlimited tools.</p>
-              )}
             </div>
           </Link>
         )}
