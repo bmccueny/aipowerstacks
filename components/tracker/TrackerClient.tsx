@@ -422,7 +422,8 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
                     role="button"
                     tabIndex={0}
                     onMouseDown={(e) => { e.preventDefault(); selectTool(t) }}
-                    className="px-4 py-3 flex items-center gap-3 hover:bg-muted/80 cursor-pointer border-b border-border/30 last:border-0 transition-colors"
+                    onTouchEnd={(e) => { e.preventDefault(); selectTool(t) }}
+                    className="px-4 py-3 flex items-center gap-3 hover:bg-muted/80 active:bg-muted cursor-pointer border-b border-border/30 last:border-0 transition-colors"
                   >
                     {t.logo_url ? (
                       <img src={t.logo_url} alt="" className="w-8 h-8 rounded-lg object-contain shrink-0" />
