@@ -153,7 +153,7 @@ export function StackOptimizer({ currentTools }: { currentTools: CurrentTool[] }
             const droppedSlugs = new Set(optimized.tools.filter(t => t.action === 'drop').map(t => t.slug))
             const keptTools = optimized.tools.filter(t => t.action !== 'drop')
             return (
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {/* Current stack */}
             <div>
               <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2 text-center">Your Stack</p>
@@ -262,7 +262,7 @@ export function StackOptimizer({ currentTools }: { currentTools: CurrentTool[] }
           {/* Actions */}
           <div className="flex gap-2">
             <button
-              onClick={() => { setOptimized(null); setMode(null) }}
+              onClick={() => generate(mode === 'savings' ? 'performance' : 'savings')}
               className="flex-1 h-9 rounded-lg border border-foreground/10 text-xs font-semibold hover:bg-muted/50 transition-colors"
             >
               Try {mode === 'savings' ? 'Best Performance' : 'Save Money'}

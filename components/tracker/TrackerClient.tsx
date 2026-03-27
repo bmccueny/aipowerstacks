@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { Plus, Trash2, DollarSign, TrendingUp, TrendingDown, Loader2, Search, X, AlertTriangle, ArrowRight } from 'lucide-react'
+import { Plus, Trash2, DollarSign, TrendingDown, Loader2, Search, X, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
@@ -60,6 +60,7 @@ export function TrackerClient({ tools, autoAddSlug, importTools }: { tools: Tool
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [dashboardData, setDashboardData] = useState<any>(null)
   const [dashboardLoading, setDashboardLoading] = useState(false)
+  const [importing, setImporting] = useState(false)
   const wrapperRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -96,7 +97,7 @@ export function TrackerClient({ tools, autoAddSlug, importTools }: { tools: Tool
 
     if (toAdd.length === 0) return
 
-    // Add all tools in parallel
+    setImporting(true)
     Promise.all(
       toAdd.map(({ tool, price }) =>
         fetch('/api/tracker', {
@@ -106,11 +107,11 @@ export function TrackerClient({ tools, autoAddSlug, importTools }: { tools: Tool
         })
       )
     ).then(() => {
-      // Refresh subs list
       fetch('/api/tracker')
         .then(r => r.json())
         .then(d => {
           setSubs(d.subscriptions || [])
+          setImporting(false)
           toast.success(`Added ${toAdd.length} subscriptions from your calculator`)
         })
     })
@@ -236,39 +237,31 @@ export function TrackerClient({ tools, autoAddSlug, importTools }: { tools: Tool
 
   return (
     <div className="space-y-6">
-      {/* Cost summary */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div className="glass-card rounded-xl p-5 text-center">
-          <DollarSign className="h-5 w-5 text-primary mx-auto mb-1.5" />
-          <p className="text-2xl font-black">${total.toFixed(0)}</p>
-          <p className="text-[10px] text-muted-foreground mt-1">per month</p>
+      {/* Import loading */}
+      {importing && (
+        <div className="rounded-xl border border-primary/15 bg-primary/[0.03] p-6 text-center flex items-center justify-center gap-3">
+          <Loader2 className="h-5 w-5 animate-spin text-primary" />
+          <p className="text-sm font-bold">Importing your tools...</p>
         </div>
-        <div className="glass-card rounded-xl p-5 text-center">
-          <TrendingUp className="h-5 w-5 text-amber-500 mx-auto mb-1.5" />
-          <p className="text-2xl font-black">${yearly.toFixed(0)}</p>
-          <p className="text-[10px] text-muted-foreground mt-1">per year</p>
+      )}
+
+      {/* Cost summary — hero layout */}
+      <div className="flex flex-col sm:flex-row items-center gap-4">
+        <div className="flex-1 text-center sm:text-left">
+          <p className="text-4xl sm:text-5xl font-black">${total.toFixed(0)}<span className="text-lg text-muted-foreground font-normal">/mo</span></p>
+          <p className="text-sm text-muted-foreground">${yearly.toFixed(0)}/yr · {subs.length} tool{subs.length !== 1 ? 's' : ''}{overlaps.length > 0 ? ` · ${overlaps.length} overlap${overlaps.length > 1 ? 's' : ''}` : ''}</p>
         </div>
-        <div className="glass-card rounded-xl p-5 text-center">
-          <p className="text-2xl font-black">{subs.length}</p>
-          <p className="text-[10px] text-muted-foreground mt-1">subscriptions</p>
-        </div>
-        {overlapSavings > 0 ? (
-          <div className="rounded-xl p-5 text-center border border-emerald-400/20 bg-emerald-400/[0.04]">
-            <TrendingDown className="h-5 w-5 text-emerald-500 mx-auto mb-1.5" />
-            <p className="text-2xl font-black text-emerald-600 dark:text-emerald-400">${(overlapSavings * 12).toFixed(0)}</p>
-            <p className="text-[10px] text-muted-foreground mt-1">potential yearly savings</p>
-          </div>
-        ) : (
-          <div className="glass-card rounded-xl p-5 text-center">
-            <p className="text-2xl font-black">$0</p>
-            <p className="text-[10px] text-muted-foreground mt-1">overlap waste</p>
+        {overlapSavings > 0 && (
+          <div className="rounded-xl border border-emerald-400/20 bg-emerald-400/[0.04] px-5 py-3 text-center shrink-0">
+            <p className="text-xl font-black text-emerald-600 dark:text-emerald-400">${(overlapSavings * 12).toFixed(0)}/yr</p>
+            <p className="text-[10px] text-muted-foreground">potential savings</p>
           </div>
         )}
       </div>
 
       {/* Add subscription — z-20 so dropdown overlays the list below */}
       <div className="glass-card rounded-xl p-6 relative z-20">
-        <h2 className="text-lg font-bold mb-4">Add a subscription</h2>
+        <h2 className="text-base font-bold mb-4">Add a subscription</h2>
 
         {!selectedTool ? (
           <div ref={wrapperRef} className="relative">
@@ -304,6 +297,11 @@ export function TrackerClient({ tools, autoAddSlug, importTools }: { tools: Tool
                     </div>
                   </div>
                 ))}
+              </div>
+            )}
+            {showDropdown && search.length > 1 && filteredTools.length === 0 && (
+              <div className="absolute top-full left-0 right-0 z-[100] mt-2 bg-white dark:bg-neutral-900 border border-border rounded-xl shadow-2xl px-4 py-3">
+                <p className="text-sm text-muted-foreground">No results for &ldquo;{search}&rdquo; — try a different spelling</p>
               </div>
             )}
           </div>
@@ -391,44 +389,6 @@ export function TrackerClient({ tools, autoAddSlug, importTools }: { tools: Tool
         )}
       </div>
 
-      {/* Overlap warnings — inline, prominent */}
-      {overlaps.length > 0 && (
-        <div className="space-y-3">
-          <h3 className="text-sm font-bold flex items-center gap-2">
-            <AlertTriangle className="h-4 w-4 text-amber-500" />
-            We found overlap in your stack
-          </h3>
-          {overlaps.map(overlap => {
-            const toolNames = overlap.tools.map(t => t.tools?.name).filter(Boolean)
-            const cheapest = Math.min(...overlap.tools.map(t => Number(t.monthly_cost)))
-            const savingsIfKeepOne = Math.round((overlap.totalCost - cheapest) * 12)
-            return (
-            <div key={overlap.useCase} className="rounded-xl border border-amber-400/20 bg-amber-400/[0.03] p-4">
-              <p className="text-sm font-bold mb-1">
-                {overlap.tools.length} {overlap.label} tools — ${overlap.totalCost}/mo
-              </p>
-              <p className="text-xs text-muted-foreground mb-3">
-                {toolNames.join(', ')} all do {overlap.label.toLowerCase()}. These tools directly compete with each other. Keeping just one saves <strong className="text-foreground">${savingsIfKeepOne}/year</strong>.
-              </p>
-              <div className="flex flex-wrap gap-2 mb-3">
-                {overlap.tools.map(t => (
-                  <span key={t.id} className="text-xs px-2.5 py-1 rounded-lg bg-amber-400/10 border border-amber-400/20 font-medium">
-                    {t.tools?.name} · ${Number(t.monthly_cost)}/mo
-                  </span>
-                ))}
-              </div>
-              <Link
-                href={`/compare?tools=${overlap.tools.map(t => t.tools?.slug).join(',')}`}
-                className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline"
-              >
-                Compare side-by-side to decide <ArrowRight className="h-3 w-3" />
-              </Link>
-            </div>
-            )
-          })}
-        </div>
-      )}
-
       {/* Subscription list */}
       {subs.length === 0 ? (
         <div className="glass-card rounded-xl p-12 text-center">
@@ -473,12 +433,18 @@ export function TrackerClient({ tools, autoAddSlug, importTools }: { tools: Tool
         </>
       )}
       {subs.length >= 2 && dashboardLoading && (
-        <div className="rounded-2xl border border-primary/15 bg-gradient-to-b from-primary/[0.03] to-transparent p-8 text-center space-y-3">
-          <div className="relative h-10 w-10 mx-auto">
-            <div className="absolute inset-0 rounded-full border-2 border-primary/20" />
-            <div className="absolute inset-0 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+        <div className="space-y-4">
+          <div className="rounded-xl border border-foreground/[0.06] p-4 flex items-center gap-3">
+            <div className="h-10 w-10 rounded-full bg-muted animate-pulse shrink-0" />
+            <div className="flex-1 space-y-2">
+              <div className="h-3 w-32 bg-muted animate-pulse rounded" />
+              <div className="h-2 w-48 bg-muted/60 animate-pulse rounded" />
+            </div>
           </div>
-          <p className="text-sm font-bold">Analyzing your stack...</p>
+          <div className="rounded-xl border border-foreground/[0.06] p-4 space-y-2">
+            <div className="h-3 w-24 bg-muted animate-pulse rounded" />
+            <div className="h-2 w-full bg-muted/40 animate-pulse rounded" />
+          </div>
         </div>
       )}
 

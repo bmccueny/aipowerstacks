@@ -49,7 +49,7 @@ const BAR_COLORS = ['bg-primary', 'bg-amber-500', 'bg-emerald-500', 'bg-violet-5
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function StackIntel({ data }: { data: any }) {
-  const [expanded, setExpanded] = useState(true)
+  const [expanded, setExpanded] = useState(false)
   const [teamSize, setTeamSize] = useState(1)
 
   if (!data) return null
@@ -64,9 +64,12 @@ export function StackIntel({ data }: { data: any }) {
   return (
     <div className="space-y-4">
       <button onClick={() => setExpanded(!expanded)} className="w-full flex items-center justify-between">
-        <h3 className="text-sm font-bold flex items-center gap-2">
+        <h3 className="text-base font-bold flex items-center gap-2">
           <Brain className="h-4 w-4 text-violet-500" />
           Stack Intelligence
+          {!expanded && score && (
+            <span className={`text-sm font-black ${scoreColor(score.total)}`}>{score.total}/100</span>
+          )}
         </h3>
         {expanded ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
       </button>
@@ -77,22 +80,26 @@ export function StackIntel({ data }: { data: any }) {
           {/* ═══ Stack Health Score ═══ */}
           <div className="rounded-2xl border border-foreground/[0.06] p-5">
             <div className="flex items-center gap-5 mb-4">
+              {(() => {
+                const C = 2 * Math.PI * 15.5
+                return (
               <div className="relative h-20 w-20 shrink-0">
                 <svg className="h-20 w-20 -rotate-90" viewBox="0 0 36 36">
                   <circle cx="18" cy="18" r="15.5" fill="none" stroke="currentColor" strokeWidth="3" className="text-foreground/[0.06]" />
                   <circle
                     cx="18" cy="18" r="15.5" fill="none" strokeWidth="3"
-                    strokeDasharray={`${score.total} ${100 - score.total}`}
+                    strokeDasharray={`${(score.total / 100) * C} ${C}`}
                     strokeLinecap="round"
                     className={scoreColor(score.total)}
                     stroke="currentColor"
                   />
                 </svg>
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <div className="absolute inset-0 flex items-center justify-center">
                   <span className={`text-xl font-black ${scoreColor(score.total)}`}>{score.total}</span>
-                  <span className="text-[8px] text-muted-foreground font-semibold uppercase tracking-wider">/100</span>
                 </div>
               </div>
+                )
+              })()}
               <div className="flex-1">
                 <p className="text-lg font-black">{scoreLabel(score.total)}</p>
                 <p className="text-xs text-muted-foreground mt-0.5">Stack Health Score</p>
@@ -117,7 +124,7 @@ export function StackIntel({ data }: { data: any }) {
                       style={{ width: `${(dim.score / dim.max) * 100}%` }}
                     />
                   </div>
-                  <p className="text-[9px] text-muted-foreground mt-1">{dim.label}</p>
+                  <p className="text-[10px] text-muted-foreground mt-1">{dim.label}</p>
                 </div>
               ))}
             </div>

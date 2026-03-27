@@ -441,6 +441,12 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
           Tap the tools you pay for. See your total in seconds.
         </p>
       )}
+
+      {added.length === 1 && (
+        <p className="text-center text-xs text-muted-foreground animate-in fade-in">
+          Add one more to see your full spend breakdown →
+        </p>
+      )}
     </div>
   )
 }

@@ -42,7 +42,7 @@ const ROLE_BENCHMARKS: Record<string, number> = {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function SavingsReport({ data }: { data: any }) {
-  const [expanded, setExpanded] = useState(true)
+  const [expanded, setExpanded] = useState(false)
   const [role, setRole] = useState<string | null>(null)
 
   const report: Report | null = data ? {
@@ -99,9 +99,15 @@ export function SavingsReport({ data }: { data: any }) {
       {/* Header + actions */}
       <div className="flex items-center justify-between">
         <button onClick={() => setExpanded(!expanded)} className="flex items-center gap-2">
-          <h3 className="text-sm font-bold flex items-center gap-2">
+          <h3 className="text-base font-bold flex items-center gap-2">
             <TrendingDown className="h-4 w-4 text-emerald-500" />
-            Your Savings Report
+            Savings Report
+            {!expanded && report.totalPotentialSavings > 0 && (
+              <span className="text-sm font-black text-emerald-600 dark:text-emerald-400">${report.totalPotentialSavings}/yr</span>
+            )}
+            {!expanded && report.totalPotentialSavings === 0 && (
+              <span className="text-sm text-muted-foreground">No waste</span>
+            )}
           </h3>
           {expanded ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
         </button>
@@ -154,7 +160,7 @@ export function SavingsReport({ data }: { data: any }) {
                   <button
                     key={r}
                     onClick={() => setRole(role === r ? null : r)}
-                    className={`px-2.5 py-1 rounded-lg text-[10px] font-semibold transition-all ${
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                       role === r ? 'bg-primary/10 text-primary border border-primary/30' : 'border border-foreground/[0.06] text-muted-foreground hover:text-foreground'
                     }`}
                   >
