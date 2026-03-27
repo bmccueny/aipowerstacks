@@ -51,7 +51,9 @@ export async function proxy(request: NextRequest) {
   // Redirect authenticated users away from auth pages
   if (user && (path === '/login' || path === '/register')) {
     const url = request.nextUrl.clone()
-    url.pathname = '/dashboard'
+    const redirectTo = request.nextUrl.searchParams.get('redirectTo')
+    url.pathname = redirectTo || '/dashboard'
+    url.search = ''
     return redirectWithCookies(url)
   }
 
