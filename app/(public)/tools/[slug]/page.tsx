@@ -191,11 +191,14 @@ export default async function ToolDetailPage({ params }: Props) {
               <div className="flex flex-wrap gap-2 mb-4">
                 <div className="flex flex-wrap gap-1">
                   <Badge variant="outline" className={pricingColor}>{pricingLabel}</Badge>
-                  {tool.pricing_tags?.map(tag => (
+                  {tool.pricing_tags?.slice(0, 2).map(tag => (
                     <Badge key={tag} variant="secondary" className="text-[10px] bg-stone-100 text-stone-600 border-stone-200">
                       {tag}
                     </Badge>
                   ))}
+                  {(tool.pricing_tags?.length ?? 0) > 2 && (
+                    <span className="text-[10px] font-bold text-muted-foreground self-center">+{(tool.pricing_tags?.length ?? 0) - 2}</span>
+                  )}
                 </div>
                 {tool.model_provider && tool.model_provider !== 'proprietary' && (
                   <Badge variant="outline" className="bg-violet-100 text-violet-800 border-violet-300 dark:bg-violet-950 dark:text-violet-300 dark:border-violet-800">
@@ -224,7 +227,7 @@ export default async function ToolDetailPage({ params }: Props) {
               </div>
               <div className="flex items-center gap-3 flex-wrap">
                 <a href={tool.website_url} target="_blank" rel="noopener noreferrer">
-                  <Button className="gap-2">
+                  <Button size="lg" className="gap-2 font-bold h-11 px-6">
                     Visit {tool.name}
                     <ExternalLink className="h-4 w-4" />
                   </Button>

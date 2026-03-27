@@ -321,18 +321,21 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
                 <span className="text-xs text-muted-foreground ml-1">{tier.tier_name}</span>
               </button>
             )) : (
-              <>
-                {[0, 10, 20, 50].map(p => (
-                  <button
-                    key={p}
-                    type="button"
-                    onClick={() => addWithTier(p, p === 0 ? 'Free' : `$${p}/mo`)}
-                    className="px-3 py-1.5 rounded-lg border border-border hover:border-primary/40 hover:bg-primary/5 text-sm font-bold transition-all cursor-pointer"
-                  >
-                    {p === 0 ? 'Free' : `$${p}`}
-                  </button>
-                ))}
-              </>
+              <div className="w-full">
+                <p className="text-[10px] text-muted-foreground/60 mb-1.5">Estimated — exact plans not available</p>
+                <div className="flex flex-wrap gap-2">
+                  {[0, 10, 20, 50].map(p => (
+                    <button
+                      key={p}
+                      type="button"
+                      onClick={() => addWithTier(p, p === 0 ? 'Free' : `$${p}/mo`)}
+                      className="px-3 py-1.5 rounded-lg border border-dashed border-border hover:border-primary/40 hover:bg-primary/5 text-sm font-bold transition-all cursor-pointer"
+                    >
+                      {p === 0 ? 'Free' : `~$${p}`}
+                    </button>
+                  ))}
+                </div>
+              </div>
             )}
           </div>
           )}
@@ -428,7 +431,7 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
               ? `/tracker?import=${added.map(t => `${t.slug}:${t.price}`).join(',')}`
               : `/login?redirectTo=${encodeURIComponent(`/tracker?import=${added.map(t => `${t.slug}:${t.price}`).join(',')}`)}`
             }
-            className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors"
+            className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2"
           >
             Get My Savings Report
             <ArrowRight className="h-4 w-4" />

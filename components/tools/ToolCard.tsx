@@ -216,19 +216,18 @@ function CapabilityBadges({ tool, variant = 'span' }: { tool: ToolCardData; vari
   if (pills.length === 0 && !gitHubPill) return null
 
   if (variant === 'badge') {
+    // Cap at 3 badges in list view to prevent visual noise
+    const allPills = [...pills.slice(0, 2), ...(gitHubPill ? [gitHubPill] : [])].slice(0, 3)
+    const remaining = pills.length + (gitHubPill ? 1 : 0) - allPills.length
     return (
       <>
-        {pills.map((p) => (
+        {allPills.map((p) => (
           <Link key={p.label} href={p.href} onClick={(e) => e.stopPropagation()}>
             <Badge variant="secondary" className={cn('text-[10px] hover:opacity-80 transition-opacity cursor-pointer', p.cls)}>{p.label}</Badge>
           </Link>
         ))}
-        {gitHubPill && (
-          <Link href={gitHubPill.href} onClick={(e) => e.stopPropagation()}>
-            <Badge variant="secondary" className={cn('text-[10px] hover:opacity-80 transition-opacity cursor-pointer gap-1', gitHubPill.cls)}>
-              <Github className="h-3 w-3" />{gitHubPill.label}
-            </Badge>
-          </Link>
+        {remaining > 0 && (
+          <span className="text-[9px] font-bold text-muted-foreground">+{remaining}</span>
         )}
       </>
     )
@@ -448,15 +447,9 @@ function ToolCardGrid({ tool, pricingColor, pricingLabel, screenshotUrl, isWellF
       {/* Top bar: pricing badge right-aligned */}
       <div className="px-5 pt-4 flex items-center justify-end gap-2 relative z-10">
         <Link href={`/tools?pricing=${tool.pricing_model}`} onClick={(e) => e.stopPropagation()}>
-          {tool.pricing_tags && tool.pricing_tags.length > 0 ? (
-            <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 hover:opacity-80 transition-opacity cursor-pointer">
-              {tool.pricing_tags[0]}
-            </span>
-          ) : (
-            <span className={cn('text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full border hover:opacity-80 transition-opacity cursor-pointer', pricingColor)}>
-              {pricingLabel}
-            </span>
-          )}
+          <span className={cn('text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full border hover:opacity-80 transition-opacity cursor-pointer', pricingColor)}>
+            {tool.pricing_tags && tool.pricing_tags.length > 0 ? tool.pricing_tags[0] : pricingLabel}
+          </span>
         </Link>
       </div>
 

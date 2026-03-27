@@ -219,12 +219,18 @@
   .animate-in-stagger,
   .animate-sparkle-once,
   .sparkle,
-  .badge-flare::after {
+  .badge-flare::after,
+  .animate-pulse,
+  [class*="animate-"] {
     animation: none !important;
     transition: none !important;
   }
   .stars {
     opacity: 0.55;
+  }
+  /* Keep essential layout transitions (opacity for visibility) */
+  .transition-opacity {
+    transition: opacity 0.15s ease !important;
   }
 }
 
@@ -1301,8 +1307,10 @@
 
 @media (hover: hover) {
   .card-directory:hover {
+    transform: translateY(-2px);
     box-shadow:
-      0 4px 16px rgba(0, 0, 0, 0.12),
+      0 8px 24px rgba(0, 0, 0, 0.1),
+      0 2px 8px rgba(0, 0, 0, 0.06),
       inset 0 0 var(--lg-inner-shadow-blur) var(--lg-inner-shadow-spread) var(--lg-inner-shadow-color);
     border-color: oklch(1 0 0 / 0.2);
   }

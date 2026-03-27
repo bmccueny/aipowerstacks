@@ -106,7 +106,7 @@ export function Navbar() {
                   href={link.href}
                   className={cn(
                     'px-4 py-2 text-sm font-semibold rounded-lg transition-all duration-200',
-                    pathname === link.href || pathname.startsWith(link.href + '/')
+                    ('/' + pathname.split('/')[1]) === link.href
                       ? 'text-primary bg-primary/10'
                       : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800'
                   )}
@@ -153,7 +153,7 @@ export function Navbar() {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
                     align="end"
-                    className="w-64 shadow-xl border-gray-200 dark:border-gray-700 z-[60]"
+                    className="w-64 max-w-[90vw] shadow-xl border-gray-200 dark:border-gray-700 z-[60]"
                     sideOffset={8}
                     alignOffset={0}
                     avoidCollisions={true}
@@ -194,7 +194,7 @@ export function Navbar() {
                   </Link>
                   <Link
                     href="/register"
-                    className="px-5 py-2 text-sm font-semibold bg-primary text-white rounded-full hover:bg-primary/90 transition-all duration-200 hover:scale-105"
+                    className="px-5 py-2 text-sm font-semibold bg-primary text-white rounded-full hover:bg-primary/90 transition-all duration-200 sm:hover:scale-105 focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2"
                   >
                     Sign up
                   </Link>
@@ -220,7 +220,7 @@ export function Navbar() {
         'fixed inset-0 z-40 md:hidden transition-all duration-300',
         mobileOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
       )}>
-        <div className="absolute inset-0 bg-black/25 backdrop-blur-md" onClick={() => setMobileOpen(false)} />
+        <div className="absolute inset-0 bg-black/25 backdrop-blur-md" onClick={() => setMobileOpen(false)} onKeyDown={(e) => { if (e.key === 'Escape') setMobileOpen(false) }} role="button" tabIndex={0} aria-label="Close menu" />
 
         <div className={cn(
           'liquid-glass-sheet absolute top-16 left-0 right-0 border-b border-foreground/[0.06] transform transition-transform duration-300 max-h-[calc(100vh-4rem)] overflow-y-auto pb-[env(safe-area-inset-bottom)]',
@@ -236,7 +236,7 @@ export function Navbar() {
                   onClick={() => setMobileOpen(false)}
                   className={cn(
                     'block px-4 py-3 text-base font-medium rounded-lg transition-colors duration-200',
-                    pathname === link.href || pathname.startsWith(link.href + '/')
+                    ('/' + pathname.split('/')[1]) === link.href
                       ? 'text-primary bg-primary/10'
                       : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
                   )}
