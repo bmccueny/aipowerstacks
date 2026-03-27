@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
-import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { DollarSign } from 'lucide-react'
 import { TrackerClient } from '@/components/tracker/TrackerClient'
 import { SITE_URL } from '@/lib/constants/site'
@@ -33,17 +33,31 @@ export default async function TrackerPage({
     // Corrupted auth cookie
   }
 
-  if (!user) {
-    const trackerParams = importParam ? `?import=${importParam}` : addSlug ? `?add=${addSlug}` : ''
-    redirect(`/login?redirectTo=${encodeURIComponent(`/tracker${trackerParams}`)}`)
-  }
-
-  // Get all tools for the search picker
-  const { data: tools } = await supabase
+  // Use admin client so anonymous users can browse tools too
+  const adminSupabase = createAdminClient()
+  const { data: tools } = await adminSupabase
     .from('tools')
     .select('id, name, slug, logo_url, pricing_model, pricing_details')
     .eq('status', 'published')
     .order('name')
+
+  // Get popular tools for quick-add chips
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: popularRaw } = await (adminSupabase as any)
+    .from('user_subscriptions')
+    .select('tool_id, tools!inner(id, name, slug, logo_url)')
+    .limit(500)
+  const toolCounts = new Map<string, { count: number; tool: { id: string; name: string; slug: string; logo_url: string | null } }>()
+  for (const row of popularRaw ?? []) {
+    const t = row.tools
+    if (!t?.id) continue
+    const existing = toolCounts.get(t.id)
+    if (existing) { existing.count++ } else { toolCounts.set(t.id, { count: 1, tool: t }) }
+  }
+  const popularTools = [...toolCounts.values()]
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 16)
+    .map(e => e.tool)
 
   return (
     <div className="page-shell max-w-3xl mx-auto">
@@ -60,8 +74,10 @@ export default async function TrackerPage({
 
       <TrackerClient
         tools={(tools || []).map(t => ({ id: t.id, name: t.name, slug: t.slug, logo_url: t.logo_url, pricing_model: t.pricing_model || 'unknown', pricing_details: t.pricing_details, starting_price: null }))}
+        popularTools={popularTools}
         autoAddSlug={addSlug}
         importTools={importParam}
+        isLoggedIn={!!user}
       />
     </div>
   )

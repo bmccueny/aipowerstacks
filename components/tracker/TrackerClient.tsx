@@ -28,6 +28,23 @@ type ToolOption = {
   pricing_model: string
 }
 
+type PopularTool = {
+  id: string
+  name: string
+  slug: string
+  logo_url: string | null
+}
+
+const ANON_STORAGE_KEY = 'aips_tracker_anon'
+const ANON_LIMIT = 3
+
+const STARTER_BUNDLES = [
+  { label: 'Developer Stack', icon: '⌨️', slugs: ['cursor-editor', 'claude-code', 'github-copilot'] },
+  { label: 'Creator Stack', icon: '🎨', slugs: ['midjourney-v7', 'canva', 'elevenlabs-dubbing'] },
+  { label: 'Marketer Stack', icon: '📈', slugs: ['jasper-brand-voice', 'copy-ai', 'semrush-one'] },
+  { label: 'Researcher Stack', icon: '🔬', slugs: ['perplexity-ai', 'chatgpt', 'notebooklm'] },
+]
+
 type PricingTier = {
   tier_name: string
   monthly_price: number
@@ -46,8 +63,9 @@ const USE_CASE_NAMES: Record<string, string> = {
   'customer-support': 'Customer Support',
 }
 
-export function TrackerClient({ tools, autoAddSlug, importTools }: { tools: ToolOption[]; autoAddSlug?: string; importTools?: string }) {
+export function TrackerClient({ tools, popularTools = [], autoAddSlug, importTools, isLoggedIn = false }: { tools: ToolOption[]; popularTools?: PopularTool[]; autoAddSlug?: string; importTools?: string; isLoggedIn?: boolean }) {
   const [subs, setSubs] = useState<Subscription[]>([])
+  const [anonSubs, setAnonSubs] = useState<Array<{ tool_id: string; monthly_cost: number; tool: ToolOption }>>([])
   const [loading, setLoading] = useState(true)
   const [adding, setAdding] = useState(false)
   const [selectedTool, setSelectedTool] = useState<ToolOption | null>(null)
@@ -63,12 +81,24 @@ export function TrackerClient({ tools, autoAddSlug, importTools }: { tools: Tool
   const [importing, setImporting] = useState(false)
   const wrapperRef = useRef<HTMLDivElement>(null)
 
+  // Load anonymous subs from localStorage or real subs from API
   useEffect(() => {
-    fetch('/api/tracker')
-      .then(r => r.json())
-      .then(d => { setSubs(d.subscriptions || []); setLoading(false) })
-      .catch(() => setLoading(false))
-  }, [])
+    if (isLoggedIn) {
+      fetch('/api/tracker')
+        .then(r => r.json())
+        .then(d => { setSubs(d.subscriptions || []); setLoading(false) })
+        .catch(() => setLoading(false))
+    } else {
+      try {
+        const stored = JSON.parse(localStorage.getItem(ANON_STORAGE_KEY) || '[]')
+        setAnonSubs(stored.map((s: { tool_id: string; monthly_cost: number }) => {
+          const tool = tools.find(t => t.id === s.tool_id)
+          return tool ? { ...s, tool } : null
+        }).filter(Boolean))
+      } catch { /* empty */ }
+      setLoading(false)
+    }
+  }, [isLoggedIn, tools])
 
   // Auto-select tool from ?add= query param after subs load
   useEffect(() => {
@@ -159,6 +189,24 @@ export function TrackerClient({ tools, autoAddSlug, importTools }: { tools: Tool
   const addSub = async (price: number) => {
     if (!selectedTool || price < 0) return
     setAdding(true)
+
+    if (!isLoggedIn) {
+      // Anonymous mode: store in localStorage (max ANON_LIMIT)
+      if (anonSubs.length >= ANON_LIMIT) {
+        toast.error(`Sign in to track more than ${ANON_LIMIT} tools`)
+        setAdding(false)
+        return
+      }
+      const newAnon = [...anonSubs, { tool_id: selectedTool.id, monthly_cost: price, tool: selectedTool }]
+      setAnonSubs(newAnon)
+      localStorage.setItem(ANON_STORAGE_KEY, JSON.stringify(newAnon.map(s => ({ tool_id: s.tool_id, monthly_cost: s.monthly_cost }))))
+      setSelectedTool(null)
+      setCustomCost('')
+      toast.success('Subscription added')
+      setAdding(false)
+      return
+    }
+
     const toolId = selectedTool.id
     const res = await fetch('/api/tracker', {
       method: 'POST',
@@ -178,6 +226,13 @@ export function TrackerClient({ tools, autoAddSlug, importTools }: { tools: Tool
   }
 
   const removeSub = async (id: string) => {
+    if (!isLoggedIn) {
+      const newAnon = anonSubs.filter(s => s.tool_id !== id)
+      setAnonSubs(newAnon)
+      localStorage.setItem(ANON_STORAGE_KEY, JSON.stringify(newAnon.map(s => ({ tool_id: s.tool_id, monthly_cost: s.monthly_cost }))))
+      toast.success('Removed')
+      return
+    }
     const res = await fetch(`/api/tracker?id=${id}`, { method: 'DELETE' })
     if (res.ok) {
       setSubs(prev => prev.filter(s => s.id !== id))
@@ -185,10 +240,30 @@ export function TrackerClient({ tools, autoAddSlug, importTools }: { tools: Tool
     }
   }
 
+  // Quick-add a popular tool (select it for tier picking)
+  const quickAdd = (tool: PopularTool) => {
+    const match = tools.find(t => t.id === tool.id)
+    if (match) setSelectedTool(match)
+  }
 
-  const total = subs.reduce((sum, s) => sum + Number(s.monthly_cost), 0)
+  // Add all tools from a starter bundle
+  const addBundle = (slugs: string[]) => {
+    const bundleTools = slugs.map(s => tools.find(t => t.slug === s)).filter(Boolean) as ToolOption[]
+    if (bundleTools.length === 0) return
+    // Select the first one — user picks tier, then we auto-queue the rest
+    setSelectedTool(bundleTools[0])
+    toast(`Adding ${bundleTools.length} tools — pick a plan for ${bundleTools[0].name}`)
+  }
+
+
+  // Merge authenticated and anonymous subs for display
+  const effectiveSubs = isLoggedIn ? subs : []
+  const anonTotal = anonSubs.reduce((sum, s) => sum + s.monthly_cost, 0)
+  const total = effectiveSubs.reduce((sum, s) => sum + Number(s.monthly_cost), 0) + anonTotal
   const yearly = total * 12
-  const alreadyTracked = new Set(subs.map(s => s.tool_id))
+  const allToolIds = new Set([...subs.map(s => s.tool_id), ...anonSubs.map(s => s.tool_id)])
+  const alreadyTracked = allToolIds
+  const effectiveCount = effectiveSubs.length + anonSubs.length
 
   const filteredTools = search.length > 1
     ? tools.filter(t => t.name.toLowerCase().includes(search.toLowerCase()) && !alreadyTracked.has(t.id)).slice(0, 10)
@@ -246,18 +321,38 @@ export function TrackerClient({ tools, autoAddSlug, importTools }: { tools: Tool
       )}
 
       {/* Cost summary — hero layout */}
-      <div className="flex flex-col sm:flex-row items-center gap-4">
-        <div className="flex-1 text-center sm:text-left">
-          <p className="text-4xl sm:text-5xl font-black">${total.toFixed(0)}<span className="text-lg text-muted-foreground font-normal">/mo</span></p>
-          <p className="text-sm text-muted-foreground">${yearly.toFixed(0)}/yr · {subs.length} tool{subs.length !== 1 ? 's' : ''}{overlaps.length > 0 ? ` · ${overlaps.length} overlap${overlaps.length > 1 ? 's' : ''}` : ''}</p>
-        </div>
-        {overlapSavings > 0 && (
-          <div className="rounded-xl border border-emerald-400/20 bg-emerald-400/[0.04] px-5 py-3 text-center shrink-0">
-            <p className="text-xl font-black text-emerald-600 dark:text-emerald-400">${(overlapSavings * 12).toFixed(0)}/yr</p>
-            <p className="text-[10px] text-muted-foreground">potential savings</p>
+      {effectiveCount > 0 && (
+        <div className="flex flex-col sm:flex-row items-center gap-4">
+          <div className="flex-1 text-center sm:text-left">
+            <p className="text-4xl sm:text-5xl font-black">${total.toFixed(0)}<span className="text-lg text-muted-foreground font-normal">/mo</span></p>
+            <p className="text-sm text-muted-foreground">${yearly.toFixed(0)}/yr · {effectiveCount} tool{effectiveCount !== 1 ? 's' : ''}{overlaps.length > 0 ? ` · ${overlaps.length} overlap${overlaps.length > 1 ? 's' : ''}` : ''}</p>
           </div>
-        )}
-      </div>
+          {overlapSavings > 0 && (
+            <div className="rounded-xl border border-emerald-400/20 bg-emerald-400/[0.04] px-5 py-3 text-center shrink-0">
+              <p className="text-xl font-black text-emerald-600 dark:text-emerald-400">${(overlapSavings * 12).toFixed(0)}/yr</p>
+              <p className="text-[10px] text-muted-foreground">potential savings</p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Optimizer banner — surface early when savings detected */}
+      {overlapSavings > 0 && effectiveCount >= 3 && isLoggedIn && (
+        <div className="rounded-xl border border-primary/20 bg-gradient-to-r from-primary/[0.04] to-emerald-500/[0.04] p-4 flex items-center gap-4">
+          <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+            <TrendingDown className="h-5 w-5 text-primary" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-bold">We found <span className="text-emerald-600 dark:text-emerald-400">${(overlapSavings * 12).toFixed(0)}/yr</span> in potential savings</p>
+            <p className="text-xs text-muted-foreground">Let AI build your optimized stack</p>
+          </div>
+          <a href="#stack-optimizer" className="shrink-0">
+            <Button size="sm" className="gap-1 text-xs font-bold">
+              Optimize <ArrowRight className="h-3 w-3" />
+            </Button>
+          </a>
+        </div>
+      )}
 
       {/* Add subscription — z-20 so dropdown overlays the list below */}
       <div className="glass-card rounded-xl p-6 relative z-20">
@@ -389,16 +484,68 @@ export function TrackerClient({ tools, autoAddSlug, importTools }: { tools: Tool
         )}
       </div>
 
+      {/* Quick-add popular tools */}
+      {!selectedTool && popularTools.length > 0 && (
+        <div>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">Popular tools — tap to add</p>
+          <div className="flex flex-wrap gap-1.5">
+            {popularTools.filter(t => !alreadyTracked.has(t.id)).slice(0, 12).map(t => (
+              <button
+                key={t.id}
+                onClick={() => quickAdd(t)}
+                className="inline-flex items-center gap-1.5 h-8 px-3 rounded-full border border-foreground/10 hover:border-primary/40 hover:bg-primary/5 transition-all text-xs font-semibold"
+              >
+                {t.logo_url ? (
+                  <img src={t.logo_url} alt="" className="w-4 h-4 rounded object-contain" />
+                ) : (
+                  <span className="w-4 h-4 rounded bg-primary/10 flex items-center justify-center text-[8px] font-bold text-primary">{t.name[0]}</span>
+                )}
+                {t.name}
+                <Plus className="h-2.5 w-2.5 text-primary opacity-50" />
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Subscription list */}
-      {subs.length === 0 ? (
-        <div className="glass-card rounded-xl p-12 text-center">
+      {effectiveCount === 0 ? (
+        <div className="glass-card rounded-xl p-8 sm:p-12 text-center">
           <DollarSign className="h-10 w-10 text-muted-foreground/20 mx-auto mb-3" />
           <p className="text-lg font-bold mb-1">No subscriptions tracked yet</p>
-          <p className="text-sm text-muted-foreground">Search for an AI tool above to get started</p>
+          <p className="text-sm text-muted-foreground mb-6">Pick a starter stack or search above</p>
+
+          {/* Starter bundles */}
+          <div className="grid grid-cols-2 gap-3 max-w-md mx-auto">
+            {STARTER_BUNDLES.map(bundle => {
+              const bundleTools = bundle.slugs.map(s => tools.find(t => t.slug === s)).filter(Boolean) as ToolOption[]
+              return (
+                <button
+                  key={bundle.label}
+                  onClick={() => addBundle(bundle.slugs)}
+                  className="p-4 rounded-xl border border-foreground/10 hover:border-primary/30 hover:bg-primary/[0.03] transition-all text-left group"
+                >
+                  <span className="text-2xl">{bundle.icon}</span>
+                  <p className="text-sm font-bold mt-2 group-hover:text-primary transition-colors">{bundle.label}</p>
+                  <div className="flex -space-x-1.5 mt-2">
+                    {bundleTools.slice(0, 3).map(t => (
+                      t.logo_url ? (
+                        <img key={t.id} src={t.logo_url} alt="" className="w-5 h-5 rounded border border-background object-contain bg-white" />
+                      ) : (
+                        <span key={t.id} className="w-5 h-5 rounded border border-background bg-primary/10 flex items-center justify-center text-[7px] font-bold text-primary">{t.name[0]}</span>
+                      )
+                    ))}
+                  </div>
+                </button>
+              )
+            })}
+          </div>
         </div>
       ) : (
+        <>
         <div className="space-y-2">
-          {subs.map(sub => (
+          {/* Authenticated subs */}
+          {effectiveSubs.map(sub => (
             <div key={sub.id} className="glass-card rounded-xl px-5 py-4 flex items-center gap-4">
               <div className="h-10 w-10 rounded-lg bg-muted overflow-hidden flex items-center justify-center shrink-0">
                 {sub.tools?.logo_url ? (
@@ -422,7 +569,55 @@ export function TrackerClient({ tools, autoAddSlug, importTools }: { tools: Tool
               </button>
             </div>
           ))}
+
+          {/* Anonymous subs */}
+          {anonSubs.map(sub => (
+            <div key={sub.tool_id} className="glass-card rounded-xl px-5 py-4 flex items-center gap-4">
+              <div className="h-10 w-10 rounded-lg bg-muted overflow-hidden flex items-center justify-center shrink-0">
+                {sub.tool.logo_url ? (
+                  <img src={sub.tool.logo_url} alt="" className="w-10 h-10 object-contain" />
+                ) : (
+                  <span className="text-sm font-bold text-primary">{sub.tool.name[0]}</span>
+                )}
+              </div>
+              <div className="flex-1 min-w-0">
+                <Link href={`/tools/${sub.tool.slug}`} className="font-bold text-sm hover:text-primary transition-colors">
+                  {sub.tool.name}
+                </Link>
+                <p className="text-xs text-muted-foreground">{sub.tool.pricing_model}</p>
+              </div>
+              <p className="text-lg font-black shrink-0">
+                {sub.monthly_cost === 0 ? 'Free' : `$${sub.monthly_cost.toFixed(2)}`}
+                {sub.monthly_cost > 0 && <span className="text-xs text-muted-foreground font-normal">/mo</span>}
+              </p>
+              <button onClick={() => removeSub(sub.tool_id)} className="text-muted-foreground hover:text-destructive transition-colors shrink-0 p-1">
+                <Trash2 className="h-4 w-4" />
+              </button>
+            </div>
+          ))}
         </div>
+
+        {/* Teaser after first tool */}
+        {effectiveCount === 1 && (
+          <div className="rounded-xl border border-dashed border-primary/20 bg-primary/[0.02] p-5 text-center">
+            <p className="text-sm font-bold mb-1">Add one more tool to unlock insights</p>
+            <p className="text-xs text-muted-foreground">Overlap detection, savings analysis, and stack optimization activate at 2+ tools</p>
+          </div>
+        )}
+
+        {/* Save your stack CTA for anonymous users */}
+        {!isLoggedIn && anonSubs.length > 0 && (
+          <Link href={`/login?redirectTo=${encodeURIComponent('/tracker')}`} className="block">
+            <div className="rounded-xl border border-primary/30 bg-gradient-to-r from-primary/[0.06] to-primary/[0.02] p-5 text-center hover:border-primary/50 transition-all cursor-pointer">
+              <p className="text-sm font-bold text-primary mb-1">Save your stack &amp; unlock full analysis</p>
+              <p className="text-xs text-muted-foreground">Sign in to access overlap detection, savings reports, and AI-powered optimization</p>
+              {anonSubs.length >= ANON_LIMIT && (
+                <p className="text-xs text-primary/70 mt-2 font-semibold">You&apos;ve hit the {ANON_LIMIT}-tool limit. Sign in to track unlimited tools.</p>
+              )}
+            </div>
+          </Link>
+        )}
+        </>
       )}
 
       {/* Stack intelligence + savings report — powered by single /dashboard fetch */}
@@ -450,6 +645,7 @@ export function TrackerClient({ tools, autoAddSlug, importTools }: { tools: Tool
 
       {/* Stack optimizer — compare your stack vs an optimized one */}
       {subs.length >= 2 && (
+        <div id="stack-optimizer">
         <StackOptimizer
           key={`opt-${subs.map(s => s.id).join(',')}`}
           currentTools={subs.map(s => ({
@@ -459,6 +655,7 @@ export function TrackerClient({ tools, autoAddSlug, importTools }: { tools: Tool
             cost: Number(s.monthly_cost),
           }))}
         />
+        </div>
       )}
 
     </div>
