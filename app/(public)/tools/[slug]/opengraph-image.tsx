@@ -115,6 +115,19 @@ export default async function Image({ params }: { params: Promise<{ slug: string
             alignItems: 'center',
           }}
         >
+          <div
+            style={{
+              fontSize: 28,
+              background: tool.pricing_model === 'free' ? '#065f46' : '#1e3a5f',
+              padding: '8px 24px',
+              borderRadius: '999px',
+              textTransform: 'uppercase',
+              fontWeight: 'bold',
+              letterSpacing: '0.05em',
+            }}
+          >
+            {tool.pricing_model === 'free' ? 'Free' : tool.pricing_model === 'freemium' ? 'Freemium' : tool.pricing_model === 'paid' ? 'Paid' : tool.pricing_model === 'trial' ? 'Free Trial' : tool.pricing_model ?? 'N/A'}
+          </div>
           {tool.review_count > 0 && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <div style={{ fontSize: 48, color: '#fbbf24' }}>★</div>
