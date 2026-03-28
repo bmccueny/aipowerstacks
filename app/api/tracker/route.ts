@@ -1,7 +1,14 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { rateLimit, getClientIp } from '@/lib/rate-limit'
 
-export async function GET() {
+export async function GET(request: Request) {
+  const ip = getClientIp(request)
+  const { success } = rateLimit(`tracker:get:${ip}`)
+  if (!success) {
+    return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+  }
+
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -60,6 +67,12 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const postIp = getClientIp(request)
+  const { success: postAllowed } = rateLimit(`tracker:post:${postIp}`)
+  if (!postAllowed) {
+    return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+  }
+
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })

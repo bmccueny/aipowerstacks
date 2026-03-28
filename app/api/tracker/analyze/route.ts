@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-
-
+import { rateLimit, getClientIp } from '@/lib/rate-limit'
 
 const USE_CASE_LABELS: Record<string, string> = {
   coding: 'coding', 'content-creation': 'content creation', marketing: 'marketing',
@@ -15,7 +14,13 @@ type Sub = {
   tools: { name: string; slug: string; use_case: string | null; category_id: string | null; pricing_model: string; tagline: string | null; avg_rating: number; review_count: number; has_api: boolean; is_open_source: boolean }
 }
 
-export async function GET() {
+export async function GET(request: Request) {
+  const ip = getClientIp(request)
+  const { success } = rateLimit(`tracker:analyze:${ip}`)
+  if (!success) {
+    return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+  }
+
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })

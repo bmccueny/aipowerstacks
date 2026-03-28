@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-
-
+import { rateLimit, getClientIp } from '@/lib/rate-limit'
 
 type Sub = {
   tool_id: string
@@ -21,6 +20,12 @@ function score(rating: number, reviews: number) {
 }
 
 export async function GET(request: Request) {
+  const ip = getClientIp(request)
+  const { success } = rateLimit(`tracker:optimize:${ip}`)
+  if (!success) {
+    return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+  }
+
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
