@@ -1,0 +1,3131 @@
+[
+  {
+    "id": "c388f388-1bad-4ddd-a276-43a62dc5fad8",
+    "slug": "2-video",
+    "name": "2 VIDEO",
+    "url": "https://2.video/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "59463842-59b3-4201-8e74-d38feab72dd7",
+    "slug": "admakeai",
+    "name": "AdMakeAI",
+    "url": "https://admakeai.com/",
+    "pricing": "paid"
+  },
+  {
+    "id": "bb18802d-d1fe-4405-9e73-04cb115ebf4f",
+    "slug": "adsturbo-ai-ads",
+    "name": "AdsTurbo AI Ads",
+    "url": "http://www.adsturbo.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "43304526-6f75-45a9-8df9-b10d315f466d",
+    "slug": "aegis",
+    "name": "Aegis",
+    "url": "https://github.com/Justin0504/Aegis",
+    "pricing": "free"
+  },
+  {
+    "id": "ca7ef3b1-d024-48cc-8c39-48d6dd30e248",
+    "slug": "affiliate-skills",
+    "name": "affiliate-skills",
+    "url": "https://github.com/Affitor/affiliate-skills",
+    "pricing": "free"
+  },
+  {
+    "id": "5faf23e1-81a0-4ef0-843c-847a0e815cc6",
+    "slug": "affint",
+    "name": "Affint",
+    "url": "https://affint.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "a0690862-287a-44ad-a6db-2dc43ccfbcce",
+    "slug": "agency-agents-zh",
+    "name": "agency-agents-zh",
+    "url": "https://github.com/msitarzewski/agency-agents",
+    "pricing": "free"
+  },
+  {
+    "id": "c169df6a-1f39-4c16-8d44-50598621ffa4",
+    "slug": "agent-tars",
+    "name": "Agent TARS",
+    "url": "https://agenttars.ai",
+    "pricing": "free"
+  },
+  {
+    "id": "7d37d560-b381-4b92-b206-40aff08db342",
+    "slug": "agent-reach",
+    "name": "Agent-Reach",
+    "url": "https://github.com/Panniantong/Agent-Reach",
+    "pricing": "free"
+  },
+  {
+    "id": "168e3496-99dd-47d4-86e4-491e19f23973",
+    "slug": "agentic-ai-coding-tool-thats-easy-to-use-transparent-and-customizable",
+    "name": "Agentic AI coding tool that's easy to use, transparent and customizable",
+    "url": "https://oppydev.ai/download/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "fbc609ad-c35c-4b12-a849-8ee7a5750ff2",
+    "slug": "ai-tool-that-brutally-roasts-your-ai-agent-ideas",
+    "name": "AgentRoast",
+    "url": "https://whycantwehaveanagentforthis.com",
+    "pricing": "free"
+  },
+  {
+    "id": "cfe7c5bc-9ae0-4ab4-a4ec-57802369d3a2",
+    "slug": "ai-background-remover",
+    "name": "AI Background Remover",
+    "url": "https://aibackgroundremover.io/",
+    "pricing": "free"
+  },
+  {
+    "id": "017ccc0b-b251-4d30-a7a5-edc7534adeb2",
+    "slug": "ai-color-analysis",
+    "name": "AI Color Analysis",
+    "url": "https://aicoloranalysis.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "4f756023-679a-4ec2-8225-122a157b140b",
+    "slug": "ai-humanizer-tool",
+    "name": "AI Humanizer Tool",
+    "url": "https://www.humanizertool.io/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "d48e3ae3-ddc3-426e-b369-f9055eb00a34",
+    "slug": "ai-image-editor",
+    "name": "AI Image Editor",
+    "url": "https://aiimgeditor.ai/",
+    "pricing": "trial"
+  },
+  {
+    "id": "3e61cd1f-fbbe-45d0-8267-919ce780442d",
+    "slug": "ai-landing-page",
+    "name": "AI Landing Page",
+    "url": "https://ailandingpage.ai/",
+    "pricing": "free"
+  },
+  {
+    "id": "b02e33ac-2b28-4422-9f5f-948ab11945ff",
+    "slug": "ai-song-creator-app",
+    "name": "AI Song Creator App",
+    "url": "https://aisongcreator.app/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "262723b8-45ff-4689-a388-b37582d06317",
+    "slug": "ai-song-creator-pro",
+    "name": "AI Song Creator Pro",
+    "url": "https://aisongcreator.pro/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "4faa252e-a6f1-4af2-a416-09d0442f43d4",
+    "slug": "ai-song-maker-io",
+    "name": "AI Song Maker Io",
+    "url": "https://www.aisongmaker.io/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "5da9d0ca-a401-42bc-ba98-ce56f3912f21",
+    "slug": "ai-vector",
+    "name": "AI Vector",
+    "url": "https://aivector.ai/",
+    "pricing": "free"
+  },
+  {
+    "id": "7f038a30-5954-49a9-8337-3c5c89588727",
+    "slug": "ai-video-enhancer-online",
+    "name": "AI Video Enhancer Online",
+    "url": "https://online.hitpaw.com/online-video-enhancer.html",
+    "pricing": "freemium"
+  },
+  {
+    "id": "f2c84fa7-2a5d-44d4-bc96-039d2319273c",
+    "slug": "ai-virtual-staging",
+    "name": "AI Virtual Staging",
+    "url": "https://www.aivirtualstaging.net/",
+    "pricing": "paid"
+  },
+  {
+    "id": "3eecea4f-dc45-411e-be0f-53afe3e24dbd",
+    "slug": "ai-company",
+    "name": "AI-company",
+    "url": "https://github.com/CronusL-1141/AI-company",
+    "pricing": "free"
+  },
+  {
+    "id": "9b78b504-a094-4ade-9b16-802663688fc6",
+    "slug": "ai-engineering-from-scratch",
+    "name": "ai-engineering-from-scratch",
+    "url": "https://github.com/rohitg00/ai-engineering-from-scratch",
+    "pricing": "free"
+  },
+  {
+    "id": "379613f3-490a-44b6-81fa-d00d962c628d",
+    "slug": "aiclicks",
+    "name": "AIclicks",
+    "url": "https://aiclicks.io/",
+    "pricing": "paid"
+  },
+  {
+    "id": "ba5e9192-942a-4743-bc84-87075b4f115c",
+    "slug": "ai-tool-to-remove-backgroundschange-clothesand-animate-product-photos",
+    "name": "Aicraft",
+    "url": "https://getaicraft.com",
+    "pricing": "paid"
+  },
+  {
+    "id": "d1a2f292-dd56-4c2a-9f4e-8dcdbe814e5d",
+    "slug": "aieasyphoto",
+    "name": "Aieasyphoto",
+    "url": "https://aieasyphoto.com/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "7c138da3-4d0a-4783-8c3c-9c85d50584f1",
+    "slug": "aigne-docsmith",
+    "name": "AIGNE DocSmith",
+    "url": "https://docsmith.aigne.io/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "323dc1ae-2013-4dbd-98be-55f22a99c73e",
+    "slug": "aiimagetovideopro",
+    "name": "AIimageToVideo.pro",
+    "url": "https://aiimagetovideo.pro/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "ab59b441-7a84-4ecd-bc26-3b4d92cb24b5",
+    "slug": "aimirror",
+    "name": "aimirror",
+    "url": "https://github.com/livehl/aimirror",
+    "pricing": "free"
+  },
+  {
+    "id": "daf7e1c4-f236-4f65-8436-02a3fab32442",
+    "slug": "aimy-ads",
+    "name": "Aimy Ads",
+    "url": "https://www.aimyads.ai/",
+    "pricing": "trial"
+  },
+  {
+    "id": "5cde8497-28a9-498c-8aa2-99581104f2d2",
+    "slug": "aiplacard-ai-tools-directory",
+    "name": "AiPlacard",
+    "url": "https://aiplacard.com/",
+    "pricing": "free"
+  },
+  {
+    "id": "1ec083c2-90b4-49f5-b592-e33843c0ad2a",
+    "slug": "aipptcom",
+    "name": "AiPPT.com",
+    "url": "https://www.aippt.com/landingpage/sem",
+    "pricing": "trial"
+  },
+  {
+    "id": "3723f8cb-d1e2-40f9-b893-17e1ea5b6997",
+    "slug": "airbrush",
+    "name": "Airbrush",
+    "url": "https://airbrush.com/background-remover",
+    "pricing": "trial"
+  },
+  {
+    "id": "b46fcbb9-1470-4519-8695-38d8e7c50812",
+    "slug": "airmusic",
+    "name": "AirMusic",
+    "url": "https://airmusic.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "d00ba0b3-6f2b-4f4f-9de0-71b27ce41a47",
+    "slug": "ai-tool-trek-another-ai-tool-directory",
+    "name": "Aitooltrek",
+    "url": "https://aitooltrek.com/",
+    "pricing": "free"
+  },
+  {
+    "id": "1eae05f5-7e1c-4d42-bf9f-87cbcdaabb00",
+    "slug": "aiwritebook-ai-tool-to-write-design-and-publish-full-length-books",
+    "name": "AIWriteBook",
+    "url": "https://aiwritebook.com",
+    "pricing": "free"
+  },
+  {
+    "id": "e34c55ae-a02f-4758-a9ed-e96bcb16c22c",
+    "slug": "alphaclaw",
+    "name": "alphaclaw",
+    "url": "https://github.com/chrysb/alphaclaw",
+    "pricing": "free"
+  },
+  {
+    "id": "4bd2fb21-3844-406f-963d-49fc6643b8c4",
+    "slug": "amazon-nova",
+    "name": "Amazon Nova",
+    "url": "https://aws.amazon.com/ai/generative-ai/nova/",
+    "pricing": "free"
+  },
+  {
+    "id": "a7b66f7f-771a-46d8-bfb5-a7102161831a",
+    "slug": "antfly",
+    "name": "antfly",
+    "url": "https://antfly.io",
+    "pricing": "freemium"
+  },
+  {
+    "id": "a30c73c7-1f40-4fca-889e-fb6f0ea107b0",
+    "slug": "anthropic-cybersecurity-skills",
+    "name": "Anthropic-Cybersecurity-Skills",
+    "url": "https://mahipal.engineer/Anthropic-Cybersecurity-Skills/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "3933bee1-02e6-4522-8182-55f6d9a91438",
+    "slug": "anylogogenerator",
+    "name": "AnyLogoGenerator",
+    "url": "https://anylogo.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "6165f5d4-6b03-4610-a830-eb6a29959e06",
+    "slug": "anytourl",
+    "name": "AnyToURL",
+    "url": "https://anytourl.com/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "56f55139-bcbf-40dd-aa98-d6fb87e28d2c",
+    "slug": "appark",
+    "name": "Appark",
+    "url": "https://appark.ai/en",
+    "pricing": "free"
+  },
+  {
+    "id": "0aa5207d-37da-4b64-9acc-b32c79c668dd",
+    "slug": "appdeploy",
+    "name": "Appdeploy",
+    "url": "https://appdeploy.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "6b1bef88-910e-41eb-9a41-1f81c32f41d9",
+    "slug": "apple-creator-studio",
+    "name": "Apple Creator Studio",
+    "url": "https://developer.apple.com",
+    "pricing": "paid"
+  },
+  {
+    "id": "6a1caf7b-b623-4520-b963-a2bb44dd2347",
+    "slug": "atoms",
+    "name": "Atoms",
+    "url": "https://atoms.dev/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "ea9ad23f-0774-479a-9a7e-92f1c162ca5d",
+    "slug": "ats-resume-checker",
+    "name": "ATS Resume Checker",
+    "url": "https://tripleten.com/tools/ats-resume-checker/",
+    "pricing": "free"
+  },
+  {
+    "id": "88c0111c-43ce-48c0-a533-1e17bbea1111",
+    "slug": "auto-claude-code-research-in-sleep",
+    "name": "Auto-claude-code-research-in-sleep",
+    "url": "https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep",
+    "pricing": "free"
+  },
+  {
+    "id": "308ee1a7-b5aa-4a74-9c82-4aa47dc7d100",
+    "slug": "automateed",
+    "name": "Automateed",
+    "url": "https://automateed.com/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "39549836-252c-442f-bcc7-58f523572aa6",
+    "slug": "avclabs-video-blur-ai",
+    "name": "AVCLabs Video Blur AI",
+    "url": "https://www.avclabs.com/video-blur-ai.html",
+    "pricing": "trial"
+  },
+  {
+    "id": "a4e1cfb0-683a-4697-91c1-5f6afcd8e168",
+    "slug": "averi-ai",
+    "name": "Averi AI",
+    "url": "https://www.averi.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "b760cd9b-cb04-49da-ad4a-3a3b5b7cf067",
+    "slug": "awesome-ai-agents-2026",
+    "name": "awesome-ai-agents-2026",
+    "url": "https://github.com/caramaschiHG/awesome-ai-agents-2026",
+    "pricing": "free"
+  },
+  {
+    "id": "2dfd7dde-685d-4460-863b-471f0351b0b3",
+    "slug": "awesome-codex-subagents",
+    "name": "awesome-codex-subagents",
+    "url": "https://github.com/VoltAgent/voltagent",
+    "pricing": "free"
+  },
+  {
+    "id": "4a4a1c90-9883-47f1-84c8-9dae50592f85",
+    "slug": "awesome-openclaw-usecases-zh",
+    "name": "awesome-openclaw-usecases-zh",
+    "url": "https://github.com/AlexAnys/awesome-openclaw-usecases-zh#readme",
+    "pricing": "free"
+  },
+  {
+    "id": "f36bd7c8-e2ba-42b3-aaf0-ff9f4065421b",
+    "slug": "axell",
+    "name": "Axell",
+    "url": "https://www.axellai.com/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "741c8511-3505-4843-8ab8-fb035cb00640",
+    "slug": "azoma",
+    "name": "Azoma",
+    "url": "https://www.azoma.ai/",
+    "pricing": "paid"
+  },
+  {
+    "id": "ff431c34-98b5-4cdc-bf24-318052815bae",
+    "slug": "beatviz-ai",
+    "name": "BeatViz AI",
+    "url": "https://beatviz.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "84d99a7f-c4c6-4b0c-a679-d9fe7a080262",
+    "slug": "beautiful-ai",
+    "name": "Beautiful.ai",
+    "url": "https://beautiful.ai",
+    "pricing": "paid"
+  },
+  {
+    "id": "0d79f2be-55c9-4a01-9d74-f934c264a258",
+    "slug": "beautyplus-image-enhancer",
+    "name": "BeautyPlus Image Enhancer",
+    "url": "https://www.beautyplus.com/image-enhancer",
+    "pricing": "freemium"
+  },
+  {
+    "id": "c422d23c-72c3-464a-a4ef-2ee0f0138892",
+    "slug": "biela-dev",
+    "name": "Biela Dev",
+    "url": "https://biela.dev/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "1d7734f6-681f-42bb-a7bb-175ca8884213",
+    "slug": "bigideasdb",
+    "name": "BigIdeasDB",
+    "url": "https://bigideasdb.com/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "4582c16c-ec8f-479e-a4b4-203b1b555eae",
+    "slug": "ai-tool-to-guess-your-personality-from-your-tweets",
+    "name": "BirdbrainBio",
+    "url": "https://birdbrain.bio/",
+    "pricing": "free"
+  },
+  {
+    "id": "c30cdc7e-51bf-406b-92b3-1c93c5f7ca8a",
+    "slug": "blabbyai-speech-to-text",
+    "name": "BlabbyAI Speech to text",
+    "url": "https://www.blabby.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "0bb5880f-f313-4cb0-bcc5-cbbb16ee294d",
+    "slug": "blogseo",
+    "name": "Blogseo",
+    "url": "https://www.blogseo.io/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "ed8d5cb9-d6b2-4c52-b4ff-82268856bd9a",
+    "slug": "boring-report",
+    "name": "Boring Report",
+    "url": "https://boringreport.org",
+    "pricing": "free"
+  },
+  {
+    "id": "c46dadce-78ef-4c06-bad1-b0a6acdfe484",
+    "slug": "brandinaminute-ai-tool-to-generate-a-full-brandkit-in-under-a-minute",
+    "name": "BrandInAMinute ",
+    "url": "https://www.brandinaminute.com/",
+    "pricing": "paid"
+  },
+  {
+    "id": "f4c45a37-a892-48ad-8fe3-84786a1cd633",
+    "slug": "ai-tool-for-interior-designers-and-architects",
+    "name": "Butterflai",
+    "url": "https://butterflai.art",
+    "pricing": "trial"
+  },
+  {
+    "id": "f5ae3fca-621c-44f4-9423-25c4a11f8a8f",
+    "slug": "career-aptitude-test",
+    "name": "Career Aptitude Test",
+    "url": "https://tripleten.com/tools/career-aptitude-test/",
+    "pricing": "free"
+  },
+  {
+    "id": "2733e80d-5a09-4d4a-98e5-27f7614ebeab",
+    "slug": "caricature-maker",
+    "name": "Caricature Maker",
+    "url": "https://caricaturemaker.net/",
+    "pricing": "paid"
+  },
+  {
+    "id": "eb0f4c67-33ec-4747-b1df-6876773dba01",
+    "slug": "cartoonize-ai",
+    "name": "Cartoonize AI",
+    "url": "https://cartoonize.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "29a8a822-dde6-4d7c-ae05-3713a5225fd2",
+    "slug": "an-ai-tool-that-generates-celebrity-voices-with-matching-lip-sync",
+    "name": "Celebvoicify",
+    "url": "https://celebvoicify.com",
+    "pricing": "freemium"
+  },
+  {
+    "id": "f62f744d-d705-4767-a68b-7b7e6ce30e65",
+    "slug": "chatgpt-health",
+    "name": "ChatGPT Health",
+    "url": "https://chatgpt.com",
+    "pricing": "paid"
+  },
+  {
+    "id": "215b18f4-563e-4bd4-8f35-1c3576687205",
+    "slug": "chatgpt-shopping",
+    "name": "ChatGPT Shopping",
+    "url": "https://chatgpt.com",
+    "pricing": "free"
+  },
+  {
+    "id": "646ecbd1-cdc3-46d9-a537-933fb88307b5",
+    "slug": "chatgpt-translate",
+    "name": "ChatGPT Translate",
+    "url": "https://chatgpt.com",
+    "pricing": "free"
+  },
+  {
+    "id": "22d6cdad-f3dd-48db-a969-7d2033440739",
+    "slug": "chatplayground-ai",
+    "name": "Chatplayground AI",
+    "url": "https://chatplayground.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "b9858a10-90d4-4e6c-ae68-838fb0b27eab",
+    "slug": "chatterbox-turbo",
+    "name": "Chatterbox Turbo",
+    "url": "https://chatterbox.ai",
+    "pricing": "free"
+  },
+  {
+    "id": "947697e4-27ad-47df-8b81-a10dcc90f8fb",
+    "slug": "clanker-talk",
+    "name": "Clanker Talk",
+    "url": "https://www.producthunt.com/r/RVLWW2NKJ2GFBF?utm_campaign=producthunt-api&utm_medium=api-v2&utm_source=Application%3A+aipowerstacks+%28ID%3A+277733%29",
+    "pricing": "free"
+  },
+  {
+    "id": "d5f23e75-34fd-40f4-bb73-ec635fffe7e1",
+    "slug": "claritypage",
+    "name": "ClarityPage",
+    "url": "https://claritypage.com",
+    "pricing": "freemium"
+  },
+  {
+    "id": "785544be-22e6-4762-acea-8483dfb3b653",
+    "slug": "claude-healthcare",
+    "name": "Claude Healthcare",
+    "url": "https://claude.ai",
+    "pricing": "paid"
+  },
+  {
+    "id": "56ae97df-698e-4680-aab4-65048660e656",
+    "slug": "claude-opus-45",
+    "name": "Claude Opus 4.5",
+    "url": "https://claude.ai",
+    "pricing": "freemium"
+  },
+  {
+    "id": "6c876238-f63e-4883-9877-70bfc28db7a6",
+    "slug": "claude-opus-46",
+    "name": "Claude Opus 4.6",
+    "url": "https://claude.ai",
+    "pricing": "paid"
+  },
+  {
+    "id": "fa7b4b77-7b9a-45d4-a422-fb1ffaa4783a",
+    "slug": "claude-code-x-openclaw-guide-zh",
+    "name": "Claude-Code-x-OpenClaw-Guide-Zh",
+    "url": "https://github.com/KimYx0207/Claude-Code-x-OpenClaw-Guide-Zh",
+    "pricing": "free"
+  },
+  {
+    "id": "0548db97-fe32-4f55-9197-261a10f1be01",
+    "slug": "clawith",
+    "name": "Clawith",
+    "url": "https://www.clawith.ai",
+    "pricing": "freemium"
+  },
+  {
+    "id": "c570822a-3a39-4cc5-945f-311e3d4c1dfc",
+    "slug": "clawpanel",
+    "name": "clawpanel",
+    "url": "https://claw.qt.cool",
+    "pricing": "freemium"
+  },
+  {
+    "id": "de5c85b3-7594-431d-b8f7-69dbb1c65319",
+    "slug": "cli",
+    "name": "cli",
+    "url": "https://developers.google.com/workspace",
+    "pricing": "freemium"
+  },
+  {
+    "id": "0bca7161-5a15-4505-bc92-0dceed4b5ade",
+    "slug": "clipfinder",
+    "name": "Clipfinder",
+    "url": "https://www.clipfinder.org/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "e6c88628-aaae-4e9f-bb7f-90e54d456851",
+    "slug": "cocoon",
+    "name": "Cocoon",
+    "url": "https://cocoon.com",
+    "pricing": "free"
+  },
+  {
+    "id": "2e426fc6-aaa9-4301-a34a-eff3d10f06a3",
+    "slug": "code-review-graph",
+    "name": "code-review-graph",
+    "url": "https://github.com/tirth8205/code-review-graph",
+    "pricing": "free"
+  },
+  {
+    "id": "b84e203c-863a-41c3-8e06-0ca546b4468d",
+    "slug": "codeflying",
+    "name": "Codeflying",
+    "url": "https://www.codeflying.app/?s=aixploria",
+    "pricing": "freemium"
+  },
+  {
+    "id": "f4e40c39-d278-4dc2-a260-aad34575cf32",
+    "slug": "coderabbitai-powered-tool-streamlining-code-reviews",
+    "name": "CodeRabbit",
+    "url": "https://coderabbit.ai/",
+    "pricing": "trial"
+  },
+  {
+    "id": "789d7ba9-b4ca-4070-a763-8c40eed53aa9",
+    "slug": "codex-auto-register",
+    "name": "codex_auto_register",
+    "url": "https://github.com/Ttungx/codex_auto_register",
+    "pricing": "free"
+  },
+  {
+    "id": "46d8a5c4-824c-49db-b8c5-6d33dab1a8f2",
+    "slug": "codingfleet",
+    "name": "Codingfleet",
+    "url": "https://codingfleet.com/code-generator/python/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "4f11d297-8255-4f80-8f69-85a625debdc7",
+    "slug": "colorart",
+    "name": "Colorart",
+    "url": "https://colorart.ai/",
+    "pricing": "trial"
+  },
+  {
+    "id": "9408a121-448a-489a-81f2-6b9331641620",
+    "slug": "colorpage-lab",
+    "name": "ColorPage Lab",
+    "url": "https://aicoloringpage.org/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "932b8dd2-b9d3-46c7-89be-51cc116bc09d",
+    "slug": "columns",
+    "name": "Columns",
+    "url": "https://columns.ai/flow",
+    "pricing": "freemium"
+  },
+  {
+    "id": "966d67b0-6c79-4f9c-b7b3-bd64de1962ee",
+    "slug": "comet-browser",
+    "name": "Comet Browser",
+    "url": "https://cometbrowser.com",
+    "pricing": "freemium"
+  },
+  {
+    "id": "802be603-05c2-4546-9ed2-175fd8666a09",
+    "slug": "competitor-analyzer",
+    "name": "Competitor Analyzer",
+    "url": "https://competitoranalyzer.com/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "5cae4c71-adde-405a-83c7-37b1a0a63436",
+    "slug": "cora-intelligence",
+    "name": "Cora Intelligence",
+    "url": "https://www.cora-intelligence.com/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "a1565f85-fc3f-4ff0-b188-fede72b43987",
+    "slug": "ai-tool-that-helps-you-shop-using-lower-priced-search-terms",
+    "name": "Costdown",
+    "url": "https://www.costdown.app",
+    "pricing": "free"
+  },
+  {
+    "id": "920093b4-5fd4-4466-9b47-2478bf35f18c",
+    "slug": "an-ai-coding-tool-for-unserious-projects",
+    "name": "Crazycontext",
+    "url": "https://crazycontext.com/",
+    "pricing": "free"
+  },
+  {
+    "id": "30c3d717-4c25-4dfd-a382-7ec8b0734170",
+    "slug": "create-music-ai",
+    "name": "Create Music AI",
+    "url": "https://createmusicai.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "7cf352a7-c49f-444c-9a57-eb3d09784f3b",
+    "slug": "createwalink",
+    "name": "CreateWAlink",
+    "url": "https://link.wadesk.io/",
+    "pricing": "free"
+  },
+  {
+    "id": "ab06cd45-0852-4e49-9035-12a15e45f369",
+    "slug": "ai-tool-that-builds-and-deploys-n8n-workflows-from-a-single-prompt",
+    "name": "CsworkflowConsciousstage",
+    "url": "https://csworkflow.consciousstage.com/",
+    "pricing": "free"
+  },
+  {
+    "id": "c7326662-dedb-4851-99b7-f0a1cae799cb",
+    "slug": "cutmuse-ai-tool-for-haircut-recommendations-by-face-shape",
+    "name": "Cutmuse",
+    "url": "https://www.cutmuse.com/",
+    "pricing": "paid"
+  },
+  {
+    "id": "f036e11a-3da3-4113-ace3-641ba9b09355",
+    "slug": "dailyscope-ai",
+    "name": "DailyScope AI",
+    "url": "https://dailyscope.ai",
+    "pricing": "freemium"
+  },
+  {
+    "id": "4c5e3041-893d-4e92-9af0-2b841a00dab3",
+    "slug": "danghuangshang",
+    "name": "danghuangshang",
+    "url": "https://danghuangshang.com",
+    "pricing": "freemium"
+  },
+  {
+    "id": "90ec3f74-e783-4366-bb82-1c54e9da529e",
+    "slug": "datephotosai",
+    "name": "DatePhotosAI",
+    "url": "https://datephotos.ai/",
+    "pricing": "paid"
+  },
+  {
+    "id": "b5d22da4-8d93-45a9-9f58-0f340d43c838",
+    "slug": "dealism",
+    "name": "Dealism",
+    "url": "https://dealism.ai/",
+    "pricing": "trial"
+  },
+  {
+    "id": "e01d75eb-5db9-4f91-9da4-7a0635aa219d",
+    "slug": "dechecker",
+    "name": "Dechecker",
+    "url": "https://dechecker.ai/",
+    "pricing": "free"
+  },
+  {
+    "id": "7f28fb84-b036-4d45-a225-1321abc9867e",
+    "slug": "deep-swap-ai",
+    "name": "Deep Swap AI",
+    "url": "https://deepswapai.com/",
+    "pricing": "free"
+  },
+  {
+    "id": "403e91fc-575c-422b-ba77-bd6b4f8fa6ce",
+    "slug": "deepseek-math-v2",
+    "name": "DeepSeek Math V2",
+    "url": "https://www.deepseek.com",
+    "pricing": "free"
+  },
+  {
+    "id": "c30bacb4-712c-4383-8492-4710726b2e58",
+    "slug": "deeptutor",
+    "name": "Deeptutor",
+    "url": "https://hkuds.github.io/DeepTutor/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "9fe31423-fb9a-4417-819d-8004dc4b3975",
+    "slug": "deevid-ai-image",
+    "name": "Deevid AI Image",
+    "url": "https://deevid.ai/ai-image-generator?utm_source=aff&utm_medium=aixploria&utm_campaign=image-ai",
+    "pricing": "freemium"
+  },
+  {
+    "id": "3f72b49d-7d97-49f9-8405-61d29a47ae5e",
+    "slug": "denovo",
+    "name": "Denovo",
+    "url": "https://www.denovo.dev/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "cbb0f7bd-535d-433f-957e-d49dd1f91c13",
+    "slug": "depth-anything-3",
+    "name": "Depth Anything 3",
+    "url": "https://depth-anything.github.io",
+    "pricing": "free"
+  },
+  {
+    "id": "8c85e46c-103b-47c4-8cd8-8695b85b9f16",
+    "slug": "devin-pro",
+    "name": "Devin Pro",
+    "url": "https://cognition.ai/devin",
+    "pricing": "contact"
+  },
+  {
+    "id": "6bd11089-75ba-432a-aa09-8462c89446fd",
+    "slug": "devoice",
+    "name": "DeVoice",
+    "url": "https://devoice.io/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "eb628cdb-c036-4e24-8117-b36200211a09",
+    "slug": "devstral2-mistral",
+    "name": "Devstral2 Mistral",
+    "url": "https://mistral.ai",
+    "pricing": "free"
+  },
+  {
+    "id": "260a5d12-e925-46b7-b5a8-27d667483e28",
+    "slug": "diagrimo",
+    "name": "Diagrimo",
+    "url": "https://www.tenorshare.ai/diagrimo.html",
+    "pricing": "freemium"
+  },
+  {
+    "id": "6827ebcc-cc6f-41c1-9fd0-27cf56f24415",
+    "slug": "didoo-ai",
+    "name": "Didoo AI",
+    "url": "https://didoo.ai/",
+    "pricing": "trial"
+  },
+  {
+    "id": "071feb61-5f4a-459c-9f14-faa2e23d065b",
+    "slug": "disco-google",
+    "name": "Disco Google",
+    "url": "https://research.google/blog/harnessing-diffusion-models-for-visual-design/",
+    "pricing": "free"
+  },
+  {
+    "id": "99c359d8-0638-4ac4-83bb-0af057d4e0de",
+    "slug": "docanalyzer-ai",
+    "name": "Docanalyzer AI",
+    "url": "https://docanalyzer.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "0c5719bc-8527-41c1-ba75-4f3131cb6132",
+    "slug": "echo-now-ai",
+    "name": "Echo Now AI",
+    "url": "https://echonow.ai",
+    "pricing": "freemium"
+  },
+  {
+    "id": "f8e86ff4-1e7f-4c1e-bdba-b1e526d4b526",
+    "slug": "echoread-ai-reading-companion",
+    "name": "Echoread Ai Reading Companion",
+    "url": "https://echoread.co/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "50a2bb7e-426e-4810-b32c-13c9d17c8f4a",
+    "slug": "echowrite",
+    "name": "Echowrite",
+    "url": "https://echowrite.muware.xyz/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "38d1a59a-0625-4b61-8dbf-4ad5a2999128",
+    "slug": "edubrain-ai",
+    "name": "Edubrain AI",
+    "url": "https://edubrain.ai/",
+    "pricing": "trial"
+  },
+  {
+    "id": "ef29df05-10b4-4c47-8fc7-f7e28e9282dc",
+    "slug": "elevenlabs-scribe-v2",
+    "name": "ElevenLabs Scribe V2",
+    "url": "https://elevenlabs.io",
+    "pricing": "free"
+  },
+  {
+    "id": "c77c0c0b-24ae-4ff0-adad-a9261d655cf4",
+    "slug": "enhancephoto-ai",
+    "name": "EnhancePhoto AI",
+    "url": "https://enhancephoto.ai/",
+    "pricing": "free"
+  },
+  {
+    "id": "39f75321-1120-4d1b-a840-ba9891b1a386",
+    "slug": "ernie-50",
+    "name": "Ernie 5.0",
+    "url": "https://erniebot.baidu.com",
+    "pricing": "free"
+  },
+  {
+    "id": "426f7651-f72c-4420-ad38-71a74ceb2fb4",
+    "slug": "esotericai",
+    "name": "Esotericai",
+    "url": "https://esotericai.xyz/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "19d76c79-0297-43f2-b1b2-eec91d165571",
+    "slug": "espial-ai-tool-to-automate-discovery-and-organization-of-knowledge",
+    "name": "Espial",
+    "url": "https://github.com/Uzay-G/espial",
+    "pricing": "free"
+  },
+  {
+    "id": "046b1f07-b1a7-4811-8b9f-68872a4ad9f5",
+    "slug": "evalyze",
+    "name": "Evalyze",
+    "url": "https://www.evalyze.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "b8fa8364-6f1e-4322-b7fc-82e9f8fb0ccd",
+    "slug": "excelmatic",
+    "name": "Excelmatic",
+    "url": "https://excelmatic.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "7525a62a-addc-420d-88cc-d535c08530fc",
+    "slug": "an-ai-tool-to-build-predictors-for-stock-market-and-crypto",
+    "name": "Exnge",
+    "url": "https://www.exnge.com/",
+    "pricing": "free"
+  },
+  {
+    "id": "fc309dfb-ce7f-4eed-8107-e8e405e93b26",
+    "slug": "ezeditor-ai-magic-editor",
+    "name": "Ezeditor Ai Magic Editor",
+    "url": "https://ezeditor.io/ai-magic-editor/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "48e92642-57a3-4634-8db0-2fd099c98581",
+    "slug": "fabricate",
+    "name": "Fabricate",
+    "url": "https://fabricate.build/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "e302110f-7e97-48bd-8a29-6d63bff5b1a4",
+    "slug": "face-shape-detector",
+    "name": "Face Shape Detector",
+    "url": "https://faceshapedetector.ai/",
+    "pricing": "free"
+  },
+  {
+    "id": "52e270e3-257d-4f45-98c1-6033858881e1",
+    "slug": "face-swap-ai",
+    "name": "Face Swap AI",
+    "url": "https://faceswapai.com/",
+    "pricing": "free"
+  },
+  {
+    "id": "87b4900b-125a-4a0f-a0b0-d65066fac145",
+    "slug": "facefinder",
+    "name": "FaceFinder",
+    "url": "https://www.facefinder.id/",
+    "pricing": "paid"
+  },
+  {
+    "id": "4b32a754-78d3-44fc-a5cf-a43a466ec652",
+    "slug": "falcocut",
+    "name": "FalcoCut",
+    "url": "https://falcocut.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "41c80831-7e17-4aa8-aca9-c1f18a3c1baf",
+    "slug": "fastbots",
+    "name": "Fastbots",
+    "url": "https://fastbots.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "104c2c27-6dc8-446b-b0f6-d5ea6431df3c",
+    "slug": "free-ai-tool-that-fills-web-forms-from-plain-text",
+    "name": "Fillapp",
+    "url": "https://fillapp.ai",
+    "pricing": "free"
+  },
+  {
+    "id": "c4fa2c81-43d5-4447-8877-3b98c650ecdc",
+    "slug": "filmflow-ai-powered-tool-for-visualizing-emotional-pulse-of-films",
+    "name": "FilmFlow",
+    "url": "https://meetfebin.com/apps/filmflow",
+    "pricing": "free"
+  },
+  {
+    "id": "314aa010-18d2-428b-8121-e1186395bf3c",
+    "slug": "filmpitch",
+    "name": "Filmpitch",
+    "url": "https://www.filmpitch.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "9070a915-e107-425d-b284-ef45f583b0f8",
+    "slug": "final-round-ai",
+    "name": "Final Round AI",
+    "url": "https://www.finalroundai.com/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "101559a2-05ff-41bd-8260-7030043fed24",
+    "slug": "findtubeai",
+    "name": "Findtube.AI",
+    "url": "https://findtube.ai/",
+    "pricing": "free"
+  },
+  {
+    "id": "1db62fe4-00c5-4bc1-8a71-6d2b91f5b830",
+    "slug": "fliz",
+    "name": "Fliz",
+    "url": "https://fliz.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "7a45a295-85bf-49fb-afc3-4b8255bcd60b",
+    "slug": "floot",
+    "name": "Floot",
+    "url": "https://floot.com/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "8b8688c2-44bb-444e-8805-94ae30ee4333",
+    "slug": "flux2",
+    "name": "Flux.2",
+    "url": "https://blackforestlabs.ai",
+    "pricing": "freemium"
+  },
+  {
+    "id": "10dccbe2-6afe-446a-bbdd-735035ebdd16",
+    "slug": "free-ai-writing-tools",
+    "name": "Free AI Writing Tools",
+    "url": "https://www.thesamur.ai/tools",
+    "pricing": "freemium"
+  },
+  {
+    "id": "74a7298d-4ec4-4990-9e81-f8fc58a81a29",
+    "slug": "free-whatsapp-bulk-sender",
+    "name": "Free WhatsApp Bulk Sender",
+    "url": "https://chromewebstore.google.com/detail/free-whatsapp-bulk-sender/amokpeafejimkmcjjhbehganpgidcbif",
+    "pricing": "free"
+  },
+  {
+    "id": "5ac05c99-8681-4ae9-a211-596fa773c1b2",
+    "slug": "freudly-ai-therapist",
+    "name": "Freudly AI Therapist",
+    "url": "https://freudly.ai/",
+    "pricing": "trial"
+  },
+  {
+    "id": "8c6c8541-ee14-402e-ad3b-4301973b6723",
+    "slug": "gamma-app",
+    "name": "Gamma App",
+    "url": "https://gamma.app",
+    "pricing": "freemium"
+  },
+  {
+    "id": "2478d332-550f-4a82-8762-2ce2fe8d33e7",
+    "slug": "gemini-3",
+    "name": "Gemini 3",
+    "url": "https://gemini.google.com",
+    "pricing": "free"
+  },
+  {
+    "id": "51f8b299-f237-4bc7-8c01-7c3f1f244672",
+    "slug": "gemini-3-flash",
+    "name": "Gemini 3 Flash",
+    "url": "https://gemini.google.com",
+    "pricing": "free"
+  },
+  {
+    "id": "29fc0c5d-b2b8-4267-ad20-aec1c7f3c6bf",
+    "slug": "gemini-31-pro",
+    "name": "Gemini 3.1 Pro",
+    "url": "https://gemini.google.com",
+    "pricing": "paid"
+  },
+  {
+    "id": "0ed7cea0-13e3-455d-9b1b-e6fbc6e68abd",
+    "slug": "gemini-personal-intelligence",
+    "name": "Gemini Personal Intelligence",
+    "url": "https://gemini.google.com",
+    "pricing": "free"
+  },
+  {
+    "id": "58125084-c147-44a2-939e-de4106cc967f",
+    "slug": "generor",
+    "name": "Generor",
+    "url": "https://generor.com/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "4ab7603f-b917-49cb-9887-28afbbdc30b3",
+    "slug": "ghostpen",
+    "name": "Ghostpen",
+    "url": "https://www.getghostpen.com/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "7e065174-4a56-41d1-ab14-c1de8d2d0934",
+    "slug": "ghostwall",
+    "name": "Ghostwall",
+    "url": "https://ghostwall.co/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "2fae9553-d413-4ebb-8585-b7383cd5918a",
+    "slug": "gitcruiter-ai-tool-that-evaluates-developers-by-github-activity",
+    "name": "GitCruiter",
+    "url": "https://www.gitcruiter.com",
+    "pricing": "contact"
+  },
+  {
+    "id": "ea4d6e17-310a-4fc9-b537-a14b7e06abb4",
+    "slug": "gitpulse-ai-powered-tool-to-discover-open-source-projects",
+    "name": "GitPulse",
+    "url": "https://git-pulsee.vercel.app",
+    "pricing": "free"
+  },
+  {
+    "id": "0b8b8c77-d57f-4e61-895d-3c6f90ac5d56",
+    "slug": "ai-tool-that-cuts-bloopers-for-youtubers",
+    "name": "Gling",
+    "url": "https://www.gling.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "46cda145-6330-454a-814e-401fd9f5a604",
+    "slug": "glm-47-flash",
+    "name": "GLM 4.7 Flash",
+    "url": "https://glm4.7flash",
+    "pricing": "free"
+  },
+  {
+    "id": "e8939b2c-24eb-4fc7-83d7-bb1406fc9fb4",
+    "slug": "glm-5",
+    "name": "GLM 5",
+    "url": "https://chatglm.cn",
+    "pricing": "free"
+  },
+  {
+    "id": "4738fb58-789c-4cb1-b5b4-7bf02923331e",
+    "slug": "glm-image",
+    "name": "GLM-Image",
+    "url": "https://chatglm.cn",
+    "pricing": "free"
+  },
+  {
+    "id": "a9f6aa79-7f96-4e62-ae44-c14e5b68b104",
+    "slug": "glm-ocr",
+    "name": "GLM-OCR",
+    "url": "https://chatglm.cn",
+    "pricing": "free"
+  },
+  {
+    "id": "050fbc86-0ad2-4955-9e9d-b5a33b2d4987",
+    "slug": "goai",
+    "name": "Goai",
+    "url": "https://goai.digital/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "230ac042-ebff-41b1-ad5a-25c60e2dcbbf",
+    "slug": "goclaw",
+    "name": "goclaw",
+    "url": "https://goclaw.sh",
+    "pricing": "freemium"
+  },
+  {
+    "id": "71f298bf-26d4-4cbe-8261-3775369671ee",
+    "slug": "gocrazyai",
+    "name": "GoCrazyAI",
+    "url": "https://gocrazyai.com/",
+    "pricing": "paid"
+  },
+  {
+    "id": "7f910ccd-e31b-425d-be19-dd086aea30d0",
+    "slug": "goenhance-image-to-video-ai",
+    "name": "GoEnhance Image to Video AI",
+    "url": "https://goenhance.ai",
+    "pricing": "trial"
+  },
+  {
+    "id": "18586040-16a2-4ec8-b6e8-247b5259886e",
+    "slug": "gologin-cloud-browser",
+    "name": "Gologin Cloud Browser",
+    "url": "https://gologin.com/cloud-browser/",
+    "pricing": "paid"
+  },
+  {
+    "id": "46d9a4ab-a7c6-44b6-964e-fa99ca3b8b51",
+    "slug": "google-antigravity",
+    "name": "Google Antigravity",
+    "url": "https://google.com",
+    "pricing": "free"
+  },
+  {
+    "id": "5a8a6348-8793-4ad0-9d6a-d96b9afec2dc",
+    "slug": "google-medasr",
+    "name": "Google MedASR",
+    "url": "https://research.google",
+    "pricing": "free"
+  },
+  {
+    "id": "d054bf44-46e6-4a7e-998e-2aa47da2f1b9",
+    "slug": "google-skills",
+    "name": "Google Skills",
+    "url": "https://skillshop.google.com",
+    "pricing": "free"
+  },
+  {
+    "id": "b0627c83-2e85-4493-bf13-cc4ec2c56185",
+    "slug": "google-titansmiras",
+    "name": "Google Titans+MIRAS",
+    "url": "https://research.google",
+    "pricing": "free"
+  },
+  {
+    "id": "28ba44d0-b412-4961-86b5-058ccd514ba8",
+    "slug": "gpt-53-codex",
+    "name": "GPT 5.3 Codex",
+    "url": "https://gpt-5.3-codex",
+    "pricing": "paid"
+  },
+  {
+    "id": "d39847a9-3e74-47cb-9932-e52458deb4be",
+    "slug": "gpt-image-15",
+    "name": "GPT Image 1.5",
+    "url": "https://openai.com",
+    "pricing": "free"
+  },
+  {
+    "id": "0b3143eb-140e-41ee-9255-816b70f66c04",
+    "slug": "grain-ai",
+    "name": "Grain AI",
+    "url": "https://www.grain99.cc/en/home?hmsr=aIxploria",
+    "pricing": "freemium"
+  },
+  {
+    "id": "0fde5ce1-4dd8-411e-9ae2-622d2b793996",
+    "slug": "groas",
+    "name": "Groas",
+    "url": "https://www.groas.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "2eb8fe4a-f493-4e7c-adea-c1a9fc1123c1",
+    "slug": "grok-41",
+    "name": "Grok 4.1",
+    "url": "https://x.ai",
+    "pricing": "free"
+  },
+  {
+    "id": "cf7c931a-dbf0-4806-9ba9-3feea5bbc00d",
+    "slug": "grok-420",
+    "name": "Grok 4.20",
+    "url": "https://x.ai",
+    "pricing": "free"
+  },
+  {
+    "id": "f12f1812-6699-461b-afce-112ebcae8d45",
+    "slug": "hedy-ai",
+    "name": "Hedy AI",
+    "url": "https://www.hedy.bot/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "166ad0cd-3f41-4321-a9c9-947db0be46a3",
+    "slug": "hitpaw-vikpea",
+    "name": "HitPaw VikPea",
+    "url": "https://www.hitpaw.com/vikpea-video-enhancer.html",
+    "pricing": "trial"
+  },
+  {
+    "id": "58245e88-8b2d-4ed8-a4b1-bd73dde0e3f7",
+    "slug": "holo-ai",
+    "name": "Holo AI",
+    "url": "https://holoai.io",
+    "pricing": "trial"
+  },
+  {
+    "id": "2ab41f46-cb51-4aa9-b167-675a25a1366f",
+    "slug": "holysheep-cli",
+    "name": "holysheep-cli",
+    "url": "https://holysheep.ai",
+    "pricing": "freemium"
+  },
+  {
+    "id": "a8ebe230-f2b3-4abf-bc3a-32f60d745b39",
+    "slug": "human-skill-tree",
+    "name": "human-skill-tree",
+    "url": "https://github.com/24kchengYe/human-skill-tree",
+    "pricing": "free"
+  },
+  {
+    "id": "7493d99d-d4b2-44d4-be21-1f751de72141",
+    "slug": "humanflow",
+    "name": "HumanFlow",
+    "url": "https://humanflow.app/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "e2318da9-38be-4514-a2c1-a389a271ed91",
+    "slug": "hunyuanvideo-15",
+    "name": "HunyuanVideo 1.5",
+    "url": "https://hunyuan.tencent.com",
+    "pricing": "free"
+  },
+  {
+    "id": "42682481-7475-4c50-ab74-7d891b5a1548",
+    "slug": "i-doubt-news",
+    "name": "I Doubt News",
+    "url": "https://idoubtnews.com",
+    "pricing": "free"
+  },
+  {
+    "id": "c3646ee9-fa4b-4896-a480-8649f3662ddd",
+    "slug": "ai-tool-to-find-the-purpose-of-other-websites",
+    "name": "IdkWhatIsThis",
+    "url": "https://idk-what-is-this.vercel.app",
+    "pricing": "free"
+  },
+  {
+    "id": "a19ff399-6ed0-41f6-9efc-7e22aa9b6411",
+    "slug": "illumi-one",
+    "name": "Illumi One",
+    "url": "https://www.illumi.one/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "08dd050c-d62d-4272-968b-b0d823726128",
+    "slug": "image-translate-ai",
+    "name": "Image Translate AI",
+    "url": "https://imagetranslate.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "0727d51a-95a5-491a-8d68-64692a2f51bf",
+    "slug": "imgtovid-ai",
+    "name": "Imgtovid AI",
+    "url": "https://www.imgtovid.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "4a0440e7-7d50-49b5-b9aa-5e4013d805f0",
+    "slug": "imini-ai",
+    "name": "Imini AI",
+    "url": "https://imini.com/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "f0acb94c-33a2-4bb1-9f65-7b6afd7fc7b1",
+    "slug": "ai-tool-to-automatically-extract-data-from-images-and-scanned-documents",
+    "name": "Impira",
+    "url": "https://www.impira.com/mango/overview",
+    "pricing": "free"
+  },
+  {
+    "id": "1c27078d-6f58-40d1-8bc8-28177d76e5ab",
+    "slug": "ai-tool-to-grow-founder-brand",
+    "name": "Inboundr",
+    "url": "https://www.inboundr.ai/",
+    "pricing": "trial"
+  },
+  {
+    "id": "aadc57f9-be72-4ca1-8f0c-958d28d7ac46",
+    "slug": "infronai",
+    "name": "InfronAI",
+    "url": "https://infron.ai/",
+    "pricing": "paid"
+  },
+  {
+    "id": "5e18abdf-079c-4242-be16-23d3e2650b08",
+    "slug": "insmind-image-to-video",
+    "name": "insMind Image to Video",
+    "url": "https://www.insmind.com/image-to-video/",
+    "pricing": "trial"
+  },
+  {
+    "id": "11d53b62-a329-4ee1-b009-ae33961bda31",
+    "slug": "instawebai",
+    "name": "Instawebai",
+    "url": "https://www.instawebai.com/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "415cadd6-ed75-4e4b-bd49-525e23f6de7a",
+    "slug": "instories",
+    "name": "Instories",
+    "url": "https://instories.com/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "96fe85cd-c77d-4f0e-90de-bd8ef9a0b1e8",
+    "slug": "interview-qa-ai",
+    "name": "Interview Q&A AI",
+    "url": "https://tripleten.com/tools/interview-questions-and-answers-generator/",
+    "pricing": "free"
+  },
+  {
+    "id": "81528e1f-30a7-45e9-aae9-cc8f7b9bc3a0",
+    "slug": "intuo",
+    "name": "Intuo",
+    "url": "https://intuo.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "0201e8da-eaf4-43f1-b578-c13fbcf3602d",
+    "slug": "ipageai",
+    "name": "iPage.AI",
+    "url": "https://www.ipage.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "3333814c-4f3f-4642-9e40-0f89218922af",
+    "slug": "iquest-coder-v1",
+    "name": "IQuest-Coder-V1",
+    "url": "https://iquest.ai",
+    "pricing": "free"
+  },
+  {
+    "id": "1bc189b1-86f2-425a-af1f-bb7183761d57",
+    "slug": "irodori-tts",
+    "name": "Irodori-TTS",
+    "url": "https://huggingface.co/Aratako/Irodori-TTS-500M",
+    "pricing": "freemium"
+  },
+  {
+    "id": "c1272375-06ec-459f-aab0-d77e93b4294e",
+    "slug": "jason-ai",
+    "name": "Jason AI",
+    "url": "https://reply.io/jason-ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "3a578010-f241-4df2-af79-9db405ced30f",
+    "slug": "jobbyo",
+    "name": "Jobbyo",
+    "url": "https://jobbyo.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "0ea3f2b1-37fc-48a0-91d6-57874830941a",
+    "slug": "jobgpt-by-6figr",
+    "name": "Jobgpt By 6figr",
+    "url": "https://6figr.com/auto-apply",
+    "pricing": "freemium"
+  },
+  {
+    "id": "1a860d00-e71f-4f4f-9fe9-21cf90a8cc30",
+    "slug": "jolt-ai-coding-tool-for-production-100k-line-codebases",
+    "name": "Jolt",
+    "url": "https://app.usejolt.ai/",
+    "pricing": "free"
+  },
+  {
+    "id": "fbe30dda-7698-4448-9726-e443181c18a9",
+    "slug": "joyfun-ai",
+    "name": "JoyFun AI",
+    "url": "https://joyfun.ai",
+    "pricing": "freemium"
+  },
+  {
+    "id": "3c4930b5-02bc-4b0e-a838-765baf7a7be0",
+    "slug": "kamo-1-kinetix",
+    "name": "Kamo-1 Kinetix",
+    "url": "https://kinetix.tech",
+    "pricing": "free"
+  },
+  {
+    "id": "1331a283-e862-46c9-87f7-a6c8f5efa57a",
+    "slug": "kikivoice",
+    "name": "Kikivoice",
+    "url": "https://kikivoice.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "194665e8-4238-413e-a645-8d393253c3e8",
+    "slug": "kimi-k25",
+    "name": "Kimi K2.5",
+    "url": "https://kimi.moonshot.cn",
+    "pricing": "free"
+  },
+  {
+    "id": "bd68a580-fdc3-4e4c-b0b0-5d51c295a082",
+    "slug": "kin-personal-ai",
+    "name": "Kin Personal AI",
+    "url": "https://mykin.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "09362f12-57c0-46c1-a6f7-888c422d05a5",
+    "slug": "kirkify-ai",
+    "name": "Kirkify AI",
+    "url": "https://kirkifyai.ai/",
+    "pricing": "free"
+  },
+  {
+    "id": "b0c5aaef-fb78-41be-bbca-acad8661f42a",
+    "slug": "kling-ai",
+    "name": "Kling AI",
+    "url": "https://klingai.com",
+    "pricing": "freemium"
+  },
+  {
+    "id": "3e841755-e9cc-4aaf-8387-f90ff7d18f82",
+    "slug": "klodsy",
+    "name": "Klodsy",
+    "url": "https://klodsy.com/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "fef85ae5-99c5-4d83-a786-8f50f11ad585",
+    "slug": "klyps-ai-tool-that-turns-product-images-into-studio-quality-videos",
+    "name": "Klyps",
+    "url": "https://klyps.io/",
+    "pricing": "free"
+  },
+  {
+    "id": "e469c5d2-1f35-476c-8822-c679bcdcdcc9",
+    "slug": "kogents-ai",
+    "name": "Kogents AI",
+    "url": "https://kogents.ai/",
+    "pricing": "free"
+  },
+  {
+    "id": "d3e3c9af-d5ff-43e8-84f2-0babde64fe9e",
+    "slug": "komos-ai-browser-automation-rpa",
+    "name": "Komos Ai Browser Automation Rpa",
+    "url": "https://www.komos.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "23c8cd5d-3db3-4fed-b417-8ee8b621ae09",
+    "slug": "kutt-ai",
+    "name": "Kutt AI",
+    "url": "https://kutt.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "a63d929b-8e44-43ac-88d9-441167013aae",
+    "slug": "landing-page-ai-builder",
+    "name": "Landing Page AI Builder",
+    "url": "https://landing-page.io/",
+    "pricing": "free"
+  },
+  {
+    "id": "ec411516-6c04-4d00-8e93-e7ccf44befb9",
+    "slug": "leadde-ai",
+    "name": "Leadde AI",
+    "url": "https://leadde.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "185e0f82-4d59-4afe-8b53-1824d105b269",
+    "slug": "leania",
+    "name": "Leania",
+    "url": "https://leania.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "101af92a-fb25-48fd-b96e-6cb2bf09f49b",
+    "slug": "learn-place-ai-assistant",
+    "name": "Learn Place AI Assistant",
+    "url": "https://learnplace.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "54271e0a-19c3-47fc-8ac6-8a5942515d6c",
+    "slug": "lightfield",
+    "name": "Lightfield",
+    "url": "https://lightfield.app/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "b72a4d98-c95c-44d6-a289-e3eef0a30418",
+    "slug": "lindy",
+    "name": "Lindy",
+    "url": "https://www.lindy.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "4e8c8a5b-f050-414e-a28f-cb8f3e21a0a1",
+    "slug": "lingbot-world",
+    "name": "LingBot-World",
+    "url": "https://lingbot.ai",
+    "pricing": "free"
+  },
+  {
+    "id": "6e537a86-89ed-450b-9877-33b931a4bf5a",
+    "slug": "lip-sync-ai",
+    "name": "Lip Sync AI",
+    "url": "https://www.lipsyncai.org/",
+    "pricing": "trial"
+  },
+  {
+    "id": "d70965a7-d581-4b1a-afe8-bfc5e571f4d5",
+    "slug": "lip-sync-studio",
+    "name": "Lip Sync Studio",
+    "url": "https://lipsync.studio/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "b8ab5b62-82aa-4d19-8c6e-52a1d4e546d0",
+    "slug": "listagrow-ai",
+    "name": "Listagrow AI",
+    "url": "https://listagrow.com/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "2268a240-0317-41c6-bfdd-9ec8d458ae5e",
+    "slug": "litvideo",
+    "name": "LitVideo",
+    "url": "https://www.litmedia.ai/app/litvideo/home?utm_medium=link&utm_source=aixploria&utm_campaign=FYTLitMedia&utm_term=litvideo20260129",
+    "pricing": "freemium"
+  },
+  {
+    "id": "4e3b6d50-cf31-4661-b75d-e798ee342ec8",
+    "slug": "live-avatar-alibaba",
+    "name": "Live Avatar Alibaba",
+    "url": "https://www.alibabacloud.com",
+    "pricing": "free"
+  },
+  {
+    "id": "b5f4f692-fd67-4dae-98d2-18208acfbea1",
+    "slug": "live3d-ai-face-swap",
+    "name": "Live3D AI Face Swap",
+    "url": "https://live3d.io/ai-face-swap",
+    "pricing": "free"
+  },
+  {
+    "id": "b976f683-40c3-4fde-a23a-df63829d3e5d",
+    "slug": "llmfit",
+    "name": "llmfit",
+    "url": "https://github.com/AlexsJones/llmfit",
+    "pricing": "free"
+  },
+  {
+    "id": "6803d54d-4087-4c5a-b519-f3a9f708ea73",
+    "slug": "luckpal",
+    "name": "Luckpal",
+    "url": "https://www.luckypal.app/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "a753a980-6f0f-4739-85a0-10b9d8213871",
+    "slug": "lullabyink",
+    "name": "Lullaby.ink",
+    "url": "https://lullaby.ink/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "10a87acf-72e6-4aab-80f5-b7c53c70acc7",
+    "slug": "lyria-3",
+    "name": "Lyria 3",
+    "url": "https://deepmind.google/technologies/lyria/",
+    "pricing": "free"
+  },
+  {
+    "id": "5b998313-8283-44cb-a0aa-c0dfd0eb9c78",
+    "slug": "lyrics-to-song-ai",
+    "name": "Lyrics to Song AI",
+    "url": "https://lyricstosong.io/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "0085d7e0-c1e0-415f-b896-43e057507ca2",
+    "slug": "machine-translation",
+    "name": "Machine Translation",
+    "url": "https://www.machinetranslation.com/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "074b3138-ce30-4598-847c-b42a7bb9ee30",
+    "slug": "makebestmusic",
+    "name": "MakeBestMusic",
+    "url": "https://makebestmusic.com/?pid=PIDP9Vm9i21B",
+    "pricing": "freemium"
+  },
+  {
+    "id": "ad21d5ff-031e-4a9c-8789-65fb1d1e298d",
+    "slug": "manus-browser-operator",
+    "name": "Manus Browser Operator",
+    "url": "https://manus.ai",
+    "pricing": "free"
+  },
+  {
+    "id": "48ba87e4-32e4-4ae2-a319-b1726c787719",
+    "slug": "marble-by-world-labs",
+    "name": "Marble by World Labs",
+    "url": "https://www.worldlabs.ai",
+    "pricing": "free"
+  },
+  {
+    "id": "b52db036-aa6f-4262-bee3-c2372f2a600b",
+    "slug": "marketalerts",
+    "name": "Marketalerts",
+    "url": "https://www.marketalerts.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "ebb65a70-7d6d-4456-a626-1f029a391009",
+    "slug": "marketmind-ai",
+    "name": "MarketMind AI",
+    "url": "https://marketmind.ai",
+    "pricing": "contact"
+  },
+  {
+    "id": "af7be7fe-a797-493a-b72d-b9f620648cba",
+    "slug": "math-ai",
+    "name": "Math AI",
+    "url": "https://mathaisolver.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "9932a0fb-02b5-4714-9fa5-a041b5a68b33",
+    "slug": "mavis-ai",
+    "name": "Mavis AI",
+    "url": "https://www.heymavis.ai",
+    "pricing": "freemium"
+  },
+  {
+    "id": "c08a0b1a-de0f-4347-b29b-c828c22174fd",
+    "slug": "mem-ai",
+    "name": "Mem AI",
+    "url": "https://mem.ai",
+    "pricing": "freemium"
+  },
+  {
+    "id": "f1ce6808-5268-48d5-82ba-bef11c267e53",
+    "slug": "meta-sam-3d",
+    "name": "Meta SAM 3D",
+    "url": "https://segment-anything.com",
+    "pricing": "free"
+  },
+  {
+    "id": "2d013955-d5a6-48d4-bbe5-85d879a617b2",
+    "slug": "mexty",
+    "name": "Mexty",
+    "url": "https://mexty.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "30ceb58c-f58a-48b0-8cbe-42e2a3df0168",
+    "slug": "minimax-m21",
+    "name": "MiniMax M2.1",
+    "url": "https://minimaxi.com",
+    "pricing": "free"
+  },
+  {
+    "id": "e93b6b5d-212f-4968-9d0b-735a6be80cde",
+    "slug": "minimax-m25",
+    "name": "MiniMax M2.5",
+    "url": "https://minimaxi.com",
+    "pricing": "paid"
+  },
+  {
+    "id": "b857f8b1-e647-4d0a-b363-7b6fd6c60fa2",
+    "slug": "ml-forge",
+    "name": "ml_forge",
+    "url": "https://github.com/zaina-ml/ml_forge",
+    "pricing": "free"
+  },
+  {
+    "id": "6a33092f-1fa8-4de5-8566-6df8ce935e85",
+    "slug": "mobile-o",
+    "name": "Mobile-O",
+    "url": "https://amshaker.github.io/Mobile-O/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "6e3bac76-8dc9-4805-887b-5e96087ebc20",
+    "slug": "mockuplabsai",
+    "name": "Mockuplabs.ai",
+    "url": "https://www.mockuplabs.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "23a577df-ed5b-4dac-b954-44463d16a4bf",
+    "slug": "modelfy-3d",
+    "name": "Modelfy 3D",
+    "url": "https://modelfy.art/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "686fdf6e-5548-4fc6-a4a4-f354300acdbc",
+    "slug": "modly",
+    "name": "modly",
+    "url": "https://modly3d.app",
+    "pricing": "freemium"
+  },
+  {
+    "id": "79eec9cf-28a8-43e9-a528-4ef76897f1ca",
+    "slug": "moltbook",
+    "name": "Moltbook",
+    "url": "https://moltbook.ai",
+    "pricing": "free"
+  },
+  {
+    "id": "c0cc6caf-0bb8-42ea-ae3d-0ae5e893e4c1",
+    "slug": "murf-ai",
+    "name": "Murf.ai",
+    "url": "https://murf.ai",
+    "pricing": "freemium"
+  },
+  {
+    "id": "a9637f0d-eeda-42f7-8f59-e38ff2eaf019",
+    "slug": "muses-ai",
+    "name": "Muses AI",
+    "url": "https://www.muses.my",
+    "pricing": "freemium"
+  },
+  {
+    "id": "e7a0c3f5-5929-4b00-8bdc-8480f900bec3",
+    "slug": "musevideo",
+    "name": "MuseVideo",
+    "url": "https://musevideo.ai",
+    "pricing": "freemium"
+  },
+  {
+    "id": "54ad9910-681b-400a-a52d-d10672ec2ee5",
+    "slug": "musicai",
+    "name": "MusicAI",
+    "url": "https://musicai.io",
+    "pricing": "freemium"
+  },
+  {
+    "id": "3119c716-5995-40a5-94e6-5b059d82f294",
+    "slug": "musicart",
+    "name": "MusicArt",
+    "url": "https://www.musicart.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "ea8aac63-3c59-4c5c-a832-1bf80aa819cd",
+    "slug": "myneutron-ai-memory",
+    "name": "myNeutron AI Memory",
+    "url": "https://myneutron.ai/",
+    "pricing": "free"
+  },
+  {
+    "id": "a16d3fad-6681-4f9d-b3c3-4d05de7994df",
+    "slug": "nano-banana-2",
+    "name": "Nano Banana 2",
+    "url": "https://nanobanana.ai",
+    "pricing": "freemium"
+  },
+  {
+    "id": "87b49f6b-3708-4eb6-8f73-9e722981e686",
+    "slug": "nano-banana-pro",
+    "name": "Nano Banana Pro",
+    "url": "https://nanobanana.ai",
+    "pricing": "freemium"
+  },
+  {
+    "id": "79ec27b2-38b1-42a5-86a8-a2a3d46cc0ff",
+    "slug": "nano-imagine",
+    "name": "Nano Imagine",
+    "url": "https://nanoimagine.art/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "e5f4d01c-842c-4bc5-86fd-93be799a8e1c",
+    "slug": "nanoresearch",
+    "name": "NanoResearch",
+    "url": "https://github.com/OpenRaiser/NanoResearch",
+    "pricing": "free"
+  },
+  {
+    "id": "cfcf6b02-41a3-45a4-991e-cec97c12938e",
+    "slug": "nbot-ai",
+    "name": "NBot AI",
+    "url": "https://nbot.ai",
+    "pricing": "freemium"
+  },
+  {
+    "id": "be57431b-5c2a-4dbc-8fcb-1a087c1e4af7",
+    "slug": "nemovideo",
+    "name": "Nemovideo",
+    "url": "https://www.nemovideo.com/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "ae2f387a-3b98-499a-8787-038db375d42d",
+    "slug": "neus-ai",
+    "name": "Neus AI",
+    "url": "https://neus.ai",
+    "pricing": "contact"
+  },
+  {
+    "id": "1db53ddb-9af0-480f-94cc-948458a49515",
+    "slug": "new-dialogue",
+    "name": "New Dialogue",
+    "url": "https://www.newdialogue.com",
+    "pricing": "contact"
+  },
+  {
+    "id": "2d69776f-90b7-4845-bc6d-116fb09bc166",
+    "slug": "newsgpt",
+    "name": "NewsGPT",
+    "url": "https://newsgpt.ai",
+    "pricing": "free"
+  },
+  {
+    "id": "466fdede-8fc5-4d8b-884d-aef0a8a1c061",
+    "slug": "nexosai",
+    "name": "Nexos.ai",
+    "url": "https://go.getnexos.ai/SH5",
+    "pricing": "paid"
+  },
+  {
+    "id": "e918cd89-9f6b-40f7-a98c-a75fc90d5804",
+    "slug": "nextdocs-io",
+    "name": "Nextdocs Io",
+    "url": "https://www.nextdocs.io/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "2aec64fa-72d7-49dc-ab98-d453e03a6d03",
+    "slug": "nextifyai",
+    "name": "Nextify.ai",
+    "url": "https://www.nextify.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "8bf978c9-e3b6-47e9-ac28-8359f4931bbc",
+    "slug": "nextis-aira-3d",
+    "name": "Nextis-AIRA-3D",
+    "url": "https://www.nextis.tech/hardware",
+    "pricing": "freemium"
+  },
+  {
+    "id": "c910133e-f10e-4179-a1cd-271f5eb6d918",
+    "slug": "nexu",
+    "name": "nexu",
+    "url": "https://nexu.io",
+    "pricing": "freemium"
+  },
+  {
+    "id": "71ac7574-0ba8-48b3-9b84-9abd0ce73196",
+    "slug": "nightingale",
+    "name": "nightingale",
+    "url": "https://nightingale.cafe",
+    "pricing": "freemium"
+  },
+  {
+    "id": "eff2cfe3-09a1-4876-98e8-5a3b171b85c3",
+    "slug": "nodu-ai",
+    "name": "Nodu AI",
+    "url": "https://nodu.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "8c9cc900-405d-4a08-a254-415a80c1253d",
+    "slug": "noiz-agent",
+    "name": "Noiz Agent",
+    "url": "https://agent.noiz.ai/?utm_source=aixploria&utm_medium=directory&utm_campaign=2025dec",
+    "pricing": "free"
+  },
+  {
+    "id": "fd8d545b-a9ed-4fc8-9b8b-e85e0cc07953",
+    "slug": "norton-neo-browser",
+    "name": "Norton Neo Browser",
+    "url": "https://neobrowser.ai",
+    "pricing": "paid"
+  },
+  {
+    "id": "c16c3f82-4dbb-4534-b794-83a3e78921b7",
+    "slug": "notis-ai",
+    "name": "Notis AI",
+    "url": "https://notis.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "94a275d3-d571-4a8e-9796-ac22d893d09b",
+    "slug": "nvidia-earth-2",
+    "name": "NVIDIA Earth-2",
+    "url": "https://www.nvidia.com/en-us/high-performance-computing/earth-2/",
+    "pricing": "paid"
+  },
+  {
+    "id": "51435411-7423-4416-9190-c9c9558756e1",
+    "slug": "nvidia-nemotron-3",
+    "name": "NVIDIA Nemotron 3",
+    "url": "https://build.nvidia.com/nvidia/nemotron-3-8b",
+    "pricing": "free"
+  },
+  {
+    "id": "c9d6f2f2-028d-4b98-8027-11435af5fcf0",
+    "slug": "obsidian-ai",
+    "name": "Obsidian AI",
+    "url": "https://obsidian.md",
+    "pricing": "free"
+  },
+  {
+    "id": "f2138028-c1ee-43da-8c11-21004cd2f823",
+    "slug": "omlx",
+    "name": "omlx",
+    "url": "https://omlx.ai",
+    "pricing": "freemium"
+  },
+  {
+    "id": "d124e616-9232-4aa9-a035-2183d3996720",
+    "slug": "openclaw",
+    "name": "OpenClaw",
+    "url": "https://openclaw.ai",
+    "pricing": "free"
+  },
+  {
+    "id": "94015c6e-bfa9-4d9f-9f3e-e89d9b2725ef",
+    "slug": "openclaw-master-skills",
+    "name": "openclaw-master-skills",
+    "url": "https://myclaw.ai",
+    "pricing": "freemium"
+  },
+  {
+    "id": "0287087f-048c-461a-a8bf-3e8f3b4d8bdb",
+    "slug": "openclaw-nerve",
+    "name": "openclaw-nerve",
+    "url": "https://nerve.zone",
+    "pricing": "freemium"
+  },
+  {
+    "id": "474355d9-05fa-4d0f-9a84-dfad0f52287b",
+    "slug": "opencli",
+    "name": "opencli",
+    "url": "https://opencli.info/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "f78e0202-369e-4749-a3f2-93941b65ac04",
+    "slug": "openfang",
+    "name": "openfang",
+    "url": "https://www.openfang.sh/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "433d43d5-ae6e-4c48-b112-5c016e9a75f8",
+    "slug": "openmusic-ai",
+    "name": "OpenMusic AI",
+    "url": "https://www.openmusic.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "fb3ba28b-0c54-49fe-99c7-87768ab7366e",
+    "slug": "outfica",
+    "name": "Outfica",
+    "url": "https://www.outfica.com/",
+    "pricing": "trial"
+  },
+  {
+    "id": "697000fc-56ba-4635-b570-3e14b30d90e9",
+    "slug": "outfit-fm",
+    "name": "Outfit Fm",
+    "url": "https://outfit.fm/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "2ab20cf1-0138-4869-b741-3cf26e899465",
+    "slug": "pagesmith-ai",
+    "name": "Pagesmith AI",
+    "url": "https://pagesmith.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "2002daaa-6810-408b-880b-d051848e47e6",
+    "slug": "paintpotion-ai-powered-tool-for-generating-vector-illustrations",
+    "name": "PaintPotion",
+    "url": "https://paint-potion.com/",
+    "pricing": "free"
+  },
+  {
+    "id": "d032b91d-0349-4afa-a843-a7b5e1a144da",
+    "slug": "parakeet-cpp",
+    "name": "parakeet.cpp",
+    "url": "https://github.com/Frikallo/parakeet.cpp",
+    "pricing": "free"
+  },
+  {
+    "id": "89c916bd-7e87-4880-a58a-804dfd783912",
+    "slug": "paraspeech",
+    "name": "Paraspeech",
+    "url": "https://paraspeech.com/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "beba783a-0772-43db-9158-6d6c710c3099",
+    "slug": "pdfdigest",
+    "name": "Pdfdigest",
+    "url": "https://pdfdigest.com/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "3ff61253-1b1d-4e97-8a97-c40cd911b428",
+    "slug": "perplexity-enterprise",
+    "name": "Perplexity Enterprise",
+    "url": "https://perplexity.ai",
+    "pricing": "contact"
+  },
+  {
+    "id": "7b7fd0d3-84e7-470a-ad65-7c99a6ba0fa4",
+    "slug": "personalstyleai-framework",
+    "name": "PersonalStyleAI-Framework-",
+    "url": "https://github.com/whyzhow/PersonalStyleAI-Framework-",
+    "pricing": "free"
+  },
+  {
+    "id": "ed804e41-ab49-42ce-8a7b-c0427499a71b",
+    "slug": "photiu",
+    "name": "Photiu",
+    "url": "https://www.photiu.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "0e0b84a5-0818-4146-8b27-8431a56c0509",
+    "slug": "photo-editor-ai",
+    "name": "Photo Editor AI",
+    "url": "https://photoeditorai.io/",
+    "pricing": "free"
+  },
+  {
+    "id": "e5c2fe94-2c76-4a5f-860b-b664c117745b",
+    "slug": "photocat-image-extender",
+    "name": "PhotoCat Image Extender",
+    "url": "https://photocat.com/image-extender/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "caf9b66a-8267-4bf8-9e31-9f52f36c677c",
+    "slug": "picolm",
+    "name": "picolm",
+    "url": "https://www.rightnowai.co/forge",
+    "pricing": "freemium"
+  },
+  {
+    "id": "18d56aca-edda-4286-94ac-4a0c5761a52f",
+    "slug": "pipedrive",
+    "name": "Pipedrive",
+    "url": "https://www.pipedrive.com",
+    "pricing": "trial"
+  },
+  {
+    "id": "f6396d21-7635-4b02-ae7e-aca7c2312c8c",
+    "slug": "pixalytica",
+    "name": "Pixalytica",
+    "url": "https://pixalytica.com/",
+    "pricing": "paid"
+  },
+  {
+    "id": "3de5ea44-888e-4e61-8f73-c158de9c29a1",
+    "slug": "pixazo",
+    "name": "Pixazo",
+    "url": "https://www.pixazo.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "7d720a5f-b18a-48fd-84cb-c1847dee6fed",
+    "slug": "pixpretty-ai-photo-editor",
+    "name": "PixPretty AI Photo Editor",
+    "url": "https://pixpretty.tenorshare.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "76429eff-740f-45e1-bc73-1e0a17cc31ae",
+    "slug": "pixverse",
+    "name": "Pixverse",
+    "url": "https://pixverse.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "3eaa18e1-87f6-470d-a683-be6f96397bf5",
+    "slug": "png-ai",
+    "name": "Png AI",
+    "url": "https://www.png.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "8c2ea74a-d5f8-4fc1-8c68-a5a0aec37979",
+    "slug": "podsee-ai-tool-for-podcast-listeners",
+    "name": "Podsee",
+    "url": "https://pods.ee/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "a9bea57e-6b07-4815-a6e1-55cb84e6a2a8",
+    "slug": "postwizard-ai",
+    "name": "PostWizard AI",
+    "url": "https://postwizard.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "87e61478-e3ec-45ce-ab52-6e53edc3af9d",
+    "slug": "preuve-ai",
+    "name": "Preuve AI",
+    "url": "https://preuve.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "efbe8831-bbd8-4f6a-adc0-f8922af899de",
+    "slug": "prism-openai",
+    "name": "Prism OpenAI",
+    "url": "https://openai.com",
+    "pricing": "free"
+  },
+  {
+    "id": "3e364ff2-dfb7-4497-9e3c-e101b578e805",
+    "slug": "ai-tool-reads-privacy-policies-tells-you-which-sites-sell-your-info",
+    "name": "Privacyparrot",
+    "url": "http://www.privacyparrot.com",
+    "pricing": "free"
+  },
+  {
+    "id": "4fe82dda-ca16-4f6f-a44d-36ba06e937d0",
+    "slug": "product-link-to-video",
+    "name": "Product Link To Video",
+    "url": "https://admaker.ai/product-video-maker",
+    "pricing": "trial"
+  },
+  {
+    "id": "2f34454b-8d5d-4371-b70d-b6faddca353f",
+    "slug": "project-genie",
+    "name": "Project Genie",
+    "url": "https://deepmind.google",
+    "pricing": "free"
+  },
+  {
+    "id": "2f880109-19f2-4f38-a454-ed6f43340604",
+    "slug": "prompt-master",
+    "name": "prompt-master",
+    "url": "https://github.com/nidhinjs/prompt-master",
+    "pricing": "free"
+  },
+  {
+    "id": "75c98a72-3174-49f9-bfe6-12fc5f25e946",
+    "slug": "promptessor",
+    "name": "Promptessor",
+    "url": "https://promptessor.com/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "d3c08e50-e141-483e-b89d-5258c9f55361",
+    "slug": "promptfix",
+    "name": "Promptfix",
+    "url": "https://www.promptfix.online/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "044ef2ea-3d2a-4363-a367-cb995a2ed026",
+    "slug": "purple-leaf",
+    "name": "Purple Leaf",
+    "url": "https://purpleleaf.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "52ad7f22-4810-4c9f-b2f3-67a9672999db",
+    "slug": "pxz-image-generator",
+    "name": "PXZ Image Generator",
+    "url": "https://pxz.ai/tools/image-generator",
+    "pricing": "trial"
+  },
+  {
+    "id": "2e2433e1-18b1-4cdb-8d2b-050a23b90167",
+    "slug": "pxz-video-generator",
+    "name": "PXZ Video Generator",
+    "url": "https://pxz.ai/tools/video-generator",
+    "pricing": "freemium"
+  },
+  {
+    "id": "aa3c3f71-1091-4b0f-80a6-7fe33e0dc581",
+    "slug": "qwen-35",
+    "name": "Qwen 3.5",
+    "url": "https://chat.qwenlm.ai",
+    "pricing": "free"
+  },
+  {
+    "id": "b34852e1-c4b4-4d60-be7a-31d0d1168f0c",
+    "slug": "qwen3-tts",
+    "name": "Qwen3-TTS",
+    "url": "https://qwen.ai/blog?id=qwen3tts-0115",
+    "pricing": "free"
+  },
+  {
+    "id": "fb610d33-7bfe-4d25-819a-fc3683fbeaf5",
+    "slug": "rabbitholes-ai",
+    "name": "Rabbitholes AI",
+    "url": "https://www.rabbitholes.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "060bffe0-8324-4ffb-aa9a-4f94cb9bf6dc",
+    "slug": "raccoon-ai",
+    "name": "Raccoon AI",
+    "url": "https://raccoonai.tech/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "21a10f6c-b617-466f-9c72-0687c9437695",
+    "slug": "rankin-ai",
+    "name": "Rankin AI",
+    "url": "https://rankinai.io/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "50509972-665a-40cc-b7c5-15e3cf2192ba",
+    "slug": "rcli",
+    "name": "RCLI",
+    "url": "https://github.com/RunanywhereAI/runanywhere-sdks",
+    "pricing": "free"
+  },
+  {
+    "id": "54a58e60-8835-4056-a415-6d3f5ca866fb",
+    "slug": "readpartner",
+    "name": "ReadPartner",
+    "url": "https://readpartner.com",
+    "pricing": "trial"
+  },
+  {
+    "id": "b192bc86-c4ec-47f3-9955-6e3eb561302d",
+    "slug": "readyrunner-ai-chat-tool-for-productivity-on-your-desktop",
+    "name": "ReadyRunner",
+    "url": "https://www.readyrunner.ai",
+    "pricing": "freemium"
+  },
+  {
+    "id": "e260c458-9b8e-40e8-b2ad-42ced4436afe",
+    "slug": "recall",
+    "name": "Recall",
+    "url": "https://www.recall.wiki/extension",
+    "pricing": "freemium"
+  },
+  {
+    "id": "708fbeb6-82f3-4977-a4fa-c6fd8d8e1c6e",
+    "slug": "reelmate-ai",
+    "name": "ReelMate AI",
+    "url": "https://www.reelmate.ai/",
+    "pricing": "trial"
+  },
+  {
+    "id": "981b65a0-6938-4cfc-bef2-ff74960bf488",
+    "slug": "reelmuse-ai",
+    "name": "ReelMuse AI",
+    "url": "https://www.reelmuse.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "b298156e-7834-4cb0-8760-79929a340ea3",
+    "slug": "reflyai",
+    "name": "Refly.ai",
+    "url": "https://refly.ai/?utm_source=backlink&utm_medium=navigation&utm_campaign=aixploria",
+    "pricing": "trial"
+  },
+  {
+    "id": "fd8c5463-4747-43a2-879d-cdc8284f90f7",
+    "slug": "remove-watermarks-markgone",
+    "name": "Remove Watermarks MarkGone",
+    "url": "https://www.removewatermarks.com/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "348b24a1-41a2-48d8-9ea0-01738c87b7c4",
+    "slug": "resolution-builder",
+    "name": "Resolution Builder",
+    "url": "https://new-years-resolutions.base44.app",
+    "pricing": "free"
+  },
+  {
+    "id": "61a7602f-c139-418a-8cf6-7ef046d6b987",
+    "slug": "reztune",
+    "name": "Reztune",
+    "url": "https://www.reztune.com/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "7eb4d688-8791-4a33-b538-c36f24c35c06",
+    "slug": "roblox-cube-model",
+    "name": "Roblox Cube Model",
+    "url": "https://create.roblox.com",
+    "pricing": "free"
+  },
+  {
+    "id": "3181e152-44d8-443f-8422-20994fd93fad",
+    "slug": "rocket",
+    "name": "Rocket",
+    "url": "https://www.rocket.new/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "1e71192c-6038-4780-8a2b-8b8ae5fdd867",
+    "slug": "rocktangle-ai-tool-to-automate-market-researchsaves-10-hoursweek",
+    "name": "Rocktangle",
+    "url": "https://rocktangle.com",
+    "pricing": "paid"
+  },
+  {
+    "id": "0c850096-964e-418b-9297-04827e6c922c",
+    "slug": "rosie-ai",
+    "name": "Rosie AI",
+    "url": "https://heyrosie.com/",
+    "pricing": "trial"
+  },
+  {
+    "id": "44cb2208-7908-4951-9299-47d2c5990e74",
+    "slug": "ruminate-ai-reading-tool-for-understanding-hard-things",
+    "name": "Ruminate",
+    "url": "https://tryruminate.com/",
+    "pricing": "free"
+  },
+  {
+    "id": "50b48d9f-1f73-4625-8c69-6e0594489476",
+    "slug": "runway-gen-3",
+    "name": "Runway Gen-3",
+    "url": "https://runwayml.com",
+    "pricing": "freemium"
+  },
+  {
+    "id": "6ac80543-9cfc-468b-a793-4f919ef8fa31",
+    "slug": "safenew-ai",
+    "name": "Safenew AI",
+    "url": "https://safenew.ai/",
+    "pricing": "paid"
+  },
+  {
+    "id": "b47ffc89-87f7-4e70-b7a6-43b6e1f2e30c",
+    "slug": "sandbar-stream-ring",
+    "name": "Sandbar Stream Ring",
+    "url": "https://sandbar.ai",
+    "pricing": "paid"
+  },
+  {
+    "id": "06a4f3f5-519d-48f5-9555-9b7df949e911",
+    "slug": "seedance-15-pro",
+    "name": "Seedance 1.5 pro",
+    "url": "https://seedance1.5pro",
+    "pricing": "free"
+  },
+  {
+    "id": "74bb9d7c-5b23-45c3-b4c9-d1c99a6d2d64",
+    "slug": "seedance-20",
+    "name": "Seedance 2.0",
+    "url": "https://seedance.ai",
+    "pricing": "freemium"
+  },
+  {
+    "id": "9eaf2b73-39f8-4797-b16c-d009741aecd9",
+    "slug": "seedream-45",
+    "name": "Seedream 4.5",
+    "url": "https://seedream.ai",
+    "pricing": "free"
+  },
+  {
+    "id": "f80b05f1-f31e-4090-a35e-8207d5f51329",
+    "slug": "seedream-50",
+    "name": "Seedream 5.0",
+    "url": "https://seedream.ai",
+    "pricing": "freemium"
+  },
+  {
+    "id": "b17b4b7e-8686-46b1-8a46-f94822caf976",
+    "slug": "seojuice",
+    "name": "Seojuice",
+    "url": "https://seojuice.io/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "f040ee45-a324-4001-8267-cc6f3f56b4c7",
+    "slug": "sharp-apple",
+    "name": "Sharp Apple",
+    "url": "https://apple.com",
+    "pricing": "free"
+  },
+  {
+    "id": "5013b2dc-cc45-491f-9072-8a97200b68ee",
+    "slug": "sherlocks-ai",
+    "name": "Sherlocks AI",
+    "url": "https://www.sherlocks.ai",
+    "pricing": "contact"
+  },
+  {
+    "id": "33b8d9ba-12f2-4171-a081-0faa9aeb1746",
+    "slug": "shopify-simgym",
+    "name": "Shopify SimGym",
+    "url": "https://shopify.com",
+    "pricing": "free"
+  },
+  {
+    "id": "bdf4cd2a-26a5-4326-ab06-9ae01673289f",
+    "slug": "shutterstock",
+    "name": "Shutterstock",
+    "url": "https://www.shutterstock.com/ai-image-generator",
+    "pricing": "freemium"
+  },
+  {
+    "id": "68181195-24f1-4849-b107-30f3bab17ed9",
+    "slug": "sima-2",
+    "name": "SIMA 2",
+    "url": "https://deepmind.google",
+    "pricing": "free"
+  },
+  {
+    "id": "445d8028-ac98-4d63-a537-d04396bc7444",
+    "slug": "sketch-to",
+    "name": "Sketch To",
+    "url": "https://www.sketchto.com/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "b3d4a531-0080-4235-a849-2e765d768d02",
+    "slug": "sketchbubble-ai",
+    "name": "SketchBubble AI",
+    "url": "https://www.sketchbubble.com/en/ai-presentation-maker",
+    "pricing": "freemium"
+  },
+  {
+    "id": "29034a2d-8845-4e21-850e-09a515153510",
+    "slug": "sketchflowai",
+    "name": "Sketchflow.ai",
+    "url": "https://www.sketchflow.ai/?utm_source=AIxploria&utm_content=launchpage",
+    "pricing": "freemium"
+  },
+  {
+    "id": "27e9b53b-55c6-4a11-93b0-861ca4d96397",
+    "slug": "skill-color-expert",
+    "name": "skill.color-expert",
+    "url": "https://github.com/meodai/skill.color-expert",
+    "pricing": "free"
+  },
+  {
+    "id": "803a15de-24bf-41b7-b6ae-b3005dfc0859",
+    "slug": "socraticode",
+    "name": "SocratiCode",
+    "url": "https://github.com/giancarloerra/SocratiCode",
+    "pricing": "freemium"
+  },
+  {
+    "id": "917e7640-eee0-42b3-8ef9-6d58c10fc68b",
+    "slug": "song-maker-ai",
+    "name": "Song Maker AI",
+    "url": "https://song-maker.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "bea71e55-3022-470e-ad0d-3b8fb8b8558e",
+    "slug": "sora-2",
+    "name": "Sora 2",
+    "url": "https://openai.com/sora",
+    "pricing": "paid"
+  },
+  {
+    "id": "96f1013f-1bea-4c97-9360-46b2fc764227",
+    "slug": "sparkvsr",
+    "name": "SparkVSR",
+    "url": "https://sparkvsr.github.io",
+    "pricing": "freemium"
+  },
+  {
+    "id": "60ecb27b-5aa2-4e18-9ef1-f7a30ad018cd",
+    "slug": "ai-dub-tool-i-made-to-watch-foreign-language-videos-with-my-7-year-old",
+    "name": "Speakz",
+    "url": "https://speakz.ai",
+    "pricing": "free"
+  },
+  {
+    "id": "9e610619-5335-4f00-bd88-2c998731ed45",
+    "slug": "speechify-ai",
+    "name": "Speechify",
+    "url": "https://speechify.com",
+    "pricing": "freemium"
+  },
+  {
+    "id": "e1e83b78-5a2b-4c03-93b7-dab07c6a1df6",
+    "slug": "stocknewsai",
+    "name": "StockNewsAI",
+    "url": "https://stocknews.ai",
+    "pricing": "free"
+  },
+  {
+    "id": "54b9caf2-5a80-41c0-ba45-4ed6313cc816",
+    "slug": "studybuddy-ai-study-tool",
+    "name": "StudyBuddy",
+    "url": "https://www.studyaibuddy.com/welcome",
+    "pricing": "trial"
+  },
+  {
+    "id": "fa1a62a6-a93b-4176-8238-82f24788ff7a",
+    "slug": "super-whisper",
+    "name": "Super Whisper",
+    "url": "https://superwhisper.com",
+    "pricing": "freemium"
+  },
+  {
+    "id": "43f2dc89-4aa6-4bd4-ac31-9ce6474d81f6",
+    "slug": "superhumanizer",
+    "name": "Superhumanizer",
+    "url": "https://superhumanizer.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "584589b0-e0cf-4f3b-8e64-ccd382233082",
+    "slug": "supernormal",
+    "name": "Supernormal",
+    "url": "https://www.supernormal.com/desktop-app",
+    "pricing": "freemium"
+  },
+  {
+    "id": "af188300-6808-46f3-908e-6fe464836fba",
+    "slug": "syllabyio",
+    "name": "Syllaby.io",
+    "url": "https://syllaby.io/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "8f0f6f5b-cc1d-43a1-bbb5-fb62f5e0ea84",
+    "slug": "synaps-cad",
+    "name": "synaps-cad",
+    "url": "https://github.com/ierror/synaps-cad",
+    "pricing": "free"
+  },
+  {
+    "id": "973312d2-6469-4d6d-8cf3-73faabbd06c7",
+    "slug": "t5gemma-2",
+    "name": "T5Gemma 2",
+    "url": "https://ai.google.dev/gemma",
+    "pricing": "free"
+  },
+  {
+    "id": "1c48965c-90f3-466a-b9b3-6406af99ef54",
+    "slug": "talkio",
+    "name": "talkio",
+    "url": "https://github.com/llt22/talkio",
+    "pricing": "free"
+  },
+  {
+    "id": "77b83b0d-bc48-4846-9f82-7b147c3cf762",
+    "slug": "ai-tool-to-make-plan-your-project-and-you-can-download-it-as-pdf",
+    "name": "TaskraSpace",
+    "url": "https://taskra.space",
+    "pricing": "free"
+  },
+  {
+    "id": "a2bd798e-555f-4a92-95bd-5142b7660caf",
+    "slug": "taxtools-ai",
+    "name": "TaxTools AI",
+    "url": "https://taxtools.ai/us",
+    "pricing": "free"
+  },
+  {
+    "id": "29817305-27f2-454b-8c9c-a51261579a0e",
+    "slug": "taylor-cpai-by-deduction",
+    "name": "Taylor CPAI by Deduction",
+    "url": "https://deduction.com/taylor-cpai",
+    "pricing": "freemium"
+  },
+  {
+    "id": "11271208-852f-4e48-adbb-604c2b755802",
+    "slug": "teediy",
+    "name": "Teediy",
+    "url": "https://www.teediy.com/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "b69a410f-8d0a-4588-ba76-4d0ff6c8daf8",
+    "slug": "text-to-song",
+    "name": "Text to Song",
+    "url": "https://texttosong.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "10bdde3a-83b4-4b27-b358-4b119612f36c",
+    "slug": "texttohuman",
+    "name": "TextToHuman",
+    "url": "https://texttohuman.com/",
+    "pricing": "free"
+  },
+  {
+    "id": "58c127bb-9f4b-4ff6-abfb-4d19f98e1f5f",
+    "slug": "tgdesk",
+    "name": "TGDesk",
+    "url": "https://tg.wadesk.io/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "2adc76be-c505-47bf-91fd-94744dbafdfd",
+    "slug": "the-librarian",
+    "name": "The Librarian",
+    "url": "https://thelibrarian.io/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "3119aa71-fbba-4551-b077-ba1515d4fcda",
+    "slug": "the-mumble-app",
+    "name": "The Mumble App",
+    "url": "https://www.mumblenote.com/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "60924357-47a6-4e8f-af39-48e1f8608e46",
+    "slug": "theo",
+    "name": "Theo",
+    "url": "https://www.theogrowth.com/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "9928af69-c93f-4490-a4f6-98ee5dd1c821",
+    "slug": "ticketify",
+    "name": "Ticketify",
+    "url": "https://ticketify.io/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "036bf9b3-3a2a-4410-80dd-1f6366e1d738",
+    "slug": "timber",
+    "name": "timber",
+    "url": "https://pypi.org/project/timber-compiler/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "1ccea9a3-76f3-4ff4-9827-0606acd4e0eb",
+    "slug": "timio-news",
+    "name": "TIMIO News",
+    "url": "https://timio.news",
+    "pricing": "free"
+  },
+  {
+    "id": "93bf3f97-269f-4e53-9620-cb4edf93c8d0",
+    "slug": "tome-ai",
+    "name": "Tome",
+    "url": "https://tome.app",
+    "pricing": "freemium"
+  },
+  {
+    "id": "ed8a6e91-39da-4299-877c-50afff62e71c",
+    "slug": "toolsai-ai-quotes-for-blue-collar-businesses",
+    "name": "ToolsAI",
+    "url": "https://tools-ai-4yev.onrender.com",
+    "pricing": "free"
+  },
+  {
+    "id": "7c98c94e-3787-45a6-89c3-2332a2b78aeb",
+    "slug": "ai-tool-to-build-interactive-dashboards-with-drag-and-drop",
+    "name": "ToolsWebcrumbs",
+    "url": "https://tools.webcrumbs.org/frontend-ai",
+    "pricing": "free"
+  },
+  {
+    "id": "fbe0a85f-5fb9-4119-bfc9-7ce7ec6e800e",
+    "slug": "translategemma",
+    "name": "TranslateGemma",
+    "url": "https://ai.google.dev/gemma",
+    "pricing": "free"
+  },
+  {
+    "id": "4f11f873-c7d6-4619-a3e0-3ad4f91f0faf",
+    "slug": "ai-tool-that-recommends-destinations-based-on-history-of-visits",
+    "name": "Travelrank",
+    "url": "https://travelrank.me/",
+    "pricing": "free"
+  },
+  {
+    "id": "f7f94abe-a1d1-4972-bc5a-9c802b3cfae4",
+    "slug": "tripleten-burnout-test",
+    "name": "TripleTen Burnout Test",
+    "url": "https://tripleten.com/tools/burnout-test/",
+    "pricing": "free"
+  },
+  {
+    "id": "53479ce4-b5f9-4b17-86d1-028181951825",
+    "slug": "trump-code",
+    "name": "trump-code",
+    "url": "https://github.com/sstklen/trump-code",
+    "pricing": "free"
+  },
+  {
+    "id": "f6c30647-0078-43f1-8bc9-9a5d7a40bc2f",
+    "slug": "tuckmein",
+    "name": "TuckMeIn",
+    "url": "https://tuckmein.app",
+    "pricing": "free"
+  },
+  {
+    "id": "7082130e-87b2-4e2c-950a-e2fadc19a73a",
+    "slug": "typliai",
+    "name": "Typli.ai",
+    "url": "https://typli.ai/",
+    "pricing": "paid"
+  },
+  {
+    "id": "59b62a4d-044e-4649-8abd-963437beb2cb",
+    "slug": "upcv",
+    "name": "UPCV",
+    "url": "https://upcv.io/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "208befcc-9767-4e81-8d92-835b29e38dba",
+    "slug": "upmetrics-ai",
+    "name": "Upmetrics AI",
+    "url": "https://upmetrics.co/",
+    "pricing": "paid"
+  },
+  {
+    "id": "0f8938ae-100e-441e-95b3-f30ac6b23b2f",
+    "slug": "ux-pilot-ai",
+    "name": "UX Pilot AI",
+    "url": "https://uxpilot.ai/",
+    "pricing": "trial"
+  },
+  {
+    "id": "1a5d716f-75eb-4c29-bcb4-4d407b6d00e1",
+    "slug": "vadu-ai",
+    "name": "Vadu AI",
+    "url": "https://vadu.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "76579ee0-7a12-4ceb-9d54-b7804d44ac09",
+    "slug": "vectara",
+    "name": "Vectara",
+    "url": "https://vectara.com",
+    "pricing": "contact"
+  },
+  {
+    "id": "89614c3d-bd14-41af-8ae4-e289711a908a",
+    "slug": "vertech-academy",
+    "name": "Vertech Academy",
+    "url": "https://www.vertechacademy.ca/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "e9a99f06-ad9d-4af7-ac6b-056b37665c90",
+    "slug": "vibe-ai-tool-to-automate-social-media-content-posting-and-reporting",
+    "name": "Vibe ",
+    "url": "https://vibe.xpandrai.com/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "4889469e-07ef-4153-810c-a52f2e738d12",
+    "slug": "vibe-architect",
+    "name": "Vibe Architect",
+    "url": "https://momen.app/vibe-architect-lovable",
+    "pricing": "free"
+  },
+  {
+    "id": "60a37356-233f-4ca9-a159-de1807a8349a",
+    "slug": "vibecodedev",
+    "name": "Vibecode.dev",
+    "url": "https://vibecode.dev",
+    "pricing": "freemium"
+  },
+  {
+    "id": "9e6606c7-ea8f-4525-84ba-74e7d0b77b1d",
+    "slug": "free-ai-tool-makes-viral-cat-diving-clips-in-seconds",
+    "name": "Vidaigen",
+    "url": "https://vidaigen.github.io/cat-diving-olympics-video-gen/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "77f8fed5-6d17-4a6d-8789-edc11f4cbb99",
+    "slug": "video-watermark-remover",
+    "name": "Video Watermark Remover",
+    "url": "https://videowatermarkremover.ai/",
+    "pricing": "free"
+  },
+  {
+    "id": "d918769b-72e5-46d4-ab19-d92142516f2a",
+    "slug": "vidflux",
+    "name": "vidflux",
+    "url": "https://vidflux.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "8a7a7c5b-a0ee-489f-a5b9-909c7a5df3c1",
+    "slug": "vidi2",
+    "name": "Vidi2",
+    "url": "https://vidi.ai",
+    "pricing": "free"
+  },
+  {
+    "id": "210a556c-f465-4262-81e2-9164fd5671a7",
+    "slug": "vidmage",
+    "name": "Vidmage",
+    "url": "https://vidmage.ai/",
+    "pricing": "free"
+  },
+  {
+    "id": "97be2fcb-224a-4874-9537-8b267140d3f8",
+    "slug": "visboom",
+    "name": "VISBOOM",
+    "url": "https://www.visboom.com/?relCode=YDX7EJBG",
+    "pricing": "freemium"
+  },
+  {
+    "id": "0de985d5-e838-46ac-bfa7-4daffbf07cbe",
+    "slug": "visual-field-test",
+    "name": "Visual Field Test",
+    "url": "https://visualfieldtest.com/",
+    "pricing": "trial"
+  },
+  {
+    "id": "3ec740f1-2e84-4af2-a232-5e010c6e2c75",
+    "slug": "voicetype-1745265721",
+    "name": "Voicetype 1745265721",
+    "url": "https://go.voicetype.com/TAAFTDIRECTORY",
+    "pricing": "freemium"
+  },
+  {
+    "id": "565f1a9a-7e30-4adb-8b6e-e7d7750a24d1",
+    "slug": "voila-voice-io",
+    "name": "Voila Voice io",
+    "url": "https://voilavoice.io/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "ae84a8eb-8202-4892-814f-95cbb99f6c9b",
+    "slug": "vomo-ai",
+    "name": "VOMO AI",
+    "url": "https://vomo.ai/",
+    "pricing": "trial"
+  },
+  {
+    "id": "53b585f8-c910-4a20-b1e6-2ef1bf3e34ac",
+    "slug": "voooai",
+    "name": "Voooai",
+    "url": "https://voooai.com/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "6a74b9f4-04ad-411c-ba5f-e4714e102ea0",
+    "slug": "vora",
+    "name": "Vora",
+    "url": "https://www.fineshare.net/ai-video/?ref=aixploria",
+    "pricing": "trial"
+  },
+  {
+    "id": "b74a06c4-ddc0-4f70-a3ad-3003629ed0df",
+    "slug": "wan26",
+    "name": "Wan2.6",
+    "url": "https://wanai.com",
+    "pricing": "free"
+  },
+  {
+    "id": "0e259fdd-22fb-4f0c-a168-26641bbb774b",
+    "slug": "warmup-tool",
+    "name": "Warmup Tool",
+    "url": "https://warmer.wadesk.io/",
+    "pricing": "trial"
+  },
+  {
+    "id": "6bb5869e-dc07-447e-9863-e86adfb33138",
+    "slug": "waypoint-1-overworld",
+    "name": "Waypoint-1 Overworld",
+    "url": "https://waypoint.ai",
+    "pricing": "free"
+  },
+  {
+    "id": "96f26d6f-e018-4ad7-b96a-0db44b646f8f",
+    "slug": "weathernext-2",
+    "name": "WeatherNext 2",
+    "url": "https://weathernext.ai",
+    "pricing": "free"
+  },
+  {
+    "id": "817d5316-7f87-49d0-9b1b-230ad569221d",
+    "slug": "ai-tool-is-now-supporting-react-angular-css-svelte-vue",
+    "name": "Webcrumbs",
+    "url": "https://www.webcrumbs.org/frontend-ai",
+    "pricing": "free"
+  },
+  {
+    "id": "dde657b6-1fc9-4f80-9c5e-e4018472a33d",
+    "slug": "fun-ai-tool-to-roast-your-website",
+    "name": "Websiteroast",
+    "url": "https://thewebsiteroast.com",
+    "pricing": "free"
+  },
+  {
+    "id": "bd250c75-b942-4ec9-9cb7-79631ad84aab",
+    "slug": "websitesly",
+    "name": "Websites.ly",
+    "url": "https://websites.ly/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "5c5a0b16-e049-479f-9f28-5ce560061f4b",
+    "slug": "wedlm",
+    "name": "WeDLM",
+    "url": "https://wedlm.ai",
+    "pricing": "free"
+  },
+  {
+    "id": "df5e1057-8454-4d78-835d-0635b6fc5ff4",
+    "slug": "wellows",
+    "name": "Wellows",
+    "url": "https://wellows.com/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "e5e923bf-d31d-4ffb-b4ab-4b9c5db8da77",
+    "slug": "weshop-ai",
+    "name": "Weshop AI",
+    "url": "https://www.weshop.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "c8ec726a-eb44-4207-909c-25a00897c0d5",
+    "slug": "whatsapp-schedule-message",
+    "name": "WhatsApp Schedule Message",
+    "url": "https://wadesk.io/whatsapp-schedule-message",
+    "pricing": "freemium"
+  },
+  {
+    "id": "f7a3218c-7b15-4b41-b611-30bdd1b9b3f8",
+    "slug": "whisper-flow",
+    "name": "Whisper Flow",
+    "url": "https://whisperflow.ai",
+    "pricing": "freemium"
+  },
+  {
+    "id": "aa935935-e700-440a-9888-067c3f938c6d",
+    "slug": "wikitimeline-ai-powered-tool-to-visualize-and-compare-timelines",
+    "name": "WikiTimeline",
+    "url": "https://wiki-timeline.com",
+    "pricing": "freemium"
+  },
+  {
+    "id": "383cc68a-21e5-4511-be6f-a709e21cb267",
+    "slug": "wispr-flow",
+    "name": "Wispr Flow",
+    "url": "https://www.wispr.ai",
+    "pricing": "paid"
+  },
+  {
+    "id": "6ce6d535-1975-46eb-ad1e-c17718c1630c",
+    "slug": "wordrific",
+    "name": "Wordrific",
+    "url": "https://wordrific.com/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "6fca4928-2510-4f07-aa4d-aeda2e6f4778",
+    "slug": "wp-now",
+    "name": "WP Now",
+    "url": "https://www.worldpulsenow.com",
+    "pricing": "freemium"
+  },
+  {
+    "id": "925c9c10-3fe8-4315-a742-2295570800e5",
+    "slug": "writehybrid-ai-humanizer",
+    "name": "WriteHybrid AI Humanizer",
+    "url": "https://www.writehybrid.com/",
+    "pricing": "trial"
+  },
+  {
+    "id": "3ccde1ba-6fa7-4ca3-bda5-b107014a5989",
+    "slug": "x-pilot-ai",
+    "name": "X Pilot AI",
+    "url": "https://www.x-pilot.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "ec952ae7-19af-4426-b7c0-cfc4e6f06b1f",
+    "slug": "yolly-ai",
+    "name": "Yolly AI",
+    "url": "https://www.yolly.ai/",
+    "pricing": "trial"
+  },
+  {
+    "id": "c7c06fa2-7616-4c27-85c1-c5e0d5578d00",
+    "slug": "younet",
+    "name": "Younet",
+    "url": "https://younet.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "83fe0afd-58ff-4367-9135-c88f8c45d16d",
+    "slug": "youware",
+    "name": "YouWare",
+    "url": "https://www.youware.com/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "22f596c9-36ac-45ab-9ac6-b3cbd898626d",
+    "slug": "z-ai",
+    "name": "Z AI",
+    "url": "https://chat.z.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "928ab083-ecab-427c-9608-dc2828d09a0a",
+    "slug": "zenmux",
+    "name": "ZenMux",
+    "url": "https://zenmux.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "3223b64c-081b-4fcb-b811-dacbaedd184e",
+    "slug": "zerotwo",
+    "name": "Zerotwo",
+    "url": "https://zerotwo.ai/",
+    "pricing": "freemium"
+  },
+  {
+    "id": "ae97b5a2-2d38-4a95-868e-191ef2a9a72e",
+    "slug": "zhtw-mcp",
+    "name": "zhtw-mcp",
+    "url": "https://github.com/sysprog21/zhtw-mcp",
+    "pricing": "free"
+  }
+]

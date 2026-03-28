@@ -1,0 +1,7 @@
+Error 404
+
+# Page not found
+
+Sorry, we couldn’t find the page you’re looking for.
+
+[Go to the home page](https://www.blogseo.io/)

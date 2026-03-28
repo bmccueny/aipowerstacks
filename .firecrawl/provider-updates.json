@@ -1,0 +1,737 @@
+[
+  {
+    "id": "59463842-59b3-4201-8e74-d38feab72dd7",
+    "slug": "admakeai",
+    "field": "model_provider",
+    "from": null,
+    "to": "openai"
+  },
+  {
+    "id": "bb18802d-d1fe-4405-9e73-04cb115ebf4f",
+    "slug": "adsturbo-ai-ads",
+    "field": "model_provider",
+    "from": null,
+    "to": "openai"
+  },
+  {
+    "id": "c169df6a-1f39-4c16-8d44-50598621ffa4",
+    "slug": "agent-tars",
+    "field": "model_provider",
+    "from": null,
+    "to": "meta"
+  },
+  {
+    "id": "c169df6a-1f39-4c16-8d44-50598621ffa4",
+    "slug": "agent-tars",
+    "field": "is_open_source",
+    "from": false,
+    "to": true
+  },
+  {
+    "id": "3e61cd1f-fbbe-45d0-8267-919ce780442d",
+    "slug": "ai-landing-page",
+    "field": "model_provider",
+    "from": null,
+    "to": "openai"
+  },
+  {
+    "id": "379613f3-490a-44b6-81fa-d00d962c628d",
+    "slug": "aiclicks",
+    "field": "model_provider",
+    "from": "Anthropic",
+    "to": "openai"
+  },
+  {
+    "id": "daf7e1c4-f236-4f65-8436-02a3fab32442",
+    "slug": "aimy-ads",
+    "field": "model_provider",
+    "from": null,
+    "to": "openai"
+  },
+  {
+    "id": "4bd2fb21-3844-406f-963d-49fc6643b8c4",
+    "slug": "amazon-nova",
+    "field": "model_provider",
+    "from": null,
+    "to": "other"
+  },
+  {
+    "id": "84d99a7f-c4c6-4b0c-a679-d9fe7a080262",
+    "slug": "beautiful-ai",
+    "field": "model_provider",
+    "from": null,
+    "to": "openai"
+  },
+  {
+    "id": "8fc72899-768d-4f79-b5fb-f2e24924b850",
+    "slug": "bolt-new",
+    "field": "model_provider",
+    "from": null,
+    "to": "multiple"
+  },
+  {
+    "id": "f5ae3fca-621c-44f4-9423-25c4a11f8a8f",
+    "slug": "career-aptitude-test",
+    "field": "model_provider",
+    "from": null,
+    "to": "openai"
+  },
+  {
+    "id": "f62f744d-d705-4767-a68b-7b7e6ce30e65",
+    "slug": "chatgpt-health",
+    "field": "model_provider",
+    "from": null,
+    "to": "openai"
+  },
+  {
+    "id": "215b18f4-563e-4bd4-8f35-1c3576687205",
+    "slug": "chatgpt-shopping",
+    "field": "model_provider",
+    "from": null,
+    "to": "openai"
+  },
+  {
+    "id": "646ecbd1-cdc3-46d9-a537-933fb88307b5",
+    "slug": "chatgpt-translate",
+    "field": "model_provider",
+    "from": null,
+    "to": "openai"
+  },
+  {
+    "id": "b9858a10-90d4-4e6c-ae68-838fb0b27eab",
+    "slug": "chatterbox-turbo",
+    "field": "is_open_source",
+    "from": false,
+    "to": true
+  },
+  {
+    "id": "196d3d54-78cd-43fa-b2e3-4c82b56e0613",
+    "slug": "claude-code",
+    "field": "model_provider",
+    "from": null,
+    "to": "anthropic"
+  },
+  {
+    "id": "196d3d54-78cd-43fa-b2e3-4c82b56e0613",
+    "slug": "claude-code",
+    "field": "is_open_source",
+    "from": false,
+    "to": true
+  },
+  {
+    "id": "785544be-22e6-4762-acea-8483dfb3b653",
+    "slug": "claude-healthcare",
+    "field": "model_provider",
+    "from": null,
+    "to": "anthropic"
+  },
+  {
+    "id": "478094d2-faf2-435a-a6bc-7245b303e70c",
+    "slug": "clickup-agents",
+    "field": "model_provider",
+    "from": null,
+    "to": "multiple"
+  },
+  {
+    "id": "e6c88628-aaae-4e9f-bb7f-90e54d456851",
+    "slug": "cocoon",
+    "field": "model_provider",
+    "from": null,
+    "to": "openai"
+  },
+  {
+    "id": "966d67b0-6c79-4f9c-b7b3-bd64de1962ee",
+    "slug": "comet-browser",
+    "field": "model_provider",
+    "from": null,
+    "to": "multiple"
+  },
+  {
+    "id": "5bcb5f60-56e5-4a73-bb06-96383c7bb636",
+    "slug": "copy-ai",
+    "field": "model_provider",
+    "from": null,
+    "to": "openai"
+  },
+  {
+    "id": "e2e7c761-f873-4a84-945b-06205a24f59a",
+    "slug": "cursor-editor",
+    "field": "model_provider",
+    "from": "OpenAI",
+    "to": "multiple"
+  },
+  {
+    "id": "b5d22da4-8d93-45a9-9f58-0f340d43c838",
+    "slug": "dealism",
+    "field": "model_provider",
+    "from": null,
+    "to": "multiple"
+  },
+  {
+    "id": "666b824f-ffb1-47b7-948a-8a749847de5d",
+    "slug": "decktopus",
+    "field": "model_provider",
+    "from": null,
+    "to": "multiple"
+  },
+  {
+    "id": "cbb0f7bd-535d-433f-957e-d49dd1f91c13",
+    "slug": "depth-anything-3",
+    "field": "is_open_source",
+    "from": false,
+    "to": true
+  },
+  {
+    "id": "32addbf7-8583-4cea-b5bc-4f5b364f5e01",
+    "slug": "descript-ai",
+    "field": "model_provider",
+    "from": null,
+    "to": "proprietary"
+  },
+  {
+    "id": "6bd11089-75ba-432a-aa09-8462c89446fd",
+    "slug": "devoice",
+    "field": "is_open_source",
+    "from": false,
+    "to": true
+  },
+  {
+    "id": "eb628cdb-c036-4e24-8117-b36200211a09",
+    "slug": "devstral2-mistral",
+    "field": "model_provider",
+    "from": null,
+    "to": "mistral"
+  },
+  {
+    "id": "071feb61-5f4a-459c-9f14-faa2e23d065b",
+    "slug": "disco-google",
+    "field": "model_provider",
+    "from": null,
+    "to": "google"
+  },
+  {
+    "id": "38d1a59a-0625-4b61-8dbf-4ad5a2999128",
+    "slug": "edubrain-ai",
+    "field": "model_provider",
+    "from": null,
+    "to": "openai"
+  },
+  {
+    "id": "ddb0b6ad-0aca-4d58-9474-d28c2a0c2670",
+    "slug": "elevenlabs-dubbing",
+    "field": "model_provider",
+    "from": null,
+    "to": "proprietary"
+  },
+  {
+    "id": "ef29df05-10b4-4c47-8fc7-f7e28e9282dc",
+    "slug": "elevenlabs-scribe-v2",
+    "field": "model_provider",
+    "from": null,
+    "to": "proprietary"
+  },
+  {
+    "id": "9070a915-e107-425d-b284-ef45f583b0f8",
+    "slug": "final-round-ai",
+    "field": "model_provider",
+    "from": null,
+    "to": "openai"
+  },
+  {
+    "id": "52caa3a9-65f2-4f13-910a-116e86ed46ae",
+    "slug": "fireflies-ai",
+    "field": "model_provider",
+    "from": "Anthropic",
+    "to": "proprietary"
+  },
+  {
+    "id": "5ac05c99-8681-4ae9-a211-596fa773c1b2",
+    "slug": "freudly-ai-therapist",
+    "field": "model_provider",
+    "from": null,
+    "to": "openai"
+  },
+  {
+    "id": "8c6c8541-ee14-402e-ad3b-4301973b6723",
+    "slug": "gamma-app",
+    "field": "model_provider",
+    "from": null,
+    "to": "openai"
+  },
+  {
+    "id": "2478d332-550f-4a82-8762-2ce2fe8d33e7",
+    "slug": "gemini-3",
+    "field": "model_provider",
+    "from": null,
+    "to": "google"
+  },
+  {
+    "id": "51f8b299-f237-4bc7-8c01-7c3f1f244672",
+    "slug": "gemini-3-flash",
+    "field": "model_provider",
+    "from": null,
+    "to": "google"
+  },
+  {
+    "id": "0ed7cea0-13e3-455d-9b1b-e6fbc6e68abd",
+    "slug": "gemini-personal-intelligence",
+    "field": "model_provider",
+    "from": null,
+    "to": "google"
+  },
+  {
+    "id": "58c97bed-bc58-432a-934e-2da995c93ac8",
+    "slug": "github-copilot",
+    "field": "model_provider",
+    "from": null,
+    "to": "openai"
+  },
+  {
+    "id": "e8939b2c-24eb-4fc7-83d7-bb1406fc9fb4",
+    "slug": "glm-5",
+    "field": "model_provider",
+    "from": null,
+    "to": "other"
+  },
+  {
+    "id": "e8939b2c-24eb-4fc7-83d7-bb1406fc9fb4",
+    "slug": "glm-5",
+    "field": "is_open_source",
+    "from": false,
+    "to": true
+  },
+  {
+    "id": "4738fb58-789c-4cb1-b5b4-7bf02923331e",
+    "slug": "glm-image",
+    "field": "model_provider",
+    "from": null,
+    "to": "other"
+  },
+  {
+    "id": "a9f6aa79-7f96-4e62-ae44-c14e5b68b104",
+    "slug": "glm-ocr",
+    "field": "model_provider",
+    "from": null,
+    "to": "other"
+  },
+  {
+    "id": "46d9a4ab-a7c6-44b6-964e-fa99ca3b8b51",
+    "slug": "google-antigravity",
+    "field": "model_provider",
+    "from": null,
+    "to": "google"
+  },
+  {
+    "id": "5a8a6348-8793-4ad0-9d6a-d96b9afec2dc",
+    "slug": "google-medasr",
+    "field": "model_provider",
+    "from": null,
+    "to": "google"
+  },
+  {
+    "id": "d054bf44-46e6-4a7e-998e-2aa47da2f1b9",
+    "slug": "google-skills",
+    "field": "model_provider",
+    "from": null,
+    "to": "google"
+  },
+  {
+    "id": "197695f4-06c7-4e29-b036-05b745b28bba",
+    "slug": "heygen",
+    "field": "model_provider",
+    "from": null,
+    "to": "proprietary"
+  },
+  {
+    "id": "0ffba913-f9f8-47f9-a83c-521904f73bbb",
+    "slug": "ideogram",
+    "field": "model_provider",
+    "from": null,
+    "to": "proprietary"
+  },
+  {
+    "id": "3333814c-4f3f-4642-9e40-0f89218922af",
+    "slug": "iquest-coder-v1",
+    "field": "is_open_source",
+    "from": false,
+    "to": true
+  },
+  {
+    "id": "24398020-2b1a-47fb-8b01-e522f9cd1bbb",
+    "slug": "jasper-brand-voice",
+    "field": "model_provider",
+    "from": null,
+    "to": "openai"
+  },
+  {
+    "id": "b0c5aaef-fb78-41be-bbca-acad8661f42a",
+    "slug": "kling-ai",
+    "field": "model_provider",
+    "from": null,
+    "to": "proprietary"
+  },
+  {
+    "id": "a63d929b-8e44-43ac-88d9-441167013aae",
+    "slug": "landing-page-ai-builder",
+    "field": "model_provider",
+    "from": null,
+    "to": "openai"
+  },
+  {
+    "id": "ec411516-6c04-4d00-8e93-e7ccf44befb9",
+    "slug": "leadde-ai",
+    "field": "model_provider",
+    "from": null,
+    "to": "openai"
+  },
+  {
+    "id": "101af92a-fb25-48fd-b96e-6cb2bf09f49b",
+    "slug": "learn-place-ai-assistant",
+    "field": "model_provider",
+    "from": null,
+    "to": "openai"
+  },
+  {
+    "id": "c659bd55-f24c-44ef-a67e-bc1146a158c4",
+    "slug": "leonardo-ai",
+    "field": "model_provider",
+    "from": null,
+    "to": "multiple"
+  },
+  {
+    "id": "2268a240-0317-41c6-bfdd-9ec8d458ae5e",
+    "slug": "litvideo",
+    "field": "model_provider",
+    "from": null,
+    "to": "openai"
+  },
+  {
+    "id": "7a810873-2fc4-441f-8001-1d9621c456b1",
+    "slug": "lovable",
+    "field": "model_provider",
+    "from": null,
+    "to": "multiple"
+  },
+  {
+    "id": "98a79a48-9e3f-4737-ad5a-5144ebdf083a",
+    "slug": "luma-dream-machine",
+    "field": "model_provider",
+    "from": null,
+    "to": "proprietary"
+  },
+  {
+    "id": "10a87acf-72e6-4aab-80f5-b7c53c70acc7",
+    "slug": "lyria-3",
+    "field": "model_provider",
+    "from": null,
+    "to": "google"
+  },
+  {
+    "id": "56cd2538-f723-4589-93ba-8cc9c4913ebf",
+    "slug": "midjourney-v7",
+    "field": "model_provider",
+    "from": "Proprietary",
+    "to": "proprietary"
+  },
+  {
+    "id": "a16d3fad-6681-4f9d-b3c3-4d05de7994df",
+    "slug": "nano-banana-2",
+    "field": "is_open_source",
+    "from": false,
+    "to": true
+  },
+  {
+    "id": "87b49f6b-3708-4eb6-8f73-9e722981e686",
+    "slug": "nano-banana-pro",
+    "field": "is_open_source",
+    "from": false,
+    "to": true
+  },
+  {
+    "id": "79ec27b2-38b1-42a5-86a8-a2a3d46cc0ff",
+    "slug": "nano-imagine",
+    "field": "is_open_source",
+    "from": false,
+    "to": true
+  },
+  {
+    "id": "2d69776f-90b7-4845-bc6d-116fb09bc166",
+    "slug": "newsgpt",
+    "field": "model_provider",
+    "from": null,
+    "to": "openai"
+  },
+  {
+    "id": "8bbfa11c-0fc5-40fd-87a3-13fcb153f6f6",
+    "slug": "notion-ai",
+    "field": "model_provider",
+    "from": null,
+    "to": "multiple"
+  },
+  {
+    "id": "d124e616-9232-4aa9-a035-2183d3996720",
+    "slug": "openclaw",
+    "field": "is_open_source",
+    "from": false,
+    "to": true
+  },
+  {
+    "id": "2520551a-4a3c-4b8e-993f-b1d0501a2739",
+    "slug": "otter-ai",
+    "field": "model_provider",
+    "from": "Anthropic",
+    "to": "proprietary"
+  },
+  {
+    "id": "3ff61253-1b1d-4e97-8a97-c40cd911b428",
+    "slug": "perplexity-enterprise",
+    "field": "model_provider",
+    "from": null,
+    "to": "multiple"
+  },
+  {
+    "id": "6a89682d-4d13-4136-ba1f-dbf6d6355c75",
+    "slug": "pieces-for-developers",
+    "field": "model_provider",
+    "from": null,
+    "to": "multiple"
+  },
+  {
+    "id": "6a89682d-4d13-4136-ba1f-dbf6d6355c75",
+    "slug": "pieces-for-developers",
+    "field": "is_open_source",
+    "from": false,
+    "to": true
+  },
+  {
+    "id": "c2937e1b-637a-4b7e-8d18-3f6027878eeb",
+    "slug": "pika",
+    "field": "model_provider",
+    "from": null,
+    "to": "proprietary"
+  },
+  {
+    "id": "18d56aca-edda-4286-94ac-4a0c5761a52f",
+    "slug": "pipedrive",
+    "field": "model_provider",
+    "from": null,
+    "to": "multiple"
+  },
+  {
+    "id": "a9bea57e-6b07-4815-a6e1-55cb84e6a2a8",
+    "slug": "postwizard-ai",
+    "field": "model_provider",
+    "from": null,
+    "to": "openai"
+  },
+  {
+    "id": "b34852e1-c4b4-4d60-be7a-31d0d1168f0c",
+    "slug": "qwen3-tts",
+    "field": "model_provider",
+    "from": null,
+    "to": "other"
+  },
+  {
+    "id": "be2ef035-8bd5-4ac8-80fc-f8d07baee77e",
+    "slug": "replit",
+    "field": "model_provider",
+    "from": null,
+    "to": "multiple"
+  },
+  {
+    "id": "be2ef035-8bd5-4ac8-80fc-f8d07baee77e",
+    "slug": "replit",
+    "field": "is_open_source",
+    "from": false,
+    "to": true
+  },
+  {
+    "id": "348b24a1-41a2-48d8-9ea0-01738c87b7c4",
+    "slug": "resolution-builder",
+    "field": "model_provider",
+    "from": null,
+    "to": "openai"
+  },
+  {
+    "id": "50b48d9f-1f73-4625-8c69-6e0594489476",
+    "slug": "runway-gen-3",
+    "field": "model_provider",
+    "from": "Anthropic",
+    "to": "proprietary"
+  },
+  {
+    "id": "74db1301-9a60-4e49-bfa1-525cce510727",
+    "slug": "semrush-one",
+    "field": "model_provider",
+    "from": null,
+    "to": "multiple"
+  },
+  {
+    "id": "68181195-24f1-4849-b107-30f3bab17ed9",
+    "slug": "sima-2",
+    "field": "model_provider",
+    "from": "Google",
+    "to": "google"
+  },
+  {
+    "id": "bea71e55-3022-470e-ad0d-3b8fb8b8558e",
+    "slug": "sora-2",
+    "field": "model_provider",
+    "from": "OpenAI",
+    "to": "openai"
+  },
+  {
+    "id": "9e610619-5335-4f00-bd88-2c998731ed45",
+    "slug": "speechify-ai",
+    "field": "model_provider",
+    "from": "Google",
+    "to": "proprietary"
+  },
+  {
+    "id": "b8eb2a6f-02f9-416e-a00b-ff7481f4acfa",
+    "slug": "stability-ai",
+    "field": "model_provider",
+    "from": null,
+    "to": "stability"
+  },
+  {
+    "id": "d618916c-802a-4016-b58d-664b7fbd5ba7",
+    "slug": "suno",
+    "field": "model_provider",
+    "from": null,
+    "to": "proprietary"
+  },
+  {
+    "id": "9c649c7c-e606-4998-b9dc-6aff0eb446e8",
+    "slug": "superhuman",
+    "field": "model_provider",
+    "from": null,
+    "to": "multiple"
+  },
+  {
+    "id": "b69d097f-3895-42dd-a4d0-df4bad2fb93c",
+    "slug": "synthesia-avatar",
+    "field": "model_provider",
+    "from": "Google",
+    "to": "proprietary"
+  },
+  {
+    "id": "973312d2-6469-4d6d-8cf3-73faabbd06c7",
+    "slug": "t5gemma-2",
+    "field": "is_open_source",
+    "from": false,
+    "to": true
+  },
+  {
+    "id": "bc2190ba-ad31-4b9f-8fb7-9960549c9f9b",
+    "slug": "tavily",
+    "field": "model_provider",
+    "from": null,
+    "to": "proprietary"
+  },
+  {
+    "id": "93bf3f97-269f-4e53-9620-cb4edf93c8d0",
+    "slug": "tome-ai",
+    "field": "model_provider",
+    "from": null,
+    "to": "openai"
+  },
+  {
+    "id": "fbe0a85f-5fb9-4119-bfc9-7ce7ec6e800e",
+    "slug": "translategemma",
+    "field": "is_open_source",
+    "from": false,
+    "to": true
+  },
+  {
+    "id": "f7f94abe-a1d1-4972-bc5a-9c802b3cfae4",
+    "slug": "tripleten-burnout-test",
+    "field": "model_provider",
+    "from": null,
+    "to": "openai"
+  },
+  {
+    "id": "27d59379-7e0b-4d17-b8c1-acd0e1e255c4",
+    "slug": "udio",
+    "field": "model_provider",
+    "from": null,
+    "to": "proprietary"
+  },
+  {
+    "id": "59b62a4d-044e-4649-8abd-963437beb2cb",
+    "slug": "upcv",
+    "field": "model_provider",
+    "from": null,
+    "to": "openai"
+  },
+  {
+    "id": "208befcc-9767-4e81-8d92-835b29e38dba",
+    "slug": "upmetrics-ai",
+    "field": "model_provider",
+    "from": null,
+    "to": "openai"
+  },
+  {
+    "id": "4895eb44-10de-423c-aff5-c46e47204eb9",
+    "slug": "v0-by-vercel",
+    "field": "model_provider",
+    "from": null,
+    "to": "multiple"
+  },
+  {
+    "id": "899450ac-0084-4a96-b29e-e501013a7439",
+    "slug": "voicenotes",
+    "field": "model_provider",
+    "from": null,
+    "to": "multiple"
+  },
+  {
+    "id": "0e259fdd-22fb-4f0c-a168-26641bbb774b",
+    "slug": "warmup-tool",
+    "field": "model_provider",
+    "from": null,
+    "to": "openai"
+  },
+  {
+    "id": "96f26d6f-e018-4ad7-b96a-0db44b646f8f",
+    "slug": "weathernext-2",
+    "field": "model_provider",
+    "from": null,
+    "to": "google"
+  },
+  {
+    "id": "0101eaf3-dc75-4f93-9192-3f206f206ea4",
+    "slug": "windsurf",
+    "field": "model_provider",
+    "from": null,
+    "to": "multiple"
+  },
+  {
+    "id": "383cc68a-21e5-4511-be6f-a709e21cb267",
+    "slug": "wispr-flow",
+    "field": "model_provider",
+    "from": null,
+    "to": "proprietary"
+  },
+  {
+    "id": "925c9c10-3fe8-4315-a742-2295570800e5",
+    "slug": "writehybrid-ai-humanizer",
+    "field": "model_provider",
+    "from": "Anthropic",
+    "to": "openai"
+  },
+  {
+    "id": "0a7411fe-7408-4c97-804e-aeaf00969c16",
+    "slug": "writesonic-ai",
+    "field": "model_provider",
+    "from": "Anthropic",
+    "to": "openai"
+  },
+  {
+    "id": "328a2795-b214-48f8-a65d-04827f2ec917",
+    "slug": "zapier",
+    "field": "model_provider",
+    "from": null,
+    "to": "multiple"
+  }
+]

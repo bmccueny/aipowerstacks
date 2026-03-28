@@ -1,0 +1,562 @@
+[
+  {
+    "editor_index": 0,
+    "slug": "chatgpt",
+    "rating": 4,
+    "title": "The Swiss Army Knife With a Few Dull Blades",
+    "body": "GPT-4o handles 83% of my daily queries without hallucinating — I tracked it over 6 weeks. The remaining 17% fall into two buckets: multi-step statistical reasoning (where it confidently gives wrong p-values) and anything requiring precise citation. For general brainstorming and first-draft code, the throughput is unmatched. I just wouldn't hand it a dataset without double-checking the output."
+  },
+  {
+    "editor_index": 0,
+    "slug": "perplexity-ai",
+    "rating": 5,
+    "title": "Finally, Search With Receipts",
+    "body": "Perplexity cut my literature review time by 62%. Every claim comes with a clickable source. I ran a head-to-head against manual Google Scholar searches for 40 queries: Perplexity surfaced relevant papers in 35 cases within 10 seconds. The Pro tier's ability to parse uploaded PDFs and cross-reference them against web sources is the killer feature nobody talks about enough."
+  },
+  {
+    "editor_index": 0,
+    "slug": "notebooklm",
+    "rating": 4,
+    "title": "Grounding LLMs in Your Own Data — Done Right",
+    "body": "Upload 50 sources. Ask questions. Get answers that actually cite your documents. NotebookLM's audio overview feature converts dense research into surprisingly listenable podcasts — I've used it to prep for 3 conference talks. Loses a star because the source limit (50 docs, 500K words) forces you to curate aggressively for larger projects."
+  },
+  {
+    "editor_index": 0,
+    "slug": "deepseek-v32",
+    "rating": 4,
+    "title": "Price-Performance Ratio That Breaks the Curve",
+    "body": "At roughly 1/10th the cost of GPT-4o, DeepSeek V3.2 scores within 4 percentage points on MMLU and 2 points on HumanEval. For batch inference jobs where I'm processing thousands of rows, the economics are compelling. The trade-off is latency — median response time runs about 1.8x slower in my benchmarks."
+  },
+  {
+    "editor_index": 0,
+    "slug": "semrush-one",
+    "rating": 3,
+    "title": "Powerful Data, Mediocre AI Layer",
+    "body": "Semrush's underlying keyword and backlink databases remain best-in-class. The new AI features bolted on top? Mixed. The content optimizer catches about 70% of what a manual audit would find. The AI writing suggestions read like they were trained on 2019 blog posts. Use it for the data, not the generation."
+  },
+  {
+    "editor_index": 0,
+    "slug": "grammarly",
+    "rating": 3,
+    "title": "Diminishing Returns at Scale",
+    "body": "For writers producing under 5,000 words a week, Grammarly catches real errors. For power users, the false positive rate on stylistic suggestions hovers around 40% in my testing. The AI rewrite feature occasionally improves clarity but frequently strips out technical precision. A 3-star tool trying to be a 5-star product."
+  },
+  {
+    "editor_index": 0,
+    "slug": "claude-code",
+    "rating": 5,
+    "title": "The Only Coding Agent That Understands Context at Scale",
+    "body": "I pointed Claude Code at a 200-file Python project and asked it to refactor my data pipeline. It read the codebase, understood the dependency graph, and made 14 coordinated changes across 9 files — all correct. The agentic loop plus massive context window means it holds the full picture in memory. Nothing else I've tested comes close for large-repo work."
+  },
+  {
+    "editor_index": 0,
+    "slug": "mistral-ai",
+    "rating": 4,
+    "title": "Europe's Best LLM Play",
+    "body": "Mistral Large handles multilingual analytics tasks better than GPT-4o for French, German, and Spanish text — 12% higher accuracy on my sentiment classification benchmark across those languages. The API is clean, pricing is transparent, and the open-weight models let you self-host when compliance requires it."
+  },
+  {
+    "editor_index": 0,
+    "slug": "tavily",
+    "rating": 4,
+    "title": "Search API Built for Agents, Not Humans",
+    "body": "If you're building agentic RAG pipelines, Tavily returns cleaner, more structured results than scraping Google. Response times average 1.2 seconds. The JSON output slots directly into LangChain or LlamaIndex with minimal parsing. Not a consumer product — this is plumbing, and good plumbing matters."
+  },
+  {
+    "editor_index": 0,
+    "slug": "flux2",
+    "rating": 4,
+    "title": "Open-Source Image Gen Catches Up",
+    "body": "Flux.2 Pro generates images that are visually competitive with Midjourney v6 for photorealistic scenes. Text rendering accuracy hit 89% in my 100-prompt test — a massive improvement over Stable Diffusion. The open-weight dev model lets you fine-tune on proprietary data without sending anything to an API. Loses a point on artistic style diversity."
+  },
+  {
+    "editor_index": 1,
+    "slug": "zapier",
+    "rating": 5,
+    "title": "The Glue Holding My Whole Business Together",
+    "body": "I'm not exaggerating when I say Zapier runs half my life. Every morning my Slack gets a digest of new leads from three different forms, my CRM updates automatically, and my invoicing triggers on project completion. I set most of this up on a Sunday afternoon with zero code. The new AI actions that let you use ChatGPT mid-workflow? Game-changer for auto-categorizing support tickets."
+  },
+  {
+    "editor_index": 1,
+    "slug": "superhuman",
+    "rating": 4,
+    "title": "Email Finally Feels Fast Again",
+    "body": "Look, I was skeptical about paying $30/month for email. Then I hit Inbox Zero for the first time in two years — on day one. The keyboard shortcuts are addictive, the AI-written replies save me maybe 45 minutes a day, and the split inbox means I never miss a client email buried under newsletters. Only gripe is the mobile app doesn't feel as snappy as desktop."
+  },
+  {
+    "editor_index": 1,
+    "slug": "wispr-flow",
+    "rating": 5,
+    "title": "I Stopped Typing and My Output Doubled",
+    "body": "So here's the thing — I talk way faster than I type. Wispr Flow sits in my menu bar and lets me dictate into any app. Any app. Slack, Notion, email, even code comments. It formats everything properly, handles punctuation, and somehow knows when I'm dictating a bullet list versus a paragraph. I wrote this entire review by speaking it. Took 45 seconds."
+  },
+  {
+    "editor_index": 1,
+    "slug": "clickup-agents",
+    "rating": 3,
+    "title": "Cool Idea, Rough Execution So Far",
+    "body": "I really wanted to love ClickUp's AI agents. The concept is perfect — little bots that triage tasks, write standup summaries, and auto-assign work. In practice, the triage agent mis-categorized about a third of our tickets in the first week. The standup summaries are actually decent though. I'll check back in six months."
+  },
+  {
+    "editor_index": 1,
+    "slug": "notion-ai",
+    "rating": 4,
+    "title": "My Second Brain Got Smarter",
+    "body": "I've been a Notion power user for years, so having AI baked right into my workspace feels natural. I use it constantly to summarize meeting notes, draft project briefs from scattered bullet points, and find things buried in old pages. The Q&A feature that searches across your whole workspace is legitimately useful — saved me from digging through 200+ pages last week."
+  },
+  {
+    "editor_index": 1,
+    "slug": "voicenotes",
+    "rating": 5,
+    "title": "Capture Every Idea Without Breaking Stride",
+    "body": "I record voice memos while walking my dog, driving, standing in line at the grocery store. Voicenotes transcribes everything, tags it, and lets me ask questions across all my recordings later. Last month I asked it 'what were my product ideas from January?' and it pulled up seven recordings with summaries. That alone is worth the subscription."
+  },
+  {
+    "editor_index": 1,
+    "slug": "fireflies-ai",
+    "rating": 4,
+    "title": "Every Meeting, Searchable Forever",
+    "body": "Fireflies joins my Zoom calls, records, transcribes, and generates action items. The transcription accuracy is solid — maybe 95% for clear audio. I love being able to search across months of meetings for 'that time we discussed the pricing change.' The AI summaries occasionally miss nuance in heated discussions, but for routine syncs they're spot-on."
+  },
+  {
+    "editor_index": 1,
+    "slug": "otter-ai",
+    "rating": 3,
+    "title": "Good Transcription, Crowded Space",
+    "body": "Otter was my go-to before Fireflies and Voicenotes came along. The live transcription is still excellent and the speaker identification works well in meetings under 6 people. But the AI features feel bolted on rather than integrated, and the free tier got pretty limited recently. Still solid if you just need transcripts."
+  },
+  {
+    "editor_index": 1,
+    "slug": "gamma-app",
+    "rating": 4,
+    "title": "Presentations Without the Sunday Night Panic",
+    "body": "I used to spend 3-4 hours on investor update decks. Now I dump my notes into Gamma, pick a style, and get a polished first draft in about 90 seconds. I still tweak the narrative and swap out some visuals, but it handles the layout and structure beautifully. Exported to PowerPoint cleanly too, which matters when your board still lives in Office."
+  },
+  {
+    "editor_index": 1,
+    "slug": "replit",
+    "rating": 4,
+    "title": "From Idea to Deployed App While Finishing My Coffee",
+    "body": "I'm not a developer, but Replit's AI agent let me build a working internal tool for tracking vendor contracts in about 20 minutes. It wrote the code, set up the database, and deployed it. Did I understand every line? No. Does it work perfectly? Basically yes. For ops people who need quick internal tools, this is a revelation."
+  },
+  {
+    "editor_index": 2,
+    "slug": "cursor-editor",
+    "rating": 5,
+    "title": "What Programming Education Looks Like Now",
+    "body": "I've been assigning Cursor to my computer science students this semester, and the pedagogical implications are profound. Students aren't just getting code completion — they're engaging in a dialogue with the tool about why certain approaches work. The tab-completion learns your codebase patterns, and Composer mode handles multi-file refactors that would take a junior developer hours. We need to rethink how we teach programming fundamentals when tools like this exist."
+  },
+  {
+    "editor_index": 2,
+    "slug": "chatgpt",
+    "rating": 4,
+    "title": "The Baseline Every Other Tool Gets Measured Against",
+    "body": "Research from my lab suggests that professionals using ChatGPT for writing tasks complete them 37% faster with no measurable quality decrease. It's become the default AI interface for a reason — low friction, broad capability, good enough at most things. The interesting question isn't whether ChatGPT is useful (it obviously is) but whether its generality is a strength or a limitation as vertical tools improve."
+  },
+  {
+    "editor_index": 2,
+    "slug": "notebooklm",
+    "rating": 5,
+    "title": "The Research Tool I Wish Existed During My PhD",
+    "body": "NotebookLM represents something genuinely new: an AI that is constitutionally incapable of making things up because it only draws from sources you provide. For academic work, this constraint is a feature, not a bug. I've used it to synthesize findings across 30+ papers for a literature review, and the audio overview feature creates surprisingly engaging summaries that help me pressure-test my own understanding."
+  },
+  {
+    "editor_index": 2,
+    "slug": "synthesia-avatar",
+    "rating": 3,
+    "title": "Useful for Training, Unsettling for Teaching",
+    "body": "I experimented with Synthesia for creating course content. The avatars are technically impressive and the multilingual dubbing opens real accessibility possibilities. But something is lost. My students reported lower engagement with AI-presented material versus webcam recordings — even when the script was identical. The uncanny valley still matters in education."
+  },
+  {
+    "editor_index": 2,
+    "slug": "tome-ai",
+    "rating": 3,
+    "title": "Presentations That Look Better Than They Think",
+    "body": "Tome generates visually striking slides quickly, which makes it tempting for lecture prep. The design intelligence is real. The content intelligence is shallow — it tends to produce slides that look authoritative but lack the conceptual depth you'd want in an educational context. Useful as a starting point, dangerous as a finished product."
+  },
+  {
+    "editor_index": 2,
+    "slug": "descript-ai",
+    "rating": 5,
+    "title": "Editing Video by Editing Text Changed Everything",
+    "body": "The fundamental insight of Descript — that you should edit media the way you edit a document — is one of those ideas that seems obvious in retrospect. I record lectures, Descript transcribes them, and I edit the video by deleting words from the transcript. Filler word removal alone saves my TA hours of work per week. The AI-generated clips for social media help our research reach broader audiences."
+  },
+  {
+    "editor_index": 2,
+    "slug": "jasper-brand-voice",
+    "rating": 2,
+    "title": "Brand Consistency at the Cost of Authenticity",
+    "body": "Jasper's brand voice feature is an interesting experiment in constrained generation. You train it on your writing samples and it attempts to match your style. In my testing, it captures surface-level patterns — sentence length, vocabulary level — but misses the deeper structural choices that make writing distinctive. The output reads like a capable student imitating a professor rather than the professor writing."
+  },
+  {
+    "editor_index": 2,
+    "slug": "github-copilot",
+    "rating": 4,
+    "title": "The Tool That Launched a Thousand Dissertations",
+    "body": "GitHub Copilot has generated more research questions about human-AI collaboration than any tool since the calculator. In practical terms, it accelerates routine coding by 30-50% based on the studies I've reviewed. It's best understood not as a replacement for programming skill but as an amplifier of existing competence — experts benefit more than novices, which has important implications for skill development."
+  },
+  {
+    "editor_index": 2,
+    "slug": "elevenlabs-dubbing",
+    "rating": 4,
+    "title": "Breaking the Language Barrier in Education",
+    "body": "I recorded a 40-minute lecture in English and ElevenLabs produced a Spanish dub that preserved my speaking cadence, emphasis patterns, and even my tendency to pause before making a key point. The implications for global education are significant. Voice cloning quality is remarkable — my Spanish-speaking colleagues said it sounded natural, if slightly formal."
+  },
+  {
+    "editor_index": 2,
+    "slug": "grok-420",
+    "rating": 3,
+    "title": "Capable Model, Questionable Ecosystem",
+    "body": "Grok 4.20 is technically competitive on reasoning benchmarks and its real-time access to X/Twitter data gives it a unique angle for analyzing public discourse. I've used it to study how ideas spread through social networks. The model itself is solid. My reservations are about the broader ecosystem and whether the platform's editorial choices will eventually constrain the model's utility for serious research."
+  },
+  {
+    "editor_index": 3,
+    "slug": "claude-code",
+    "rating": 5,
+    "title": "Ship It",
+    "body": "Best coding agent I've used. Period. Understands large codebases, makes multi-file changes that actually compile, and the extended thinking means it catches edge cases I would've missed. If you're still copy-pasting code into ChatGPT, you're wasting hours every week."
+  },
+  {
+    "editor_index": 3,
+    "slug": "cursor-editor",
+    "rating": 5,
+    "title": "VS Code But It Actually Helps",
+    "body": "Cursor's tab completion is scary good. It predicts not just the next line but the next logical block based on your project's patterns. Composer mode for multi-file edits saves me from the tedium of propagating interface changes across a codebase. Worth every penny of the $20/month."
+  },
+  {
+    "editor_index": 3,
+    "slug": "github-copilot",
+    "rating": 3,
+    "title": "Fine",
+    "body": "Copilot writes decent boilerplate. That's about it. For anything beyond CRUD operations or standard patterns, I spend more time fixing its suggestions than I would writing from scratch. The chat feature is mediocre compared to dedicated tools."
+  },
+  {
+    "editor_index": 3,
+    "slug": "windsurf",
+    "rating": 4,
+    "title": "Cursor's Scrappier Cousin",
+    "body": "Windsurf does 85% of what Cursor does at a lower price point. The Cascade flow for multi-step edits is well-designed and the codebase indexing is fast. Lost a star because the extension ecosystem is thinner and I hit context limit issues on repos over 100K lines. Still a strong choice for indie devs."
+  },
+  {
+    "editor_index": 3,
+    "slug": "v0-by-vercel",
+    "rating": 4,
+    "title": "Frontend Prototyping at Ridiculous Speed",
+    "body": "Describe a UI, get a working React component with Tailwind styling. v0 nails the 80% case for frontend prototyping. The generated code is clean, uses modern patterns, and deploys to Vercel in one click. Don't expect it to handle complex state management or custom animations — that's still your job."
+  },
+  {
+    "editor_index": 3,
+    "slug": "bolt-new",
+    "rating": 3,
+    "title": "Impressive Demo, Fragile in Practice",
+    "body": "Bolt.new generates full-stack apps from prompts and runs them in-browser. The first version usually looks great. Then you try to iterate and things get weird — it sometimes rewrites working code, loses track of state, or introduces regressions. Good for throwaway prototypes. I wouldn't build anything production on it yet."
+  },
+  {
+    "editor_index": 3,
+    "slug": "lovable",
+    "rating": 3,
+    "title": "The Non-Technical Founder's Best Friend (and Worst Enemy)",
+    "body": "Lovable lets anyone build a web app by describing what they want. The output looks professional and often works. The problem is maintenance — when something breaks, non-technical users can't debug the generated code, and the AI doesn't always fix its own mistakes cleanly. Creates technical debt at startup speed."
+  },
+  {
+    "editor_index": 3,
+    "slug": "pieces-for-developers",
+    "rating": 4,
+    "title": "Snippet Management That Actually Works",
+    "body": "I've tried a dozen snippet managers. Pieces is the first one that stuck because the AI auto-categorization means I don't have to organize anything manually. It captures context — where the snippet came from, what language, related files. The on-device LLM for sensitive code is a nice touch for enterprise devs."
+  },
+  {
+    "editor_index": 3,
+    "slug": "coderabbitai-powered-tool-streamlining-code-reviews",
+    "rating": 4,
+    "title": "Better Than Most Human Reviewers on Style",
+    "body": "CodeRabbit catches the stuff humans are too lazy to comment on — naming inconsistencies, missing error handling, unused imports, style drift. It won't catch architectural problems or subtle logic bugs, but for the mechanical side of code review, it saves my team 2-3 hours per week. The incremental review on new commits is a smart design choice."
+  },
+  {
+    "editor_index": 3,
+    "slug": "replit",
+    "rating": 4,
+    "title": "Cloud IDE That Gets Out of Your Way",
+    "body": "Replit's AI agent can scaffold a full project from a description, which is useful for prototyping. The real value is the deployment pipeline — push code, it's live. No Docker, no CI config, no infra. For side projects and internal tools, this is hard to beat. For production apps, you'll outgrow it."
+  },
+  {
+    "editor_index": 4,
+    "slug": "midjourney-v7",
+    "rating": 5,
+    "title": "Where Machine Precision Meets Artistic Intuition",
+    "body": "Midjourney v7 understands composition in a way that feels almost intuitive. The lighting in its outputs follows rules that photographers spend years learning — rim light, golden hour, Rembrandt shadows. I used it to concept an entire brand identity system in an afternoon: mood boards, color palettes, texture studies. The personalization feature that learns your aesthetic preferences is genuinely transformative for creative workflows."
+  },
+  {
+    "editor_index": 4,
+    "slug": "canva",
+    "rating": 4,
+    "title": "Democracy in Design, For Better and Worse",
+    "body": "Canva's AI features — background removal, Magic Design, text-to-image — put professional-grade capabilities in everyone's hands. The templates are tasteful enough that most outputs look polished. What concerns me is the homogenization: when everyone uses the same templates with the same AI suggestions, visual culture starts to flatten. A powerful tool that rewards those who push beyond its defaults."
+  },
+  {
+    "editor_index": 4,
+    "slug": "beautiful-ai",
+    "rating": 4,
+    "title": "Slides That Breathe",
+    "body": "Beautiful.ai's smart templates enforce good design principles — consistent margins, harmonious type scales, balanced white space. You almost can't make an ugly slide, which is both its strength and its limitation. For client presentations, it's become my go-to. For creative pitches where I need to break rules deliberately, I still reach for Figma."
+  },
+  {
+    "editor_index": 4,
+    "slug": "ideogram",
+    "rating": 5,
+    "title": "Text in Images, Finally Solved",
+    "body": "Every designer knows the pain of AI image generators butchering text. Ideogram renders typography cleanly, consistently, and in context. I generated 50 mockup posters with embedded headlines and 47 had perfect text rendering. For anyone creating social media graphics, signage concepts, or packaging mockups, this is the tool that removes a massive friction point."
+  },
+  {
+    "editor_index": 4,
+    "slug": "leonardo-ai",
+    "rating": 4,
+    "title": "A Quiet Powerhouse for Game and Product Design",
+    "body": "Leonardo doesn't get the attention Midjourney does, but its fine-tuning capabilities and style consistency across generations make it exceptional for production design work. I trained a custom model on a client's product line and generated 200 variations for a catalog shoot concept. The texture and material rendering — brushed metal, soft leather, matte ceramic — is remarkably faithful."
+  },
+  {
+    "editor_index": 4,
+    "slug": "stability-ai",
+    "rating": 3,
+    "title": "The Foundation That Others Build On",
+    "body": "Stability AI's models power half the creative tools on this list, which makes rating the company itself complicated. Their open-source commitment matters enormously for the ecosystem. As a direct-to-user product, though, the experience is rougher than competitors — the outputs require more prompt engineering and the API documentation assumes technical sophistication most designers don't have."
+  },
+  {
+    "editor_index": 4,
+    "slug": "pika",
+    "rating": 3,
+    "title": "Video That Almost Moves Right",
+    "body": "Pika generates short video clips that are visually striking in still frames but often betray themselves in motion. Fabric ripples unnaturally, hands drift through objects, and camera movements can feel weightless. For mood reels and concept work, the aesthetic quality is genuinely beautiful. For anything requiring physical plausibility, we're not there yet."
+  },
+  {
+    "editor_index": 4,
+    "slug": "runway-gen-45",
+    "rating": 4,
+    "title": "The Closest Thing to a Virtual Camera",
+    "body": "Runway Gen-4.5 produces video with a cinematic quality that makes my filmmaker friends uncomfortable. The motion coherence has improved dramatically — a 10-second clip of wind through tall grass looked indistinguishable from drone footage. Camera controls for pan, zoom, and tracking give you directorial intent. Still struggles with human faces in motion, but for environmental and product shots, it's remarkable."
+  },
+  {
+    "editor_index": 4,
+    "slug": "luma-dream-machine",
+    "rating": 4,
+    "title": "Dreams in Motion",
+    "body": "There's something poetic about Luma's outputs. Where other video generators aim for photorealism, Luma Dream Machine produces clips with an ethereal, slightly surreal quality that's perfect for brand storytelling and art direction. The image-to-video feature lets me animate my Midjourney stills, creating a creative pipeline that didn't exist a year ago."
+  },
+  {
+    "editor_index": 4,
+    "slug": "decktopus",
+    "rating": 2,
+    "title": "Design on Autopilot, and It Shows",
+    "body": "Decktopus prioritizes speed over craft. The AI-generated layouts feel generic — predictable grid structures, safe color choices, stock-photo aesthetics. For internal team updates where nobody cares about design, fine. For anything client-facing, the lack of typographic control and limited customization makes it frustrating. Design isn't just arrangement; it's intention."
+  },
+  {
+    "editor_index": 5,
+    "slug": "copy-ai",
+    "rating": 4,
+    "title": "Our Content Pipeline Runs on This",
+    "body": "Copy.ai generates first drafts for blog posts, ad copy, and email sequences that our team can edit into shape in half the time it takes to write from scratch. The workflow automation — connecting it to our CRM data to personalize outreach at scale — drove a 23% increase in email open rates last quarter. The brand voice training needs more samples than competitors to get right, but once dialed in, it's consistent."
+  },
+  {
+    "editor_index": 5,
+    "slug": "jasper-brand-voice",
+    "rating": 4,
+    "title": "Brand Consistency Across a 12-Person Team",
+    "body": "We struggled for years to keep our brand voice consistent across writers. Jasper's brand voice feature finally solved it — everyone on the team produces content that sounds like it came from the same company. The ROI math is simple: we cut editing time by 35% and reduced 'off-brand' revision requests from clients by half. Worth the premium pricing for teams over 5 people."
+  },
+  {
+    "editor_index": 5,
+    "slug": "semrush-one",
+    "rating": 5,
+    "title": "The Only Marketing Platform I'd Take to a Desert Island",
+    "body": "Semrush One consolidates keyword research, competitive analysis, content planning, and rank tracking into a single dashboard. The AI features auto-generate content briefs based on SERP analysis, and the topic cluster tool mapped out a 6-month content strategy in 20 minutes that would have taken my team a full sprint. We saw a 41% increase in organic traffic within 90 days of following its recommendations."
+  },
+  {
+    "editor_index": 5,
+    "slug": "writesonic-ai",
+    "rating": 3,
+    "title": "Good for Volume, Not for Voice",
+    "body": "When you need 50 product descriptions by Friday, Writesonic delivers. The output is grammatically correct, SEO-friendly, and completely forgettable. For high-volume, low-stakes content like category pages and meta descriptions, it earns its keep. For thought leadership or brand storytelling, you'll spend as much time rewriting as you saved."
+  },
+  {
+    "editor_index": 5,
+    "slug": "heygen",
+    "rating": 5,
+    "title": "Video Ads Without a Video Team",
+    "body": "We produced 15 localized product demo videos in 8 languages using HeyGen last month. Previously that would have required actors, studios, and translators — roughly $45,000 in production costs. HeyGen cost us under $500. The avatar quality is good enough for LinkedIn ads and product walkthroughs. For broadcast, you'd still want real talent, but for digital channels the ROI is absurd."
+  },
+  {
+    "editor_index": 5,
+    "slug": "syllabyio",
+    "rating": 3,
+    "title": "Content Calendar Automation With Rough Edges",
+    "body": "Syllaby.io scrapes trending topics in your niche and generates video content calendars with scripts. The trend identification is useful — it surfaced three topics our team hadn't considered that ended up performing well. The auto-generated scripts are thin though, more like outlines than shootable content. Think of it as a research tool, not a production tool."
+  },
+  {
+    "editor_index": 5,
+    "slug": "canva",
+    "rating": 5,
+    "title": "Every Marketer's Secret Weapon",
+    "body": "My team produces 200+ social media graphics per month using Canva. The brand kit keeps everything on-brand, the Magic Resize reformats for every platform in one click, and the AI background remover handles product shots that used to require a photographer. We cancelled three other tool subscriptions after going all-in on Canva. The ROI is impossible to argue with."
+  },
+  {
+    "editor_index": 5,
+    "slug": "superhuman",
+    "rating": 4,
+    "title": "Worth It If Email Is Your Revenue Channel",
+    "body": "For salespeople and account managers who live in email, Superhuman pays for itself in the first week. The AI auto-drafts contextual replies, the read receipts tell you when to follow up, and the scheduling feature eliminates the back-and-forth. I close deals faster because I respond faster. The price tag only stings if email isn't central to your revenue."
+  },
+  {
+    "editor_index": 5,
+    "slug": "chatgpt",
+    "rating": 4,
+    "title": "The Marketing Team's Brainstorm Partner",
+    "body": "We use ChatGPT daily for ideation — campaign concepts, headline variations, audience persona development. It generates 20 ideas in the time it takes a human to think of 3. Quality varies, but the hit rate is high enough that it's become indispensable for the early stages of creative work. The custom GPTs for specific marketing workflows are an underrated feature."
+  },
+  {
+    "editor_index": 5,
+    "slug": "liner",
+    "rating": 3,
+    "title": "Niche Research Tool With a Learning Curve",
+    "body": "Liner's AI-powered search and highlighting features are useful for competitive research — it organizes web findings into structured notes automatically. The Chrome extension works well for building research dossiers. But the onboarding is confusing, the free tier is too limited to evaluate properly, and it doesn't integrate with any of the marketing tools my team already uses."
+  },
+  {
+    "editor_index": 6,
+    "slug": "github-copilot",
+    "rating": 4,
+    "title": "Solid in the IDE, Invisible in the Pipeline",
+    "body": "Copilot writes good Terraform and Dockerfile suggestions. What I actually want is an AI that reviews my infrastructure-as-code for security misconfigs and cost optimization before it hits production. Copilot helps me write faster; it doesn't help me deploy safer. Two different problems."
+  },
+  {
+    "editor_index": 6,
+    "slug": "claude-code",
+    "rating": 5,
+    "title": "Finally, an AI That Can Read a Monorepo",
+    "body": "Our monorepo has 400+ packages. I asked Claude Code to trace a bug through three services, a shared library, and a database migration. It found the root cause in under two minutes. I was halfway through setting up my debugging session. The extended thinking is legitimately useful for distributed systems work where context is everything."
+  },
+  {
+    "editor_index": 6,
+    "slug": "coderabbitai-powered-tool-streamlining-code-reviews",
+    "rating": 5,
+    "title": "Our PR Review Queue Thanks Me",
+    "body": "CodeRabbit catches the boring stuff so my team can focus on architecture and logic during reviews. It flagged a missing null check in a Kubernetes operator last week that would have caused a cascading restart loop in production. Paid for itself with that one catch. The incremental review feature means it only comments on new changes, not the entire diff."
+  },
+  {
+    "editor_index": 6,
+    "slug": "cursor-editor",
+    "rating": 4,
+    "title": "Great for App Code, Meh for Infra",
+    "body": "Cursor is excellent for application development. For infrastructure work — Helm charts, Ansible playbooks, Terraform modules — its suggestions are often outdated or use deprecated API versions. It doesn't understand that a Kubernetes manifest isn't just YAML; it's a contract with a running cluster. Still my daily driver, just not for infra."
+  },
+  {
+    "editor_index": 6,
+    "slug": "vectara",
+    "rating": 4,
+    "title": "RAG Without the Duct Tape",
+    "body": "Setting up a production RAG pipeline usually involves gluing together an embedding model, a vector store, a retriever, a reranker, and a generator. Vectara bundles all of that into an API call. Hallucination detection is baked in. For teams that need enterprise search without building a ML platform, this is the pragmatic choice. Latency could be better at scale."
+  },
+  {
+    "editor_index": 6,
+    "slug": "zapier",
+    "rating": 4,
+    "title": "The Duct Tape Between Services (Affectionate)",
+    "body": "Zapier connects the 47 SaaS tools our org uses without me having to build and maintain custom integrations. Is it elegant? No. Does it work at 3 AM when PagerDuty fires and the incident channel needs to auto-populate? Yes. The AI actions add intelligence to what used to be dumb pipes. Just monitor your zap runs — silent failures will ruin your weekend."
+  },
+  {
+    "editor_index": 6,
+    "slug": "replit",
+    "rating": 3,
+    "title": "Great for Prototypes, Terrifying for Production",
+    "body": "Replit's deployment model is 'push and pray.' There's no real staging environment, rollback is manual, and the infrastructure abstraction means you can't tune anything when performance matters. For internal tools and hackathon projects, it's magical. For anything with an SLA, I'd rather spend the time setting up proper infrastructure."
+  },
+  {
+    "editor_index": 6,
+    "slug": "bolt-new",
+    "rating": 2,
+    "title": "Full-Stack Apps That Fall Over When You Breathe On Them",
+    "body": "I generated a CRUD app with Bolt.new and immediately tried to add authentication. The AI rewrote half my working routes, introduced a circular dependency, and broke the database connection. The initial generation is impressive. Everything after that is a gamble. Until the iterative editing improves dramatically, this is a demo, not a development tool."
+  },
+  {
+    "editor_index": 6,
+    "slug": "deepseek-v32",
+    "rating": 4,
+    "title": "Self-Hosted LLM That Actually Delivers",
+    "body": "We run DeepSeek V3.2 on our own infrastructure for internal code review and documentation generation. At 1/10th the API cost of GPT-4o and with weights we can audit, it's the obvious choice for orgs with data sovereignty requirements. Context window handles our larger files. Inference speed on 8xA100 is acceptable, not fast."
+  },
+  {
+    "editor_index": 6,
+    "slug": "mistral-ai",
+    "rating": 4,
+    "title": "The EU Compliance-Friendly LLM",
+    "body": "When your legal team says 'no data leaves the EU,' Mistral is the answer. Their models run on European infrastructure, the open weights let you self-host, and the performance gap with US-based models has narrowed considerably. Codestral handles infrastructure-as-code better than most alternatives. The API stability has improved a lot since early 2025."
+  },
+  {
+    "editor_index": 7,
+    "slug": "suno",
+    "rating": 5,
+    "title": "I Made My Mom a Birthday Song and She Cried",
+    "body": "I typed in a few lines about my mom's garden and her terrible cooking (sorry Mom) and Suno turned it into a full folk song with harmonies. It sounded like something you'd hear on the radio. I've been using it to create intro music for my podcast, background tracks for videos, and honestly just for fun. The v4 model understands genre conventions shockingly well — my country song actually twanged."
+  },
+  {
+    "editor_index": 7,
+    "slug": "descript-ai",
+    "rating": 5,
+    "title": "This Is How I Edit Everything Now",
+    "body": "I used to dread editing my YouTube videos. Now I open Descript, delete the 'ums' with one click, cut the sections I don't want by highlighting text, and export. The AI chapters and show notes save me another hour per video. I tried going back to Premiere Pro last month and it felt like switching from a smartphone back to a flip phone."
+  },
+  {
+    "editor_index": 7,
+    "slug": "speechify-ai",
+    "rating": 4,
+    "title": "I Listen to the Internet Now",
+    "body": "I have a stack of articles I never get around to reading. Speechify turns them into podcasts I listen to while doing dishes. The AI voices are natural enough that I forget it's synthetic after a few minutes. The Chrome extension that reads any webpage is my most-used browser tool. Wish the mobile app wasn't so aggressive with upselling."
+  },
+  {
+    "editor_index": 7,
+    "slug": "udio",
+    "rating": 4,
+    "title": "Suno's Artier Sibling",
+    "body": "Where Suno goes for pop accessibility, Udio aims for musical sophistication. The jazz and classical outputs have more nuance — actual chord progressions that surprise you, dynamic range, instruments that breathe. I use Udio when I want something that sounds composed rather than generated. The stems feature that lets you isolate and remix individual tracks is incredibly useful for video work."
+  },
+  {
+    "editor_index": 7,
+    "slug": "lovo-ai",
+    "rating": 3,
+    "title": "Good Voiceovers, Nothing Spectacular",
+    "body": "Lovo.ai does text-to-speech with a big voice library and decent emotional range. I've used it for explainer videos when I don't feel like recording myself. The quality is professional enough for most content, but it lacks the naturalness of ElevenLabs. Fine for the price, especially on the lower tiers."
+  },
+  {
+    "editor_index": 7,
+    "slug": "midjourney-v7",
+    "rating": 5,
+    "title": "My Thumbnails Have Never Looked This Good",
+    "body": "I went from spending $50-100 per thumbnail on Fiverr to generating them myself in Midjourney v7. The photorealism is insane, it handles text prompts for specific compositions really well, and the style reference feature means I can keep a consistent look across my whole channel. My click-through rate went up 18% after switching. Not exaggerating."
+  },
+  {
+    "editor_index": 7,
+    "slug": "canva",
+    "rating": 5,
+    "title": "I Literally Could Not Do My Job Without This",
+    "body": "Every Instagram post, every YouTube thumbnail backup, every media kit, every collab proposal — all Canva. The AI features keep getting better but honestly I was already hooked before those. Magic Resize alone saves me hours every week when I need the same graphic in 6 different dimensions. And it's mostly free? Come on."
+  },
+  {
+    "editor_index": 7,
+    "slug": "notion-ai",
+    "rating": 4,
+    "title": "My Content Calendar Got an Upgrade",
+    "body": "I plan all my content in Notion, so having AI right there to brainstorm video ideas, write descriptions, and summarize my research notes is seamless. Asked it to analyze my last 30 video topics and suggest gaps — it identified three content angles I'd been completely ignoring. The autofill for database properties saves tedious manual work."
+  },
+  {
+    "editor_index": 7,
+    "slug": "perplexity-ai",
+    "rating": 5,
+    "title": "Research for Videos Used to Take Hours",
+    "body": "Before Perplexity, researching a video topic meant 15 open tabs, cross-referencing sources, and praying I didn't cite something wrong. Now I ask Perplexity, get a sourced summary, follow the citations to verify, and I'm done in 20 minutes. The Focus feature that limits searches to academic papers or Reddit or news is incredibly useful for getting different perspectives on the same topic."
+  },
+  {
+    "editor_index": 7,
+    "slug": "elevenlabs-dubbing",
+    "rating": 4,
+    "title": "My Videos Now Speak 6 Languages (Sort Of)",
+    "body": "I dubbed my most popular video into Spanish, Portuguese, French, German, and Japanese using ElevenLabs. The Spanish and Portuguese versions sound great — natural cadence, proper emphasis. The Japanese version is less convincing but still usable. My international audience grew 34% in two months. The cost per language is around $15 for a 10-minute video, which is nothing compared to hiring voice actors."
+  }
+]

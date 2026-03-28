@@ -1,0 +1,1164 @@
+[
+  {
+    "slug": "aegis",
+    "name": "Aegis",
+    "current_category": "AI Chat & Assistants",
+    "correct_category": "Coding & Development",
+    "reason": "Runtime policy enforcement for AI agents with cryptographic audit trails is a developer tool, not a chat assistant"
+  },
+  {
+    "slug": "affiliate-skills",
+    "name": "affiliate-skills",
+    "current_category": "AI Chat & Assistants",
+    "correct_category": "Business & Marketing",
+    "reason": "Claude Skills for affiliate marketers covering research, content, blog, landing pages — primarily a marketing tool"
+  },
+  {
+    "slug": "ai-engineering-interview-questions",
+    "name": "ai-engineering-interview-questions",
+    "current_category": "AI Chat & Assistants",
+    "correct_category": "Education & Learning",
+    "reason": "Interview question cheat sheet is an educational/learning resource, not a chat assistant"
+  },
+  {
+    "slug": "agent-reach",
+    "name": "Agent-Reach",
+    "current_category": "AI Chat & Assistants",
+    "correct_category": "Coding & Development",
+    "reason": "CLI tool for giving AI agents internet access (Twitter, Reddit, YouTube) — developer tool for agent builders"
+  },
+  {
+    "slug": "anthropic-cybersecurity-skills",
+    "name": "Anthropic-Cybersecurity-Skills",
+    "current_category": "AI Chat & Assistants",
+    "correct_category": "Coding & Development",
+    "reason": "734+ structured cybersecurity skills for AI agents with MITRE ATT&CK mapping — developer resource for agent builders"
+  },
+  {
+    "slug": "awesome-ai-agents-2026",
+    "name": "awesome-ai-agents-2026",
+    "current_category": "AI Chat & Assistants",
+    "correct_category": "Coding & Development",
+    "reason": "Curated list of 300+ AI agent frameworks and tools — a developer resource directory"
+  },
+  {
+    "slug": "awesome-codex-subagents",
+    "name": "awesome-codex-subagents",
+    "current_category": "AI Chat & Assistants",
+    "correct_category": "Coding & Development",
+    "reason": "Collection of 130+ specialized Codex subagents for development use cases — developer tooling"
+  },
+  {
+    "slug": "awesome-opensource-ai",
+    "name": "awesome-opensource-ai",
+    "current_category": "AI Chat & Assistants",
+    "correct_category": "Coding & Development",
+    "reason": "Curated list of open-source AI projects, models, tools, and infrastructure — developer resource"
+  },
+  {
+    "slug": "chatgpt-shopping",
+    "name": "ChatGPT Shopping",
+    "current_category": "AI Chat & Assistants",
+    "correct_category": "E-commerce",
+    "reason": "Shopping assistant that compares products, prices, and reviews — primarily an e-commerce tool"
+  },
+  {
+    "slug": "claude-code-x-openclaw-guide-zh",
+    "name": "Claude-Code-x-OpenClaw-Guide-Zh",
+    "current_category": "AI Chat & Assistants",
+    "correct_category": "Education & Learning",
+    "reason": "21 tutorials (130k+ words) teaching Claude Code and OpenClaw — educational content"
+  },
+  {
+    "slug": "cli",
+    "name": "cli",
+    "current_category": "AI Chat & Assistants",
+    "correct_category": "Coding & Development",
+    "reason": "Google Workspace CLI tool for Drive, Gmail, Calendar, etc. — a command-line developer tool"
+  },
+  {
+    "slug": "codex-auto-register",
+    "name": "codex_auto_register",
+    "current_category": "AI Chat & Assistants",
+    "correct_category": "Coding & Development",
+    "reason": "Codex auto-registration tool — developer utility"
+  },
+  {
+    "slug": "danghuangshang",
+    "name": "danghuangshang",
+    "current_category": "AI Chat & Assistants",
+    "correct_category": "Education & Learning",
+    "reason": "Complete tutorial from beginner to advanced — educational content, not a chat assistant"
+  },
+  {
+    "slug": "holysheep-cli",
+    "name": "holysheep-cli",
+    "current_category": "AI Chat & Assistants",
+    "correct_category": "Coding & Development",
+    "reason": "CLI to configure AI coding tools (Claude Code, Codex, Gemini CLI, Cursor, Aider) — developer tooling"
+  },
+  {
+    "slug": "human-skill-tree",
+    "name": "human-skill-tree",
+    "current_category": "AI Chat & Assistants",
+    "correct_category": "Education & Learning",
+    "reason": "AI-powered skill tree for lifelong learning covering 30+ skills — educational tool"
+  },
+  {
+    "slug": "isc-bench",
+    "name": "ISC-Bench",
+    "current_category": "AI Chat & Assistants",
+    "correct_category": "Research & Analysis",
+    "reason": "AI safety benchmark for LLMs with jailbreak testing — research tool, not a chat assistant"
+  },
+  {
+    "slug": "llmfit",
+    "name": "llmfit",
+    "current_category": "AI Chat & Assistants",
+    "correct_category": "Coding & Development",
+    "reason": "CLI tool to find which LLMs run on your hardware — developer utility"
+  },
+  {
+    "slug": "ltx-desktop",
+    "name": "LTX-Desktop",
+    "current_category": "AI Chat & Assistants",
+    "correct_category": "Video Generation",
+    "reason": "Open-source desktop app for generating videos with LTX models — video generation tool"
+  },
+  {
+    "slug": "memory-lancedb-pro",
+    "name": "memory-lancedb-pro",
+    "current_category": "AI Chat & Assistants",
+    "correct_category": "Coding & Development",
+    "reason": "Enhanced LanceDB memory plugin with vector search and BM25 — developer plugin"
+  },
+  {
+    "slug": "omlx",
+    "name": "omlx",
+    "current_category": "AI Chat & Assistants",
+    "correct_category": "Coding & Development",
+    "reason": "LLM inference server with continuous batching for Apple Silicon — developer infrastructure tool"
+  },
+  {
+    "slug": "openclaw-master-skills",
+    "name": "openclaw-master-skills",
+    "current_category": "AI Chat & Assistants",
+    "correct_category": "Coding & Development",
+    "reason": "Curated collection of 339+ OpenClaw skills — developer resource for agent configuration"
+  },
+  {
+    "slug": "openclaw-nerve",
+    "name": "openclaw-nerve",
+    "current_category": "AI Chat & Assistants",
+    "correct_category": "Coding & Development",
+    "reason": "Real-time web cockpit for OpenClaw with agent kanban board and sub-agent sessions — developer tool"
+  },
+  {
+    "slug": "opencli",
+    "name": "opencli",
+    "current_category": "AI Chat & Assistants",
+    "correct_category": "Coding & Development",
+    "reason": "Universal CLI Hub and AI-native runtime that transforms websites into CLI tools — developer tool"
+  },
+  {
+    "slug": "openfang",
+    "name": "openfang",
+    "current_category": "AI Chat & Assistants",
+    "correct_category": "Coding & Development",
+    "reason": "Open-source Agent Operating System — developer infrastructure"
+  },
+  {
+    "slug": "otter-ai",
+    "name": "Otter.ai",
+    "current_category": "AI Chat & Assistants",
+    "correct_category": "Productivity",
+    "reason": "Real-time AI transcription and meeting summaries — a productivity tool, not a chat assistant"
+  },
+  {
+    "slug": "picolm",
+    "name": "picolm",
+    "current_category": "AI Chat & Assistants",
+    "correct_category": "Coding & Development",
+    "reason": "Running LLMs on embedded hardware ($10 board, 256MB RAM) — developer/infrastructure tool"
+  },
+  {
+    "slug": "socialomni",
+    "name": "SocialOmni",
+    "current_category": "AI Chat & Assistants",
+    "correct_category": "Research & Analysis",
+    "reason": "Benchmarking audio-visual social interactivity in omni models — research benchmark, not a chat tool"
+  },
+  {
+    "slug": "socraticode",
+    "name": "SocratiCode",
+    "current_category": "AI Chat & Assistants",
+    "correct_category": "Coding & Development",
+    "reason": "Enterprise codebase intelligence with managed indexing and semantic search — developer tool"
+  },
+  {
+    "slug": "synaps-cad",
+    "name": "synaps-cad",
+    "current_category": "AI Chat & Assistants",
+    "correct_category": "3D & Animation",
+    "reason": "AI-powered 3D CAD IDE for editing code, visualizing in 3D, and reshaping designs — 3D design tool"
+  },
+  {
+    "slug": "wedlm",
+    "name": "WeDLM",
+    "current_category": "AI Chat & Assistants",
+    "correct_category": "Coding & Development",
+    "reason": "Tencent diffusion language model with parallel token production — an LLM model/infrastructure, better as dev tool"
+  },
+  {
+    "slug": "writesonic-ai",
+    "name": "Writesonic",
+    "current_category": "AI Chat & Assistants",
+    "correct_category": "Writing & Copywriting",
+    "reason": "AI-Powered SEO Writer for Blogs, Ads & Product Descriptions — clearly a writing/copywriting tool"
+  },
+  {
+    "slug": "zhtw-mcp",
+    "name": "zhtw-mcp",
+    "current_category": "AI Chat & Assistants",
+    "correct_category": "Coding & Development",
+    "reason": "Linguistic linter for Traditional Chinese (zh-TW) — a developer linting tool"
+  },
+  {
+    "slug": "cartoonize-ai",
+    "name": "Cartoonize AI",
+    "current_category": "3D & Animation",
+    "correct_category": "Image Generation",
+    "reason": "Converts photos into cartoon/comic style — image transformation, not 3D/animation"
+  },
+  {
+    "slug": "nano-imagine",
+    "name": "Nano Imagine",
+    "current_category": "3D & Animation",
+    "correct_category": "Image Generation",
+    "reason": "Ultra-fast image generator from prompts — image generation tool, not 3D/animation"
+  },
+  {
+    "slug": "pxz-video-generator",
+    "name": "PXZ Video Generator",
+    "current_category": "3D & Animation",
+    "correct_category": "Video Generation",
+    "reason": "Creates images and videos using Kling, Runway models — video generation tool"
+  },
+  {
+    "slug": "klyps-ai-tool-that-turns-product-images-into-studio-quality-videos",
+    "name": "Klyps",
+    "current_category": "3D & Animation",
+    "correct_category": "Video Generation",
+    "reason": "Converts product images into professional videos — video generation, not 3D/animation"
+  },
+  {
+    "slug": "2-video",
+    "name": "2 VIDEO",
+    "current_category": "Coding & Development",
+    "correct_category": "Video Generation",
+    "reason": "Generates clips from text or images with AI templates — video generation tool, not coding"
+  },
+  {
+    "slug": "ats-resume-checker",
+    "name": "ATS Resume Checker",
+    "current_category": "Coding & Development",
+    "correct_category": "HR & Recruitment",
+    "reason": "Analyzes resume compatibility with ATS systems — HR/recruitment tool, not coding"
+  },
+  {
+    "slug": "clickup-agents",
+    "name": "ClickUp Agents",
+    "current_category": "Coding & Development",
+    "correct_category": "Productivity",
+    "reason": "ClickUp AI agents for reports, insights, and integrations (Google Drive, Salesforce) — project management/productivity"
+  },
+  {
+    "slug": "createwalink",
+    "name": "CreateWAlink",
+    "current_category": "Coding & Development",
+    "correct_category": "Business & Marketing",
+    "reason": "Creates WhatsApp conversation links and QR codes — marketing/communication utility, not coding"
+  },
+  {
+    "slug": "gemini-3-flash",
+    "name": "Gemini 3 Flash",
+    "current_category": "Coding & Development",
+    "correct_category": "AI Chat & Assistants",
+    "reason": "General-purpose Google AI model with professional-level intelligence — a general LLM, not a code editor"
+  },
+  {
+    "slug": "gologin-cloud-browser",
+    "name": "Gologin Cloud Browser",
+    "current_category": "Coding & Development",
+    "correct_category": "Automation",
+    "reason": "Cloud browser for AI agents and automation workflows with persistent sessions — automation tool"
+  },
+  {
+    "slug": "google-titansmiras",
+    "name": "Google Titans+MIRAS",
+    "current_category": "Coding & Development",
+    "correct_category": "Research & Analysis",
+    "reason": "AI architecture research with long-term memory and 2M+ token context — research project, not a coding tool"
+  },
+  {
+    "slug": "grok-420",
+    "name": "Grok 4.20",
+    "current_category": "Coding & Development",
+    "correct_category": "AI Chat & Assistants",
+    "reason": "Multi-agent reasoning LLM with real-time web search — general-purpose AI assistant"
+  },
+  {
+    "slug": "kimi-k25",
+    "name": "Kimi K2.5",
+    "current_category": "Coding & Development",
+    "correct_category": "AI Chat & Assistants",
+    "reason": "Open-source multimodal 1T parameter model with swarm agent orchestration — general-purpose LLM"
+  },
+  {
+    "slug": "minimax",
+    "name": "MiniMax",
+    "current_category": "Coding & Development",
+    "correct_category": "AI Chat & Assistants",
+    "reason": "Open-source model for autonomous coding that also handles general tasks — primarily an LLM, though coding-optimized the model itself is general"
+  },
+  {
+    "slug": "minimax-m25",
+    "name": "MiniMax M2.5",
+    "current_category": "Coding & Development",
+    "correct_category": "AI Chat & Assistants",
+    "reason": "LLM model handling reasoning, agents, tools, chatting, coding, searching — general-purpose model"
+  },
+  {
+    "slug": "qwen3-tts",
+    "name": "Qwen3-TTS",
+    "current_category": "Coding & Development",
+    "correct_category": "Voice & Speech",
+    "reason": "Voice cloning and text-to-speech model in 10 languages — voice/speech tool, not coding"
+  },
+  {
+    "slug": "safenew-ai",
+    "name": "Safenew AI",
+    "current_category": "Coding & Development",
+    "correct_category": "Writing & Copywriting",
+    "reason": "Turns AI-generated text into natural human-like writing — writing tool, not coding"
+  },
+  {
+    "slug": "t5gemma-2",
+    "name": "T5Gemma 2",
+    "current_category": "Coding & Development",
+    "correct_category": "AI Chat & Assistants",
+    "reason": "Open-source encoder-decoder model family — general-purpose AI model, not a coding tool"
+  },
+  {
+    "slug": "atoms",
+    "name": "Atoms",
+    "current_category": "Automation",
+    "correct_category": "Coding & Development",
+    "reason": "AI agents that design, code, test, and deploy web applications — coding/development platform"
+  },
+  {
+    "slug": "claude-opus-45",
+    "name": "Claude Opus 4.5",
+    "current_category": "Automation",
+    "correct_category": "AI Chat & Assistants",
+    "reason": "Anthropic's premium LLM model for code, agents, and computer use — general-purpose AI model"
+  },
+  {
+    "slug": "nemovideo",
+    "name": "Nemovideo",
+    "current_category": "Automation",
+    "correct_category": "Video Generation",
+    "reason": "Creates viral videos with subtitles, music, and transitions — video generation tool"
+  },
+  {
+    "slug": "reelmate-ai",
+    "name": "ReelMate AI",
+    "current_category": "Automation",
+    "correct_category": "Video Generation",
+    "reason": "Generates 1080p HD videos from text or images — video generation tool"
+  },
+  {
+    "slug": "vibe-architect",
+    "name": "Vibe Architect",
+    "current_category": "Automation",
+    "correct_category": "Coding & Development",
+    "reason": "Connects Lovable mockups to real backends with AI agents and API integrations — development tool"
+  },
+  {
+    "slug": "claude-opus-46",
+    "name": "Claude Opus 4.6",
+    "current_category": "HR & Recruitment",
+    "correct_category": "AI Chat & Assistants",
+    "reason": "Anthropic's most powerful 1M context LLM model — general-purpose AI model, not HR"
+  },
+  {
+    "slug": "dealism",
+    "name": "Dealism",
+    "current_category": "HR & Recruitment",
+    "correct_category": "Business & Marketing",
+    "reason": "WhatsApp AI sales agent managing multi-turn conversations — sales/marketing tool, not HR"
+  },
+  {
+    "slug": "filmpitch",
+    "name": "Filmpitch",
+    "current_category": "HR & Recruitment",
+    "correct_category": "Business & Marketing",
+    "reason": "Helps filmmakers turn summaries into real film projects — entertainment business tool, not HR"
+  },
+  {
+    "slug": "kogents-ai",
+    "name": "Kogents AI",
+    "current_category": "HR & Recruitment",
+    "correct_category": "Automation",
+    "reason": "Deploys intelligent agents that work 24/7 with custom workflows — general automation, not HR"
+  },
+  {
+    "slug": "nvidia-nemotron-3",
+    "name": "NVIDIA Nemotron 3",
+    "current_category": "HR & Recruitment",
+    "correct_category": "AI Chat & Assistants",
+    "reason": "Open-source model family for building specialized AI agents — general-purpose LLM, not HR"
+  },
+  {
+    "slug": "zenmux",
+    "name": "ZenMux",
+    "current_category": "HR & Recruitment",
+    "correct_category": "AI Chat & Assistants",
+    "reason": "Unified access to GPT-5, Claude, Gemini, DeepSeek, Grok-4 — multi-model AI gateway, not HR"
+  },
+  {
+    "slug": "tuckmein",
+    "name": "TuckMeIn",
+    "current_category": "Avatars & Personas",
+    "correct_category": "Writing & Copywriting",
+    "reason": "Generates personalized children's bedtime stories — a writing/content creation tool, not avatars"
+  },
+  {
+    "slug": "chatterbox-turbo",
+    "name": "Chatterbox Turbo",
+    "current_category": "Customer Support",
+    "correct_category": "Voice & Speech",
+    "reason": "Open source TTS model for voice cloning from 5 seconds of audio — voice/speech technology"
+  },
+  {
+    "slug": "claritypage",
+    "name": "ClarityPage",
+    "current_category": "Data & Analytics",
+    "correct_category": "News & Information",
+    "reason": "Delivers breaking news summaries free from media bias — news tool, not data analytics"
+  },
+  {
+    "slug": "facefinder",
+    "name": "FaceFinder",
+    "current_category": "Data & Analytics",
+    "correct_category": "Search Engines",
+    "reason": "Searches for face profiles across social networks and websites — a search tool"
+  },
+  {
+    "slug": "marketmind-ai",
+    "name": "MarketMind AI",
+    "current_category": "Data & Analytics",
+    "correct_category": "Business & Marketing",
+    "reason": "Autonomous agents for predictive marketing — marketing tool, not data analytics"
+  },
+  {
+    "slug": "stocknewsai",
+    "name": "StockNewsAI",
+    "current_category": "Data & Analytics",
+    "correct_category": "Finance & Accounting",
+    "reason": "Analyzes stock market news for actionable insights — finance tool"
+  },
+  {
+    "slug": "echo-now-ai",
+    "name": "Echo Now AI",
+    "current_category": "Design & UI",
+    "correct_category": "Productivity",
+    "reason": "Intelligent Slack summaries to help users reclaim their day — productivity tool, not design"
+  },
+  {
+    "slug": "joyfun-ai",
+    "name": "JoyFun AI",
+    "current_category": "Design & UI",
+    "correct_category": "Video Generation",
+    "reason": "Turns text or images into short dynamic clips — video generation, not design"
+  },
+  {
+    "slug": "klodsy",
+    "name": "Klodsy",
+    "current_category": "Design & UI",
+    "correct_category": "E-commerce",
+    "reason": "Virtual wardrobe platform with virtual fitting — e-commerce fashion tool"
+  },
+  {
+    "slug": "meta-sam-3d",
+    "name": "Meta SAM 3D",
+    "current_category": "Design & UI",
+    "correct_category": "3D & Animation",
+    "reason": "Reconstructs objects and humans in 3D from photos — 3D tool, not UI design"
+  },
+  {
+    "slug": "modelfy-3d",
+    "name": "Modelfy 3D",
+    "current_category": "Design & UI",
+    "correct_category": "3D & Animation",
+    "reason": "Converts 2D images into high-precision 3D models (300K polygons) — 3D modeling tool"
+  },
+  {
+    "slug": "readpartner",
+    "name": "ReadPartner",
+    "current_category": "Design & UI",
+    "correct_category": "Business & Marketing",
+    "reason": "Media intelligence suite for businesses to track trends — marketing/business tool, not design"
+  },
+  {
+    "slug": "writehybrid-ai-humanizer",
+    "name": "WriteHybrid AI Humanizer",
+    "current_category": "Design & UI",
+    "correct_category": "Writing & Copywriting",
+    "reason": "AI that rewrites texts for natural human-like style — writing tool, not design"
+  },
+  {
+    "slug": "ai-tool-for-interior-designers-and-architects",
+    "name": "Butterflai",
+    "current_category": "Design & UI",
+    "correct_category": "E-commerce",
+    "reason": "Automates product images, videos, and SEO copy for e-commerce — e-commerce tool despite the slug"
+  },
+  {
+    "slug": "goai",
+    "name": "Goai",
+    "current_category": "Education & Learning",
+    "correct_category": "Finance & Accounting",
+    "reason": "Personal AI Investment Analyst — finance tool, not education"
+  },
+  {
+    "slug": "marketalerts",
+    "name": "Marketalerts",
+    "current_category": "Education & Learning",
+    "correct_category": "Finance & Accounting",
+    "reason": "AI monitoring for stocks 24/7 — finance tool, not education"
+  },
+  {
+    "slug": "outfit-fm",
+    "name": "Outfit Fm",
+    "current_category": "Education & Learning",
+    "correct_category": "E-commerce",
+    "reason": "AI platform for product photography for clothing brands — e-commerce tool, not education"
+  },
+  {
+    "slug": "teediy",
+    "name": "Teediy",
+    "current_category": "Education & Learning",
+    "correct_category": "E-commerce",
+    "reason": "Platform for creating custom apparel (T-shirts) — e-commerce/design tool, not education"
+  },
+  {
+    "slug": "ai-song-creator-pro",
+    "name": "AI Song Creator Pro",
+    "current_category": "Finance & Accounting",
+    "correct_category": "Audio & Music",
+    "reason": "Turns words into music tracks with style, tempo, and instruments — music creation tool, not finance"
+  },
+  {
+    "slug": "neus-ai",
+    "name": "Neus AI",
+    "current_category": "Legal & Compliance",
+    "correct_category": "News & Information",
+    "reason": "Personalized AI-powered news summarization — news tool, not legal"
+  },
+  {
+    "slug": "vectara",
+    "name": "Vectara",
+    "current_category": "Legal & Compliance",
+    "correct_category": "Search Engines",
+    "reason": "Conversational search platform for data queries — search engine tool, not legal"
+  },
+  {
+    "slug": "colorart",
+    "name": "Colorart",
+    "current_category": "News & Information",
+    "correct_category": "Design & UI",
+    "reason": "Creates coloring pages from ideas/photos with image enhancement — design tool, not news"
+  },
+  {
+    "slug": "mavis-ai",
+    "name": "Mavis AI",
+    "current_category": "News & Information",
+    "correct_category": "SEO & Content",
+    "reason": "Generates SEO-friendly news articles and content — SEO content tool"
+  },
+  {
+    "slug": "modly",
+    "name": "modly",
+    "current_category": "Productivity",
+    "correct_category": "3D & Animation",
+    "reason": "Desktop app to generate 3D models from images using local AI — 3D modeling tool"
+  },
+  {
+    "slug": "nexusrag",
+    "name": "NexusRAG",
+    "current_category": "Productivity",
+    "correct_category": "Coding & Development",
+    "reason": "Hybrid RAG system with vector search, knowledge graph, and cross-encoder reranking — developer tool"
+  },
+  {
+    "slug": "nodu-ai",
+    "name": "Nodu AI",
+    "current_category": "Productivity",
+    "correct_category": "Video Generation",
+    "reason": "Creates complete marketing videos from product link — video generation tool"
+  },
+  {
+    "slug": "dailyscope-ai",
+    "name": "DailyScope AI",
+    "current_category": "Productivity",
+    "correct_category": "News & Information",
+    "reason": "Automatically analyzes global news patterns and themes — news tool, not general productivity"
+  },
+  {
+    "slug": "zapier",
+    "name": "Zapier",
+    "current_category": "Productivity",
+    "correct_category": "Automation",
+    "reason": "Automates workflows by connecting 7000+ apps — the quintessential automation tool"
+  },
+  {
+    "slug": "ai-company",
+    "name": "AI-company",
+    "current_category": "Research & Analysis",
+    "correct_category": "Coding & Development",
+    "reason": "Multi-Agent Team OS for Claude Code with 40+ MCP tools — developer tool for agent orchestration"
+  },
+  {
+    "slug": "ai-engineering-from-scratch",
+    "name": "ai-engineering-from-scratch",
+    "current_category": "Research & Analysis",
+    "correct_category": "Education & Learning",
+    "reason": "Learn it. Build it. Ship it — educational resource for AI engineering"
+  },
+  {
+    "slug": "aimirror",
+    "name": "aimirror",
+    "current_category": "Research & Analysis",
+    "correct_category": "Coding & Development",
+    "reason": "Download accelerator for Docker/PyPI/HuggingFace/CRAN — developer infrastructure tool"
+  },
+  {
+    "slug": "auto-claude-code-research-in-sleep",
+    "name": "Auto-claude-code-research-in-sleep",
+    "current_category": "Research & Analysis",
+    "correct_category": "Coding & Development",
+    "reason": "Lightweight Markdown-only skills for autonomous ML research with Claude Code — developer tool"
+  },
+  {
+    "slug": "career-aptitude-test",
+    "name": "Career Aptitude Test",
+    "current_category": "Research & Analysis",
+    "correct_category": "HR & Recruitment",
+    "reason": "Structured test assessing skills and preferences for tech careers — career/recruitment tool"
+  },
+  {
+    "slug": "cctv-smartphone-ai-monitoring",
+    "name": "CCTV-Smartphone-AI-Monitoring",
+    "current_category": "Research & Analysis",
+    "correct_category": "Coding & Development",
+    "reason": "LAN-based smartphone-powered AI monitoring framework — developer framework for surveillance"
+  },
+  {
+    "slug": "deepseek-math-v2",
+    "name": "DeepSeek Math V2",
+    "current_category": "Research & Analysis",
+    "correct_category": "AI Chat & Assistants",
+    "reason": "685B parameter LLM specializing in math and reasoning — a general-purpose LLM model"
+  },
+  {
+    "slug": "diagrimo",
+    "name": "Diagrimo",
+    "current_category": "Research & Analysis",
+    "correct_category": "Presentations",
+    "reason": "Converts text into diagrams, infographics, and flowcharts ready to present — presentation/visualization tool"
+  },
+  {
+    "slug": "gpu-monitor",
+    "name": "gpu-monitor",
+    "current_category": "Research & Analysis",
+    "correct_category": "Coding & Development",
+    "reason": "NVIDIA GPU monitor with alerts for training crashes — developer operations tool"
+  },
+  {
+    "slug": "i-doubt-news",
+    "name": "I Doubt News",
+    "current_category": "Research & Analysis",
+    "correct_category": "News & Information",
+    "reason": "AI-powered news analysis and fact-checking — news tool"
+  },
+  {
+    "slug": "lingbot-world",
+    "name": "LingBot-World",
+    "current_category": "Research & Analysis",
+    "correct_category": "3D & Animation",
+    "reason": "Open-source world simulator at 16 FPS with real-time interaction — 3D simulation tool"
+  },
+  {
+    "slug": "luckpal",
+    "name": "Luckpal",
+    "current_category": "Research & Analysis",
+    "correct_category": "Life Assistant",
+    "reason": "Personalized guide for career, fortune, and love life predictions — life assistant tool"
+  },
+  {
+    "slug": "ml-forge",
+    "name": "ml_forge",
+    "current_category": "Research & Analysis",
+    "correct_category": "Coding & Development",
+    "reason": "Visual graph node editor for training computer vision models — developer tool"
+  },
+  {
+    "slug": "moltbook",
+    "name": "Moltbook",
+    "current_category": "Research & Analysis",
+    "correct_category": "Social Media",
+    "reason": "Reddit-style social network for autonomous AI agents — social media platform"
+  },
+  {
+    "slug": "nextis-aira-3d",
+    "name": "Nextis-AIRA-3D",
+    "current_category": "Research & Analysis",
+    "correct_category": "3D & Animation",
+    "reason": "Open-source 7DoF 3D-printable robotic arm — hardware/3D tool, not research analysis"
+  },
+  {
+    "slug": "nightingale",
+    "name": "nightingale",
+    "current_category": "Research & Analysis",
+    "correct_category": "Audio & Music",
+    "reason": "Machine learning powered Karaoke app with scoring — music/audio app"
+  },
+  {
+    "slug": "norton-neo-browser",
+    "name": "Norton Neo Browser",
+    "current_category": "Research & Analysis",
+    "correct_category": "Search Engines",
+    "reason": "AI-native browser for secure web browsing — browsing/search tool, not research analysis"
+  },
+  {
+    "slug": "prism-openai",
+    "name": "Prism OpenAI",
+    "current_category": "Research & Analysis",
+    "correct_category": "Writing & Copywriting",
+    "reason": "Cloud-based LaTeX workspace with GPT for scientific writing — writing tool for academics"
+  },
+  {
+    "slug": "project-genie",
+    "name": "Project Genie",
+    "current_category": "Research & Analysis",
+    "correct_category": "3D & Animation",
+    "reason": "Creates infinite interactive 3D worlds with realistic physics from text/images — 3D simulation"
+  },
+  {
+    "slug": "sparkvsr",
+    "name": "SparkVSR",
+    "current_category": "Research & Analysis",
+    "correct_category": "Video Generation",
+    "reason": "Interactive video super-resolution via sparse keyframe propagation — video enhancement tool"
+  },
+  {
+    "slug": "timber",
+    "name": "timber",
+    "current_category": "Research & Analysis",
+    "correct_category": "Coding & Development",
+    "reason": "AOT compiler for ML models (XGBoost, scikit-learn) into native C99 code — developer tool"
+  },
+  {
+    "slug": "trump-code",
+    "name": "trump-code",
+    "current_category": "Research & Analysis",
+    "correct_category": "Finance & Accounting",
+    "reason": "AI decoding Trump's posts vs. stock market — financial analysis/prediction tool"
+  },
+  {
+    "slug": "voila-voice-io",
+    "name": "Voila Voice io",
+    "current_category": "Research & Analysis",
+    "correct_category": "Education & Learning",
+    "reason": "Creates lessons with voice-overs, avatars, quizzes from PDFs/slides — educational content creation"
+  },
+  {
+    "slug": "vomo-ai",
+    "name": "VOMO AI",
+    "current_category": "Research & Analysis",
+    "correct_category": "Voice & Speech",
+    "reason": "Records meetings/lectures and provides transcription in 50+ languages — voice/speech transcription tool"
+  },
+  {
+    "slug": "waypoint-1-overworld",
+    "name": "Waypoint-1 Overworld",
+    "current_category": "Research & Analysis",
+    "correct_category": "3D & Animation",
+    "reason": "Open-source model simulating interactive 3D worlds in real time — 3D simulation tool"
+  },
+  {
+    "slug": "weathernext-2",
+    "name": "WeatherNext 2",
+    "current_category": "Research & Analysis",
+    "correct_category": "Data & Analytics",
+    "reason": "AI weather forecasting model with hourly resolution and cyclone predictions — data/analytics tool"
+  },
+  {
+    "slug": "sima-2",
+    "name": "SIMA 2",
+    "current_category": "Research & Analysis",
+    "correct_category": "Sports & Gaming",
+    "reason": "AI agent that learns and plays in virtual 3D worlds with natural language instructions — gaming AI"
+  },
+  {
+    "slug": "pixalytica",
+    "name": "Pixalytica",
+    "current_category": "Research & Analysis",
+    "correct_category": "Data & Analytics",
+    "reason": "Identity verification reports from photo analysis — data analysis tool, not research"
+  },
+  {
+    "slug": "elevenlabs-scribe-v2",
+    "name": "ElevenLabs Scribe V2",
+    "current_category": "Writing & Copywriting",
+    "correct_category": "Voice & Speech",
+    "reason": "Live transcription with ultra-low latency in 90+ languages — speech-to-text tool, not writing"
+  },
+  {
+    "slug": "glm-47-flash",
+    "name": "GLM 4.7 Flash",
+    "current_category": "Writing & Copywriting",
+    "correct_category": "AI Chat & Assistants",
+    "reason": "Lightweight LLM with agentic coding capabilities — general-purpose AI model, not a writing tool"
+  },
+  {
+    "slug": "glm-5",
+    "name": "GLM 5",
+    "current_category": "Writing & Copywriting",
+    "correct_category": "AI Chat & Assistants",
+    "reason": "745B parameter MoE model with planning, tools, web browsing — general-purpose LLM"
+  },
+  {
+    "slug": "vibe-ai-tool-to-automate-social-media-content-posting-and-reporting",
+    "name": "Vibe",
+    "current_category": "Writing & Copywriting",
+    "correct_category": "Social Media",
+    "reason": "Automates social media content creation, scheduling, and reporting — social media management tool"
+  },
+  {
+    "slug": "websitesly",
+    "name": "Websites.ly",
+    "current_category": "Writing & Copywriting",
+    "correct_category": "Coding & Development",
+    "reason": "AI website builder that generates design, text, and code — web development tool"
+  },
+  {
+    "slug": "clipfinder",
+    "name": "Clipfinder",
+    "current_category": "Image Generation",
+    "correct_category": "Video Generation",
+    "reason": "Turns long-form video content into shorts for streamers/podcasters — video editing tool"
+  },
+  {
+    "slug": "echowrite",
+    "name": "Echowrite",
+    "current_category": "Image Generation",
+    "correct_category": "Voice & Speech",
+    "reason": "Voice dictation software turning spoken words into structured text — speech-to-text, not image generation"
+  },
+  {
+    "slug": "fliz",
+    "name": "Fliz",
+    "current_category": "Image Generation",
+    "correct_category": "Video Generation",
+    "reason": "AI video agent that transforms content into publish-ready viral videos — video generation"
+  },
+  {
+    "slug": "gemini-personal-intelligence",
+    "name": "Gemini Personal Intelligence",
+    "current_category": "Image Generation",
+    "correct_category": "AI Chat & Assistants",
+    "reason": "Mobile AI assistant managing emails, calls, messages across Google apps — AI assistant, not image gen"
+  },
+  {
+    "slug": "generor",
+    "name": "Generor",
+    "current_category": "Image Generation",
+    "correct_category": "AI Chat & Assistants",
+    "reason": "40+ multimodal generators for images, videos, music, voices — multi-purpose AI platform"
+  },
+  {
+    "slug": "instawebai",
+    "name": "Instawebai",
+    "current_category": "Image Generation",
+    "correct_category": "Coding & Development",
+    "reason": "AI tool for creating professional multi-page SEO websites — web development tool"
+  },
+  {
+    "slug": "kikivoice",
+    "name": "Kikivoice",
+    "current_category": "Image Generation",
+    "correct_category": "Voice & Speech",
+    "reason": "AI voice cloning platform for creators — voice/speech tool, not image generation"
+  },
+  {
+    "slug": "mobile-o",
+    "name": "Mobile-O",
+    "current_category": "Image Generation",
+    "correct_category": "AI Chat & Assistants",
+    "reason": "Unified multimodal understanding and generation on mobile — general-purpose mobile AI model"
+  },
+  {
+    "slug": "pagesmith-ai",
+    "name": "Pagesmith AI",
+    "current_category": "Image Generation",
+    "correct_category": "Coding & Development",
+    "reason": "Content-first AI website builder for blogs and documentation — web development tool"
+  },
+  {
+    "slug": "paraspeech",
+    "name": "Paraspeech",
+    "current_category": "Image Generation",
+    "correct_category": "Voice & Speech",
+    "reason": "macOS voice-to-text app on Apple Silicon — speech-to-text, not image generation"
+  },
+  {
+    "slug": "pixverse",
+    "name": "Pixverse",
+    "current_category": "Image Generation",
+    "correct_category": "Video Generation",
+    "reason": "AI-powered platform for video creation from raw ideas — video generation tool"
+  },
+  {
+    "slug": "purple-leaf",
+    "name": "Purple Leaf",
+    "current_category": "Image Generation",
+    "correct_category": "SEO & Content",
+    "reason": "AI platform for website optimization, technical structure, and SEO — SEO tool"
+  },
+  {
+    "slug": "reelmuse-ai",
+    "name": "ReelMuse AI",
+    "current_category": "Image Generation",
+    "correct_category": "Video Generation",
+    "reason": "All-in-one platform generating videos from text/images, AI music, and artistic images — primarily video"
+  },
+  {
+    "slug": "voicetype-1745265721",
+    "name": "Voicetype 1745265721",
+    "current_category": "Image Generation",
+    "correct_category": "Voice & Speech",
+    "reason": "VoiceType AI — voice-related tool based on name, not image generation"
+  },
+  {
+    "slug": "voooai",
+    "name": "Voooai",
+    "current_category": "Image Generation",
+    "correct_category": "Automation",
+    "reason": "Vibe Flow - Natural Language Workflow — workflow automation tool, not image generation"
+  },
+  {
+    "slug": "chatplayground-ai",
+    "name": "Chatplayground AI",
+    "current_category": "Business & Marketing",
+    "correct_category": "AI Chat & Assistants",
+    "reason": "Compare best AI models (ChatGPT, Gemini, Claude) — multi-model AI chat comparison tool"
+  },
+  {
+    "slug": "columns",
+    "name": "Columns",
+    "current_category": "Business & Marketing",
+    "correct_category": "Data & Analytics",
+    "reason": "AI-powered data visualization — data analytics tool, not general business/marketing"
+  },
+  {
+    "slug": "docanalyzer-ai",
+    "name": "Docanalyzer AI",
+    "current_category": "Business & Marketing",
+    "correct_category": "Productivity",
+    "reason": "AI platform that interacts with documents of various types — document productivity tool"
+  },
+  {
+    "slug": "jobbyo",
+    "name": "Jobbyo",
+    "current_category": "Business & Marketing",
+    "correct_category": "HR & Recruitment",
+    "reason": "Personal job hunter that finds, applies, and follows up on jobs — job search/recruitment tool"
+  },
+  {
+    "slug": "jobgpt-by-6figr",
+    "name": "Jobgpt By 6figr",
+    "current_category": "Business & Marketing",
+    "correct_category": "HR & Recruitment",
+    "reason": "Landing job interviews while you sleep — job search tool, belongs in HR & Recruitment"
+  },
+  {
+    "slug": "landing-page-ai-builder",
+    "name": "Landing Page AI Builder",
+    "current_category": "Business & Marketing",
+    "correct_category": "Coding & Development",
+    "reason": "Free AI website builder for landing pages — web development tool"
+  },
+  {
+    "slug": "leadde-ai",
+    "name": "Leadde AI",
+    "current_category": "Business & Marketing",
+    "correct_category": "Education & Learning",
+    "reason": "Transforms documents into multilingual training videos — educational content creation tool"
+  },
+  {
+    "slug": "promptessor",
+    "name": "Promptessor",
+    "current_category": "Business & Marketing",
+    "correct_category": "Productivity",
+    "reason": "Platform for analyzing, improving, and optimizing prompts — general productivity/utility tool"
+  },
+  {
+    "slug": "promptfix",
+    "name": "Promptfix",
+    "current_category": "Business & Marketing",
+    "correct_category": "Productivity",
+    "reason": "Analyze, improve, and rewrite AI prompts instantly — general prompt optimization, not marketing"
+  },
+  {
+    "slug": "recall",
+    "name": "Recall",
+    "current_category": "Business & Marketing",
+    "correct_category": "Productivity",
+    "reason": "Personal AI encyclopedia for self-organizing scattered information — knowledge management/productivity"
+  },
+  {
+    "slug": "sketchbubble-ai",
+    "name": "SketchBubble AI",
+    "current_category": "Business & Marketing",
+    "correct_category": "Presentations",
+    "reason": "Turns ideas, text, or documents into stunning presentations — presentation tool"
+  },
+  {
+    "slug": "the-mumble-app",
+    "name": "The Mumble App",
+    "current_category": "Business & Marketing",
+    "correct_category": "Productivity",
+    "reason": "AI notetaker for capturing scattered thoughts — productivity/note-taking tool"
+  },
+  {
+    "slug": "agent-tars",
+    "name": "Agent TARS",
+    "current_category": "Business & Marketing",
+    "correct_category": "Automation",
+    "reason": "Free open-source desktop agent that controls your computer and browser — automation tool"
+  },
+  {
+    "slug": "gemini-31-pro",
+    "name": "Gemini 3.1 Pro",
+    "current_category": "Audio & Music",
+    "correct_category": "AI Chat & Assistants",
+    "reason": "Google AI model for text, images, audio, video tasks — general-purpose multimodal LLM"
+  },
+  {
+    "slug": "elevenlabs",
+    "name": "ElevenLabs",
+    "current_category": "Audio & Music",
+    "correct_category": "Voice & Speech",
+    "reason": "World's most realistic AI speech and video dubbing — primarily a voice/speech platform"
+  },
+  {
+    "slug": "lovo-ai",
+    "name": "Lovo.ai",
+    "current_category": "Audio & Music",
+    "correct_category": "Voice & Speech",
+    "reason": "AI voice generator with 500+ realistic voices — voice generation tool"
+  },
+  {
+    "slug": "speechify-ai",
+    "name": "Speechify",
+    "current_category": "Audio & Music",
+    "correct_category": "Voice & Speech",
+    "reason": "#1 AI voice reader for PDFs, web, and docs — text-to-speech tool"
+  },
+  {
+    "slug": "irodori-tts",
+    "name": "Irodori-TTS",
+    "current_category": "Audio & Music",
+    "correct_category": "Voice & Speech",
+    "reason": "Flow Matching-based Text-to-Speech model — TTS is voice/speech, not music"
+  },
+  {
+    "slug": "findtubeai",
+    "name": "Findtube.AI",
+    "current_category": "Video Generation",
+    "correct_category": "Search Engines",
+    "reason": "Search engine dedicated to YouTube videos — search tool, not video generation"
+  },
+  {
+    "slug": "depth-anything-3",
+    "name": "Depth Anything 3",
+    "current_category": "Video Generation",
+    "correct_category": "3D & Animation",
+    "reason": "Depth estimation and 3D scene reconstruction — 3D tool, not video generation"
+  },
+  {
+    "slug": "ernie-50",
+    "name": "Ernie 5.0",
+    "current_category": "Video Generation",
+    "correct_category": "AI Chat & Assistants",
+    "reason": "Baidu's native multimodal model for text, images, sound, video — general-purpose LLM"
+  },
+  {
+    "slug": "filmflow-ai-powered-tool-for-visualizing-emotional-pulse-of-films",
+    "name": "FilmFlow",
+    "current_category": "Video Generation",
+    "correct_category": "Data & Analytics",
+    "reason": "Visualizes and analyzes emotional dynamics of films — analytical tool, not video generation"
+  },
+  {
+    "slug": "marble-by-world-labs",
+    "name": "Marble by World Labs",
+    "current_category": "Video Generation",
+    "correct_category": "3D & Animation",
+    "reason": "Creates persistent 3D worlds from prompts, edits scenes in real time — 3D creation tool"
+  },
+  {
+    "slug": "amazon-nova",
+    "name": "Amazon Nova",
+    "current_category": "Video Generation",
+    "correct_category": "AI Chat & Assistants",
+    "reason": "Range of multimodal AI models for text, images, and video — general-purpose AI models on AWS"
+  },
+  {
+    "slug": "esotericai",
+    "name": "Esotericai",
+    "current_category": "Education & Learning",
+    "correct_category": "Life Assistant",
+    "reason": "AI tarot readings platform — personal/lifestyle tool, not education"
+  },
+  {
+    "slug": "falcocut",
+    "name": "FalcoCut",
+    "current_category": "Translation",
+    "correct_category": "Video Generation",
+    "reason": "AI platform for automated video marketing creation from text, images, or voice — primarily video creation"
+  },
+  {
+    "slug": "fun-ai-tool-to-roast-your-website",
+    "name": "Websiteroast",
+    "current_category": "Design & UI",
+    "correct_category": "SEO & Content",
+    "reason": "Critiques website design and content — website analysis closer to SEO/content review"
+  },
+  {
+    "slug": "mockuplabsai",
+    "name": "Mockuplabs.ai",
+    "current_category": "Business & Marketing",
+    "correct_category": "Design & UI",
+    "reason": "Creates realistic product mockups for posters, packaging, T-shirts — design tool"
+  },
+  {
+    "slug": "sketchflowai",
+    "name": "Sketchflow.ai",
+    "current_category": "Coding & Development",
+    "correct_category": "Design & UI",
+    "reason": "Turns ideas into complete UI with screens, user flows, and interactive prototypes — UI design tool"
+  }
+]

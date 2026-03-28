@@ -1,0 +1,502 @@
+[
+  {
+    "slug": "ai-tool-that-brutally-roasts-your-ai-agent-ideas",
+    "file": ".firecrawl/scratchpad/provider-scrape/ai-tool-that-brutally-roasts-your-ai-agent-ideas.md",
+    "ok": true
+  },
+  {
+    "slug": "ai-background-remover",
+    "file": ".firecrawl/scratchpad/provider-scrape/ai-background-remover.md",
+    "ok": true
+  },
+  {
+    "slug": "ai-color-analysis",
+    "file": ".firecrawl/scratchpad/provider-scrape/ai-color-analysis.md",
+    "ok": true
+  },
+  {
+    "slug": "ai-song-creator-app",
+    "file": ".firecrawl/scratchpad/provider-scrape/ai-song-creator-app.md",
+    "ok": true
+  },
+  {
+    "slug": "ai-song-creator-pro",
+    "file": ".firecrawl/scratchpad/provider-scrape/ai-song-creator-pro.md",
+    "ok": true
+  },
+  {
+    "slug": "ai-vector",
+    "file": ".firecrawl/scratchpad/provider-scrape/ai-vector.md",
+    "ok": true
+  },
+  {
+    "slug": "ai-video-enhancer-online",
+    "file": ".firecrawl/scratchpad/provider-scrape/ai-video-enhancer-online.md",
+    "ok": true
+  },
+  {
+    "slug": "ai-virtual-staging",
+    "file": ".firecrawl/scratchpad/provider-scrape/ai-virtual-staging.md",
+    "ok": true
+  },
+  {
+    "slug": "ai-tool-to-remove-backgroundschange-clothesand-animate-product-photos",
+    "file": ".firecrawl/scratchpad/provider-scrape/ai-tool-to-remove-backgroundschange-clothesand-animate-product-photos.md",
+    "ok": true
+  },
+  {
+    "slug": "aigne-docsmith",
+    "file": ".firecrawl/scratchpad/provider-scrape/aigne-docsmith.md",
+    "ok": true
+  },
+  {
+    "slug": "aipptcom",
+    "file": ".firecrawl/scratchpad/provider-scrape/aipptcom.md",
+    "ok": true
+  },
+  {
+    "slug": "airbrush",
+    "file": ".firecrawl/scratchpad/provider-scrape/airbrush.md",
+    "ok": true
+  },
+  {
+    "slug": "aiwritebook-ai-tool-to-write-design-and-publish-full-length-books",
+    "file": ".firecrawl/scratchpad/provider-scrape/aiwritebook-ai-tool-to-write-design-and-publish-full-length-books.md",
+    "ok": true
+  },
+  {
+    "slug": "antfly",
+    "file": ".firecrawl/scratchpad/provider-scrape/antfly.md",
+    "ok": true
+  },
+  {
+    "slug": "anylogogenerator",
+    "file": ".firecrawl/scratchpad/provider-scrape/anylogogenerator.md",
+    "ok": true
+  },
+  {
+    "slug": "anytourl",
+    "file": ".firecrawl/scratchpad/provider-scrape/anytourl.md",
+    "ok": true
+  },
+  {
+    "slug": "appark",
+    "file": ".firecrawl/scratchpad/provider-scrape/appark.md",
+    "ok": true
+  },
+  {
+    "slug": "apple-creator-studio",
+    "file": ".firecrawl/scratchpad/provider-scrape/apple-creator-studio.md",
+    "ok": true
+  },
+  {
+    "slug": "ats-resume-checker",
+    "file": ".firecrawl/scratchpad/provider-scrape/ats-resume-checker.md",
+    "ok": true
+  },
+  {
+    "slug": "avclabs-video-blur-ai",
+    "file": ".firecrawl/scratchpad/provider-scrape/avclabs-video-blur-ai.md",
+    "ok": true
+  },
+  {
+    "slug": "beautyplus-image-enhancer",
+    "file": ".firecrawl/scratchpad/provider-scrape/beautyplus-image-enhancer.md",
+    "ok": true
+  },
+  {
+    "slug": "bigideasdb",
+    "file": ".firecrawl/scratchpad/provider-scrape/bigideasdb.md",
+    "ok": true
+  },
+  {
+    "slug": "ai-tool-to-guess-your-personality-from-your-tweets",
+    "ok": false,
+    "error": "Command failed: firecrawl scrape \"https://birdbrain.bio/\" --only-main-content -o"
+  },
+  {
+    "slug": "boring-report",
+    "file": ".firecrawl/scratchpad/provider-scrape/boring-report.md",
+    "ok": true
+  },
+  {
+    "slug": "brandinaminute-ai-tool-to-generate-a-full-brandkit-in-under-a-minute",
+    "file": ".firecrawl/scratchpad/provider-scrape/brandinaminute-ai-tool-to-generate-a-full-brandkit-in-under-a-minute.md",
+    "ok": true
+  },
+  {
+    "slug": "ai-tool-for-interior-designers-and-architects",
+    "file": ".firecrawl/scratchpad/provider-scrape/ai-tool-for-interior-designers-and-architects.md",
+    "ok": true
+  },
+  {
+    "slug": "caricature-maker",
+    "file": ".firecrawl/scratchpad/provider-scrape/caricature-maker.md",
+    "ok": true
+  },
+  {
+    "slug": "cartoonize-ai",
+    "file": ".firecrawl/scratchpad/provider-scrape/cartoonize-ai.md",
+    "ok": true
+  },
+  {
+    "slug": "an-ai-tool-that-generates-celebrity-voices-with-matching-lip-sync",
+    "file": ".firecrawl/scratchpad/provider-scrape/an-ai-tool-that-generates-celebrity-voices-with-matching-lip-sync.md",
+    "ok": true
+  },
+  {
+    "slug": "chatterbox-turbo",
+    "file": ".firecrawl/scratchpad/provider-scrape/chatterbox-turbo.md",
+    "ok": true
+  },
+  {
+    "slug": "clanker-talk",
+    "file": ".firecrawl/scratchpad/provider-scrape/clanker-talk.md",
+    "ok": true
+  },
+  {
+    "slug": "claritypage",
+    "ok": false,
+    "error": "Command failed: firecrawl scrape \"https://claritypage.com\" --only-main-content -"
+  },
+  {
+    "slug": "clawith",
+    "file": ".firecrawl/scratchpad/provider-scrape/clawith.md",
+    "ok": true
+  },
+  {
+    "slug": "clawpanel",
+    "file": ".firecrawl/scratchpad/provider-scrape/clawpanel.md",
+    "ok": true
+  },
+  {
+    "slug": "codeflying",
+    "file": ".firecrawl/scratchpad/provider-scrape/codeflying.md",
+    "ok": true
+  },
+  {
+    "slug": "coderabbitai-powered-tool-streamlining-code-reviews",
+    "file": ".firecrawl/scratchpad/provider-scrape/coderabbitai-powered-tool-streamlining-code-reviews.md",
+    "ok": true
+  },
+  {
+    "slug": "colorpage-lab",
+    "file": ".firecrawl/scratchpad/provider-scrape/colorpage-lab.md",
+    "ok": true
+  },
+  {
+    "slug": "ai-tool-that-helps-you-shop-using-lower-priced-search-terms",
+    "ok": false,
+    "error": "Command failed: firecrawl scrape \"https://www.costdown.app\" --only-main-content "
+  },
+  {
+    "slug": "an-ai-coding-tool-for-unserious-projects",
+    "file": ".firecrawl/scratchpad/provider-scrape/an-ai-coding-tool-for-unserious-projects.md",
+    "ok": true
+  },
+  {
+    "slug": "create-music-ai",
+    "file": ".firecrawl/scratchpad/provider-scrape/create-music-ai.md",
+    "ok": true
+  },
+  {
+    "slug": "createwalink",
+    "file": ".firecrawl/scratchpad/provider-scrape/createwalink.md",
+    "ok": true
+  },
+  {
+    "slug": "ai-tool-that-builds-and-deploys-n8n-workflows-from-a-single-prompt",
+    "ok": false,
+    "error": "Command failed: firecrawl scrape \"https://csworkflow.consciousstage.com/\" --only"
+  },
+  {
+    "slug": "cutmuse-ai-tool-for-haircut-recommendations-by-face-shape",
+    "file": ".firecrawl/scratchpad/provider-scrape/cutmuse-ai-tool-for-haircut-recommendations-by-face-shape.md",
+    "ok": true
+  },
+  {
+    "slug": "dailyscope-ai",
+    "file": ".firecrawl/scratchpad/provider-scrape/dailyscope-ai.md",
+    "ok": true
+  },
+  {
+    "slug": "danghuangshang",
+    "file": ".firecrawl/scratchpad/provider-scrape/danghuangshang.md",
+    "ok": true
+  },
+  {
+    "slug": "datephotosai",
+    "file": ".firecrawl/scratchpad/provider-scrape/datephotosai.md",
+    "ok": true
+  },
+  {
+    "slug": "deep-swap-ai",
+    "file": ".firecrawl/scratchpad/provider-scrape/deep-swap-ai.md",
+    "ok": true
+  },
+  {
+    "slug": "deepseek-math-v2",
+    "file": ".firecrawl/scratchpad/provider-scrape/deepseek-math-v2.md",
+    "ok": true
+  },
+  {
+    "slug": "deepseek-v32",
+    "file": ".firecrawl/scratchpad/provider-scrape/deepseek-v32.md",
+    "ok": true
+  },
+  {
+    "slug": "depth-anything-3",
+    "file": ".firecrawl/scratchpad/provider-scrape/depth-anything-3.md",
+    "ok": true
+  },
+  {
+    "slug": "devin-pro",
+    "file": ".firecrawl/scratchpad/provider-scrape/devin-pro.md",
+    "ok": true
+  },
+  {
+    "slug": "devoice",
+    "file": ".firecrawl/scratchpad/provider-scrape/devoice.md",
+    "ok": true
+  },
+  {
+    "slug": "diagrimo",
+    "file": ".firecrawl/scratchpad/provider-scrape/diagrimo.md",
+    "ok": true
+  },
+  {
+    "slug": "didoo-ai",
+    "file": ".firecrawl/scratchpad/provider-scrape/didoo-ai.md",
+    "ok": true
+  },
+  {
+    "slug": "echo-now-ai",
+    "file": ".firecrawl/scratchpad/provider-scrape/echo-now-ai.md",
+    "ok": true
+  },
+  {
+    "slug": "enhancephoto-ai",
+    "file": ".firecrawl/scratchpad/provider-scrape/enhancephoto-ai.md",
+    "ok": true
+  },
+  {
+    "slug": "ernie-50",
+    "ok": false,
+    "error": "Command failed: firecrawl scrape \"https://erniebot.baidu.com\" --only-main-conten"
+  },
+  {
+    "slug": "an-ai-tool-to-build-predictors-for-stock-market-and-crypto",
+    "ok": false,
+    "error": "Command failed: firecrawl scrape \"https://www.exnge.com/\" --only-main-content -o"
+  },
+  {
+    "slug": "face-shape-detector",
+    "file": ".firecrawl/scratchpad/provider-scrape/face-shape-detector.md",
+    "ok": true
+  },
+  {
+    "slug": "face-swap-ai",
+    "file": ".firecrawl/scratchpad/provider-scrape/face-swap-ai.md",
+    "ok": true
+  },
+  {
+    "slug": "facefinder",
+    "file": ".firecrawl/scratchpad/provider-scrape/facefinder.md",
+    "ok": true
+  },
+  {
+    "slug": "falcocut",
+    "file": ".firecrawl/scratchpad/provider-scrape/falcocut.md",
+    "ok": true
+  },
+  {
+    "slug": "free-ai-tool-that-fills-web-forms-from-plain-text",
+    "file": ".firecrawl/scratchpad/provider-scrape/free-ai-tool-that-fills-web-forms-from-plain-text.md",
+    "ok": true
+  },
+  {
+    "slug": "filmflow-ai-powered-tool-for-visualizing-emotional-pulse-of-films",
+    "file": ".firecrawl/scratchpad/provider-scrape/filmflow-ai-powered-tool-for-visualizing-emotional-pulse-of-films.md",
+    "ok": true
+  },
+  {
+    "slug": "filmpitch",
+    "file": ".firecrawl/scratchpad/provider-scrape/filmpitch.md",
+    "ok": true
+  },
+  {
+    "slug": "findtubeai",
+    "file": ".firecrawl/scratchpad/provider-scrape/findtubeai.md",
+    "ok": true
+  },
+  {
+    "slug": "flux2",
+    "file": ".firecrawl/scratchpad/provider-scrape/flux2.md",
+    "ok": true
+  },
+  {
+    "slug": "free-ai-writing-tools",
+    "file": ".firecrawl/scratchpad/provider-scrape/free-ai-writing-tools.md",
+    "ok": true
+  },
+  {
+    "slug": "free-whatsapp-bulk-sender",
+    "file": ".firecrawl/scratchpad/provider-scrape/free-whatsapp-bulk-sender.md",
+    "ok": true
+  },
+  {
+    "slug": "gitcruiter-ai-tool-that-evaluates-developers-by-github-activity",
+    "file": ".firecrawl/scratchpad/provider-scrape/gitcruiter-ai-tool-that-evaluates-developers-by-github-activity.md",
+    "ok": true
+  },
+  {
+    "slug": "gitpulse-ai-powered-tool-to-discover-open-source-projects",
+    "file": ".firecrawl/scratchpad/provider-scrape/gitpulse-ai-powered-tool-to-discover-open-source-projects.md",
+    "ok": true
+  },
+  {
+    "slug": "ai-tool-that-cuts-bloopers-for-youtubers",
+    "file": ".firecrawl/scratchpad/provider-scrape/ai-tool-that-cuts-bloopers-for-youtubers.md",
+    "ok": true
+  },
+  {
+    "slug": "glm-47-flash",
+    "ok": false,
+    "error": "Command failed: firecrawl scrape \"https://glm4.7flash\" --only-main-content -o \"."
+  },
+  {
+    "slug": "goenhance-image-to-video-ai",
+    "file": ".firecrawl/scratchpad/provider-scrape/goenhance-image-to-video-ai.md",
+    "ok": true
+  },
+  {
+    "slug": "google-titansmiras",
+    "file": ".firecrawl/scratchpad/provider-scrape/google-titansmiras.md",
+    "ok": true
+  },
+  {
+    "slug": "grain-ai",
+    "file": ".firecrawl/scratchpad/provider-scrape/grain-ai.md",
+    "ok": true
+  },
+  {
+    "slug": "grok-41",
+    "file": ".firecrawl/scratchpad/provider-scrape/grok-41.md",
+    "ok": true
+  },
+  {
+    "slug": "grok-420",
+    "file": ".firecrawl/scratchpad/provider-scrape/grok-420.md",
+    "ok": true
+  },
+  {
+    "slug": "hitpaw-vikpea",
+    "file": ".firecrawl/scratchpad/provider-scrape/hitpaw-vikpea.md",
+    "ok": true
+  },
+  {
+    "slug": "holo-ai",
+    "file": ".firecrawl/scratchpad/provider-scrape/holo-ai.md",
+    "ok": true
+  },
+  {
+    "slug": "humanflow",
+    "file": ".firecrawl/scratchpad/provider-scrape/humanflow.md",
+    "ok": true
+  },
+  {
+    "slug": "hunyuanvideo-15",
+    "file": ".firecrawl/scratchpad/provider-scrape/hunyuanvideo-15.md",
+    "ok": true
+  },
+  {
+    "slug": "i-doubt-news",
+    "ok": false,
+    "error": "Command failed: firecrawl scrape \"https://idoubtnews.com\" --only-main-content -o"
+  },
+  {
+    "slug": "ai-tool-to-find-the-purpose-of-other-websites",
+    "file": ".firecrawl/scratchpad/provider-scrape/ai-tool-to-find-the-purpose-of-other-websites.md",
+    "ok": true
+  },
+  {
+    "slug": "image-translate-ai",
+    "file": ".firecrawl/scratchpad/provider-scrape/image-translate-ai.md",
+    "ok": true
+  },
+  {
+    "slug": "imgtovid-ai",
+    "file": ".firecrawl/scratchpad/provider-scrape/imgtovid-ai.md",
+    "ok": true
+  },
+  {
+    "slug": "imini-ai",
+    "file": ".firecrawl/scratchpad/provider-scrape/imini-ai.md",
+    "ok": true
+  },
+  {
+    "slug": "ai-tool-to-automatically-extract-data-from-images-and-scanned-documents",
+    "ok": false,
+    "error": "Command failed: firecrawl scrape \"https://www.impira.com/mango/overview\" --only-"
+  },
+  {
+    "slug": "ai-tool-to-grow-founder-brand",
+    "file": ".firecrawl/scratchpad/provider-scrape/ai-tool-to-grow-founder-brand.md",
+    "ok": true
+  },
+  {
+    "slug": "insmind-image-to-video",
+    "file": ".firecrawl/scratchpad/provider-scrape/insmind-image-to-video.md",
+    "ok": true
+  },
+  {
+    "slug": "instories",
+    "file": ".firecrawl/scratchpad/provider-scrape/instories.md",
+    "ok": true
+  },
+  {
+    "slug": "interview-qa-ai",
+    "file": ".firecrawl/scratchpad/provider-scrape/interview-qa-ai.md",
+    "ok": true
+  },
+  {
+    "slug": "ipageai",
+    "file": ".firecrawl/scratchpad/provider-scrape/ipageai.md",
+    "ok": true
+  },
+  {
+    "slug": "jolt-ai-coding-tool-for-production-100k-line-codebases",
+    "ok": false,
+    "error": "Command failed: firecrawl scrape \"https://app.usejolt.ai/\" --only-main-content -"
+  },
+  {
+    "slug": "joyfun-ai",
+    "file": ".firecrawl/scratchpad/provider-scrape/joyfun-ai.md",
+    "ok": true
+  },
+  {
+    "slug": "kamo-1-kinetix",
+    "file": ".firecrawl/scratchpad/provider-scrape/kamo-1-kinetix.md",
+    "ok": true
+  },
+  {
+    "slug": "kimi-k25",
+    "file": ".firecrawl/scratchpad/provider-scrape/kimi-k25.md",
+    "ok": true
+  },
+  {
+    "slug": "kirkify-ai",
+    "file": ".firecrawl/scratchpad/provider-scrape/kirkify-ai.md",
+    "ok": true
+  },
+  {
+    "slug": "klodsy",
+    "file": ".firecrawl/scratchpad/provider-scrape/klodsy.md",
+    "ok": true
+  },
+  {
+    "slug": "klyps-ai-tool-that-turns-product-images-into-studio-quality-videos",
+    "ok": false,
+    "error": "Command failed: firecrawl scrape \"https://klyps.io/\" --only-main-content -o \".fi"
+  }
+]

@@ -1,0 +1,488 @@
+[
+  {
+    "name": "AI FaceSwap Tool Demo [video]",
+    "slug": "ai-faceswap-tool-demo-video",
+    "id": "795e1015-d109-408f-8f98-ecc4155e726f",
+    "issue_type": "junk_entry",
+    "current_value": "https://www.youtube.com/watch?v=OJquMNgjSWc",
+    "suggested_value": "REMOVE",
+    "reason": "URL points to paper/dataset/video, not a real product"
+  },
+  {
+    "name": "Beautiful.ai",
+    "slug": "beautiful-ai",
+    "id": "84d99a7f-c4c6-4b0c-a679-d9fe7a080262",
+    "issue_type": "use_case_not_enum",
+    "current_value": "Presentation design for sales pitches, marketing decks, reports, and team update",
+    "suggested_value": "marketing",
+    "reason": "use_case is a sentence, should be enum value"
+  },
+  {
+    "name": "BlabbyAI Speech to text",
+    "slug": "blabbyai-speech-to-text",
+    "id": "c30cdc7e-51bf-406b-92b3-1c93c5f7ca8a",
+    "issue_type": "category_mismatch",
+    "current_value": "Writing & Copywriting",
+    "suggested_value": "Voice & Speech",
+    "reason": "Voice/speech tool in wrong category"
+  },
+  {
+    "name": "Boring Report",
+    "slug": "boring-report",
+    "id": "ed8d5cb9-d6b2-4c52-b4ff-82268856bd9a",
+    "issue_type": "use_case_not_enum",
+    "current_value": "News summarization to remove sensationalism and bias, providing factual overview",
+    "suggested_value": "design",
+    "reason": "use_case is a sentence, should be enum value"
+  },
+  {
+    "name": "CCTV-Smartphone-AI-Monitoring",
+    "slug": "cctv-smartphone-ai-monitoring",
+    "id": "06b0178d-d738-41bc-ae8e-cf68d394f36b",
+    "issue_type": "junk_entry",
+    "current_value": "https://github.com/suzuran0y/Sentinel/releases",
+    "suggested_value": "REMOVE",
+    "reason": "URL points to paper/dataset/video, not a real product"
+  },
+  {
+    "name": "ClarityPage",
+    "slug": "claritypage",
+    "id": "d5f23e75-34fd-40f4-bb73-ec635fffe7e1",
+    "issue_type": "use_case_not_enum",
+    "current_value": "Website analytics and user behavior tracking. Suited for UX optimization, e-comm",
+    "suggested_value": "marketing",
+    "reason": "use_case is a sentence, should be enum value"
+  },
+  {
+    "name": "Copy.ai",
+    "slug": "copy-ai",
+    "id": "5bcb5f60-56e5-4a73-bb06-96383c7bb636",
+    "issue_type": "use_case_not_enum",
+    "current_value": "Content marketing, sales emails, social media posts, and SEO-optimized articles.",
+    "suggested_value": "marketing",
+    "reason": "use_case is a sentence, should be enum value"
+  },
+  {
+    "name": "DailyScope AI",
+    "slug": "dailyscope-ai",
+    "id": "f036e11a-3da3-4113-ace3-641ba9b09355",
+    "issue_type": "use_case_not_enum",
+    "current_value": "Daily productivity boosts like summarizing notes, brainstorming, and task manage",
+    "suggested_value": "content-creation",
+    "reason": "use_case is a sentence, should be enum value"
+  },
+  {
+    "name": "Descript",
+    "slug": "descript-ai",
+    "id": "32addbf7-8583-4cea-b5bc-4f5b364f5e01",
+    "issue_type": "use_case_not_enum",
+    "current_value": "Video/audio editing, podcast production, and content repurposing. Suited for cre",
+    "suggested_value": "video",
+    "reason": "use_case is a sentence, should be enum value"
+  },
+  {
+    "name": "Echo Now AI",
+    "slug": "echo-now-ai",
+    "id": "0c5719bc-8527-41c1-ba75-4f3131cb6132",
+    "issue_type": "use_case_not_enum",
+    "current_value": "Meeting summaries, channel monitoring, and knowledge retrieval in Slack/Teams. I",
+    "suggested_value": "content-creation",
+    "reason": "use_case is a sentence, should be enum value"
+  },
+  {
+    "name": "ElevenLabs Dubbing",
+    "slug": "elevenlabs-dubbing",
+    "id": "ddb0b6ad-0aca-4d58-9474-d28c2a0c2670",
+    "issue_type": "use_case_not_enum",
+    "current_value": "Video localization, dubbing for films/TV, and multilingual content. For media pr",
+    "suggested_value": "video",
+    "reason": "use_case is a sentence, should be enum value"
+  },
+  {
+    "name": "Espial",
+    "slug": "espial-ai-tool-to-automate-discovery-and-organization-of-knowledge",
+    "id": "19d76c79-0297-43f2-b1b2-eec91d165571",
+    "issue_type": "missing_open_source",
+    "current_value": "false",
+    "suggested_value": "true",
+    "reason": "GitHub repo should be marked open source"
+  },
+  {
+    "name": "Fireflies.ai",
+    "slug": "fireflies-ai",
+    "id": "52caa3a9-65f2-4f13-910a-116e86ed46ae",
+    "issue_type": "use_case_not_enum",
+    "current_value": "Meeting transcription, summaries, and task extraction. For sales, engineering, a",
+    "suggested_value": "sales",
+    "reason": "use_case is a sentence, should be enum value"
+  },
+  {
+    "name": "Gamma App",
+    "slug": "gamma-app",
+    "id": "8c6c8541-ee14-402e-ad3b-4301973b6723",
+    "issue_type": "use_case_not_enum",
+    "current_value": "Presentation creation for pitches, reports, and marketing. For teams needing qui",
+    "suggested_value": "marketing",
+    "reason": "use_case is a sentence, should be enum value"
+  },
+  {
+    "name": "GitHub Copilot",
+    "slug": "github-copilot",
+    "id": "58c97bed-bc58-432a-934e-2da995c93ac8",
+    "issue_type": "pricing_wrong",
+    "current_value": "paid",
+    "suggested_value": "free",
+    "reason": "GitHub repo should be free, not paid"
+  },
+  {
+    "name": "GitHub Copilot",
+    "slug": "github-copilot",
+    "id": "58c97bed-bc58-432a-934e-2da995c93ac8",
+    "issue_type": "missing_open_source",
+    "current_value": "false",
+    "suggested_value": "true",
+    "reason": "GitHub repo should be marked open source"
+  },
+  {
+    "name": "Google MedASR",
+    "slug": "google-medasr",
+    "id": "5a8a6348-8793-4ad0-9d6a-d96b9afec2dc",
+    "issue_type": "category_mismatch",
+    "current_value": "Healthcare & Medical",
+    "suggested_value": "Voice & Speech",
+    "reason": "Voice/speech tool in wrong category"
+  },
+  {
+    "name": "I Doubt News",
+    "slug": "i-doubt-news",
+    "id": "42682481-7475-4c50-ab74-7d891b5a1548",
+    "issue_type": "use_case_not_enum",
+    "current_value": "Fake news detection and bias analysis. For journalists, researchers verifying so",
+    "suggested_value": "research",
+    "reason": "use_case is a sentence, should be enum value"
+  },
+  {
+    "name": "Jasper Brand Voice",
+    "slug": "jasper-brand-voice",
+    "id": "24398020-2b1a-47fb-8b01-e522f9cd1bbb",
+    "issue_type": "use_case_not_enum",
+    "current_value": "Brand-consistent content like emails, ads, and posts. For marketing teams scalin",
+    "suggested_value": "marketing",
+    "reason": "use_case is a sentence, should be enum value"
+  },
+  {
+    "name": "Kling AI",
+    "slug": "kling-ai",
+    "id": "b0c5aaef-fb78-41be-bbca-acad8661f42a",
+    "issue_type": "use_case_not_enum",
+    "current_value": "Video generation for marketing, VFX, and animations. For creators building cinem",
+    "suggested_value": "video",
+    "reason": "use_case is a sentence, should be enum value"
+  },
+  {
+    "name": "Lovable",
+    "slug": "lovable",
+    "id": "7a810873-2fc4-441f-8001-1d9621c456b1",
+    "issue_type": "category_mismatch",
+    "current_value": "Coding & Development",
+    "suggested_value": "Design & UI",
+    "reason": "Tool description doesnt match Coding category, seems like Design & UI"
+  },
+  {
+    "name": "Lovo.ai",
+    "slug": "lovo-ai",
+    "id": "83fb2392-ffd6-4d11-a2ac-41d2ad44413a",
+    "issue_type": "use_case_not_enum",
+    "current_value": "Voiceovers for ads, videos, podcasts, and e-learning. For content creators needi",
+    "suggested_value": "video",
+    "reason": "use_case is a sentence, should be enum value"
+  },
+  {
+    "name": "MarketMind AI",
+    "slug": "marketmind-ai",
+    "id": "ebb65a70-7d6d-4456-a626-1f029a391009",
+    "issue_type": "use_case_not_enum",
+    "current_value": "Market research, stock analysis, and trend tracking. For investors and analysts ",
+    "suggested_value": "research",
+    "reason": "use_case is a sentence, should be enum value"
+  },
+  {
+    "name": "Mavis AI",
+    "slug": "mavis-ai",
+    "id": "9932a0fb-02b5-4714-9fa5-a041b5a68b33",
+    "issue_type": "use_case_not_enum",
+    "current_value": "Content creation for publishers, newsletters, and affiliates. For media teams au",
+    "suggested_value": "content-creation",
+    "reason": "use_case is a sentence, should be enum value"
+  },
+  {
+    "name": "memory-lancedb-pro",
+    "slug": "memory-lancedb-pro",
+    "id": "33febe7a-efdf-4bf6-8045-e9139c20fa4a",
+    "issue_type": "junk_entry",
+    "current_value": "https://youtu.be/bhuGrjuCM_g",
+    "suggested_value": "REMOVE",
+    "reason": "URL points to paper/dataset/video, not a real product"
+  },
+  {
+    "name": "MetaClaw",
+    "slug": "metaclaw",
+    "id": "9c47844e-6cf8-403a-85a1-ba7fe9cad015",
+    "issue_type": "junk_entry",
+    "current_value": "https://arxiv.org/abs/2603.17187",
+    "suggested_value": "REMOVE",
+    "reason": "URL points to paper/dataset/video, not a real product"
+  },
+  {
+    "name": "Midjourney v7",
+    "slug": "midjourney-v7",
+    "id": "56cd2538-f723-4589-93ba-8cc9c4913ebf",
+    "issue_type": "use_case_not_enum",
+    "current_value": "Image generation for art, design, and marketing visuals. For creatives prototypi",
+    "suggested_value": "marketing",
+    "reason": "use_case is a sentence, should be enum value"
+  },
+  {
+    "name": "Murf.ai",
+    "slug": "murf-ai",
+    "id": "c0cc6caf-0bb8-42ea-ae3d-0ae5e893e4c1",
+    "issue_type": "category_mismatch",
+    "current_value": "Coding & Development",
+    "suggested_value": "Voice & Speech",
+    "reason": "Voice/speech tool in wrong category"
+  },
+  {
+    "name": "Muses AI",
+    "slug": "muses-ai",
+    "id": "a9637f0d-eeda-42f7-8f59-e38ff2eaf019",
+    "issue_type": "use_case_not_enum",
+    "current_value": "Video hosting/search for teams; knowledge bases. For educators and businesses or",
+    "suggested_value": "video",
+    "reason": "use_case is a sentence, should be enum value"
+  },
+  {
+    "name": "NBot AI",
+    "slug": "nbot-ai",
+    "id": "cfcf6b02-41a3-45a4-991e-cec97c12938e",
+    "issue_type": "use_case_not_enum",
+    "current_value": "Topic tracking for news, trends, and keywords. For researchers monitoring specif",
+    "suggested_value": "research",
+    "reason": "use_case is a sentence, should be enum value"
+  },
+  {
+    "name": "Neus AI",
+    "slug": "neus-ai",
+    "id": "ae2f387a-3b98-499a-8787-038db375d42d",
+    "issue_type": "use_case_not_enum",
+    "current_value": "Data analysis and sensitive data governance. For IT/security teams in compliance",
+    "suggested_value": "research",
+    "reason": "use_case is a sentence, should be enum value"
+  },
+  {
+    "name": "New Dialogue",
+    "slug": "new-dialogue",
+    "id": "1db53ddb-9af0-480f-94cc-948458a49515",
+    "issue_type": "use_case_not_enum",
+    "current_value": "Customer support chatbots and internal processes. For regulated enterprises auto",
+    "suggested_value": "customer-support",
+    "reason": "use_case is a sentence, should be enum value"
+  },
+  {
+    "name": "NewsGPT",
+    "slug": "newsgpt",
+    "id": "2d69776f-90b7-4845-bc6d-116fb09bc166",
+    "issue_type": "use_case_not_enum",
+    "current_value": "Personalized news summaries and AI-generated reports. For users seeking unbiased",
+    "suggested_value": "content-creation",
+    "reason": "use_case is a sentence, should be enum value"
+  },
+  {
+    "name": "Norton Neo Browser",
+    "slug": "norton-neo-browser",
+    "id": "fd8d545b-a9ed-4fc8-9b8b-e85e0cc07953",
+    "issue_type": "use_case_not_enum",
+    "current_value": "Secure browsing with AI summaries, tab management, and research. For professiona",
+    "suggested_value": "research",
+    "reason": "use_case is a sentence, should be enum value"
+  },
+  {
+    "name": "Otter.ai",
+    "slug": "otter-ai",
+    "id": "2520551a-4a3c-4b8e-993f-b1d0501a2739",
+    "issue_type": "use_case_not_enum",
+    "current_value": "Meeting notes, transcription, and collaboration. For teams in sales/HR automatin",
+    "suggested_value": "sales",
+    "reason": "use_case is a sentence, should be enum value"
+  },
+  {
+    "name": "Perplexity Enterprise",
+    "slug": "perplexity-enterprise",
+    "id": "3ff61253-1b1d-4e97-8a97-c40cd911b428",
+    "issue_type": "use_case_not_enum",
+    "current_value": "Industry-specific research like finance/consulting. For teams needing cited answ",
+    "suggested_value": "research",
+    "reason": "use_case is a sentence, should be enum value"
+  },
+  {
+    "name": "ReadPartner",
+    "slug": "readpartner",
+    "id": "54a58e60-8835-4056-a415-6d3f5ca866fb",
+    "issue_type": "use_case_not_enum",
+    "current_value": "Media monitoring, trend analysis, and competitor tracking. For businesses scanni",
+    "suggested_value": "research",
+    "reason": "use_case is a sentence, should be enum value"
+  },
+  {
+    "name": "Resolution Builder",
+    "slug": "resolution-builder",
+    "id": "348b24a1-41a2-48d8-9ea0-01738c87b7c4",
+    "issue_type": "use_case_not_enum",
+    "current_value": "Goal setting and resolution drafting. For personal/productivity planning.",
+    "suggested_value": "content-creation",
+    "reason": "use_case is a sentence, should be enum value"
+  },
+  {
+    "name": "Runway Gen-3",
+    "slug": "runway-gen-3",
+    "id": "50b48d9f-1f73-4625-8c69-6e0594489476",
+    "issue_type": "use_case_not_enum",
+    "current_value": "Video gen for filmmaking, ads, and VFX. For creators building surreal/cinematic ",
+    "suggested_value": "video",
+    "reason": "use_case is a sentence, should be enum value"
+  },
+  {
+    "name": "sage",
+    "slug": "sage",
+    "id": "638a7c2b-6632-4b8a-82a0-8e2fdf0d2b4a",
+    "issue_type": "junk_entry",
+    "current_value": "https://orcid.org/0009-0001-7248-2411",
+    "suggested_value": "REMOVE",
+    "reason": "URL points to paper/dataset/video, not a real product"
+  },
+  {
+    "name": "SocialOmni",
+    "slug": "socialomni",
+    "id": "dc7c68e6-9f00-4ddb-9846-95725f08f22c",
+    "issue_type": "junk_entry",
+    "current_value": "https://huggingface.co/datasets/alexisty/SocialOmni",
+    "suggested_value": "REMOVE",
+    "reason": "URL points to paper/dataset/video, not a real product"
+  },
+  {
+    "name": "Sora 2",
+    "slug": "sora-2",
+    "id": "bea71e55-3022-470e-ad0d-3b8fb8b8558e",
+    "issue_type": "use_case_not_enum",
+    "current_value": "Video creation for marketing, storytelling, and prototypes. For creatives genera",
+    "suggested_value": "video",
+    "reason": "use_case is a sentence, should be enum value"
+  },
+  {
+    "name": "Speechify",
+    "slug": "speechify-ai",
+    "id": "9e610619-5335-4f00-bd88-2c998731ed45",
+    "issue_type": "use_case_not_enum",
+    "current_value": "Text-to-speech for audiobooks, docs, and accessibility. For educators/content cr",
+    "suggested_value": "content-creation",
+    "reason": "use_case is a sentence, should be enum value"
+  },
+  {
+    "name": "StockNewsAI",
+    "slug": "stocknewsai",
+    "id": "e1e83b78-5a2b-4c03-93b7-dab07c6a1df6",
+    "issue_type": "use_case_not_enum",
+    "current_value": "Stock market news analysis and insights. For investors tracking trends.",
+    "suggested_value": "research",
+    "reason": "use_case is a sentence, should be enum value"
+  },
+  {
+    "name": "Super Whisper",
+    "slug": "super-whisper",
+    "id": "fa1a62a6-a93b-4176-8238-82f24788ff7a",
+    "issue_type": "use_case_not_enum",
+    "current_value": "Voice-to-text dictation for writing, coding, and notes. For productivity in apps",
+    "suggested_value": "content-creation",
+    "reason": "use_case is a sentence, should be enum value"
+  },
+  {
+    "name": "Synthesia Avatar",
+    "slug": "synthesia-avatar",
+    "id": "b69d097f-3895-42dd-a4d0-df4bad2fb93c",
+    "issue_type": "use_case_not_enum",
+    "current_value": "Video avatars for training, ads, and communications. For creators localizing con",
+    "suggested_value": "video",
+    "reason": "use_case is a sentence, should be enum value"
+  },
+  {
+    "name": "TIMIO News",
+    "slug": "timio-news",
+    "id": "1ccea9a3-76f3-4ff4-9827-0606acd4e0eb",
+    "issue_type": "use_case_not_enum",
+    "current_value": "Bias detection and balanced news summaries. For users spotting misinformation.",
+    "suggested_value": "content-creation",
+    "reason": "use_case is a sentence, should be enum value"
+  },
+  {
+    "name": "Tome",
+    "slug": "tome-ai",
+    "id": "93bf3f97-269f-4e53-9620-cb4edf93c8d0",
+    "issue_type": "use_case_not_enum",
+    "current_value": "Storytelling presentations for sales/marketing. For teams generating narratives.",
+    "suggested_value": "marketing",
+    "reason": "use_case is a sentence, should be enum value"
+  },
+  {
+    "name": "TuckMeIn",
+    "slug": "tuckmein",
+    "id": "f6c30647-0078-43f1-8bc9-9a5d7a40bc2f",
+    "issue_type": "use_case_not_enum",
+    "current_value": "Personalized bedtime stories for kids. For parents/educators creating custom tal",
+    "suggested_value": "content-creation",
+    "reason": "use_case is a sentence, should be enum value"
+  },
+  {
+    "name": "Vectara",
+    "slug": "vectara",
+    "id": "76579ee0-7a12-4ceb-9d54-b7804d44ac09",
+    "issue_type": "use_case_not_enum",
+    "current_value": "Semantic search and data governance. For enterprises in legal/medical handling s",
+    "suggested_value": "research",
+    "reason": "use_case is a sentence, should be enum value"
+  },
+  {
+    "name": "Whisper Flow",
+    "slug": "whisper-flow",
+    "id": "f7a3218c-7b15-4b41-b611-30bdd1b9b3f8",
+    "issue_type": "category_mismatch",
+    "current_value": "Coding & Development",
+    "suggested_value": "Audio & Music",
+    "reason": "Tool description doesnt match Coding category, seems like Audio & Music"
+  },
+  {
+    "name": "Wispr Flow",
+    "slug": "wispr-flow",
+    "id": "383cc68a-21e5-4511-be6f-a709e21cb267",
+    "issue_type": "category_mismatch",
+    "current_value": "Productivity",
+    "suggested_value": "Voice & Speech",
+    "reason": "Voice/speech tool in wrong category"
+  },
+  {
+    "name": "WP Now",
+    "slug": "wp-now",
+    "id": "6fca4928-2510-4f07-aa4d-aeda2e6f4778",
+    "issue_type": "use_case_not_enum",
+    "current_value": "WordPress site building from prompts. For devs automating themes/plugins.",
+    "suggested_value": "design",
+    "reason": "use_case is a sentence, should be enum value"
+  },
+  {
+    "name": "Writesonic",
+    "slug": "writesonic-ai",
+    "id": "0a7411fe-7408-4c97-804e-aeaf00969c16",
+    "issue_type": "use_case_not_enum",
+    "current_value": "Content gen for blogs, ads, and emails. For marketers scaling SEO/copy.",
+    "suggested_value": "content-creation",
+    "reason": "use_case is a sentence, should be enum value"
+  }
+]

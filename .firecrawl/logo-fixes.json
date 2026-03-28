@@ -1,0 +1,260 @@
+[
+  {
+    "slug": "agent-tars",
+    "name": "Agent TARS",
+    "fixable": false,
+    "domain": "agenttars.ai"
+  },
+  {
+    "slug": "ai-tool-to-guess-your-personality-from-your-tweets",
+    "name": "BirdbrainBio",
+    "fixable": false,
+    "domain": "birdbrain.bio"
+  },
+  {
+    "slug": "claritypage",
+    "name": "ClarityPage",
+    "fixable": false,
+    "domain": "claritypage.com"
+  },
+  {
+    "slug": "ai-tool-that-builds-and-deploys-n8n-workflows-from-a-single-prompt",
+    "name": "CsworkflowConsciousstage",
+    "fixable": false,
+    "domain": "csworkflow.consciousstage.com"
+  },
+  {
+    "slug": "ai-tool-that-helps-you-shop-using-lower-priced-search-terms",
+    "name": "Costdown",
+    "fixable": false,
+    "domain": "www.costdown.app"
+  },
+  {
+    "slug": "createwalink",
+    "name": "CreateWAlink",
+    "newUrl": "https://link.wadesk.io/favicon.ico",
+    "source": "direct"
+  },
+  {
+    "slug": "echowrite",
+    "name": "Echowrite",
+    "newUrl": "https://echowrite.muware.xyz/favicon.ico",
+    "source": "direct"
+  },
+  {
+    "slug": "deeptutor",
+    "name": "Deeptutor",
+    "fixable": false,
+    "domain": "hkuds.github.io"
+  },
+  {
+    "slug": "depth-anything-3",
+    "name": "Depth Anything 3",
+    "fixable": false,
+    "domain": "depth-anything.github.io"
+  },
+  {
+    "slug": "filmflow-ai-powered-tool-for-visualizing-emotional-pulse-of-films",
+    "name": "FilmFlow",
+    "fixable": false,
+    "domain": "meetfebin.com"
+  },
+  {
+    "slug": "an-ai-tool-to-build-predictors-for-stock-market-and-crypto",
+    "name": "Exnge",
+    "fixable": false,
+    "domain": "www.exnge.com"
+  },
+  {
+    "slug": "ernie-50",
+    "name": "Ernie 5.0",
+    "fixable": false,
+    "domain": "erniebot.baidu.com"
+  },
+  {
+    "slug": "grain-ai",
+    "name": "Grain AI",
+    "newUrl": "https://www.grain99.cc/favicon.ico",
+    "source": "direct"
+  },
+  {
+    "slug": "google-skills",
+    "name": "Google Skills",
+    "fixable": false,
+    "domain": "skillshop.google.com"
+  },
+  {
+    "slug": "glm-47-flash",
+    "name": "GLM 4.7 Flash",
+    "fixable": false,
+    "domain": "glm4.7flash"
+  },
+  {
+    "slug": "gitpulse-ai-powered-tool-to-discover-open-source-projects",
+    "name": "GitPulse",
+    "newUrl": "https://git-pulsee.vercel.app/favicon.ico",
+    "source": "direct"
+  },
+  {
+    "slug": "ai-tool-to-automatically-extract-data-from-images-and-scanned-documents",
+    "name": "Impira",
+    "fixable": false,
+    "domain": "www.impira.com"
+  },
+  {
+    "slug": "i-doubt-news",
+    "name": "I Doubt News",
+    "fixable": false,
+    "domain": "idoubtnews.com"
+  },
+  {
+    "slug": "intuo",
+    "name": "Intuo",
+    "fixable": false,
+    "domain": "intuo.ai"
+  },
+  {
+    "slug": "iquest-coder-v1",
+    "name": "IQuest-Coder-V1",
+    "fixable": false,
+    "domain": "iquest.ai"
+  },
+  {
+    "slug": "jolt-ai-coding-tool-for-production-100k-line-codebases",
+    "name": "Jolt",
+    "fixable": false,
+    "domain": "app.usejolt.ai"
+  },
+  {
+    "slug": "liner",
+    "name": "Liner",
+    "newUrl": "https://getliner.com/favicon.ico",
+    "source": "direct"
+  },
+  {
+    "slug": "nexosai",
+    "name": "Nexos.ai",
+    "newUrl": "https://go.getnexos.ai/favicon.ico",
+    "source": "direct"
+  },
+  {
+    "slug": "neus-ai",
+    "name": "Neus AI",
+    "fixable": false,
+    "domain": "neus.ai"
+  },
+  {
+    "slug": "resolution-builder",
+    "name": "Resolution Builder",
+    "newUrl": "https://new-years-resolutions.base44.app/favicon.ico",
+    "source": "direct"
+  },
+  {
+    "slug": "seedance-15-pro",
+    "name": "Seedance 1.5 pro",
+    "fixable": false,
+    "domain": "seedance1.5pro"
+  },
+  {
+    "slug": "sandbar-stream-ring",
+    "name": "Sandbar Stream Ring",
+    "newUrl": "https://sandbar.ai/favicon.ico",
+    "source": "direct"
+  },
+  {
+    "slug": "ai-dub-tool-i-made-to-watch-foreign-language-videos-with-my-7-year-old",
+    "name": "Speakz",
+    "fixable": false,
+    "domain": "speakz.ai"
+  },
+  {
+    "slug": "ai-tool-to-make-plan-your-project-and-you-can-download-it-as-pdf",
+    "name": "TaskraSpace",
+    "fixable": false,
+    "domain": "taskra.space"
+  },
+  {
+    "slug": "tgdesk",
+    "name": "TGDesk",
+    "newUrl": "https://tg.wadesk.io/favicon.ico",
+    "source": "direct"
+  },
+  {
+    "slug": "toolsai-ai-quotes-for-blue-collar-businesses",
+    "name": "ToolsAI",
+    "newUrl": "https://tools-ai-4yev.onrender.com/favicon.ico",
+    "source": "direct"
+  },
+  {
+    "slug": "vertech-academy",
+    "name": "Vertech Academy",
+    "newUrl": "https://www.vertechacademy.ca/favicon.ico",
+    "source": "direct"
+  },
+  {
+    "slug": "wan26",
+    "name": "Wan2.6",
+    "fixable": false,
+    "domain": "wanai.com"
+  },
+  {
+    "slug": "voila-voice-io",
+    "name": "Voila Voice io",
+    "newUrl": "https://voilavoice.io/favicon.ico",
+    "source": "direct"
+  },
+  {
+    "slug": "vibe-ai-tool-to-automate-social-media-content-posting-and-reporting",
+    "name": "Vibe ",
+    "newUrl": "https://vibe.xpandrai.com/favicon.ico",
+    "source": "direct"
+  },
+  {
+    "slug": "warmup-tool",
+    "name": "Warmup Tool",
+    "newUrl": "https://warmer.wadesk.io/favicon.ico",
+    "source": "direct"
+  },
+  {
+    "slug": "vidi2",
+    "name": "Vidi2",
+    "fixable": false,
+    "domain": "vidi.ai"
+  },
+  {
+    "slug": "free-ai-tool-makes-viral-cat-diving-clips-in-seconds",
+    "name": "Vidaigen",
+    "fixable": false,
+    "domain": "vidaigen.github.io"
+  },
+  {
+    "slug": "wikitimeline-ai-powered-tool-to-visualize-and-compare-timelines",
+    "name": "WikiTimeline",
+    "newUrl": "https://wiki-timeline.com/favicon.ico",
+    "source": "direct"
+  },
+  {
+    "slug": "fun-ai-tool-to-roast-your-website",
+    "name": "Websiteroast",
+    "fixable": false,
+    "domain": "thewebsiteroast.com"
+  },
+  {
+    "slug": "wp-now",
+    "name": "WP Now",
+    "fixable": false,
+    "domain": "www.worldpulsenow.com"
+  },
+  {
+    "slug": "weathernext-2",
+    "name": "WeatherNext 2",
+    "fixable": false,
+    "domain": "weathernext.ai"
+  },
+  {
+    "slug": "wedlm",
+    "name": "WeDLM",
+    "fixable": false,
+    "domain": "wedlm.ai"
+  }
+]

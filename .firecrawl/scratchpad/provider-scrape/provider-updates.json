@@ -1,0 +1,156 @@
+{
+  "providerUpdates": [
+    {
+      "id": "017ccc0b-b251-4d30-a7a5-edc7534adeb2",
+      "slug": "ai-color-analysis",
+      "provider": "openai",
+      "name": "AI Color Analysis"
+    },
+    {
+      "id": "f4c45a37-a892-48ad-8fe3-84786a1cd633",
+      "slug": "ai-tool-for-interior-designers-and-architects",
+      "provider": "multiple",
+      "name": "Butterflai"
+    },
+    {
+      "id": "7c138da3-4d0a-4783-8c3c-9c85d50584f1",
+      "slug": "aigne-docsmith",
+      "provider": "multiple",
+      "name": "AIGNE DocSmith"
+    },
+    {
+      "id": "1eae05f5-7e1c-4d42-bf9f-87cbcdaabb00",
+      "slug": "aiwritebook-ai-tool-to-write-design-and-publish-full-length-books",
+      "provider": "multiple",
+      "name": "AIWriteBook"
+    },
+    {
+      "id": "a7b66f7f-771a-46d8-bfb5-a7102161831a",
+      "slug": "antfly",
+      "provider": "multiple",
+      "name": "antfly"
+    },
+    {
+      "id": "3933bee1-02e6-4522-8182-55f6d9a91438",
+      "slug": "anylogogenerator",
+      "provider": "google",
+      "name": "AnyLogoGenerator"
+    },
+    {
+      "id": "56f55139-bcbf-40dd-aa98-d6fb87e28d2c",
+      "slug": "appark",
+      "provider": "multiple",
+      "name": "Appark"
+    },
+    {
+      "id": "39549836-252c-442f-bcc7-58f523572aa6",
+      "slug": "avclabs-video-blur-ai",
+      "provider": "cohere",
+      "name": "AVCLabs Video Blur AI"
+    },
+    {
+      "id": "1d7734f6-681f-42bb-a7bb-175ca8884213",
+      "slug": "bigideasdb",
+      "provider": "multiple",
+      "name": "BigIdeasDB"
+    },
+    {
+      "id": "0548db97-fe32-4f55-9197-261a10f1be01",
+      "slug": "clawith",
+      "provider": "multiple",
+      "name": "Clawith"
+    },
+    {
+      "id": "c570822a-3a39-4cc5-945f-311e3d4c1dfc",
+      "slug": "clawpanel",
+      "provider": "openai",
+      "name": "clawpanel"
+    },
+    {
+      "id": "4c5e3041-893d-4e92-9af0-2b841a00dab3",
+      "slug": "danghuangshang",
+      "provider": "multiple",
+      "name": "danghuangshang"
+    },
+    {
+      "id": "260a5d12-e925-46b7-b5a8-27d667483e28",
+      "slug": "diagrimo",
+      "provider": "openai",
+      "name": "Diagrimo"
+    },
+    {
+      "id": "6827ebcc-cc6f-41c1-9fd0-27cf56f24415",
+      "slug": "didoo-ai",
+      "provider": "google",
+      "name": "Didoo AI"
+    },
+    {
+      "id": "c4fa2c81-43d5-4447-8877-3b98c650ecdc",
+      "slug": "filmflow-ai-powered-tool-for-visualizing-emotional-pulse-of-films",
+      "provider": "openai",
+      "name": "FilmFlow"
+    },
+    {
+      "id": "104c2c27-6dc8-446b-b0f6-d5ea6431df3c",
+      "slug": "free-ai-tool-that-fills-web-forms-from-plain-text",
+      "provider": "multiple",
+      "name": "Fillapp"
+    },
+    {
+      "id": "10dccbe2-6afe-446a-bbdd-735035ebdd16",
+      "slug": "free-ai-writing-tools",
+      "provider": "multiple",
+      "name": "Free AI Writing Tools"
+    },
+    {
+      "id": "7f910ccd-e31b-425d-be19-dd086aea30d0",
+      "slug": "goenhance-image-to-video-ai",
+      "provider": "midjourney",
+      "name": "GoEnhance Image to Video AI"
+    },
+    {
+      "id": "b0627c83-2e85-4493-bf13-cc4ec2c56185",
+      "slug": "google-titansmiras",
+      "provider": "google",
+      "name": "Google Titans+MIRAS"
+    },
+    {
+      "id": "08dd050c-d62d-4272-968b-b0d823726128",
+      "slug": "image-translate-ai",
+      "provider": "multiple",
+      "name": "Image Translate AI"
+    },
+    {
+      "id": "415cadd6-ed75-4e4b-bd49-525e23f6de7a",
+      "slug": "instories",
+      "provider": "openai",
+      "name": "Instories"
+    }
+  ],
+  "osUpdates": [
+    {
+      "id": "a7b66f7f-771a-46d8-bfb5-a7102161831a",
+      "slug": "antfly",
+      "field": "is_open_source",
+      "name": "antfly"
+    },
+    {
+      "id": "0548db97-fe32-4f55-9197-261a10f1be01",
+      "slug": "clawith",
+      "field": "is_open_source",
+      "name": "Clawith"
+    },
+    {
+      "id": "ea4d6e17-310a-4fc9-b537-a14b7e06abb4",
+      "slug": "gitpulse-ai-powered-tool-to-discover-open-source-projects",
+      "field": "is_open_source",
+      "name": "GitPulse"
+    },
+    {
+      "id": "166ad0cd-3f41-4321-a9c9-947db0be46a3",
+      "slug": "hitpaw-vikpea",
+      "field": "is_open_source",
+      "name": "HitPaw VikPea"
+    }
+  ]
+}
