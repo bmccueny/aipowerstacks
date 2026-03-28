@@ -164,41 +164,20 @@ export function SavingsReport({ data }: { data: any }) {
             )}
           </div>
 
-          {/* Role selector + benchmark */}
+          {/* Benchmark — data-backed percentile only */}
           <div className="rounded-xl border border-foreground/[0.06] p-4">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Your spend vs benchmark</span>
-              <div className="flex gap-1">
-                {Object.keys(ROLE_BENCHMARKS).map(r => (
-                  <button
-                    key={r}
-                    onClick={() => setRole(role === r ? null : r)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                      role === r ? 'bg-primary/10 text-primary border border-primary/30' : 'border border-foreground/[0.06] text-muted-foreground hover:text-foreground'
-                    }`}
-                  >
-                    {r.charAt(0).toUpperCase() + r.slice(1)}
-                  </button>
-                ))}
-              </div>
-            </div>
             <div className="flex items-center justify-between">
               <span className="text-sm">
                 <strong className="text-foreground">${report.totalMonthly}/mo</strong>
                 <span className="text-muted-foreground"> · ${report.totalYearly}/yr</span>
               </span>
               <span className="text-xs">
-                {roleAvg ? (
-                  report.totalMonthly > roleAvg
-                    ? <span className="text-amber-500 font-semibold">Above avg for {role}s (${roleAvg}/mo)</span>
-                    : <span className="text-emerald-500 font-semibold">Below avg for {role}s (${roleAvg}/mo)</span>
-                ) : (
-                  report.benchmark.percentile >= 70
-                    ? <span className="text-amber-500 font-semibold">Top {100 - report.benchmark.percentile}% spender</span>
-                    : report.benchmark.percentile <= 30
-                      ? <span className="text-emerald-500 font-semibold">Below average</span>
-                      : <span className="text-muted-foreground">Average range</span>
-                )}
+                {report.benchmark.percentile >= 70
+                  ? <span className="text-amber-500 font-semibold">Top {100 - report.benchmark.percentile}% spender</span>
+                  : report.benchmark.percentile <= 30
+                    ? <span className="text-emerald-500 font-semibold">Below average</span>
+                    : <span className="text-muted-foreground">Average range</span>
+                }
               </span>
             </div>
           </div>
@@ -293,41 +272,6 @@ export function SavingsReport({ data }: { data: any }) {
                   </Link>
                 </div>
               ))}
-            </div>
-          )}
-
-          {/* What you're missing */}
-          {report.missingUseCases && report.missingUseCases.length > 0 && (
-            <div className="space-y-3">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-                <Sparkles className="h-3.5 w-3.5 text-violet-500" />
-                You might also want
-              </h4>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {report.missingUseCases.slice(0, 4).map((mc, i) => (
-                  mc.topTool && (
-                    <Link
-                      key={i}
-                      href={`/tools/${mc.topTool.slug}`}
-                      className="rounded-xl border border-foreground/[0.06] p-3 flex items-center gap-3 hover:border-primary/20 transition-all group"
-                    >
-                      <div className="h-9 w-9 rounded-lg overflow-hidden flex items-center justify-center shrink-0">
-                        {mc.topTool.logo_url ? (
-                          <img src={mc.topTool.logo_url} alt="" className="w-9 h-9 object-contain" />
-                        ) : (
-                          <span className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">{mc.topTool.name[0]}</span>
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-bold group-hover:text-primary transition-colors truncate">{mc.topTool.name}</p>
-                        <p className="text-[10px] text-muted-foreground">
-                          {mc.label} · ★ {mc.topTool.avg_rating.toFixed(1)} · {mc.topTool.cheapest_price > 0 ? `from $${mc.topTool.cheapest_price}/mo` : 'Free'}
-                        </p>
-                      </div>
-                    </Link>
-                  )
-                ))}
-              </div>
             </div>
           )}
 

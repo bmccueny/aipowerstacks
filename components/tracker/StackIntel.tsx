@@ -220,33 +220,6 @@ export function StackIntel({ data }: { data: any }) {
             </div>
           )}
 
-          {/* ═══ Team Cost Multiplier ═══ */}
-          <div className="rounded-xl border border-foreground/[0.06] p-4">
-            <div className="flex items-center gap-2 mb-3">
-              <Users className="h-3.5 w-3.5 text-amber-500" />
-              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Team cost projection</span>
-            </div>
-            <div className="flex gap-1.5 mb-3">
-              {teamCosts.map(tc => (
-                <button
-                  key={tc.size}
-                  onClick={() => setTeamSize(tc.size)}
-                  className={`flex-1 py-2 rounded-lg text-xs font-semibold transition-all ${
-                    teamSize === tc.size
-                      ? 'bg-primary/10 text-primary border border-primary/30'
-                      : 'border border-foreground/[0.06] text-muted-foreground hover:text-foreground'
-                  }`}
-                >
-                  {tc.size === 1 ? 'Solo' : `${tc.size} people`}
-                </button>
-              ))}
-            </div>
-            <div className="text-center">
-              <p className="text-2xl font-black">${selectedTeam.monthly.toLocaleString()}<span className="text-sm text-muted-foreground font-normal">/mo</span></p>
-              <p className="text-sm text-muted-foreground">${selectedTeam.yearly.toLocaleString()}/year for {teamSize === 1 ? 'you' : `a team of ${teamSize}`}</p>
-            </div>
-          </div>
-
         </div>
       )}
     </div>

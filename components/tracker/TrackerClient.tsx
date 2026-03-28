@@ -10,6 +10,10 @@ import { SavingsReport } from './SavingsReport'
 import { StackOptimizer } from './StackOptimizer'
 import { StackIntel } from './StackIntel'
 import { SpendChart } from './SpendChart'
+import { UsageCheckin } from './UsageCheckin'
+import { ChangelogFeed } from './ChangelogFeed'
+import { BillingCalendar } from './BillingCalendar'
+import { SwitchPrompt } from './SwitchPrompt'
 
 type Subscription = {
   id: string
@@ -93,6 +97,7 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [dashboardData, setDashboardData] = useState<any>(null)
   const [dashboardLoading, setDashboardLoading] = useState(false)
+  const [switchPrompt, setSwitchPrompt] = useState<{ toolId: string; toolName: string } | null>(null)
   const [importing, setImporting] = useState(false)
   const [priceTrends, setPriceTrends] = useState<Record<string, number>>({})
   const [editingSubId, setEditingSubId] = useState<string | null>(null)
@@ -333,10 +338,25 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
       toast.success('Removed')
       return
     }
+    // Find tool name before removing
+    const removedSub = subs.find(s => s.id === id)
+    const removedName = removedSub?.tools?.name || null
+    const removedToolId = removedSub?.tool_id || null
+
     const res = await fetch(`/api/tracker?id=${id}`, { method: 'DELETE' })
     if (res.ok) {
       setSubs(prev => prev.filter(s => s.id !== id))
       toast.success('Removed')
+      // Show switch prompt if user has other recently added tools
+      if (removedName && removedToolId && subs.length >= 3) {
+        const recentOthers = subs
+          .filter(s => s.id !== id && s.tools?.name)
+          .slice(0, 3)
+          .map(s => ({ tool_id: s.tool_id, name: s.tools!.name }))
+        if (recentOthers.length > 0) {
+          setSwitchPrompt({ toolId: removedToolId, toolName: removedName })
+        }
+      }
     }
   }
 
@@ -371,13 +391,33 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
     if (match) setSelectedTool(match)
   }
 
-  // Add all tools from a starter bundle
-  const addBundle = (slugs: string[]) => {
-    const bundleTools = slugs.map(s => tools.find(t => t.slug === s)).filter(Boolean) as ToolOption[]
+  // Auto-add a tool with its default tier (fetch tiers, pick first paid)
+  const autoAddTool = async (tool: ToolOption) => {
+    try {
+      const res = await fetch(`/api/tracker/tiers?tool_id=${tool.id}`)
+      const d = await res.json()
+      const tierList = d.tiers || []
+      const paid = tierList.filter((t: { monthly_price: number }) => t.monthly_price > 0)
+      const defaultTier = paid[0] || tierList[0]
+      const price = defaultTier?.monthly_price ?? 0
+      await addSub(price)
+    } catch {
+      // Fallback: add at $0
+      await addSub(0)
+    }
+  }
+
+  // Add all tools from a starter bundle — auto-add each with default tier
+  const addBundle = async (slugs: string[]) => {
+    const bundleTools = slugs
+      .map(s => tools.find(t => t.slug === s))
+      .filter((t): t is ToolOption => t != null && !alreadyTracked.has(t.id))
     if (bundleTools.length === 0) return
-    // Select the first one — user picks tier, then we auto-queue the rest
-    setSelectedTool(bundleTools[0])
-    toast(`Adding ${bundleTools.length} tools — pick a plan for ${bundleTools[0].name}`)
+    toast.success(`Adding ${bundleTools.length} tools...`)
+    for (const tool of bundleTools) {
+      setSelectedTool(tool)
+      await autoAddTool(tool)
+    }
   }
 
 
@@ -806,6 +846,39 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
         )}
         </>
       )}
+
+      {/* Switch prompt — shown when user removes a tool */}
+      {switchPrompt && clientLoggedIn && (
+        <SwitchPrompt
+          removedToolId={switchPrompt.toolId}
+          removedToolName={switchPrompt.toolName}
+          recentlyAdded={subs.filter(s => s.tools?.name).slice(0, 3).map(s => ({ tool_id: s.tool_id, name: s.tools!.name }))}
+          onClose={() => setSwitchPrompt(null)}
+        />
+      )}
+
+      {/* Weekly usage check-in */}
+      {clientLoggedIn && subsCount >= 2 && (
+        <UsageCheckin tools={subs.filter(s => Number(s.monthly_cost) > 0).map(s => ({
+          tool_id: s.tool_id,
+          name: s.tools?.name || '?',
+          logo_url: s.tools?.logo_url || null,
+          cost: Number(s.monthly_cost),
+        }))} />
+      )}
+
+      {/* Billing calendar */}
+      {clientLoggedIn && subsCount >= 1 && (
+        <BillingCalendar subscriptions={subs.map(s => ({
+          tool_id: s.tool_id,
+          monthly_cost: Number(s.monthly_cost),
+          created_at: s.created_at,
+          tools: s.tools ? { name: s.tools.name, logo_url: s.tools.logo_url } : null,
+        }))} />
+      )}
+
+      {/* Changelog feed */}
+      {clientLoggedIn && subsCount >= 1 && <ChangelogFeed />}
 
       {/* Spend history chart */}
       {subsCount >= 2 && (
