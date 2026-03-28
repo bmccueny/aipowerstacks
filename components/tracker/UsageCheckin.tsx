@@ -46,17 +46,28 @@ export function UsageCheckin({ tools }: { tools: TrackedTool[] }) {
     setResponses(prev => ({ ...prev, [toolId]: !prev[toolId] }))
   }
 
+  const [submitting, setSubmitting] = useState(false)
+
   const submit = async () => {
+    setSubmitting(true)
     const data = tools.map(t => ({ tool_id: t.tool_id, used: responses[t.tool_id] || false }))
-    const res = await fetch('/api/tracker/checkin', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ responses: data }),
-    })
-    if (res.ok) {
-      setSubmitted(true)
-      toast.success('Check-in saved!')
+    try {
+      const res = await fetch('/api/tracker/checkin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ responses: data }),
+      })
+      if (res.ok) {
+        setSubmitted(true)
+        toast.success('Check-in saved!')
+      } else {
+        const err = await res.json().catch(() => ({}))
+        toast.error(err.error || 'Check-in failed — try again')
+      }
+    } catch {
+      toast.error('Network error — try again')
     }
+    setSubmitting(false)
   }
 
   // Compute usage stats from history
@@ -141,9 +152,10 @@ export function UsageCheckin({ tools }: { tools: TrackedTool[] }) {
       <div className="flex gap-2">
         <button
           onClick={submit}
-          className="flex-1 h-9 rounded-lg bg-primary text-primary-foreground text-xs font-bold hover:bg-primary/90 transition-colors"
+          disabled={submitting}
+          className="flex-1 h-9 rounded-lg bg-primary text-primary-foreground text-xs font-bold hover:bg-primary/90 transition-colors disabled:opacity-50"
         >
-          Submit Check-In
+          {submitting ? 'Saving...' : 'Submit Check-In'}
         </button>
         <button
           onClick={() => setSubmitted(true)}
