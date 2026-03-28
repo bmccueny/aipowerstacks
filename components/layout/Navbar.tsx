@@ -77,25 +77,12 @@ export function Navbar() {
     router.refresh()
   }
 
-  const [scrolled, setScrolled] = useState(false)
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 10)
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
-
   return (
     <>
       {/* Main Navbar */}
       <nav
         aria-label="Main navigation"
-        className={cn(
-          'fixed top-0 w-screen z-50 transition-all duration-300',
-          scrolled
-            ? 'bg-[#09090b]/80 backdrop-blur-xl saturate-150 border-b border-white/[0.06] shadow-lg shadow-black/20'
-            : 'bg-transparent border-b border-transparent'
-        )}
+        className="fixed top-0 w-screen z-50 bg-background/80 backdrop-blur-xl saturate-150 border-b border-white/15 dark:border-white/10 shadow-sm"
         style={{ left: 0, right: 0, width: '100vw' }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" style={{ width: '100%', maxWidth: '80rem' }}>
@@ -106,7 +93,7 @@ export function Navbar() {
                 <div className="relative">
                   <BrandMark className="h-8 w-8 transition-transform duration-200 group-hover:scale-110" />
                 </div>
-                <span className="text-lg font-semibold tracking-tight text-white hover:text-gray-200 transition-colors duration-200">
+                <span className="text-lg font-semibold tracking-tight text-gray-900 dark:text-white hover:text-gray-700 dark:hover:text-gray-200 transition-colors duration-200">
                   <span className="text-primary">AI</span>PowerStacks
                 </span>
               </Link>
@@ -122,14 +109,14 @@ export function Navbar() {
                     'px-4 py-2 text-sm font-semibold rounded-lg transition-all duration-200',
                     ('/' + pathname.split('/')[1]) === link.href
                       ? 'text-primary bg-primary/10'
-                      : 'text-gray-300 hover:text-white hover:bg-white/[0.06]'
+                      : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800'
                   )}
                 >
                   {link.label}
                 </Link>
               ))}
               <DropdownMenu>
-                <DropdownMenuTrigger className="px-4 py-2 text-sm font-semibold rounded-lg text-gray-300 hover:text-white hover:bg-white/[0.06] transition-all duration-200 outline-none">
+                <DropdownMenuTrigger className="px-4 py-2 text-sm font-semibold rounded-lg text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 outline-none">
                   More
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
@@ -149,8 +136,8 @@ export function Navbar() {
               {user ? (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon-lg" className="rounded-full hover:bg-white/[0.06] transition-all duration-200 hover:opacity-90 focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 flex-shrink-0 relative z-10">
-                      <Avatar className="h-9 w-9 ring-2 ring-white/10 ring-offset-1 ring-offset-transparent transition-transform duration-200 hover:scale-110">
+                      <Button variant="ghost" size="icon-lg" className="rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 hover:opacity-90 focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 flex-shrink-0 relative z-10">
+                      <Avatar className="h-9 w-9 ring-2 ring-gray-200 dark:ring-gray-700 ring-offset-1 transition-transform duration-200 hover:scale-110">
                         <AvatarImage
                           src={profile?.avatar_url || undefined}
                           alt={user.user_metadata?.full_name || user.user_metadata?.name || 'User'}
@@ -167,32 +154,32 @@ export function Navbar() {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
                     align="end"
-                    className="w-64 max-w-[90vw] shadow-xl border-white/10 bg-[#111113] z-[60]"
+                    className="w-64 max-w-[90vw] shadow-xl border-gray-200 dark:border-gray-700 z-[60]"
                     sideOffset={8}
                     alignOffset={0}
                     avoidCollisions={true}
                     collisionPadding={{ top: 16, right: 16, bottom: 16, left: 16 }}
                   >
-                    <div className="px-4 py-3 border-b border-white/10 bg-white/[0.03] rounded-t-lg">
-                      <p className="text-sm font-semibold text-white">
+                    <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 rounded-t-lg">
+                      <p className="text-sm font-semibold text-gray-900 dark:text-white">
                         {profile?.display_name || user.user_metadata?.full_name || 'User'}
                       </p>
-                      <p className="text-xs text-gray-400 font-medium">{user.email}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">{user.email}</p>
                     </div>
                     <DropdownMenuItem asChild>
-                      <Link href="/dashboard" className="cursor-pointer hover:bg-white/[0.06] rounded-md mx-1">
+                      <Link href="/dashboard" className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md mx-1">
                         <User className="h-4 w-4 mr-3" />
                         <span className="font-medium">Dashboard</span>
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link href="/settings" className="cursor-pointer hover:bg-white/[0.06] rounded-md mx-1">
+                      <Link href="/settings" className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md mx-1">
                         <Settings className="h-4 w-4 mr-3" />
                         <span className="font-medium">Settings</span>
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator className="mx-1" />
-                    <DropdownMenuItem onClick={signOut} className="cursor-pointer text-red-400 hover:bg-red-900/20 rounded-md mx-1">
+                    <DropdownMenuItem onClick={signOut} className="cursor-pointer text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md mx-1">
                       <LogOut className="h-4 w-4 mr-3" />
                       <span className="font-medium">Sign Out</span>
                     </DropdownMenuItem>
@@ -202,7 +189,7 @@ export function Navbar() {
                 <div className="hidden sm:flex items-center gap-3">
                   <Link
                     href="/login"
-                    className="px-4 py-2 text-sm font-semibold text-gray-300 hover:text-white hover:bg-white/[0.06] rounded-lg transition-all duration-200"
+                    className="px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all duration-200"
                   >
                     Log in
                   </Link>
@@ -220,7 +207,7 @@ export function Navbar() {
                 variant="ghost"
                 size="icon"
                 onClick={() => setMobileOpen(!mobileOpen)}
-                className="md:hidden rounded-lg hover:bg-white/[0.06] transition-colors duration-200"
+                className="md:hidden rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
               >
                 {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
               </Button>
@@ -252,7 +239,7 @@ export function Navbar() {
                     'block px-4 py-3 text-base font-medium rounded-lg transition-colors duration-200',
                     ('/' + pathname.split('/')[1]) === link.href
                       ? 'text-primary bg-primary/10'
-                      : 'text-gray-300 hover:bg-white/[0.06]'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
                   )}
                 >
                   {link.label}
@@ -262,11 +249,11 @@ export function Navbar() {
 
             {/* Mobile Auth */}
             {!user && (
-              <div className="mt-8 pt-6 border-t border-white/10 space-y-3">
+              <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700 space-y-3">
                 <Link
                   href="/login"
                   onClick={() => setMobileOpen(false)}
-                  className="block w-full px-6 py-3 text-center font-semibold text-gray-300 border border-white/15 rounded-full hover:bg-white/[0.06] transition-all duration-200 hover:opacity-90"
+                  className="block w-full px-6 py-3 text-center font-semibold text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 rounded-full hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-200 hover:opacity-90"
                 >
                   Log in
                 </Link>

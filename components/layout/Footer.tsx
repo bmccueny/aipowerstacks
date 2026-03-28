@@ -36,7 +36,7 @@ export function Footer() {
   }
 
   return (
-    <footer className="border-t border-white/[0.06] bg-[#09090b] relative">
+    <footer className="border-t border-foreground/[0.06] bg-background relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 relative">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10">
           <div className="col-span-2 md:col-span-1">
@@ -82,7 +82,7 @@ export function Footer() {
         <div className="mt-10 mb-8 max-w-sm">
           <NewsletterBanner source="footer" tone="dark" />
         </div>
-        <div className="pt-6 border-t border-white/[0.06] flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div className="pt-6 border-t border-border/50 flex flex-col sm:flex-row justify-between items-center gap-4">
           <p className="text-sm text-muted-foreground">
             © {new Date().getFullYear()} AIPowerStacks. All rights reserved.
           </p>

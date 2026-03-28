@@ -179,7 +179,7 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
                 key={preset.label}
                 type="button"
                 onClick={() => applyPreset(preset)}
-                className="px-3.5 py-2 rounded-full border border-white/[0.08] hover:border-primary/40 hover:bg-primary/[0.06] text-sm transition-all cursor-pointer flex items-center gap-2 group"
+                className="px-3.5 py-2 rounded-full border border-foreground/10 hover:border-primary/40 hover:bg-primary/5 text-sm transition-all cursor-pointer flex items-center gap-2 group"
               >
                 <Icon className={`h-3.5 w-3.5 ${preset.color} group-hover:scale-110 transition-transform`} />
                 <span className="font-semibold">{preset.label}</span>
@@ -204,10 +204,10 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
                   onClick={() => isAdded ? remove(tool.id) : quickAdd(tool)}
                   className={`relative p-3 rounded-xl border transition-all text-center cursor-pointer group ${
                     isLoading
-                      ? 'border-primary/30 bg-primary/[0.05] animate-pulse'
+                      ? 'border-primary/30 bg-primary/[0.03] animate-pulse'
                       : isAdded
-                        ? 'border-primary/40 bg-primary/[0.08]'
-                        : 'border-white/[0.06] bg-white/[0.02] hover:border-primary/30 hover:bg-white/[0.04]'
+                        ? 'border-primary/40 bg-primary/5'
+                        : 'border-foreground/[0.06] hover:border-primary/30 hover:bg-primary/[0.02]'
                   }`}
                 >
                   {isLoading && (
@@ -256,7 +256,7 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
               onChange={e => { setSearch(e.target.value); setShowDropdown(true) }}
               onFocus={() => { if (search.length > 1) setShowDropdown(true) }}
               autoFocus
-              className="w-full pl-10 pr-10 py-3.5 text-base sm:text-sm rounded-2xl border border-white/[0.1] bg-white/[0.03] focus:outline-none focus:border-primary/40 focus:ring-2 focus:ring-primary/20 transition-all"
+              className="w-full pl-10 pr-10 py-3.5 text-base sm:text-sm rounded-2xl border border-foreground/[0.1] bg-background focus:outline-none focus:border-primary/40 focus:ring-2 focus:ring-primary/20 transition-all"
             />
             <button
               onClick={() => { setShowSearch(false); setSearch('') }}
@@ -266,7 +266,7 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
             </button>
           </div>
           {showDropdown && filtered.length > 0 && (
-            <div className="absolute top-full left-0 right-0 z-[100] mt-2 bg-[#111113] border border-white/10 rounded-xl shadow-2xl max-h-64 overflow-y-auto">
+            <div className="absolute top-full left-0 right-0 z-[100] mt-2 bg-white dark:bg-neutral-900 border border-border rounded-xl shadow-2xl max-h-64 overflow-y-auto">
               {filtered.map(t => (
                 <div
                   key={t.id}
@@ -291,7 +291,7 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
 
       {/* ── Tier picker (when tool selected from search) ── */}
       {selectedTool && (
-        <div className="rounded-2xl border border-primary/20 bg-primary/[0.04] p-4 mb-4">
+        <div className="rounded-2xl border border-primary/20 bg-primary/[0.02] p-4 mb-4">
           <div className="flex items-center gap-3 mb-3">
             {selectedTool.logo_url ? (
               <img src={selectedTool.logo_url} alt={selectedTool.name} className="w-8 h-8 rounded-lg object-contain" />
@@ -316,7 +316,7 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
                 key={tier.tier_name}
                 type="button"
                 onClick={() => addWithTier(tier.monthly_price, tier.tier_name)}
-                className="px-3 py-1.5 rounded-lg border border-white/10 hover:border-primary/40 hover:bg-primary/[0.08] text-sm transition-all cursor-pointer"
+                className="px-3 py-1.5 rounded-lg border border-border hover:border-primary/40 hover:bg-primary/5 text-sm transition-all cursor-pointer"
               >
                 <span className="font-bold">{tier.monthly_price === 0 ? 'Free' : `$${tier.monthly_price}`}</span>
                 <span className="text-xs text-muted-foreground ml-1">{tier.tier_name}</span>
@@ -330,7 +330,7 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
                       key={p}
                       type="button"
                       onClick={() => addWithTier(p, p === 0 ? 'Free' : `$${p}/mo`)}
-                      className="px-3 py-1.5 rounded-lg border border-dashed border-white/10 hover:border-primary/40 hover:bg-primary/[0.08] text-sm font-bold transition-all cursor-pointer"
+                      className="px-3 py-1.5 rounded-lg border border-dashed border-border hover:border-primary/40 hover:bg-primary/5 text-sm font-bold transition-all cursor-pointer"
                     >
                       {p === 0 ? 'Free' : `~$${p}`}
                     </button>
@@ -345,7 +345,7 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
 
       {/* ── Receipt ── */}
       {added.length > 0 && (
-        <div className="rounded-2xl border border-white/[0.06] divide-y divide-white/[0.06] bg-white/[0.02] mb-4">
+        <div className="rounded-2xl border border-foreground/[0.06] divide-y divide-foreground/[0.06] mb-4">
           {added.map(tool => (
             <div key={tool.id}>
               <div className="flex items-center gap-3 px-4 py-2.5">
@@ -404,11 +404,11 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
             </div>
           ))}
           {/* Total */}
-          <div className="flex items-center justify-between px-4 py-3 bg-white/[0.03]">
+          <div className="flex items-center justify-between px-4 py-3 bg-foreground/[0.02]">
             <span className="text-sm font-bold">Monthly total</span>
             <span className="text-xl font-black">${total}<span className="text-sm text-muted-foreground font-normal">/mo</span></span>
           </div>
-          <div className="flex items-center justify-between px-4 py-2 bg-white/[0.03]">
+          <div className="flex items-center justify-between px-4 py-2 bg-foreground/[0.02]">
             <span className="text-xs text-muted-foreground">Annual cost</span>
             <span className="text-sm font-bold text-muted-foreground">${yearly}/year</span>
           </div>

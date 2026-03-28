@@ -14,26 +14,23 @@ export function OverlapTeaser({ overlaps }: { overlaps: OverlapCategory[] }) {
   return (
     <section className="px-4 max-w-3xl mx-auto w-full">
       <div className="text-center mb-8">
-        <div className="flex items-center justify-center gap-2 mb-3">
-          <div className="pulse-dot" />
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber-500">Overlap Alert</p>
-        </div>
-        <h2 className="text-xl sm:text-2xl font-bold text-foreground">
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber-500 mb-3">Overlap Alert</p>
+        <h2 className="text-xl sm:text-2xl font-black text-foreground">
           Are you paying twice for the same thing?
         </h2>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 stagger-in">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {overlaps.map((overlap) => (
           <div
             key={overlap.useCase}
-            className="bento-card text-center"
+            className="rounded-2xl border border-foreground/[0.06] p-5"
           >
-            <div className="flex justify-center mb-3">
+            <div className="flex justify-center gap-[-4px] mb-3">
               {overlap.examples.slice(0, 4).map((tool, i) => (
                 <div
                   key={tool.slug}
-                  className="h-9 w-9 rounded-xl bg-[#09090b] border border-white/10 overflow-hidden flex items-center justify-center"
+                  className="h-9 w-9 rounded-xl bg-background border border-foreground/10 overflow-hidden flex items-center justify-center"
                   style={{ marginLeft: i > 0 ? '-6px' : 0, zIndex: 4 - i }}
                 >
                   {tool.logo_url ? (
@@ -44,11 +41,11 @@ export function OverlapTeaser({ overlaps }: { overlaps: OverlapCategory[] }) {
                 </div>
               ))}
             </div>
-            <p className="font-bold text-sm mb-0.5">{overlap.label}</p>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-center font-bold text-sm mb-0.5">{overlap.label}</p>
+            <p className="text-center text-xs text-muted-foreground">
               {overlap.toolCount} tools competing for your budget
             </p>
-            <div className="mt-3">
+            <div className="text-center mt-3">
               <Link
                 href={`/tools?use_case=${overlap.useCase}`}
                 className="text-xs font-semibold text-primary hover:underline"
