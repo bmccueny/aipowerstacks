@@ -94,6 +94,9 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
   const [dashboardLoading, setDashboardLoading] = useState(false)
   const [importing, setImporting] = useState(false)
   const [priceTrends, setPriceTrends] = useState<Record<string, number>>({})
+  const [editingSubId, setEditingSubId] = useState<string | null>(null)
+  const [editTiers, setEditTiers] = useState<PricingTier[]>([])
+  const [editTiersLoading, setEditTiersLoading] = useState(false)
   const wrapperRef = useRef<HTMLDivElement>(null)
 
   const [clientLoggedIn, setClientLoggedIn] = useState(isLoggedIn)
@@ -321,6 +324,31 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
     if (res.ok) {
       setSubs(prev => prev.filter(s => s.id !== id))
       toast.success('Removed')
+    }
+  }
+
+  const startEditTier = (subId: string, toolId: string) => {
+    if (editingSubId === subId) { setEditingSubId(null); return }
+    setEditingSubId(subId)
+    setEditTiersLoading(true)
+    fetch(`/api/tracker/tiers?tool_id=${toolId}`)
+      .then(r => r.json())
+      .then(d => { setEditTiers(d.tiers || []); setEditTiersLoading(false) })
+      .catch(() => { setEditTiers([]); setEditTiersLoading(false) })
+  }
+
+  const updateSubCost = async (subId: string, newCost: number) => {
+    const sub = subs.find(s => s.id === subId)
+    if (!sub) return
+    const res = await fetch('/api/tracker', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tool_id: sub.tool_id, monthly_cost: newCost }),
+    })
+    if (res.ok) {
+      setSubs(prev => prev.map(s => s.id === subId ? { ...s, monthly_cost: newCost } : s))
+      setEditingSubId(null)
+      toast.success('Tier updated')
     }
   }
 
@@ -659,40 +687,88 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
           {/* Authenticated subs */}
           {effectiveSubs.map(sub => {
             const trend = priceTrends[sub.tool_id]
+            const isEditing = editingSubId === sub.id
             return (
-              <div key={sub.id} className="glass-card rounded-xl px-5 py-4 flex items-center gap-4">
-                <div className="h-10 w-10 rounded-lg bg-muted overflow-hidden flex items-center justify-center shrink-0">
-                  {sub.tools?.logo_url ? (
-                    <img src={sub.tools.logo_url} alt="" className="w-10 h-10 object-contain" />
-                  ) : (
-                    <span className="text-sm font-bold text-primary">{sub.tools?.name?.[0] || '?'}</span>
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <Link href={`/tools/${sub.tools?.slug || ''}`} className="font-bold text-sm hover:text-primary transition-colors">
-                    {sub.tools?.name || 'Unknown Tool'}
-                  </Link>
-                  <div className="flex items-center gap-2">
-                    <p className="text-xs text-muted-foreground">{sub.tools?.pricing_model || 'paid'}</p>
-                    {trend != null && trend !== 0 && (
-                      <span className={`inline-flex items-center gap-0.5 text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
-                        trend > 0
-                          ? 'bg-red-50 text-red-600 dark:bg-red-950 dark:text-red-400'
-                          : 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-400'
-                      }`}>
-                        {trend > 0 ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
-                        {trend > 0 ? '+' : ''}{trend}%
-                      </span>
+              <div key={sub.id}>
+                <div className="glass-card rounded-xl px-5 py-4 flex items-center gap-4">
+                  <div className="h-10 w-10 rounded-lg bg-muted overflow-hidden flex items-center justify-center shrink-0">
+                    {sub.tools?.logo_url ? (
+                      <img src={sub.tools.logo_url} alt="" className="w-10 h-10 object-contain" />
+                    ) : (
+                      <span className="text-sm font-bold text-primary">{sub.tools?.name?.[0] || '?'}</span>
                     )}
                   </div>
+                  <div className="flex-1 min-w-0">
+                    <Link href={`/tools/${sub.tools?.slug || ''}`} className="font-bold text-sm hover:text-primary transition-colors">
+                      {sub.tools?.name || 'Unknown Tool'}
+                    </Link>
+                    <div className="flex items-center gap-2">
+                      <p className="text-xs text-muted-foreground">{sub.tools?.pricing_model || 'paid'}</p>
+                      {trend != null && trend !== 0 && (
+                        <span className={`inline-flex items-center gap-0.5 text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
+                          trend > 0
+                            ? 'bg-red-50 text-red-600 dark:bg-red-950 dark:text-red-400'
+                            : 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-400'
+                        }`}>
+                          {trend > 0 ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+                          {trend > 0 ? '+' : ''}{trend}%
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => startEditTier(sub.id, sub.tool_id)}
+                    className="flex items-center gap-1.5 hover:bg-muted/80 px-2 py-1 rounded-lg transition-colors cursor-pointer shrink-0"
+                  >
+                    <span className="text-lg font-black">
+                      {Number(sub.monthly_cost) === 0 ? 'Free' : `$${Number(sub.monthly_cost).toFixed(2)}`}
+                    </span>
+                    {Number(sub.monthly_cost) > 0 && <span className="text-xs text-muted-foreground font-normal">/mo</span>}
+                    <span className="text-[10px] text-primary">edit</span>
+                  </button>
+                  <button onClick={() => removeSub(sub.id)} className="text-muted-foreground hover:text-destructive transition-colors shrink-0 p-1">
+                    <Trash2 className="h-4 w-4" />
+                  </button>
                 </div>
-                <p className="text-lg font-black shrink-0">
-                  {Number(sub.monthly_cost) === 0 ? 'Free' : `$${Number(sub.monthly_cost).toFixed(2)}`}
-                  {Number(sub.monthly_cost) > 0 && <span className="text-xs text-muted-foreground font-normal">/mo</span>}
-                </p>
-                <button onClick={() => removeSub(sub.id)} className="text-muted-foreground hover:text-destructive transition-colors shrink-0 p-1">
-                  <Trash2 className="h-4 w-4" />
-                </button>
+                {isEditing && (
+                  <div className="px-5 pb-3 pt-1 flex flex-wrap gap-1.5">
+                    {editTiersLoading ? (
+                      <div className="flex items-center gap-2 py-2">
+                        <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
+                        <span className="text-xs text-muted-foreground">Loading plans...</span>
+                      </div>
+                    ) : editTiers.length > 0 ? editTiers.map(tier => (
+                      <button
+                        key={tier.tier_name}
+                        type="button"
+                        onClick={() => updateSubCost(sub.id, tier.monthly_price)}
+                        className={`px-2.5 py-1 rounded-lg border text-xs transition-all cursor-pointer ${
+                          Number(sub.monthly_cost) === tier.monthly_price
+                            ? 'border-primary/40 bg-primary/10 font-bold'
+                            : 'border-foreground/[0.06] hover:border-primary/30 hover:bg-primary/5'
+                        }`}
+                      >
+                        <span className="font-bold">{tier.monthly_price === 0 ? 'Free' : `$${tier.monthly_price}`}</span>
+                        <span className="text-muted-foreground ml-1">{tier.tier_name}</span>
+                      </button>
+                    )) : (
+                      [0, 10, 20, 50, 100, 200].map(p => (
+                        <button
+                          key={p}
+                          type="button"
+                          onClick={() => updateSubCost(sub.id, p)}
+                          className={`px-2.5 py-1 rounded-lg border text-xs font-bold transition-all cursor-pointer ${
+                            Number(sub.monthly_cost) === p
+                              ? 'border-primary/40 bg-primary/10'
+                              : 'border-foreground/[0.06] hover:border-primary/30 hover:bg-primary/5'
+                          }`}
+                        >
+                          {p === 0 ? 'Free' : `$${p}`}
+                        </button>
+                      ))
+                    )}
+                  </div>
+                )}
               </div>
             )
           })}
