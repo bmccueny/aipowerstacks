@@ -10,9 +10,7 @@ import { SavingsReport } from './SavingsReport'
 import { StackOptimizer } from './StackOptimizer'
 import { StackIntel } from './StackIntel'
 import { SpendChart } from './SpendChart'
-import { UsageCheckin } from './UsageCheckin'
 import { ChangelogFeed } from './ChangelogFeed'
-import { BillingCalendar } from './BillingCalendar'
 import { SwitchPrompt } from './SwitchPrompt'
 
 type Subscription = {
@@ -855,26 +853,6 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
           recentlyAdded={subs.filter(s => s.tools?.name).slice(0, 3).map(s => ({ tool_id: s.tool_id, name: s.tools!.name }))}
           onClose={() => setSwitchPrompt(null)}
         />
-      )}
-
-      {/* Weekly usage check-in */}
-      {clientLoggedIn && subsCount >= 2 && (
-        <UsageCheckin tools={subs.filter(s => Number(s.monthly_cost) > 0).map(s => ({
-          tool_id: s.tool_id,
-          name: s.tools?.name || '?',
-          logo_url: s.tools?.logo_url || null,
-          cost: Number(s.monthly_cost),
-        }))} />
-      )}
-
-      {/* Billing calendar */}
-      {clientLoggedIn && subsCount >= 1 && (
-        <BillingCalendar subscriptions={subs.map(s => ({
-          tool_id: s.tool_id,
-          monthly_cost: Number(s.monthly_cost),
-          created_at: s.created_at,
-          tools: s.tools ? { name: s.tools.name, logo_url: s.tools.logo_url } : null,
-        }))} />
       )}
 
       {/* Changelog feed */}
