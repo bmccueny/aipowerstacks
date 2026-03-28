@@ -168,9 +168,9 @@ export default async function ToolDetailPage({ params }: Props) {
           <span className="text-foreground">{tool.name}</span>
         </nav>
 
-        <div className="rounded-2xl border border-foreground/[0.08] bg-foreground/[0.02] p-6 mb-6">
+        <div className="rounded-2xl border border-foreground/[0.08] bg-foreground/[0.03] p-8 mb-6">
           <div className="flex flex-col sm:flex-row gap-6">
-            <div className="h-24 w-24 shrink-0 rounded-xl border border-foreground/10 bg-background overflow-hidden flex items-center justify-center">
+            <div className="h-24 w-24 shrink-0 rounded-xl border border-foreground/10 bg-background shadow-sm overflow-hidden flex items-center justify-center">
               {tool.logo_url ? (
                 <Image src={tool.logo_url} alt={tool.name} width={96} height={96} className="object-cover" />
               ) : (

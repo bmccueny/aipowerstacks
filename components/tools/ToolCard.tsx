@@ -445,7 +445,7 @@ function ToolCardGrid({ tool, pricingColor, pricingLabel, screenshotUrl, isWellF
       <div className="px-5 pb-5 flex flex-col gap-3 flex-1">
         {/* Logo + name + rating */}
         <div className="flex items-start gap-4">
-          <div className="h-14 w-14 shrink-0 rounded-md bg-muted overflow-hidden flex items-center justify-center relative z-10">
+          <div className="h-14 w-14 shrink-0 rounded-md bg-foreground/[0.03] overflow-hidden flex items-center justify-center relative z-10">
             <ToolCardLogo logoUrl={tool.logo_url} name={tool.name} size={56} compact={compact} imageError={imageError} onError={() => setImageError(true)} />
           </div>
           <div className="flex-1 min-w-0 pt-0.5">
@@ -493,7 +493,7 @@ function ToolCardGrid({ tool, pricingColor, pricingLabel, screenshotUrl, isWellF
         <div className="flex items-center gap-2 mt-auto pt-3 border-t border-foreground/10 relative z-10" onClick={(e) => e.stopPropagation()}>
           <Link
             href={`/tracker?add=${tool.slug}`}
-            className="flex-1 h-9 flex items-center justify-center gap-1.5 text-xs font-semibold rounded-lg border border-foreground/[0.12] bg-background/60 hover:bg-primary/5 hover:border-primary/30 hover:text-primary transition-all"
+            className="flex-1 h-9 flex items-center justify-center gap-1.5 text-xs font-semibold rounded-lg border border-foreground/[0.12] bg-background hover:bg-primary hover:text-white hover:border-primary transition-all duration-150"
           >
             <DollarSign className="h-3.5 w-3.5" />
             Track This

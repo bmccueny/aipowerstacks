@@ -68,7 +68,7 @@
   --font-geist-mono: "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --radius: 0.9rem;
   --background: #fafaf8;
-  --foreground: oklch(0.15 0.02 240);
+  --foreground: oklch(0.14 0.01 40);
   --card: #ffffff;
   --card-foreground: oklch(0.15 0.01 40);
   --popover: oklch(1 0 0 / 0.8);
@@ -81,7 +81,7 @@
   --secondary: oklch(0.94 0.01 240);
   --secondary-foreground: oklch(0.15 0.02 240);
   --muted: oklch(0.97 0.003 80);
-  --muted-foreground: oklch(0.50 0.01 80);
+  --muted-foreground: oklch(0.45 0.01 60);
   --accent: oklch(0.92 0.03 22);
   --accent-foreground: oklch(0.35 0.08 22);
   --destructive: oklch(0.6 0.18 20);
@@ -201,6 +201,18 @@
 @keyframes twinkle {
   0%  { opacity: 0.35; }
   to  { opacity: 0.7; }
+}
+
+/* ─── Heading balance ─── */
+h1, h2, h3 { text-wrap: balance; }
+
+/* ─── CTA Glow (2026 trend — ambient button illumination) ─── */
+.btn-glow {
+  box-shadow: 0 0 20px color-mix(in oklch, var(--primary) 25%, transparent);
+  transition: box-shadow 0.2s ease;
+}
+.btn-glow:hover {
+  box-shadow: 0 0 30px color-mix(in oklch, var(--primary) 40%, transparent);
 }
 
 /* ─── Premium Entrance Animations ─── */
@@ -1337,17 +1349,17 @@
   isolation: isolate;
   cursor: pointer;
   background: oklch(1 0 0 / 0.85);
-  border: 1px solid oklch(0 0 0 / 0.08);
+  border: 1px solid oklch(0 0 0 / 0.10);
   border-radius: var(--ds-radius-xl, 20px);
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 @media (hover: hover) {
   .card-directory:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
-    border-color: oklch(0 0 0 / 0.12);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.06);
+    border-color: oklch(0 0 0 / 0.15);
   }
 }
 

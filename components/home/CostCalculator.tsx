@@ -192,7 +192,7 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
       {/* ── Tap-to-add grid ── */}
       {!selectedTool && !showSearch && (
         <div className="mb-4">
-          <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
+          <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-3">
             {popularTools.map(tool => {
               const isAdded = addedIds.has(tool.id)
               const isLoading = loadingToolId === tool.id
@@ -220,14 +220,14 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
                       <Check className="h-2.5 w-2.5 text-white" />
                     </div>
                   )}
-                  <div className={`h-8 w-8 mx-auto mb-1.5 flex items-center justify-center ${isLoading ? 'opacity-50' : ''}`}>
+                  <div className={`h-10 w-10 mx-auto mb-1.5 flex items-center justify-center ${isLoading ? 'opacity-50' : ''}`}>
                     {tool.logo_url ? (
-                      <img src={tool.logo_url} alt="" className="w-8 h-8 rounded-lg object-contain" />
+                      <img src={tool.logo_url} alt="" className="w-10 h-10 rounded-lg object-contain" />
                     ) : (
                       <span className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">{tool.name[0]}</span>
                     )}
                   </div>
-                  <p className="text-[11px] font-semibold leading-tight line-clamp-1">{tool.name}</p>
+                  <p className="text-xs font-medium leading-tight line-clamp-1">{tool.name}</p>
                 </button>
               )
             })}

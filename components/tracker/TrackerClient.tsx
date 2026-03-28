@@ -512,13 +512,13 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
 
       {/* Cost summary — hero layout */}
       {effectiveCount > 0 && (
-        <div className="flex flex-col sm:flex-row items-center gap-4">
+        <div className="rounded-xl bg-foreground/[0.02] border border-foreground/[0.06] px-6 py-5 flex flex-col sm:flex-row items-center gap-4">
           <div className="flex-1 text-center sm:text-left">
             <p className="text-4xl sm:text-5xl font-black">${total.toFixed(0)}<span className="text-lg text-muted-foreground font-normal">/mo</span></p>
             <p className="text-sm text-muted-foreground">${yearly.toFixed(0)}/yr · {effectiveCount} tool{effectiveCount !== 1 ? 's' : ''}{overlaps.length > 0 ? ` · ${overlaps.length} overlap${overlaps.length > 1 ? 's' : ''}` : ''}</p>
           </div>
           {overlapSavings > 0 && (
-            <div className="rounded-xl border border-emerald-400/20 bg-emerald-400/[0.04] px-5 py-3 text-center shrink-0">
+            <div className="rounded-xl border border-emerald-400/30 bg-emerald-400/[0.08] px-5 py-3 text-center shrink-0">
               <p className="text-xl font-black text-emerald-600 dark:text-emerald-400">${(overlapSavings * 12).toFixed(0)}/yr</p>
               <p className="text-[10px] text-muted-foreground">potential savings</p>
             </div>
