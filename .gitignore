@@ -6,3 +6,8 @@ node_modules/
 .tmp/
 scripts/.review-backup.json
 .env.vercel.check
+
+# Scratchpad / temp data
+.firecrawl/
+.superpowers/
+supabase/.temp/

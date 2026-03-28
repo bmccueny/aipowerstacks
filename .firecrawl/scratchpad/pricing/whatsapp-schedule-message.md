@@ -1,7 +1,0 @@
-# 404
-
-Page Not Found
-
-Sorry, the page you are looking for does not exist.
-
-[Back to Home](https://wadesk.io/)
