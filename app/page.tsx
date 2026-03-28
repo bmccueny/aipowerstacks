@@ -11,7 +11,9 @@ import { CompareProvider } from '@/lib/context/CompareContext'
 import { CompareTray } from '@/components/tools/CompareTray'
 import { getSiteStats, getMostTrackedTools, getOverlapExamples } from '@/lib/supabase/queries/tools'
 import { getLatestPosts } from '@/lib/supabase/queries/blog'
+import { getAllCategories } from '@/lib/supabase/queries/categories'
 
+import { SocialProofBar } from '@/components/home/SocialProofBar'
 import { JsonLd } from '@/components/common/JsonLd'
 import { SITE_URL } from '@/lib/constants/site'
 import { createClient } from '@/lib/supabase/server'
@@ -40,12 +42,13 @@ export default async function HomePage() {
     .eq('status', 'published')
     .order('name')
 
-  const [siteStats, mostTracked, overlaps, latestPosts, calcToolsResult] = await Promise.all([
+  const [siteStats, mostTracked, overlaps, latestPosts, calcToolsResult, categories] = await Promise.all([
     getSiteStats(),
     getMostTrackedTools(8),
     getOverlapExamples(),
     getLatestPosts(3),
     calcToolsQuery,
+    getAllCategories(),
   ])
 
   const briefingItems = latestPosts
@@ -92,6 +95,11 @@ export default async function HomePage() {
           </div>
 
           <CostCalculator tools={(calcToolsResult.data || []).map(t => ({ id: t.id, name: t.name, slug: t.slug, logo_url: t.logo_url, pricing_model: t.pricing_model }))} isLoggedIn={!!user} />
+        </section>
+
+        {/* ═══ Social Proof Bar ═══ */}
+        <section className="px-4 max-w-3xl mx-auto w-full">
+          <SocialProofBar toolCount={siteStats.toolCount} categoryCount={categories.length} />
         </section>
 
         {/* ═══ The hook — one punchy stat ═══ */}
