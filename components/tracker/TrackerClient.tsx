@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { Plus, Trash2, DollarSign, TrendingDown, Loader2, Search, X, ArrowRight } from 'lucide-react'
+import { Plus, Trash2, DollarSign, TrendingDown, TrendingUp, Loader2, Search, X, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
@@ -93,6 +93,7 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
   const [dashboardData, setDashboardData] = useState<any>(null)
   const [dashboardLoading, setDashboardLoading] = useState(false)
   const [importing, setImporting] = useState(false)
+  const [priceTrends, setPriceTrends] = useState<Record<string, number>>({})
   const wrapperRef = useRef<HTMLDivElement>(null)
 
   const [clientLoggedIn, setClientLoggedIn] = useState(isLoggedIn)
@@ -202,6 +203,46 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
       .then(d => { setTiers(d.tiers || []); setTiersLoading(false) })
       .catch(() => setTiersLoading(false))
   }, [selectedTool])
+
+  // Fetch price trends for tracked tools
+  useEffect(() => {
+    if (subs.length === 0) return
+    Promise.allSettled(
+      subs.map(s =>
+        fetch(`/api/tracker/tiers?tool_id=${s.tool_id}`)
+          .then(r => r.json())
+          .then(d => {
+            const tiers = d.tiers || []
+            const currentTier = tiers.find((t: { monthly_price: number }) =>
+              Math.abs(t.monthly_price - Number(s.monthly_cost)) < 0.5
+            )
+            // If the tool has price history, the tool detail page shows trend
+            // For now, check if user's cost doesn't match any current tier (price changed)
+            if (currentTier) return null
+            if (tiers.length > 0 && Number(s.monthly_cost) > 0) {
+              // User's price doesn't match any tier — price likely changed
+              const closest = tiers.reduce((best: { monthly_price: number } | null, t: { monthly_price: number }) =>
+                !best || Math.abs(t.monthly_price - Number(s.monthly_cost)) < Math.abs(best.monthly_price - Number(s.monthly_cost)) ? t : best
+              , null)
+              if (closest && closest.monthly_price !== Number(s.monthly_cost)) {
+                const diff = closest.monthly_price - Number(s.monthly_cost)
+                return { tool_id: s.tool_id, change: Math.round((diff / Number(s.monthly_cost)) * 100) }
+              }
+            }
+            return null
+          })
+          .catch(() => null)
+      )
+    ).then(results => {
+      const trends: Record<string, number> = {}
+      for (const r of results) {
+        if (r.status === 'fulfilled' && r.value) {
+          trends[r.value.tool_id] = r.value.change
+        }
+      }
+      if (Object.keys(trends).length > 0) setPriceTrends(trends)
+    })
+  }, [subs])
 
   // Single dashboard fetch — replaces benchmark, report, stack-intel, analyze
   // Re-fetch when sub count changes (additions/deletions trigger this)
@@ -616,30 +657,45 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
         <>
         <div className="space-y-2">
           {/* Authenticated subs */}
-          {effectiveSubs.map(sub => (
-            <div key={sub.id} className="glass-card rounded-xl px-5 py-4 flex items-center gap-4">
-              <div className="h-10 w-10 rounded-lg bg-muted overflow-hidden flex items-center justify-center shrink-0">
-                {sub.tools?.logo_url ? (
-                  <img src={sub.tools.logo_url} alt="" className="w-10 h-10 object-contain" />
-                ) : (
-                  <span className="text-sm font-bold text-primary">{sub.tools?.name?.[0] || '?'}</span>
-                )}
+          {effectiveSubs.map(sub => {
+            const trend = priceTrends[sub.tool_id]
+            return (
+              <div key={sub.id} className="glass-card rounded-xl px-5 py-4 flex items-center gap-4">
+                <div className="h-10 w-10 rounded-lg bg-muted overflow-hidden flex items-center justify-center shrink-0">
+                  {sub.tools?.logo_url ? (
+                    <img src={sub.tools.logo_url} alt="" className="w-10 h-10 object-contain" />
+                  ) : (
+                    <span className="text-sm font-bold text-primary">{sub.tools?.name?.[0] || '?'}</span>
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <Link href={`/tools/${sub.tools?.slug || ''}`} className="font-bold text-sm hover:text-primary transition-colors">
+                    {sub.tools?.name || 'Unknown Tool'}
+                  </Link>
+                  <div className="flex items-center gap-2">
+                    <p className="text-xs text-muted-foreground">{sub.tools?.pricing_model || 'paid'}</p>
+                    {trend != null && trend !== 0 && (
+                      <span className={`inline-flex items-center gap-0.5 text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
+                        trend > 0
+                          ? 'bg-red-50 text-red-600 dark:bg-red-950 dark:text-red-400'
+                          : 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-400'
+                      }`}>
+                        {trend > 0 ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+                        {trend > 0 ? '+' : ''}{trend}%
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <p className="text-lg font-black shrink-0">
+                  {Number(sub.monthly_cost) === 0 ? 'Free' : `$${Number(sub.monthly_cost).toFixed(2)}`}
+                  {Number(sub.monthly_cost) > 0 && <span className="text-xs text-muted-foreground font-normal">/mo</span>}
+                </p>
+                <button onClick={() => removeSub(sub.id)} className="text-muted-foreground hover:text-destructive transition-colors shrink-0 p-1">
+                  <Trash2 className="h-4 w-4" />
+                </button>
               </div>
-              <div className="flex-1 min-w-0">
-                <Link href={`/tools/${sub.tools?.slug || ''}`} className="font-bold text-sm hover:text-primary transition-colors">
-                  {sub.tools?.name || 'Unknown Tool'}
-                </Link>
-                <p className="text-xs text-muted-foreground">{sub.tools?.pricing_model || 'paid'}</p>
-              </div>
-              <p className="text-lg font-black shrink-0">
-                {Number(sub.monthly_cost) === 0 ? 'Free' : `$${Number(sub.monthly_cost).toFixed(2)}`}
-                {Number(sub.monthly_cost) > 0 && <span className="text-xs text-muted-foreground font-normal">/mo</span>}
-              </p>
-              <button onClick={() => removeSub(sub.id)} className="text-muted-foreground hover:text-destructive transition-colors shrink-0 p-1">
-                <Trash2 className="h-4 w-4" />
-              </button>
-            </div>
-          ))}
+            )
+          })}
 
           {/* Anonymous subs */}
           {anonSubs.map(sub => (
