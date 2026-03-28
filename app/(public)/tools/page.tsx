@@ -159,11 +159,25 @@ export default async function ToolsPage({ searchParams }: ToolsPageProps) {
           : `Showing ${tools.length}${hasMore ? '+' : ''} tool${tools.length === 1 ? '' : 's'}${page > 1 ? ` · Page ${page}` : ''}`}
       </p>
 
-      <Suspense>
+      <Suspense fallback={<ToolGrid tools={tools} view={view} cardStyle="default" />}>
         <ToolGridTransition view={view}>
           <ToolGrid tools={tools} view={view} cardStyle="default" />
         </ToolGridTransition>
       </Suspense>
+
+      {/* SSR fallback for crawlers that don't execute JS */}
+      <noscript>
+        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {tools.map((tool) => (
+            <li key={tool.id}>
+              <a href={`/tools/${tool.slug}`} className="block p-4 border rounded-lg">
+                <strong>{tool.name}</strong>
+                {tool.tagline && <p>{tool.tagline}</p>}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </noscript>
 
       <Suspense>
         <Pagination page={page} hasMore={hasMore} />
