@@ -682,6 +682,9 @@ export default async function ToolDetailPage({ params }: Props) {
         </div>
       </div>
 
+      {/* Related Pages — internal links for SEO */}
+      <RelatedPages toolSlug={tool.slug} categorySlug={tool.categories?.slug ?? null} alternatives={alternatives} />
+
       <div className="lg:hidden fixed bottom-0 left-0 right-0 z-[60] border-t border-foreground/10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/85 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
         <div className="flex items-center gap-2">
           <a href={tool.website_url} target="_blank" rel="noopener noreferrer" className="flex-1">
