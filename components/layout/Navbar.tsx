@@ -3,8 +3,9 @@
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
-import { User, Settings, LogOut, Menu, X } from 'lucide-react'
+import { User, Settings, LogOut, Menu, X, Search } from 'lucide-react'
 import { BrandMark } from '@/components/common/BrandMark'
+import { CommandPalette } from '@/components/common/CommandPalette'
 import { createClient } from '@/lib/supabase/client'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import {
@@ -131,6 +132,28 @@ export function Navbar() {
 
             {/* Right Side */}
             <div className="flex items-center gap-3">
+              {/* Command Palette */}
+              <CommandPalette />
+
+              {/* Search button (mobile + desktop hint) */}
+              <button
+                type="button"
+                onClick={() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }))}
+                aria-label="Search tools (⌘K)"
+                className="hidden sm:flex items-center gap-2 h-9 px-3 rounded-lg border border-gray-200 dark:border-gray-700 text-sm text-muted-foreground hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 cursor-pointer"
+              >
+                <Search className="h-3.5 w-3.5" />
+                <span className="text-xs">Search…</span>
+                <kbd className="text-[10px] font-medium bg-muted/60 px-1 rounded">⌘K</kbd>
+              </button>
+              <button
+                type="button"
+                onClick={() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }))}
+                aria-label="Search"
+                className="sm:hidden flex items-center justify-center h-11 w-11 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
+              >
+                <Search className="h-5 w-5" />
+              </button>
 
               {/* User Menu */}
               {user ? (
