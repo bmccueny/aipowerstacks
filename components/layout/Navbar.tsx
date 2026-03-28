@@ -85,14 +85,14 @@ export function Navbar() {
         style={{ left: 0, right: 0, width: '100vw' }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" style={{ width: '100%', maxWidth: '80rem' }}>
-          <div className="flex items-center justify-between h-16 min-w-0">
+          <div className="flex items-center justify-between h-14 min-w-0">
             {/* Logo */}
             <div className="flex items-center">
               <Link href="/" className="flex items-center gap-3 group relative">
                 <div className="relative">
                   <BrandMark className="h-8 w-8 transition-transform duration-200 group-hover:scale-110" />
                 </div>
-                <span className="text-xl font-bold tracking-tight text-gray-900 dark:text-white hover:text-gray-700 dark:hover:text-gray-200 transition-colors duration-200">
+                <span className="text-lg font-semibold tracking-tight text-gray-900 dark:text-white hover:text-gray-700 dark:hover:text-gray-200 transition-colors duration-200">
                   <span className="text-primary">AI</span>PowerStacks
                 </span>
               </Link>

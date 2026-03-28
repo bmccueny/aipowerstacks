@@ -1,14 +1,15 @@
 import type { Metadata } from 'next'
 import { GeistSans } from 'geist/font/sans'
-import { Space_Grotesk } from 'next/font/google'
+import { Inter } from 'next/font/google'
 import { SITE_URL } from '@/lib/constants/site'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/react'
 
-const spaceGrotesk = Space_Grotesk({
+const inter = Inter({
   subsets: ['latin'],
-  weight: ['700'],
+  weight: ['400', '500', '600'],
   variable: '--font-display',
+  display: 'swap',
 })
 
 
@@ -91,7 +92,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`${GeistSans.variable} ${spaceGrotesk.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${GeistSans.variable} ${inter.variable}`} suppressHydrationWarning>
       <head>
         <meta name="theme-color" content="#0a0a0f" media="(prefers-color-scheme: dark)" />
         <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />

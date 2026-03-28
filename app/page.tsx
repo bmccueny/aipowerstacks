@@ -72,14 +72,13 @@ export default async function HomePage() {
         }} />
 
         {/* ═══ Hero + Calculator ═══ */}
-        <section className="px-4 max-w-4xl mx-auto w-full pt-10 sm:pt-20">
-          <div className="text-center mb-10">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-4">AI Subscription Tracker</p>
-            <h1 className="text-4xl md:text-6xl font-black tracking-tight text-foreground mb-5 leading-[1.05]">
+        <section className="px-4 max-w-3xl mx-auto w-full pt-16 sm:pt-28">
+          <div className="text-center mb-12 animate-fade-up">
+            <h1 className="text-[clamp(2.25rem,5vw,3.75rem)] font-semibold tracking-tight text-foreground mb-5 leading-[1.1]">
               How much is AI<br className="hidden sm:block" /> costing you?
             </h1>
-            <p className="text-lg text-muted-foreground max-w-lg mx-auto leading-relaxed">
-              Tap your tools. See the total. We&apos;ll tell you what to cancel.
+            <p className="text-lg text-muted-foreground max-w-md mx-auto leading-relaxed">
+              Track your AI subscriptions. See what overlaps. Cut what you don&apos;t need.
             </p>
           </div>
 
@@ -96,26 +95,26 @@ export default async function HomePage() {
 
         {/* ═══ How it works — 3 steps ═══ */}
         <section className="px-4 max-w-3xl mx-auto w-full">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 stagger-in">
             <div className="text-center">
-              <div className="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-3">
-                <Layers className="h-6 w-6 text-primary" />
+              <div className="h-10 w-10 rounded-xl bg-foreground/[0.04] flex items-center justify-center mx-auto mb-3">
+                <Layers className="h-5 w-5 text-foreground/60" />
               </div>
-              <p className="font-bold text-sm mb-1">1. Add your stack</p>
+              <p className="font-semibold text-sm mb-1">1. Add your stack</p>
               <p className="text-xs text-muted-foreground">Tap the tools you pay for. Takes 10 seconds.</p>
             </div>
             <div className="text-center">
-              <div className="h-12 w-12 rounded-2xl bg-amber-500/10 flex items-center justify-center mx-auto mb-3">
-                <Eye className="h-6 w-6 text-amber-500" />
+              <div className="h-10 w-10 rounded-xl bg-foreground/[0.04] flex items-center justify-center mx-auto mb-3">
+                <Eye className="h-5 w-5 text-foreground/60" />
               </div>
-              <p className="font-bold text-sm mb-1">2. See the overlap</p>
+              <p className="font-semibold text-sm mb-1">2. See the overlap</p>
               <p className="text-xs text-muted-foreground">We flag tools competing for the same job.</p>
             </div>
             <div className="text-center">
-              <div className="h-12 w-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center mx-auto mb-3">
-                <Scissors className="h-6 w-6 text-emerald-500" />
+              <div className="h-10 w-10 rounded-xl bg-foreground/[0.04] flex items-center justify-center mx-auto mb-3">
+                <Scissors className="h-5 w-5 text-foreground/60" />
               </div>
-              <p className="font-bold text-sm mb-1">3. Cut the waste</p>
+              <p className="font-semibold text-sm mb-1">3. Cut the waste</p>
               <p className="text-xs text-muted-foreground">Compare overlaps side-by-side. You decide what stays.</p>
             </div>
           </div>
@@ -125,15 +124,15 @@ export default async function HomePage() {
         {mostTracked.length > 0 && (
           <section className="px-4 max-w-4xl mx-auto w-full">
             <div className="flex items-center justify-center gap-2 mb-6">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-              <h2 className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Most Tracked Right Now</h2>
+              <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+              <h2 className="text-sm font-medium text-muted-foreground">Most tracked right now</h2>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 stagger-in">
               {mostTracked.map((tool) => (
                 <Link
                   key={tool.id}
                   href={`/tools/${tool.slug}`}
-                  className="rounded-xl border border-foreground/[0.06] p-4 flex flex-col items-center gap-2.5 text-center hover:border-primary/20 transition-all group"
+                  className="rounded-xl border border-black/[0.06] bg-white dark:bg-card p-4 flex flex-col items-center gap-2.5 text-center hover:border-black/[0.12] transition-colors duration-150 group"
                 >
                   {tool.logo_url ? (
                     <img src={tool.logo_url} alt="" className="w-10 h-10 rounded-lg object-contain" />
@@ -156,7 +155,7 @@ export default async function HomePage() {
         {/* ═══ CTA ═══ */}
         <section className="px-4 max-w-3xl mx-auto w-full">
           <div className="relative overflow-hidden rounded-2xl border border-primary/15 bg-gradient-to-b from-primary/[0.04] to-transparent p-8 sm:p-12 text-center">
-            <h2 className="text-2xl sm:text-3xl font-black mb-3">
+            <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight mb-3">
               Find out which tools to cancel.
             </h2>
             <p className="text-sm text-muted-foreground max-w-md mx-auto mb-8">
@@ -187,7 +186,7 @@ export default async function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 border border-foreground/[0.06] rounded-2xl overflow-hidden">
             <div className="p-8 flex flex-col gap-5">
               <div>
-                <p className="text-xs font-bold uppercase tracking-widest text-primary mb-2">The AI Stack Report</p>
+                <p className="text-xs font-medium text-primary mb-2">The AI Stack Report</p>
                 <h2 className="text-lg font-bold mb-1">Weekly AI cost intelligence</h2>
                 <p className="text-sm text-muted-foreground">Price changes, new tools, and where smart teams are cutting spend.</p>
               </div>

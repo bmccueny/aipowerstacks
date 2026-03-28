@@ -64,30 +64,30 @@
 
 :root {
   color-scheme: light;
-  --font-geist-sans: "Arial", "Helvetica Neue", "Avenir Next", "Segoe UI", sans-serif;
+  --font-geist-sans: "Inter", var(--font-display), system-ui, -apple-system, sans-serif;
   --font-geist-mono: "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --radius: 0.9rem;
-  --background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 25%, #fff8f8 50%, #f0f4ff 75%, #f8f9ff 100%);
+  --background: #fafaf8;
   --foreground: oklch(0.15 0.02 240);
-  --card: oklch(1 0 0 / 0.7);
-  --card-foreground: oklch(0.15 0.02 240);
+  --card: #ffffff;
+  --card-foreground: oklch(0.15 0.01 40);
   --popover: oklch(1 0 0 / 0.8);
   --popover-foreground: oklch(0.15 0.02 240);
-  /* Brand Crimson — deepened from magenta-pink */
-  --primary: oklch(0.62 0.23 22);
+  /* Brand Crimson — refined */
+  --primary: oklch(0.55 0.20 15);
   --primary-foreground: oklch(1 0 0);
-  --primary-hover: oklch(0.54 0.22 22);
-  --primary-subtle: oklch(0.95 0.04 22);
+  --primary-hover: oklch(0.48 0.19 15);
+  --primary-subtle: oklch(0.96 0.02 15);
   --secondary: oklch(0.94 0.01 240);
   --secondary-foreground: oklch(0.15 0.02 240);
-  --muted: oklch(0.96 0 0);
-  --muted-foreground: oklch(0.45 0 0);
+  --muted: oklch(0.97 0.003 80);
+  --muted-foreground: oklch(0.50 0.01 80);
   --accent: oklch(0.92 0.03 22);
   --accent-foreground: oklch(0.35 0.08 22);
   --destructive: oklch(0.6 0.18 20);
-  --border: oklch(0 0 0);
-  --input: oklch(1 0 0);
-  --ring: oklch(0 0 0);
+  --border: oklch(0.90 0.005 80);
+  --input: oklch(0.99 0.002 80);
+  --ring: oklch(0.55 0.20 15);
   --chart-1: oklch(0.62 0.23 22);
   --chart-2: oklch(0.73 0.16 290);
   --chart-3: oklch(0.67 0.18 200);
@@ -101,9 +101,9 @@
   --sidebar-accent-foreground: oklch(0 0 0);
   --sidebar-border: oklch(0 0 0);
   --sidebar-ring: oklch(0 0 0);
-  --aix-card-hover-shadow: 4px 4px 0 #0a0a0a;
-  --aix-vote-shadow: 2px 2px 0 #0a0a0a;
-  --aix-vote-hover-shadow: 4px 4px 0 #0a0a0a;
+  --aix-card-hover-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.04);
+  --aix-vote-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  --aix-vote-hover-shadow: 0 2px 8px rgba(0,0,0,0.06);
 
   /* ─── Brutalist Neutrals ─── */
   --ink: #0a0a0a;
@@ -202,6 +202,29 @@
   0%  { opacity: 0.35; }
   to  { opacity: 0.7; }
 }
+
+/* ─── Premium Entrance Animations ─── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.stagger-in > * {
+  opacity: 0;
+  animation: fade-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.stagger-in > *:nth-child(1) { animation-delay: 0ms; }
+.stagger-in > *:nth-child(2) { animation-delay: 60ms; }
+.stagger-in > *:nth-child(3) { animation-delay: 120ms; }
+.stagger-in > *:nth-child(4) { animation-delay: 180ms; }
+.stagger-in > *:nth-child(5) { animation-delay: 240ms; }
+.stagger-in > *:nth-child(6) { animation-delay: 300ms; }
+.stagger-in > *:nth-child(7) { animation-delay: 360ms; }
+.stagger-in > *:nth-child(8) { animation-delay: 420ms; }
 
 @media (prefers-reduced-motion: reduce) {
   .stars,
@@ -1223,11 +1246,11 @@
   --card-foreground: oklch(0.93 0.005 60);
   --popover: oklch(0.17 0.008 40);
   --popover-foreground: oklch(0.93 0.005 60);
-  /* Slightly boosted primary for dark bg contrast */
-  --primary: oklch(0.65 0.24 22);
+  /* Boosted primary for dark bg contrast */
+  --primary: oklch(0.62 0.22 15);
   --primary-foreground: oklch(1 0 0);
-  --primary-hover: oklch(0.58 0.23 22);
-  --primary-subtle: oklch(0.22 0.06 22);
+  --primary-hover: oklch(0.55 0.21 15);
+  --primary-subtle: oklch(0.22 0.05 15);
   --secondary: oklch(0.22 0.005 40);
   --secondary-foreground: oklch(0.93 0.005 60);
   --muted: oklch(0.22 0.005 40);
