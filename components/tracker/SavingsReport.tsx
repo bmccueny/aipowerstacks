@@ -42,7 +42,7 @@ const ROLE_BENCHMARKS: Record<string, number> = {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function SavingsReport({ data }: { data: any }) {
-  const [expanded, setExpanded] = useState(false)
+  const [expanded, setExpanded] = useState(true)
   const [role, setRole] = useState<string | null>(null)
 
   const report: Report | null = data ? {

@@ -49,7 +49,7 @@ const BAR_COLORS = ['bg-primary', 'bg-amber-500', 'bg-emerald-500', 'bg-violet-5
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function StackIntel({ data }: { data: any }) {
-  const [expanded, setExpanded] = useState(false)
+  const [expanded, setExpanded] = useState(true)
   const [teamSize, setTeamSize] = useState(1)
 
   if (!data) return null
