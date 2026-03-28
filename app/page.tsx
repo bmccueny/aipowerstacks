@@ -72,8 +72,7 @@ export default async function HomePage() {
         }} />
 
         {/* ═══ Hero + Calculator ═══ */}
-        <section className="px-4 max-w-3xl mx-auto w-full pt-16 sm:pt-28 relative">
-          <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_60%_50%_at_50%_-10%,oklch(0.96_0.02_15),transparent)]" />
+        <section className="px-4 max-w-3xl mx-auto w-full pt-16 sm:pt-28">
           <div className="text-center mb-12 animate-fade-up">
             <h1 className="text-[clamp(2.25rem,5vw,3.75rem)] font-semibold tracking-tight text-foreground mb-5 leading-[1.1]">
               How much is AI<br className="hidden sm:block" /> costing you?
