@@ -666,33 +666,7 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
         <div className="glass-card rounded-xl p-8 sm:p-12 text-center">
           <DollarSign className="h-10 w-10 text-muted-foreground/20 mx-auto mb-3" />
           <p className="text-lg font-bold mb-1">No subscriptions tracked yet</p>
-          <p className="text-sm text-muted-foreground mb-6">Pick a starter stack or search above</p>
-
-          {/* Starter bundles */}
-          <div className="grid grid-cols-2 gap-3 max-w-md mx-auto">
-            {STARTER_BUNDLES.map(bundle => {
-              const bundleTools = bundle.slugs.map(s => tools.find(t => t.slug === s)).filter(Boolean) as ToolOption[]
-              return (
-                <button
-                  key={bundle.label}
-                  onClick={() => addBundle(bundle.slugs)}
-                  className="p-4 rounded-xl border border-foreground/10 hover:border-primary/30 hover:bg-primary/[0.03] transition-all text-left group"
-                >
-                  <span className="text-2xl">{bundle.icon}</span>
-                  <p className="text-sm font-bold mt-2 group-hover:text-primary transition-colors">{bundle.label}</p>
-                  <div className="flex -space-x-1.5 mt-2">
-                    {bundleTools.slice(0, 3).map(t => (
-                      t.logo_url ? (
-                        <img key={t.id} src={t.logo_url} alt="" className="w-5 h-5 rounded border border-background object-contain bg-white" />
-                      ) : (
-                        <span key={t.id} className="w-5 h-5 rounded border border-background bg-primary/10 flex items-center justify-center text-[7px] font-bold text-primary">{t.name[0]}</span>
-                      )
-                    ))}
-                  </div>
-                </button>
-              )
-            })}
-          </div>
+          <p className="text-sm text-muted-foreground">Search for a tool above to get started</p>
         </div>
       ) : (
         <>
