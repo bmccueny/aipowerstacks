@@ -180,7 +180,7 @@ function ModelProviderBadge({
   }
 
   return (
-    <Link href={href} onClick={(e) => e.stopPropagation()} className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-violet-50 text-violet-700 border border-violet-200 dark:bg-violet-950 dark:text-violet-300 dark:border-violet-800 hover:opacity-80 transition-opacity cursor-pointer">
+    <Link href={href} onClick={(e) => e.stopPropagation()} className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border badge-model hover:opacity-80 transition-opacity cursor-pointer">
       {label}
     </Link>
   )
@@ -191,27 +191,27 @@ function CapabilityBadges({ tool, variant = 'span' }: { tool: ToolCardData; vari
   const pills: { label: string; cls: string; href: string }[] = []
 
   if (tool.use_case && USE_CASE_LABELS[tool.use_case]) {
-    pills.push({ label: USE_CASE_LABELS[tool.use_case], cls: 'bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-950 dark:text-sky-300 dark:border-sky-800', href: `/tools?use_case=${tool.use_case}` })
+    pills.push({ label: USE_CASE_LABELS[tool.use_case], cls: 'badge-use-case', href: `/tools?use_case=${tool.use_case}` })
   }
   if (tool.has_api) {
-    pills.push({ label: 'API', cls: 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950 dark:text-blue-300 dark:border-blue-800', href: '/tools?has_api=true' })
+    pills.push({ label: 'API', cls: 'badge-api', href: '/tools?has_api=true' })
   }
   if (tool.is_open_source) {
-    pills.push({ label: 'Open Source', cls: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-800', href: '/tools?open_source=true' })
+    pills.push({ label: 'Open Source', cls: 'badge-oss', href: '/tools?open_source=true' })
   }
   if (tool.has_mobile_app) {
-    pills.push({ label: 'Mobile', cls: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800', href: '/tools?has_mobile=true' })
+    pills.push({ label: 'Mobile', cls: 'badge-mobile', href: '/tools?has_mobile=true' })
   }
   const dt = (tool as Record<string, unknown>).deployment_type as string | null
   if (dt === 'self-hosted') {
-    pills.push({ label: 'Self-Hosted', cls: 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950 dark:text-purple-300 dark:border-purple-800', href: '/tools?deployment_type=self-hosted' })
+    pills.push({ label: 'Self-Hosted', cls: 'badge-deploy', href: '/tools?deployment_type=self-hosted' })
   } else if (dt === 'both') {
-    pills.push({ label: 'Local + Cloud', cls: 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950 dark:text-purple-300 dark:border-purple-800', href: '/tools?deployment_type=both' })
+    pills.push({ label: 'Local + Cloud', cls: 'badge-deploy', href: '/tools?deployment_type=both' })
   }
 
   // GitHub badge — links to filtered directory of all GitHub tools
   const isGitHub = tool.website_url?.includes('github.com')
-  const gitHubPill = isGitHub ? { label: 'GitHub', cls: 'bg-neutral-100 text-neutral-800 border-neutral-300 dark:bg-neutral-800 dark:text-neutral-200 dark:border-neutral-600', href: '/tools?source=github' } : null
+  const gitHubPill = isGitHub ? { label: 'GitHub', cls: 'badge-github', href: '/tools?source=github' } : null
 
   if (pills.length === 0 && !gitHubPill) return null
 
@@ -489,12 +489,12 @@ function ToolCardGrid({ tool, pricingColor, pricingLabel, screenshotUrl, isWellF
         {/* Single most relevant badge — keep cards clean */}
         <div className="flex flex-wrap gap-1 items-center relative z-10">
           {tool.use_case && USE_CASE_LABELS[tool.use_case] && (
-            <Link href={`/tools?use_case=${tool.use_case}`} onClick={(e) => e.stopPropagation()} className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-950 dark:text-sky-300 dark:border-sky-800 hover:opacity-80 transition-opacity cursor-pointer">
+            <Link href={`/tools?use_case=${tool.use_case}`} onClick={(e) => e.stopPropagation()} className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border badge-use-case hover:opacity-80 transition-opacity cursor-pointer">
               {USE_CASE_LABELS[tool.use_case]}
             </Link>
           )}
           {tool.is_open_source && (
-            <Link href="/tools?open_source=true" onClick={(e) => e.stopPropagation()} className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-800 hover:opacity-80 transition-opacity cursor-pointer">
+            <Link href="/tools?open_source=true" onClick={(e) => e.stopPropagation()} className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border badge-oss hover:opacity-80 transition-opacity cursor-pointer">
               Open Source
             </Link>
           )}
