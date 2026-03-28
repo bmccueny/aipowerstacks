@@ -21,8 +21,13 @@
     "fix-broken-images": "npx tsx scripts/fix-broken-images.ts",
     "migrate-images-to-storage": "npx tsx scripts/migrate-images-to-storage.ts",
     "regenerate-covers": "npx tsx scripts/regenerate-blog-covers.ts",
+    "seo:meta:dry": "node scripts/backfill-meta-descriptions.mjs",
+    "seo:meta:apply": "node scripts/backfill-meta-descriptions.mjs --apply",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "seo:audit": "node scripts/seo-audit.mjs",
+    "seo:posts:dry": "node scripts/generate-seo-posts.mjs",
+    "seo:rankings": "node scripts/check-rankings.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",
