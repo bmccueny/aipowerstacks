@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Loader2, Upload, Link as LinkIcon, Check, X, LayoutGrid } from 'lucide-react'
@@ -214,7 +215,7 @@ export function AvatarUpload({ userId, displayName, username, initialAvatarUrl, 
                       url === avatar ? "border-primary shadow-[0_0_10px_oklch(0.79_0.17_355_/_0.3)]" : "border-transparent hover:border-primary/40"
                     )}
                   >
-                    <img src={avatar} alt={`Avatar option ${i + 1}`} className="object-cover" />
+                    <Image src={avatar} alt={`Avatar option ${i + 1}`} width={48} height={48} className="object-cover" unoptimized />
                     {url === avatar && (
                       <div className="absolute inset-0 bg-primary/10 flex items-center justify-center">
                         <Check className="h-4 w-4 text-primary" />

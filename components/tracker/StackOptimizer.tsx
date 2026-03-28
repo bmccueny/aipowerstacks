@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Loader2, Zap, Wallet, ArrowRight, X, Repeat2 } from 'lucide-react'
 
 type OptimizedTool = {
@@ -166,7 +167,7 @@ export function StackOptimizer({ currentTools }: { currentTools: CurrentTool[] }
                     }`}>
                       <div className="h-6 w-6 rounded-md overflow-hidden flex items-center justify-center shrink-0">
                         {tool.logo_url ? (
-                          <img src={tool.logo_url} alt={tool.name} className="w-6 h-6 object-contain" />
+                          <Image src={tool.logo_url} alt={tool.name} width={24} height={24} className="w-6 h-6 object-contain" unoptimized />
                         ) : (
                           <span className="w-6 h-6 rounded-md bg-primary/10 flex items-center justify-center text-[8px] font-bold text-primary">{tool.name[0]}</span>
                         )}
@@ -205,7 +206,7 @@ export function StackOptimizer({ currentTools }: { currentTools: CurrentTool[] }
                     }`}>
                       <div className="h-6 w-6 rounded-md overflow-hidden flex items-center justify-center shrink-0">
                         {tool.logo_url ? (
-                          <img src={tool.logo_url} alt={tool.name} className="w-6 h-6 object-contain" />
+                          <Image src={tool.logo_url} alt={tool.name} width={24} height={24} className="w-6 h-6 object-contain" unoptimized />
                         ) : (
                           <span className="w-6 h-6 rounded-md bg-primary/10 flex items-center justify-center text-[8px] font-bold text-primary">{tool.name[0]}</span>
                         )}

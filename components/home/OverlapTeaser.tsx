@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { ArrowRight } from 'lucide-react'
 
 type OverlapCategory = {
@@ -34,7 +35,7 @@ export function OverlapTeaser({ overlaps }: { overlaps: OverlapCategory[] }) {
                   style={{ marginLeft: i > 0 ? '-6px' : 0, zIndex: 4 - i }}
                 >
                   {tool.logo_url ? (
-                    <img src={tool.logo_url} alt={tool.name} className="w-7 h-7 object-contain" />
+                    <Image src={tool.logo_url} alt={tool.name} width={28} height={28} className="w-7 h-7 object-contain" unoptimized />
                   ) : (
                     <span className="text-[9px] font-bold text-primary">{tool.name[0]}</span>
                   )}

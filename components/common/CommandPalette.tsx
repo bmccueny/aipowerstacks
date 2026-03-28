@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 import { Search, ArrowRight, Layers, ArrowLeftRight, LineChart, BookOpen, Command } from 'lucide-react'
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
 import { createClient } from '@/lib/supabase/client'
@@ -224,7 +225,7 @@ export function CommandPalette() {
                 >
                   <div className="h-8 w-8 rounded-lg bg-muted overflow-hidden flex items-center justify-center shrink-0">
                     {tool.logo_url ? (
-                      <img src={tool.logo_url} alt="" className="h-8 w-8 object-contain" />
+                      <Image src={tool.logo_url} alt="" width={32} height={32} className="h-8 w-8 object-contain" unoptimized />
                     ) : (
                       <span className="text-xs font-bold text-primary">{tool.name[0]}</span>
                     )}
