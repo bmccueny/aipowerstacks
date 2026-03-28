@@ -185,6 +185,36 @@ export function generateBlogJsonLd(
   }
 }
 
+/** Generate Review JSON-LD for individual published reviews on a tool page */
+export function generateReviewsJsonLd(
+  tool: ToolWithTags,
+  reviews: { rating: number; title: string | null; body: string | null; created_at: string; profiles: { display_name: string | null } }[],
+) {
+  if (reviews.length === 0) return null
+  return reviews.map((review) => ({
+    '@context': 'https://schema.org',
+    '@type': 'Review',
+    itemReviewed: {
+      '@type': 'SoftwareApplication',
+      name: tool.name,
+      url: `${SITE_URL}/tools/${tool.slug}`,
+    },
+    reviewRating: {
+      '@type': 'Rating',
+      ratingValue: review.rating,
+      bestRating: 5,
+      worstRating: 1,
+    },
+    author: {
+      '@type': 'Person',
+      name: review.profiles.display_name || 'Anonymous',
+    },
+    datePublished: review.created_at,
+    ...(review.title ? { name: review.title } : {}),
+    ...(review.body ? { reviewBody: review.body.slice(0, 500) } : {}),
+  }))
+}
+
 export function generateFaqJsonLd(tool: ToolWithTags) {
   return {
     '@context': 'https://schema.org',

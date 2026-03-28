@@ -13,12 +13,14 @@ import { BookmarkButton } from '@/components/tools/BookmarkButton'
 import { AddToStackButton } from '@/components/tools/AddToStackButton'
 import { AddToCompareButton } from '@/components/tools/AddToCompareButton'
 import { NewsletterBanner } from '@/components/layout/NewsletterBanner'
+import { RelatedLinks } from '@/components/common/RelatedLinks'
 import { AdminReviewPanel } from '@/components/admin/AdminReviewPanel'
 import { createClient } from '@/lib/supabase/server'
 import { getToolBySlug, getRelatedToolsByCategory, getPopularToolsExcluding } from '@/lib/supabase/queries/tools'
 import { getReviewsByTool } from '@/lib/supabase/queries/reviews'
-import { generateFaqJsonLd, generateJsonLd, generateToolMetadata, generateBreadcrumbJsonLd } from '@/lib/utils/seo'
+import { generateFaqJsonLd, generateJsonLd, generateToolMetadata, generateBreadcrumbJsonLd, generateReviewsJsonLd } from '@/lib/utils/seo'
 import { PRICING_BADGE_COLORS, PRICING_LABELS, MODEL_PROVIDER_LABELS } from '@/lib/constants'
+import { RelatedPages } from '@/components/seo/RelatedPages'
 
 export const revalidate = 3600 // ISR: revalidate every hour
 
@@ -151,6 +153,11 @@ export default async function ToolDetailPage({ params }: Props) {
       <JsonLd data={generateJsonLd(tool)} />
       <JsonLd data={generateFaqJsonLd(tool)} />
       <JsonLd data={generateBreadcrumbJsonLd(breadcrumbItems)} />
+      {(() => {
+        const reviewsLd = generateReviewsJsonLd(tool, reviews)
+        if (!reviewsLd || reviewsLd.length === 0) return null
+        return reviewsLd.map((ld, i) => <JsonLd key={`review-${i}`} data={ld} />)
+      })()}
 
       <div className="page-shell">
         <nav className="flex items-center gap-1.5 text-sm text-muted-foreground mb-6">
@@ -389,6 +396,14 @@ export default async function ToolDetailPage({ params }: Props) {
                 </div>
               </div>
             )}
+
+            <RelatedLinks
+              toolSlug={tool.slug}
+              toolName={tool.name}
+              categorySlug={tool.categories?.slug ?? null}
+              categoryName={tool.categories?.name ?? null}
+              categoryId={tool.category_id}
+            />
 
             {screenshots.length > 0 && (
               <div className="glass-card rounded-xl p-6">
