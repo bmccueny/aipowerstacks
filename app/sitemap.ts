@@ -2,6 +2,7 @@ import type { MetadataRoute } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { SITE_URL } from '@/lib/constants/site'
+import { getAllBestPageSlugs } from '@/lib/constants/best-pages'
 
 const BASE_URL = SITE_URL
 
@@ -116,5 +117,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.4,
     })),
     ...vsUrls,
+    // Alternatives pages
+    { url: `${BASE_URL}/alternatives`, lastModified: new Date(), changeFrequency: 'weekly' as const, priority: 0.6 },
+    ...tools.map((t) => ({
+      url: `${BASE_URL}/alternatives/to-${t.slug}`,
+      lastModified: t.updated_at,
+      changeFrequency: 'weekly' as const,
+      priority: 0.5,
+    })),
+    // Best-of pages
+    { url: `${BASE_URL}/best`, lastModified: new Date(), changeFrequency: 'weekly' as const, priority: 0.7 },
+    ...getAllBestPageSlugs().map((slug) => ({
+      url: `${BASE_URL}/best/${slug}`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.6,
+    })),
   ]
 }
