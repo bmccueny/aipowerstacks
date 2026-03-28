@@ -220,11 +220,13 @@ export async function GET(request: Request) {
     tiersByTool.set(tier.tool_id, list)
   }
 
-  // 3. Scrape and compare
+  // 3. Scrape and compare (bail with 60s safety margin)
   const allChanges: PriceChange[] = []
   let checked = 0
+  const startTime = Date.now()
 
   for (const tool of toolsToCheck) {
+    if (Date.now() - startTime > 240_000) break // 240s, leave 60s for emails + DB
     const pricingUrl = PRICING_URLS[tool.slug] || (tool.website_url?.replace(/\/$/, '') + '/pricing')
     const content = await scrape(pricingUrl)
     if (!content) continue

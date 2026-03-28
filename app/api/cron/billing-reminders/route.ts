@@ -20,21 +20,27 @@ export async function GET(request: Request) {
   const supabase = createAdminClient()
   const resend = new Resend(resendKey)
 
-  // Find subscriptions created ~30 days ago (renewal window: 28-30 days)
-  const now = new Date()
-  const renewalStart = new Date(now.getTime() - 30 * 86400000)
-  const renewalEnd = new Date(now.getTime() - 28 * 86400000)
-
-  // Get all subs with their creation date and user info
+  // Find paid subscriptions approaching any 30-day renewal cycle.
+  // A sub renews when (days_since_created % 30) falls within a 2-day window.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: subs } = await (supabase as any)
+  const { data: allPaidSubs } = await (supabase as any)
     .from('user_subscriptions')
     .select('id, user_id, tool_id, monthly_cost, created_at, tools:tool_id(name, slug)')
     .gt('monthly_cost', 0)
-    .gte('created_at', renewalEnd.toISOString())
-    .lte('created_at', renewalStart.toISOString())
 
-  if (!subs || subs.length === 0) {
+  if (!allPaidSubs || allPaidSubs.length === 0) {
+    return NextResponse.json({ ok: true, sent: 0, reason: 'no paid subs' })
+  }
+
+  const now = Date.now()
+  const subs = allPaidSubs.filter((sub: { created_at: string }) => {
+    const daysSince = Math.floor((now - new Date(sub.created_at).getTime()) / 86400000)
+    if (daysSince < 28) return false // too new
+    const daysUntilRenewal = 30 - (daysSince % 30)
+    return daysUntilRenewal >= 0 && daysUntilRenewal <= 2
+  })
+
+  if (subs.length === 0) {
     return NextResponse.json({ ok: true, sent: 0, reason: 'no renewals due' })
   }
 

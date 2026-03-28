@@ -198,7 +198,7 @@ export async function GET() {
 
   // ═══ 5. BENCHMARK (exclude current user) ═══
   const { data: benchmarkSubs } = await untypedFrom(supabase, 'user_subscriptions')
-    .select('user_id, monthly_cost')
+    .select('user_id, monthly_cost, tool_id')
 
   let avgMonthly = INDUSTRY_AVG
   let percentile = 50

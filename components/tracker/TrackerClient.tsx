@@ -89,6 +89,7 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
   const [search, setSearch] = useState('')
   const [showDropdown, setShowDropdown] = useState(false)
   const [autoAddHandled, setAutoAddHandled] = useState(false)
+  const [importHandled, setImportHandled] = useState(false)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [dashboardData, setDashboardData] = useState<any>(null)
   const [dashboardLoading, setDashboardLoading] = useState(false)
@@ -146,9 +147,9 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
 
   // Bulk import tools from ?import=slug:price,slug:price (from homepage calculator)
   useEffect(() => {
-    if (autoAddHandled || loading || !importTools) return
-    setAutoAddHandled(true)
-    const alreadyTracked = new Set(subs.map(s => s.tool_id))
+    if (importHandled || loading || !importTools) return
+    setImportHandled(true)
+    const allTracked = new Set([...subs.map(s => s.tool_id), ...anonSubs.map(s => s.tool_id)])
     const entries = importTools.split(',').map(entry => {
       const [slug, priceStr] = entry.split(':')
       return { slug, price: parseFloat(priceStr) || 0 }
@@ -156,10 +157,20 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
 
     const toAdd = entries
       .map(e => ({ tool: tools.find(t => t.slug === e.slug), price: e.price }))
-      .filter((e): e is { tool: ToolOption; price: number } => e.tool != null && !alreadyTracked.has(e.tool.id))
+      .filter((e): e is { tool: ToolOption; price: number } => e.tool != null && !allTracked.has(e.tool.id))
 
     if (toAdd.length === 0) return
 
+    // Anonymous: store in localStorage directly
+    if (!clientLoggedIn) {
+      const newAnon = [...anonSubs, ...toAdd.map(({ tool, price }) => ({ tool_id: tool.id, monthly_cost: price, tool }))]
+      setAnonSubs(newAnon)
+      localStorage.setItem(ANON_STORAGE_KEY, JSON.stringify(newAnon.map(s => ({ tool_id: s.tool_id, monthly_cost: s.monthly_cost }))))
+      toast.success(`Added ${toAdd.length} tools from your calculator`)
+      return
+    }
+
+    // Logged in: send to API
     setImporting(true)
     Promise.allSettled(
       toAdd.map(({ tool, price }) =>
@@ -167,7 +178,7 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ tool_id: tool.id, monthly_cost: price }),
-        })
+        }).then(r => { if (!r.ok) throw new Error(`${r.status}`); return r })
       )
     ).then((results) => {
       const succeeded = results.filter(r => r.status === 'fulfilled').length
@@ -178,13 +189,15 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
           setImporting(false)
           if (succeeded === toAdd.length) {
             toast.success(`Added ${succeeded} subscriptions from your calculator`)
-          } else {
+          } else if (succeeded > 0) {
             toast.success(`Added ${succeeded} of ${toAdd.length} subscriptions`)
+          } else {
+            toast.error('Failed to import subscriptions')
           }
         })
         .catch(() => setImporting(false))
     })
-  }, [importTools, autoAddHandled, loading, subs, tools])
+  }, [importTools, importHandled, loading, subs, anonSubs, tools, clientLoggedIn])
 
   // Close dropdown on outside click
   useEffect(() => {
