@@ -87,10 +87,10 @@ export async function GET(request: Request) {
   const supabase = createAdminClient()
 
   // Get top tracked tools that have changelog URLs
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: trackedRaw } = await (supabase as any)
+  type TrackedRow = { tool_id: string; tools: { id: string; name: string; slug: string; website_url: string } }
+  const { data: trackedRaw } = await supabase
     .from('user_subscriptions')
-    .select('tool_id, tools!inner(id, name, slug, website_url)')
+    .select('tool_id, tools!inner(id, name, slug, website_url)') as { data: TrackedRow[] | null }
 
   const toolCounts = new Map<string, { count: number; tool: { id: string; name: string; slug: string; website_url: string } }>()
   for (const row of trackedRaw ?? []) {
@@ -119,8 +119,7 @@ export async function GET(request: Request) {
     const changes = await extractChanges(tool.name, content)
 
     for (const change of changes) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { error } = await (supabase as any)
+      const { error } = await supabase
         .from('tool_changelog')
         .upsert({
           tool_id: tool.id,

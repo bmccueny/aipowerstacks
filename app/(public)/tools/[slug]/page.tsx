@@ -78,8 +78,7 @@ export default async function ToolDetailPage({ params }: Props) {
     .order('published_at', { ascending: false })
     .limit(3)
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const tiersQuery = (supabase as any)
+  const tiersQuery = supabase
     .from('tool_pricing_tiers')
     .select('tier_name, monthly_price, features')
     .eq('tool_id', tool.id)

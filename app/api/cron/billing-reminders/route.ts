@@ -22,11 +22,11 @@ export async function GET(request: Request) {
 
   // Find paid subscriptions approaching any 30-day renewal cycle.
   // A sub renews when (days_since_created % 30) falls within a 2-day window.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: allPaidSubs } = await (supabase as any)
+  type PaidSub = { id: string; user_id: string; tool_id: string; monthly_cost: number; created_at: string; tools: { name: string; slug: string } }
+  const { data: allPaidSubs } = await supabase
     .from('user_subscriptions')
     .select('id, user_id, tool_id, monthly_cost, created_at, tools:tool_id(name, slug)')
-    .gt('monthly_cost', 0)
+    .gt('monthly_cost', 0) as { data: PaidSub[] | null }
 
   if (!allPaidSubs || allPaidSubs.length === 0) {
     return NextResponse.json({ ok: true, sent: 0, reason: 'no paid subs' })

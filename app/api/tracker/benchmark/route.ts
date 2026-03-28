@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function subs(supabase: any) { return supabase.from('user_subscriptions') }
+
 
 // Industry benchmarks when we don't have enough users for real data
 const INDUSTRY_AVG = 150 // typical individual AI spend/mo
@@ -13,7 +12,7 @@ export async function GET() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const { data: allSubs } = await subs(supabase)
+  const { data: allSubs } = await supabase.from('user_subscriptions')
     .select('user_id, monthly_cost')
 
   if (!allSubs || allSubs.length === 0) {

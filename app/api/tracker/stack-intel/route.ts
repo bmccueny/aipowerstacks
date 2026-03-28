@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function untypedFrom(supabase: any, table: string) { return supabase.from(table) }
+
 
 type Sub = {
   tool_id: string
@@ -27,7 +26,7 @@ export async function GET() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const { data: rawSubs } = await untypedFrom(supabase, 'user_subscriptions')
+  const { data: rawSubs } = await supabase.from('user_subscriptions')
     .select('tool_id, monthly_cost, tools:tool_id(name, slug, logo_url, category_id, use_case, avg_rating, review_count, pricing_model)')
     .eq('user_id', user.id)
 
@@ -109,7 +108,7 @@ export async function GET() {
     const cost = Number(sub.monthly_cost)
     if (cost === 0) continue
 
-    const { data: tiers } = await untypedFrom(supabase, 'tool_pricing_tiers')
+    const { data: tiers } = await supabase.from('tool_pricing_tiers')
       .select('tier_name, monthly_price, features')
       .eq('tool_id', sub.tool_id)
       .order('monthly_price', { ascending: true })
@@ -135,7 +134,7 @@ export async function GET() {
 
   // ═══ 4. PEOPLE ALSO USE (collaborative filtering) ═══
   const userToolIds = new Set(subs.map(s => s.tool_id))
-  const { data: coSubs } = await untypedFrom(supabase, 'user_subscriptions')
+  const { data: coSubs } = await supabase.from('user_subscriptions')
     .select('user_id, tool_id')
 
   const alsoUse: { name: string; slug: string; logo_url: string | null; pairCount: number; totalUsers: number; percent: number }[] = []

@@ -33,7 +33,7 @@ function createMockSupabase(user: { id: string } | null, role: string | null) {
       }),
     },
     from: mockFrom,
-  } as any
+  } as unknown as Awaited<ReturnType<typeof createClient>>
 }
 
 describe('requireRole', () => {

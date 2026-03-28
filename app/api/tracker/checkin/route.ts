@@ -13,8 +13,7 @@ export async function GET() {
   // Get last 12 weeks of check-ins
   const twelveWeeksAgo = new Date(Date.now() - 84 * 86400000).toISOString()
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data } = await (admin as any)
+  const { data } = await admin
     .from('usage_checkins')
     .select('tool_id, week_start, used')
     .eq('user_id', user.id)
@@ -55,8 +54,7 @@ export async function POST(request: Request) {
     used: r.used,
   }))
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { error } = await (admin as any)
+  const { error } = await admin
     .from('usage_checkins')
     .upsert(rows, { onConflict: 'user_id,tool_id,week_start' })
 

@@ -40,24 +40,25 @@ const ROLE_BENCHMARKS: Record<string, number> = {
   founder: 180,
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function SavingsReport({ data }: { data: any }) {
+type SavingsData = Partial<Report> & { analysis?: string }
+
+export function SavingsReport({ data }: { data: SavingsData | null }) {
   const [expanded, setExpanded] = useState(true)
   const [role, setRole] = useState<string | null>(null)
 
   const report: Report | null = data ? {
-    totalMonthly: data.totalMonthly,
-    totalYearly: data.totalYearly,
-    toolCount: data.toolCount,
-    overlaps: data.overlaps,
-    premiumOverlaps: data.premiumOverlaps,
-    benchmark: data.benchmark,
-    totalPotentialSavings: data.totalPotentialSavings,
-    missingUseCases: data.missingUseCases,
-    verdict: data.verdict,
+    totalMonthly: data.totalMonthly ?? 0,
+    totalYearly: data.totalYearly ?? 0,
+    toolCount: data.toolCount ?? 0,
+    overlaps: data.overlaps ?? [],
+    premiumOverlaps: data.premiumOverlaps ?? [],
+    benchmark: data.benchmark ?? { avgMonthly: 0, percentile: 0 },
+    totalPotentialSavings: data.totalPotentialSavings ?? 0,
+    missingUseCases: data.missingUseCases ?? [],
+    verdict: data.verdict ?? '',
   } : null
 
-  const analysis = data?.analysis as string | null
+  const analysis = data?.analysis ?? null
 
   const downloadReport = () => {
     window.open('/api/tracker/export-pdf', '_blank')

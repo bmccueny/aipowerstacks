@@ -19,11 +19,11 @@ export async function GET(request: Request) {
   const resend = new Resend(resendKey)
 
   // Get all users with 2+ paid subscriptions
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: allSubs } = await (supabase as any)
+  type SubRow = { user_id: string; tool_id: string; monthly_cost: number; tools: { name: string; logo_url: string | null } | null }
+  const { data: allSubs } = await supabase
     .from('user_subscriptions')
     .select('user_id, tool_id, monthly_cost, tools:tool_id(name, logo_url)')
-    .gt('monthly_cost', 0)
+    .gt('monthly_cost', 0) as { data: SubRow[] | null }
 
   if (!allSubs || allSubs.length === 0) {
     return NextResponse.json({ ok: true, sent: 0 })
@@ -33,7 +33,7 @@ export async function GET(request: Request) {
   const byUser = new Map<string, Array<{ tool_id: string; name: string; logo_url: string | null; cost: number }>>()
   for (const sub of allSubs) {
     const list = byUser.get(sub.user_id) || []
-    list.push({ tool_id: sub.tool_id, name: sub.tools?.name || '?', logo_url: sub.tools?.logo_url, cost: Number(sub.monthly_cost) })
+    list.push({ tool_id: sub.tool_id, name: sub.tools?.name || '?', logo_url: sub.tools?.logo_url ?? null, cost: Number(sub.monthly_cost) })
     byUser.set(sub.user_id, list)
   }
 

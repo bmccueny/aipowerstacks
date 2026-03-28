@@ -882,6 +882,162 @@ export type Database = {
           }
         ]
       }
+      user_subscriptions: {
+        Row: {
+          id: string
+          user_id: string
+          tool_id: string
+          monthly_cost: number
+          billing_cycle: string | null
+          use_tags: string[] | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          tool_id: string
+          monthly_cost: number
+          billing_cycle?: string | null
+          use_tags?: string[] | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          monthly_cost?: number
+          billing_cycle?: string | null
+          use_tags?: string[] | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      tool_pricing_tiers: {
+        Row: {
+          id: string
+          tool_id: string
+          tier_name: string
+          monthly_price: number
+          annual_price: number | null
+          features: string[] | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          tool_id: string
+          tier_name: string
+          monthly_price: number
+          annual_price?: number | null
+          features?: string[] | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          tier_name?: string
+          monthly_price?: number
+          annual_price?: number | null
+          features?: string[] | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      usage_checkins: {
+        Row: {
+          id: string
+          user_id: string
+          tool_id: string
+          week_start: string
+          used: boolean
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          tool_id: string
+          week_start: string
+          used: boolean
+          created_at?: string
+        }
+        Update: {
+          used?: boolean
+        }
+        Relationships: []
+      }
+      tool_switches: {
+        Row: {
+          id: string
+          from_tool_id: string
+          to_tool_id: string
+          user_id: string
+          reason: string | null
+          satisfaction: number | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          from_tool_id: string
+          to_tool_id: string
+          user_id: string
+          reason?: string | null
+          satisfaction?: number | null
+          created_at?: string
+        }
+        Update: {
+          reason?: string | null
+          satisfaction?: number | null
+        }
+        Relationships: []
+      }
+      tool_changelog: {
+        Row: {
+          id: string
+          tool_id: string
+          event_type: string
+          title: string
+          summary: string | null
+          source_url: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          tool_id: string
+          event_type: string
+          title: string
+          summary?: string | null
+          source_url?: string | null
+          created_at?: string
+        }
+        Update: {
+          event_type?: string
+          title?: string
+          summary?: string | null
+          source_url?: string | null
+        }
+        Relationships: []
+      }
+      cost_snapshots: {
+        Row: {
+          id: string
+          user_id: string
+          month: string
+          total_monthly: number
+          tool_count: number
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          month: string
+          total_monthly: number
+          tool_count: number
+          created_at?: string
+        }
+        Update: {
+          total_monthly?: number
+          tool_count?: number
+        }
+        Relationships: []
+      }
     }
     Views: Record<string, never>
     Functions: {

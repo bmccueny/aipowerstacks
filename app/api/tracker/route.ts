@@ -1,10 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
-// user_subscriptions table is not in generated types yet, use untyped queries
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function subs(supabase: any) { return supabase.from('user_subscriptions') }
-
 export async function GET() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -13,7 +9,7 @@ export async function GET() {
   // Try with use_tags first, fall back without if column doesn't exist yet
   let data = null
   let error = null
-  const result = await subs(supabase)
+  const result = await supabase.from('user_subscriptions')
     .select('id, tool_id, monthly_cost, billing_cycle, created_at, use_tags, tools:tool_id(name, slug, logo_url, pricing_model, use_case, category_id, categories:category_id(name))')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
@@ -22,7 +18,7 @@ export async function GET() {
 
   if (error) {
     // Retry without use_tags in case column doesn't exist
-    const fallback = await subs(supabase)
+    const fallback = await supabase.from('user_subscriptions')
       .select('id, tool_id, monthly_cost, billing_cycle, created_at, tools:tool_id(name, slug, logo_url, pricing_model, use_case, category_id, categories:category_id(name))')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false })
@@ -36,8 +32,7 @@ export async function GET() {
   // so the client can exclude them from overlap comparisons
   const toolIds = (data || []).map((s: { tool_id: string }) => s.tool_id)
   if (toolIds.length > 0) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data: tiers } = await (supabase as any)
+    const { data: tiers } = await supabase
       .from('tool_pricing_tiers')
       .select('tool_id, tier_name, monthly_price')
       .in('tool_id', toolIds)
@@ -76,37 +71,31 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'tool_id and monthly_cost are required' }, { status: 400 })
   }
 
-  const row: Record<string, unknown> = {
+  const row = {
     user_id: user.id,
     tool_id,
     monthly_cost: parseFloat(monthly_cost),
+    use_tags: Array.isArray(use_tags) && use_tags.length > 0 ? use_tags : null,
   }
 
-  // Try with use_tags first, retry without if column doesn't exist
-  if (Array.isArray(use_tags) && use_tags.length > 0) {
-    row.use_tags = use_tags
-  }
-
-  let { data: insertData, error: insertError } = await subs(supabase)
+  let { data: insertData, error: insertError } = await supabase.from('user_subscriptions')
     .upsert(row, { onConflict: 'user_id,tool_id' })
     .select('id')
     .single()
 
   if (insertError && row.use_tags) {
-    delete row.use_tags
-    const retry = await subs(supabase)
-      .upsert(row, { onConflict: 'user_id,tool_id' })
+    // Retry without use_tags in case column doesn't exist
+    const { use_tags: _, ...rowWithoutTags } = row
+    const retry = await supabase.from('user_subscriptions')
+      .upsert({ ...rowWithoutTags, use_tags: null }, { onConflict: 'user_id,tool_id' })
       .select('id')
       .single()
     insertData = retry.data
     insertError = retry.error
   }
 
-  const data = insertData
-  const error = insertError
-
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ id: data.id })
+  if (insertError) return NextResponse.json({ error: insertError.message }, { status: 500 })
+  return NextResponse.json({ id: insertData?.id })
 }
 
 export async function DELETE(request: Request) {
@@ -118,7 +107,7 @@ export async function DELETE(request: Request) {
   const id = searchParams.get('id')
   if (!id) return NextResponse.json({ error: 'id required' }, { status: 400 })
 
-  const { error } = await subs(supabase)
+  const { error } = await supabase.from('user_subscriptions')
     .delete()
     .eq('id', id)
     .eq('user_id', user.id)

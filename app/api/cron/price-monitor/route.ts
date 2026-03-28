@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { fromTable } from '@/lib/supabase/untyped'
 import { Resend } from 'resend'
 import { SITE_URL } from '@/lib/constants/site'
 
@@ -35,7 +36,7 @@ const PRICING_URLS: Record<string, string> = {
   'semrush-one': 'https://www.semrush.com/prices/',
 }
 
-type Tier = { tier_name: string; monthly_price: number; features: string | null }
+type Tier = { tool_id?: string; tier_name: string; monthly_price: number; features: string[] | null }
 type PriceChange = {
   tool_id: string
   tool_name: string
@@ -181,10 +182,10 @@ export async function GET(request: Request) {
   const supabase = createAdminClient()
 
   // 1. Get tools that users are actively tracking (most popular first)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: trackedRaw } = await (supabase as any)
+  type TrackedRow = { tool_id: string; tools: { id: string; name: string; slug: string; website_url: string } }
+  const { data: trackedRaw } = await supabase
     .from('user_subscriptions')
-    .select('tool_id, tools!inner(id, name, slug, website_url)')
+    .select('tool_id, tools!inner(id, name, slug, website_url)') as { data: TrackedRow[] | null }
 
   if (!trackedRaw || trackedRaw.length === 0) {
     return NextResponse.json({ ok: true, checked: 0, changes: 0 })
@@ -207,8 +208,7 @@ export async function GET(request: Request) {
     .map(e => e.tool)
 
   // 2. Get current stored tiers for these tools
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: currentTiers } = await (supabase as any)
+  const { data: currentTiers } = await supabase
     .from('tool_pricing_tiers')
     .select('tool_id, tier_name, monthly_price, features')
     .in('tool_id', toolsToCheck.map(t => t.id))
@@ -264,8 +264,7 @@ export async function GET(request: Request) {
 
     // 4. Update stored tiers with new data
     for (const tier of newTiers) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await (supabase as any)
+      await supabase
         .from('tool_pricing_tiers')
         .upsert({
           tool_id: tool.id,
@@ -286,8 +285,7 @@ export async function GET(request: Request) {
 
     // Find users who track tools with price changes
     const changedToolIds = [...new Set(allChanges.map(c => c.tool_id))]
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data: affectedSubs } = await (supabase as any)
+    const { data: affectedSubs } = await supabase
       .from('user_subscriptions')
       .select('user_id, tool_id')
       .in('tool_id', changedToolIds)
@@ -336,9 +334,7 @@ export async function GET(request: Request) {
 
     // 6. Log changes to price history
     for (const change of allChanges) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await (supabase as any)
-        .from('tool_price_history')
+      await fromTable(supabase, 'tool_price_history')
         .insert({
           tool_id: change.tool_id,
           price: change.new_price,

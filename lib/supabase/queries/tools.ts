@@ -505,13 +505,11 @@ export async function getToolBySlug(slug: string): Promise<ToolWithTags | null> 
 
 export async function getSiteStats(): Promise<{ toolCount: number; reviewCount: number; toolsWithPricing: number; trackedSpend: number }> {
   const supabase = await createClient()
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const sb = supabase as any
   const [toolsResult, reviewsResult, pricingResult, spendResult] = await Promise.allSettled([
     supabase.from('tools').select('*', { count: 'exact', head: true }).eq('status', 'published'),
     supabase.from('reviews').select('*', { count: 'exact', head: true }).eq('status', 'published'),
-    sb.from('tool_pricing_tiers').select('tool_id', { count: 'exact', head: true }),
-    sb.from('user_subscriptions').select('monthly_cost'),
+    supabase.from('tool_pricing_tiers').select('tool_id', { count: 'exact', head: true }),
+    supabase.from('user_subscriptions').select('monthly_cost'),
   ])
   const toolCount = toolsResult.status === 'fulfilled' ? toolsResult.value.count ?? 0 : 0
   const reviewCount = reviewsResult.status === 'fulfilled' ? reviewsResult.value.count ?? 0 : 0
@@ -530,8 +528,7 @@ export async function getMostTrackedTools(limit = 8) {
   const supabase = await createClient()
 
   // user_subscriptions isn't in generated types — cast to bypass
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: rawSubs } = await (supabase as any)
+  const { data: rawSubs } = await supabase
     .from('user_subscriptions')
     .select('tool_id, monthly_cost, tools:tool_id(name, slug, logo_url, pricing_model, use_case)')
 

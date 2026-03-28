@@ -2,15 +2,14 @@ import { ImageResponse } from 'next/og'
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function untypedFrom(supabase: any, table: string) { return supabase.from(table) }
+
 
 export async function GET() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const { data: rawSubs } = await untypedFrom(supabase, 'user_subscriptions')
+  const { data: rawSubs } = await supabase.from('user_subscriptions')
     .select('monthly_cost, tools:tool_id(name, logo_url, category_id, use_case)')
     .eq('user_id', user.id)
 

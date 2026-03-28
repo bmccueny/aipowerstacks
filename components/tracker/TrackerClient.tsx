@@ -92,8 +92,7 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
   const [showDropdown, setShowDropdown] = useState(false)
   const [autoAddHandled, setAutoAddHandled] = useState(false)
   const [importHandled, setImportHandled] = useState(false)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [dashboardData, setDashboardData] = useState<any>(null)
+  const [dashboardData, setDashboardData] = useState<Record<string, unknown> | null>(null)
   const [dashboardLoading, setDashboardLoading] = useState(false)
   const [switchPrompt, setSwitchPrompt] = useState<{ toolId: string; toolName: string } | null>(null)
   const [importing, setImporting] = useState(false)

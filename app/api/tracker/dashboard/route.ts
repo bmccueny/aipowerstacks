@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function untypedFrom(supabase: any, table: string) { return supabase.from(table) }
+
 
 const USE_CASE_LABELS: Record<string, string> = {
   coding: 'Coding', 'content-creation': 'Content', marketing: 'Marketing',
@@ -39,7 +38,7 @@ export async function GET() {
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   // ── Single fetch for user's subs (widest select, used by everything) ──
-  const { data: rawSubs } = await untypedFrom(supabase, 'user_subscriptions')
+  const { data: rawSubs } = await supabase.from('user_subscriptions')
     .select('tool_id, monthly_cost, tools:tool_id(name, slug, logo_url, category_id, use_case, avg_rating, review_count, pricing_model, tagline, has_api, is_open_source)')
     .eq('user_id', user.id)
 
@@ -51,7 +50,7 @@ export async function GET() {
 
   // ── Identify usage-based (API/token) subscriptions to exclude from overlap ──
   const toolIds = subs.map(s => s.tool_id)
-  const { data: usageTiers } = await untypedFrom(supabase, 'tool_pricing_tiers')
+  const { data: usageTiers } = await supabase.from('tool_pricing_tiers')
     .select('tool_id, tier_name, monthly_price')
     .in('tool_id', toolIds)
   const usagePrices = new Map<string, Set<number>>()
@@ -155,7 +154,7 @@ export async function GET() {
 
   // ═══ 4. PREMIUM OVERLAP ═══
   const allToolIds = subs.map(s => s.tool_id)
-  const { data: allTiers } = await untypedFrom(supabase, 'tool_pricing_tiers')
+  const { data: allTiers } = await supabase.from('tool_pricing_tiers')
     .select('tool_id, tier_name, monthly_price')
     .in('tool_id', allToolIds)
     .gt('monthly_price', 0)
@@ -197,7 +196,7 @@ export async function GET() {
   }
 
   // ═══ 5. BENCHMARK (exclude current user) ═══
-  const { data: benchmarkSubs } = await untypedFrom(supabase, 'user_subscriptions')
+  const { data: benchmarkSubs } = await supabase.from('user_subscriptions')
     .select('user_id, monthly_cost, tool_id')
 
   let avgMonthly = INDUSTRY_AVG
@@ -236,7 +235,7 @@ export async function GET() {
 
     if (topInCategory?.[0]) {
       const t = topInCategory[0]
-      const { data: tierData } = await untypedFrom(supabase, 'tool_pricing_tiers')
+      const { data: tierData } = await supabase.from('tool_pricing_tiers')
         .select('monthly_price').eq('tool_id', t.id).gt('monthly_price', 0)
         .order('monthly_price', { ascending: true }).limit(1)
       missingUseCases.push({ useCase: uc, label, topTool: { ...t, cheapest_price: tierData?.[0]?.monthly_price || 0 } })

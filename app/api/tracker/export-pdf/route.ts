@@ -1,15 +1,14 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function untypedFrom(supabase: any, table: string) { return supabase.from(table) }
+
 
 export async function GET() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const { data: rawSubs } = await untypedFrom(supabase, 'user_subscriptions')
+  const { data: rawSubs } = await supabase.from('user_subscriptions')
     .select('tool_id, monthly_cost, tools:tool_id(name, use_case, category_id)')
     .eq('user_id', user.id)
     .order('monthly_cost', { ascending: false })
@@ -22,7 +21,7 @@ export async function GET() {
 
   // Identify usage-based (API/token) subs to exclude from overlap
   const toolIds = subs.map(s => s.tool_id)
-  const { data: allTiers } = await untypedFrom(supabase, 'tool_pricing_tiers')
+  const { data: allTiers } = await supabase.from('tool_pricing_tiers')
     .select('tool_id, tier_name, monthly_price')
     .in('tool_id', toolIds.length > 0 ? toolIds : ['none'])
   const usagePrices = new Map<string, Set<number>>()

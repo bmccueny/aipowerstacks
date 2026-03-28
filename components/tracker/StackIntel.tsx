@@ -47,8 +47,15 @@ function scoreLabel(score: number): string {
 
 const BAR_COLORS = ['bg-primary', 'bg-amber-500', 'bg-emerald-500', 'bg-violet-500', 'bg-blue-500', 'bg-rose-500', 'bg-cyan-500']
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function StackIntel({ data }: { data: any }) {
+type StackIntelData = {
+  stackScore?: ScoreBreakdown
+  categorySpend?: CategorySpend[]
+  annualSavings?: AnnualSaving[]
+  alsoUse?: AlsoUse[]
+  teamCosts?: TeamCost[]
+}
+
+export function StackIntel({ data }: { data: StackIntelData | null }) {
   const [expanded, setExpanded] = useState(true)
   const [teamSize, setTeamSize] = useState(1)
 

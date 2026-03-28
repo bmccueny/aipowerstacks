@@ -11,8 +11,7 @@ export async function GET() {
   const admin = createAdminClient()
 
   // Get user's tracked tool IDs
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: subs } = await (admin as any)
+  const { data: subs } = await admin
     .from('user_subscriptions')
     .select('tool_id')
     .eq('user_id', user.id)
@@ -23,8 +22,7 @@ export async function GET() {
   // Get recent changelog entries for those tools (last 30 days)
   const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000).toISOString()
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data } = await (admin as any)
+  const { data } = await admin
     .from('tool_changelog')
     .select('id, tool_id, event_type, title, summary, source_url, created_at, tools:tool_id(name, slug, logo_url)')
     .in('tool_id', toolIds)

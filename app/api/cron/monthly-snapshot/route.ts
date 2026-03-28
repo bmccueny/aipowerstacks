@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { fromTable } from '@/lib/supabase/untyped'
 import { Resend } from 'resend'
 import { SITE_URL } from '@/lib/constants/site'
 
@@ -16,10 +17,10 @@ export async function GET(request: Request) {
   const resendKey = process.env.RESEND_API_KEY
 
   // Get all subscriptions grouped by user
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: allSubs } = await (supabase as any)
+  type SubRow = { user_id: string; tool_id: string; monthly_cost: number; tools: { name: string } | null }
+  const { data: allSubs } = await supabase
     .from('user_subscriptions')
-    .select('user_id, tool_id, monthly_cost, tools:tool_id(name)')
+    .select('user_id, tool_id, monthly_cost, tools:tool_id(name)') as { data: SubRow[] | null }
 
   if (!allSubs || allSubs.length === 0) {
     return NextResponse.json({ ok: true, snapshots: 0 })
@@ -41,13 +42,12 @@ export async function GET(request: Request) {
   lastMonth.setMonth(lastMonth.getMonth() - 1)
   const lastMonthStr = `${lastMonth.getFullYear()}-${String(lastMonth.getMonth() + 1).padStart(2, '0')}-01`
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: prevSnapshots } = await (supabase as any)
-    .from('stack_snapshots')
+  type SnapshotRow = { user_id: string; total_monthly: number; tool_count: number; stack_score: number }
+  const { data: prevSnapshots } = await fromTable(supabase, 'stack_snapshots')
     .select('user_id, total_monthly, tool_count, stack_score')
-    .eq('snapshot_date', lastMonthStr)
+    .eq('snapshot_date', lastMonthStr) as { data: SnapshotRow[] | null }
 
-  const prevByUser = new Map<string, { total_monthly: number; tool_count: number; stack_score: number }>()
+  const prevByUser = new Map<string, SnapshotRow>()
   for (const s of prevSnapshots ?? []) {
     prevByUser.set(s.user_id, s)
   }
@@ -62,9 +62,7 @@ export async function GET(request: Request) {
     const toolsJson = userSubs.map(s => ({ tool_id: s.tool_id, cost: s.monthly_cost }))
 
     // Save snapshot
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    await (supabase as any)
-      .from('stack_snapshots')
+    await fromTable(supabase, 'stack_snapshots')
       .upsert({
         user_id: userId,
         snapshot_date: snapshotDate,

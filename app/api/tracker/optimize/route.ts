@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function untypedFrom(supabase: any, table: string) { return supabase.from(table) }
+
 
 type Sub = {
   tool_id: string
@@ -29,7 +28,7 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const mode = searchParams.get('mode') || 'savings'
 
-  const { data: rawSubs } = await untypedFrom(supabase, 'user_subscriptions')
+  const { data: rawSubs } = await supabase.from('user_subscriptions')
     .select('tool_id, monthly_cost, tools:tool_id(name, slug, logo_url, use_case, category_id, pricing_model, tagline, avg_rating, review_count)')
     .eq('user_id', user.id)
 
@@ -172,7 +171,7 @@ async function findBestAlternative(
   // Get cheapest tier for each alt
   const altIds = alternatives.map(a => a.id)
   const cheapestByAlt = new Map<string, number>()
-  const { data: tiers } = await untypedFrom(supabase, 'tool_pricing_tiers')
+  const { data: tiers } = await supabase.from('tool_pricing_tiers')
     .select('tool_id, monthly_price')
     .in('tool_id', altIds)
     .gt('monthly_price', 0)

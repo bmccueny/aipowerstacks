@@ -8,8 +8,7 @@ export async function GET(request: Request) {
 
   const supabase = createAdminClient()
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data, error } = await (supabase as any)
+  const { data, error } = await supabase
     .from('tool_pricing_tiers')
     .select('tier_name, monthly_price, features')
     .eq('tool_id', toolId)

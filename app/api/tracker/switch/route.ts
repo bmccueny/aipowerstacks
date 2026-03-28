@@ -17,8 +17,7 @@ export async function POST(request: Request) {
 
   const admin = createAdminClient()
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { error } = await (admin as any)
+  const { error } = await admin
     .from('tool_switches')
     .insert({
       user_id: user.id,
@@ -41,12 +40,12 @@ export async function GET() {
   const admin = createAdminClient()
 
   // Get aggregate switch data for popular tools
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data } = await (admin as any)
+  type SwitchRow = { from_tool_id: string; to_tool_id: string; satisfaction: number | null; tools_from: { name: string; slug: string } | null; tools_to: { name: string; slug: string } | null }
+  const { data } = await admin
     .from('tool_switches')
     .select('from_tool_id, to_tool_id, satisfaction, tools_from:from_tool_id(name, slug), tools_to:to_tool_id(name, slug)')
     .order('created_at', { ascending: false })
-    .limit(100)
+    .limit(100) as { data: SwitchRow[] | null }
 
   if (!data) return NextResponse.json({ switches: [] })
 

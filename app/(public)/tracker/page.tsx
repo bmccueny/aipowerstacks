@@ -42,11 +42,11 @@ export default async function TrackerPage({
     .order('name')
 
   // Get popular tools for quick-add chips
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: popularRaw } = await (adminSupabase as any)
+  type PopularRow = { tool_id: string; tools: { id: string; name: string; slug: string; logo_url: string | null } }
+  const { data: popularRaw } = await adminSupabase
     .from('user_subscriptions')
     .select('tool_id, tools!inner(id, name, slug, logo_url)')
-    .limit(500)
+    .limit(500) as { data: PopularRow[] | null }
   const toolCounts = new Map<string, { count: number; tool: { id: string; name: string; slug: string; logo_url: string | null } }>()
   for (const row of popularRaw ?? []) {
     const t = row.tools

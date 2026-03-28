@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function untypedFrom(supabase: any, table: string) { return supabase.from(table) }
+
 
 const USE_CASE_LABELS: Record<string, string> = {
   coding: 'coding', 'content-creation': 'content creation', marketing: 'marketing',
@@ -21,7 +20,7 @@ export async function GET() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const { data: rawSubs } = await untypedFrom(supabase, 'user_subscriptions')
+  const { data: rawSubs } = await supabase.from('user_subscriptions')
     .select('tool_id, monthly_cost, tools:tool_id(name, slug, use_case, category_id, pricing_model, tagline, avg_rating, review_count, has_api, is_open_source)')
     .eq('user_id', user.id)
 
@@ -39,7 +38,7 @@ export async function GET() {
 
   // Get tier info for all tools
   const allToolIds = subs.map(s => s.tool_id)
-  const { data: allTiers } = await untypedFrom(supabase, 'tool_pricing_tiers')
+  const { data: allTiers } = await supabase.from('tool_pricing_tiers')
     .select('tool_id, tier_name, monthly_price')
     .in('tool_id', allToolIds)
 
