@@ -349,7 +349,7 @@ export default async function ToolDetailPage({ params }: Props) {
                   {featuredInPosts.map((post) => (
                     <Link key={post.slug} href={`/blog/${post.slug}`} className="flex items-center gap-3 group">
                       {post.cover_image_url && (
-                        <img src={post.cover_image_url} alt="" className="w-16 h-10 rounded-lg object-cover shrink-0" />
+                        <img src={post.cover_image_url} alt={post.title} className="w-16 h-10 rounded-lg object-cover shrink-0" />
                       )}
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-bold leading-tight group-hover:text-primary transition-colors line-clamp-2">{post.title}</p>

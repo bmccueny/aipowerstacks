@@ -135,7 +135,7 @@ export default async function HomePage() {
                   className="rounded-xl border border-black/[0.06] bg-white dark:bg-card p-4 flex flex-col items-center gap-2.5 text-center hover:border-black/[0.12] transition-colors duration-150 group"
                 >
                   {tool.logo_url ? (
-                    <img src={tool.logo_url} alt="" className="w-10 h-10 rounded-lg object-contain" />
+                    <img src={tool.logo_url} alt={tool.name} className="w-10 h-10 rounded-lg object-contain" />
                   ) : (
                     <span className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-sm font-bold text-primary">{tool.name?.[0] || '?'}</span>
                   )}

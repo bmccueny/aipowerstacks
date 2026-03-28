@@ -166,7 +166,7 @@ export function StackOptimizer({ currentTools }: { currentTools: CurrentTool[] }
                     }`}>
                       <div className="h-6 w-6 rounded-md overflow-hidden flex items-center justify-center shrink-0">
                         {tool.logo_url ? (
-                          <img src={tool.logo_url} alt="" className="w-6 h-6 object-contain" />
+                          <img src={tool.logo_url} alt={tool.name} className="w-6 h-6 object-contain" />
                         ) : (
                           <span className="w-6 h-6 rounded-md bg-primary/10 flex items-center justify-center text-[8px] font-bold text-primary">{tool.name[0]}</span>
                         )}
@@ -205,7 +205,7 @@ export function StackOptimizer({ currentTools }: { currentTools: CurrentTool[] }
                     }`}>
                       <div className="h-6 w-6 rounded-md overflow-hidden flex items-center justify-center shrink-0">
                         {tool.logo_url ? (
-                          <img src={tool.logo_url} alt="" className="w-6 h-6 object-contain" />
+                          <img src={tool.logo_url} alt={tool.name} className="w-6 h-6 object-contain" />
                         ) : (
                           <span className="w-6 h-6 rounded-md bg-primary/10 flex items-center justify-center text-[8px] font-bold text-primary">{tool.name[0]}</span>
                         )}

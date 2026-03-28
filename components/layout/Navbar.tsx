@@ -81,6 +81,7 @@ export function Navbar() {
     <>
       {/* Main Navbar */}
       <nav
+        aria-label="Main navigation"
         className="fixed top-0 w-screen z-50 bg-background/80 backdrop-blur-xl saturate-150 border-b border-white/15 dark:border-white/10 shadow-sm"
         style={{ left: 0, right: 0, width: '100vw' }}
       >

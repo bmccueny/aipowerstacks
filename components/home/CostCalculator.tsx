@@ -222,7 +222,7 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
                   )}
                   <div className={`h-10 w-10 mx-auto mb-1.5 flex items-center justify-center ${isLoading ? 'opacity-50' : ''}`}>
                     {tool.logo_url ? (
-                      <img src={tool.logo_url} alt="" className="w-10 h-10 rounded-lg object-contain" />
+                      <img src={tool.logo_url} alt={tool.name} className="w-10 h-10 rounded-lg object-contain" />
                     ) : (
                       <span className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">{tool.name[0]}</span>
                     )}
@@ -277,7 +277,7 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
                   className="px-4 py-3 flex items-center gap-3 hover:bg-muted/80 active:bg-muted cursor-pointer border-b border-border/20 last:border-0"
                 >
                   {t.logo_url ? (
-                    <img src={t.logo_url} alt="" className="w-7 h-7 rounded-lg object-contain shrink-0" />
+                    <img src={t.logo_url} alt={t.name} className="w-7 h-7 rounded-lg object-contain shrink-0" />
                   ) : (
                     <span className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center text-xs font-bold text-primary shrink-0">{t.name[0]}</span>
                   )}
@@ -294,7 +294,7 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
         <div className="rounded-2xl border border-primary/20 bg-primary/[0.02] p-4 mb-4">
           <div className="flex items-center gap-3 mb-3">
             {selectedTool.logo_url ? (
-              <img src={selectedTool.logo_url} alt="" className="w-8 h-8 rounded-lg object-contain" />
+              <img src={selectedTool.logo_url} alt={selectedTool.name} className="w-8 h-8 rounded-lg object-contain" />
             ) : (
               <span className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-sm font-bold text-primary">{selectedTool.name[0]}</span>
             )}
@@ -350,7 +350,7 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
             <div key={tool.id}>
               <div className="flex items-center gap-3 px-4 py-2.5">
                 {tool.logo_url ? (
-                  <img src={tool.logo_url} alt="" className="w-6 h-6 rounded object-contain shrink-0" />
+                  <img src={tool.logo_url} alt={tool.name} className="w-6 h-6 rounded object-contain shrink-0" />
                 ) : (
                   <span className="w-6 h-6 rounded bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary shrink-0">{tool.name[0]}</span>
                 )}

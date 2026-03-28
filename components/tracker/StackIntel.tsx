@@ -211,7 +211,7 @@ export function StackIntel({ data }: { data: StackIntelData | null }) {
                   >
                     <div className="h-8 w-8 rounded-lg overflow-hidden flex items-center justify-center shrink-0">
                       {tool.logo_url ? (
-                        <img src={tool.logo_url} alt="" className="w-8 h-8 object-contain" />
+                        <img src={tool.logo_url} alt={tool.name} className="w-8 h-8 object-contain" />
                       ) : (
                         <span className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">{tool.name[0]}</span>
                       )}

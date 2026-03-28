@@ -208,7 +208,7 @@ export function SavingsReport({ data }: { data: SavingsData | null }) {
                         <div key={j} className={`flex items-center gap-3 rounded-lg px-3 py-2 ${isTopPick ? 'bg-emerald-400/[0.06] border border-emerald-400/15' : 'bg-background/50'}`}>
                           <div className="h-7 w-7 rounded-md overflow-hidden flex items-center justify-center shrink-0">
                             {tool.logo_url ? (
-                              <img src={tool.logo_url} alt="" className="w-7 h-7 object-contain" />
+                              <img src={tool.logo_url} alt={tool.name} className="w-7 h-7 object-contain" />
                             ) : (
                               <span className="w-7 h-7 rounded-md bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary">{tool.name[0]}</span>
                             )}

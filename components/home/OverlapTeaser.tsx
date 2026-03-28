@@ -34,7 +34,7 @@ export function OverlapTeaser({ overlaps }: { overlaps: OverlapCategory[] }) {
                   style={{ marginLeft: i > 0 ? '-6px' : 0, zIndex: 4 - i }}
                 >
                   {tool.logo_url ? (
-                    <img src={tool.logo_url} alt="" className="w-7 h-7 object-contain" />
+                    <img src={tool.logo_url} alt={tool.name} className="w-7 h-7 object-contain" />
                   ) : (
                     <span className="text-[9px] font-bold text-primary">{tool.name[0]}</span>
                   )}

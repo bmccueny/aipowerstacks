@@ -572,7 +572,7 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
                     className="px-4 py-3 flex items-center gap-3 hover:bg-muted/80 active:bg-muted cursor-pointer border-b border-border/30 last:border-0 transition-colors"
                   >
                     {t.logo_url ? (
-                      <img src={t.logo_url} alt="" className="w-8 h-8 rounded-lg object-contain shrink-0" />
+                      <img src={t.logo_url} alt={t.name} className="w-8 h-8 rounded-lg object-contain shrink-0" />
                     ) : (
                       <span className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-xs font-bold text-primary shrink-0">{t.name[0]}</span>
                     )}
@@ -595,7 +595,7 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
             {/* Selected tool header */}
             <div className="flex items-center gap-3 mb-5 p-3 bg-muted/50 rounded-xl">
               {selectedTool.logo_url ? (
-                <img src={selectedTool.logo_url} alt="" className="w-9 h-9 rounded-lg object-contain" />
+                <img src={selectedTool.logo_url} alt={selectedTool.name} className="w-9 h-9 rounded-lg object-contain" />
               ) : (
                 <span className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center text-sm font-bold text-primary">{selectedTool.name[0]}</span>
               )}
@@ -686,7 +686,7 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
                 className="inline-flex items-center gap-1.5 h-8 px-3 rounded-full border border-foreground/10 hover:border-primary/40 hover:bg-primary/5 transition-all text-xs font-semibold"
               >
                 {t.logo_url ? (
-                  <img src={t.logo_url} alt="" className="w-4 h-4 rounded object-contain" />
+                  <img src={t.logo_url} alt={t.name} className="w-4 h-4 rounded object-contain" />
                 ) : (
                   <span className="w-4 h-4 rounded bg-primary/10 flex items-center justify-center text-[8px] font-bold text-primary">{t.name[0]}</span>
                 )}
@@ -717,7 +717,7 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
                 <div className="glass-card rounded-xl px-5 py-4 flex items-center gap-4">
                   <div className="h-10 w-10 rounded-lg bg-muted overflow-hidden flex items-center justify-center shrink-0">
                     {sub.tools?.logo_url ? (
-                      <img src={sub.tools.logo_url} alt="" className="w-10 h-10 object-contain" />
+                      <img src={sub.tools.logo_url} alt={sub.tools.name} className="w-10 h-10 object-contain" />
                     ) : (
                       <span className="text-sm font-bold text-primary">{sub.tools?.name?.[0] || '?'}</span>
                     )}
@@ -802,7 +802,7 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
             <div key={sub.tool_id} className="glass-card rounded-xl px-5 py-4 flex items-center gap-4">
               <div className="h-10 w-10 rounded-lg bg-muted overflow-hidden flex items-center justify-center shrink-0">
                 {sub.tool.logo_url ? (
-                  <img src={sub.tool.logo_url} alt="" className="w-10 h-10 object-contain" />
+                  <img src={sub.tool.logo_url} alt={sub.tool.name} className="w-10 h-10 object-contain" />
                 ) : (
                   <span className="text-sm font-bold text-primary">{sub.tool.name[0]}</span>
                 )}
