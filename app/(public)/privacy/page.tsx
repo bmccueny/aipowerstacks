@@ -1,9 +1,15 @@
 import type { Metadata } from 'next'
+import { SITE_URL } from '@/lib/constants/site'
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
   description: 'Learn how AIPowerStacks collects, uses, and protects your data.',
   alternates: { canonical: '/privacy' },
+  openGraph: {
+    title: 'Privacy Policy | AIPowerStacks',
+    description: 'Learn how AIPowerStacks collects, uses, and protects your data.',
+    url: `${SITE_URL}/privacy`,
+  },
 }
 
 export default function PrivacyPage() {

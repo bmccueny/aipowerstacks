@@ -1,9 +1,15 @@
 import type { Metadata } from 'next'
+import { SITE_URL } from '@/lib/constants/site'
 
 export const metadata: Metadata = {
   title: 'Terms of Service',
   description: 'The legal agreement governing your use of AIPowerStacks.',
   alternates: { canonical: '/terms' },
+  openGraph: {
+    title: 'Terms of Service | AIPowerStacks',
+    description: 'The legal agreement governing your use of AIPowerStacks.',
+    url: `${SITE_URL}/terms`,
+  },
 }
 
 export default function TermsPage() {
