@@ -203,14 +203,14 @@ export function Navbar() {
               )}
 
               {/* Mobile Menu Button */}
-              <Button
-                variant="ghost"
-                size="icon"
+              <button
+                type="button"
                 onClick={() => setMobileOpen(!mobileOpen)}
-                className="md:hidden rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
+                aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+                className="md:hidden flex items-center justify-center h-11 w-11 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
               >
                 {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-              </Button>
+              </button>
             </div>
           </div>
         </div>
@@ -224,27 +224,31 @@ export function Navbar() {
         <div className="absolute inset-0 bg-black/25 backdrop-blur-md" onClick={() => setMobileOpen(false)} onKeyDown={(e) => { if (e.key === 'Escape') setMobileOpen(false) }} role="button" tabIndex={0} aria-label="Close menu" />
 
         <div className={cn(
-          'liquid-glass-sheet absolute top-16 left-0 right-0 border-b border-foreground/[0.06] transform transition-transform duration-300 max-h-[calc(100vh-4rem)] overflow-y-auto pb-[env(safe-area-inset-bottom)]',
+          'liquid-glass-sheet absolute top-14 left-0 right-0 border-b border-foreground/[0.06] transform transition-transform duration-300 ease-out max-h-[calc(100vh-3.5rem)] overflow-y-auto',
           mobileOpen ? 'translate-y-0' : '-translate-y-full'
         )}>
-          <div className="px-4 py-6">
+          <div className="px-4 py-6" style={{ paddingBottom: 'calc(1.5rem + env(safe-area-inset-bottom, 0px))' }}>
             {/* Mobile Navigation */}
             <nav className="space-y-1">
-              {[...navLinks, ...moreLinks].map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setMobileOpen(false)}
-                  className={cn(
-                    'block px-4 py-3 text-base font-medium rounded-lg transition-colors duration-200',
-                    ('/' + pathname.split('/')[1]) === link.href
-                      ? 'text-primary bg-primary/10'
-                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
-                  )}
-                >
-                  {link.label}
-                </Link>
-              ))}
+              {[...navLinks, ...moreLinks].map((link) => {
+                const isActive = ('/' + pathname.split('/')[1]) === link.href
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setMobileOpen(false)}
+                    className={cn(
+                      'flex items-center gap-3 px-4 py-3 min-h-[48px] text-base font-medium rounded-lg transition-colors duration-200',
+                      isActive
+                        ? 'text-primary bg-primary/10'
+                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                    )}
+                  >
+                    {isActive && <span className="w-1 h-5 rounded-full bg-primary shrink-0" />}
+                    {link.label}
+                  </Link>
+                )
+              })}
             </nav>
 
             {/* Mobile Auth */}
@@ -253,14 +257,14 @@ export function Navbar() {
                 <Link
                   href="/login"
                   onClick={() => setMobileOpen(false)}
-                  className="block w-full px-6 py-3 text-center font-semibold text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 rounded-full hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-200 hover:opacity-90"
+                  className="block w-full px-6 py-3 min-h-[48px] text-center font-semibold text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 rounded-full hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-200 hover:opacity-90"
                 >
                   Log in
                 </Link>
                 <Link
                   href="/register"
                   onClick={() => setMobileOpen(false)}
-                  className="block w-full px-6 py-3 text-center font-semibold bg-primary text-white rounded-full hover:bg-primary/90 hover:shadow-md transition-all duration-200 hover:opacity-90"
+                  className="block w-full px-6 py-3 min-h-[48px] text-center font-semibold bg-primary text-white rounded-full hover:bg-primary/90 hover:shadow-md transition-all duration-200 hover:opacity-90"
                 >
                   Sign up
                 </Link>
