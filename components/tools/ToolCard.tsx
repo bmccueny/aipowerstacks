@@ -433,17 +433,6 @@ function ToolCardGrid({ tool, pricingColor, pricingLabel, screenshotUrl, isWellF
       onMouseEnter={() => setHasBeenHovered(true)}
       className="relative card-directory h-full flex flex-col group"
     >
-      {screenshotUrl && (
-        <div className="relative h-40 border-b border-foreground/10 shrink-0 overflow-hidden rounded-t-[14px] hidden sm:block">
-          <Image
-            src={screenshotUrl}
-            alt={`${tool.name} screenshot`}
-            fill
-            className="object-cover object-top transition-transform duration-300"
-          />
-        </div>
-      )}
-
       {/* Top bar: pricing badge right-aligned */}
       <div className="px-5 pt-4 flex items-center justify-end gap-2 relative z-10">
         <Link href={`/tools?pricing=${tool.pricing_model}`} onClick={(e) => e.stopPropagation()}>

@@ -138,13 +138,9 @@ export default async function ToolsPage({ searchParams }: ToolsPageProps) {
   return (
     <div className="page-shell space-y-5 sm:space-y-6">
       <JsonLd data={toolListJsonLd} />
-      <section className="page-hero text-center">
-        <div className="inline-flex items-center gap-2 gum-pill px-3 py-1 text-xs font-semibold uppercase tracking-wide mb-4">
-          <Sparkles className="h-3.5 w-3.5" />
-          Search + Filter
-        </div>
-        <h1 className="text-3xl sm:text-4xl font-black mb-2">Find The Right AI Tool Fast</h1>
-        <p className="text-muted-foreground max-w-2xl mx-auto">Compare tools by category, pricing, use case, team size, and integrations in one place.</p>
+      <section className="text-center pt-4 pb-8">
+        <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight mb-2">Find the right AI tool</h1>
+        <p className="text-muted-foreground max-w-2xl mx-auto">Compare tools by category, pricing, use case, team size, and integrations.</p>
       </section>
 
       <div className="glass-card rounded-md p-4 mb-2 space-y-3">

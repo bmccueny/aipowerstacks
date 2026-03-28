@@ -37,12 +37,8 @@ export default async function BlogPage({
   return (
     <div className="page-shell">
       <JsonLd data={blogJsonLd} />
-      <div className="page-hero text-center">
-        <div className="inline-flex items-center gap-2 gum-pill px-3 py-1 text-xs font-semibold uppercase tracking-wide mb-4">
-          <Sparkles className="h-3.5 w-3.5" />
-          AI Briefing
-        </div>
-        <h1 className="text-3xl sm:text-4xl font-black mb-2">AI News &amp; Briefings For Builders</h1>
+      <div className="text-center pt-4 pb-8">
+        <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight mb-2">AI news and briefings</h1>
         <p className="text-muted-foreground">What changed, why it matters, and what to do next.</p>
       </div>
 

@@ -200,27 +200,16 @@ export default async function ToolDetailPage({ params }: Props) {
                     <span className="text-[10px] font-bold text-muted-foreground self-center">+{(tool.pricing_tags?.length ?? 0) - 2}</span>
                   )}
                 </div>
-                {tool.model_provider && tool.model_provider !== 'proprietary' && (
-                  <Badge variant="outline" className="bg-violet-100 text-violet-800 border-violet-300 dark:bg-violet-950 dark:text-violet-300 dark:border-violet-800">
-                    {tool.is_api_wrapper ? '⚠ Wrapper:' : 'Powered by'} {MODEL_PROVIDER_LABELS[tool.model_provider] ?? tool.model_provider}
-                  </Badge>
-                )}
-                {tool.is_supertools && (
-                  <Badge variant="outline" className="bg-indigo-100 text-indigo-800 border-indigo-300">SuperTool</Badge>
-                )}
                 {tool.categories && (
                   <Link href={`/categories/${tool.categories.slug}`}>
-                    <Badge variant="outline" className="border-foreground/30 hover:border-primary/50 transition-colors">
+                    <Badge variant="outline" className="border-foreground/10 hover:border-foreground/20 transition-colors">
                       {tool.categories.icon} {tool.categories.name}
                     </Badge>
                   </Link>
                 )}
-                <Badge variant="outline" className={isStale ? 'border-amber-400/50 bg-amber-50/50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-500/30' : 'border-foreground/30 bg-background/80'}>{freshnessLabel}</Badge>
+                <Badge variant="outline" className={isStale ? 'border-amber-400/30 text-amber-600 dark:text-amber-400' : 'border-foreground/10 text-muted-foreground'}>{freshnessLabel}</Badge>
               </div>
-              <div className="space-y-1 mb-4 text-xs text-muted-foreground">
-                {tool.is_verified ? (
-                  <p>Verified means our editorial team reviewed core listing fields like product type, pricing model, and destination URL.</p>
-                ) : null}
+              <div className="mb-4 text-xs text-muted-foreground">
                 <p>
                   Updated means this listing was last refreshed on {updatedDateText ?? 'an unpublished date'}.
                 </p>

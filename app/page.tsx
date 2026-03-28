@@ -62,7 +62,7 @@ export default async function HomePage() {
   return (
     <CompareProvider>
       <Navbar />
-      <main className="min-h-screen pt-20 flex flex-col gap-16 md:gap-24 pb-24">
+      <main className="min-h-screen pt-20 flex flex-col gap-24 md:gap-36 pb-32">
         <JsonLd data={{
           '@context': 'https://schema.org',
           '@type': 'WebPage',
@@ -77,7 +77,7 @@ export default async function HomePage() {
             <h1 className="text-[clamp(2.25rem,5vw,3.75rem)] font-semibold tracking-tight text-foreground mb-5 leading-[1.1]">
               How much is AI<br className="hidden sm:block" /> costing you?
             </h1>
-            <p className="text-lg text-muted-foreground max-w-md mx-auto leading-relaxed">
+            <p className="text-xl text-muted-foreground/70 max-w-lg mx-auto leading-relaxed">
               Track your AI subscriptions. See what overlaps. Cut what you don&apos;t need.
             </p>
           </div>
@@ -100,21 +100,21 @@ export default async function HomePage() {
               <div className="h-10 w-10 rounded-xl bg-foreground/[0.04] flex items-center justify-center mx-auto mb-3">
                 <Layers className="h-5 w-5 text-foreground/60" />
               </div>
-              <p className="font-semibold text-sm mb-1">1. Add your stack</p>
+              <p className="font-medium text-sm mb-1">1. Add your stack</p>
               <p className="text-xs text-muted-foreground">Tap the tools you pay for. Takes 10 seconds.</p>
             </div>
             <div className="text-center">
               <div className="h-10 w-10 rounded-xl bg-foreground/[0.04] flex items-center justify-center mx-auto mb-3">
                 <Eye className="h-5 w-5 text-foreground/60" />
               </div>
-              <p className="font-semibold text-sm mb-1">2. See the overlap</p>
+              <p className="font-medium text-sm mb-1">2. See the overlap</p>
               <p className="text-xs text-muted-foreground">We flag tools competing for the same job.</p>
             </div>
             <div className="text-center">
               <div className="h-10 w-10 rounded-xl bg-foreground/[0.04] flex items-center justify-center mx-auto mb-3">
                 <Scissors className="h-5 w-5 text-foreground/60" />
               </div>
-              <p className="font-semibold text-sm mb-1">3. Cut the waste</p>
+              <p className="font-medium text-sm mb-1">3. Cut the waste</p>
               <p className="text-xs text-muted-foreground">Compare overlaps side-by-side. You decide what stays.</p>
             </div>
           </div>
@@ -154,7 +154,7 @@ export default async function HomePage() {
 
         {/* ═══ CTA ═══ */}
         <section className="px-4 max-w-3xl mx-auto w-full">
-          <div className="relative overflow-hidden rounded-2xl border border-primary/15 bg-gradient-to-b from-primary/[0.04] to-transparent p-8 sm:p-12 text-center">
+          <div className="relative overflow-hidden rounded-2xl border border-foreground/[0.06] p-8 sm:p-12 text-center">
             <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight mb-3">
               Find out which tools to cancel.
             </h2>
