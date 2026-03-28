@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowRight, ChevronRight, Newspaper, Scissors, Layers, Eye } from 'lucide-react'
+import { ArrowRight, ChevronRight, Newspaper, TrendingDown, Layers, Eye, Scissors, BarChart3 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
@@ -72,17 +72,32 @@ export default async function HomePage() {
         }} />
 
         {/* ═══ Hero + Calculator ═══ */}
-        <section className="px-4 max-w-3xl mx-auto w-full pt-16 sm:pt-28">
+        <section className="relative px-4 max-w-3xl mx-auto w-full pt-16 sm:pt-28 overflow-visible">
+          <div className="hero-glow" aria-hidden="true" />
+
           <div className="text-center mb-12 animate-fade-up">
-            <h1 className="text-[clamp(2.25rem,5vw,3.75rem)] font-semibold tracking-tight text-foreground mb-5 leading-[1.1]">
-              How much is AI<br className="hidden sm:block" /> costing you?
+            <h1 className="text-[clamp(2.5rem,6vw,4.25rem)] font-bold tracking-tight mb-5 leading-[1.05]">
+              <span className="text-foreground">How much is AI</span>
+              <br className="hidden sm:block" />
+              <span className="text-gradient-primary">costing you?</span>
             </h1>
-            <p className="text-xl text-muted-foreground/70 max-w-lg mx-auto leading-relaxed">
+            <p className="text-lg sm:text-xl text-muted-foreground max-w-lg mx-auto leading-relaxed">
               Track your AI subscriptions. See what overlaps. Cut what you don&apos;t need.
             </p>
           </div>
 
-          <CostCalculator tools={(calcToolsResult.data || []).map(t => ({ id: t.id, name: t.name, slug: t.slug, logo_url: t.logo_url, pricing_model: t.pricing_model }))} isLoggedIn={!!user} />
+          {/* Social proof strip */}
+          <div className="flex items-center justify-center gap-3 sm:gap-5 mb-10 animate-fade-up" style={{ animationDelay: '100ms' }}>
+            <span className="text-xs sm:text-sm text-muted-foreground/60 font-medium">{siteStats.toolCount}+ tools tracked</span>
+            <span className="w-1 h-1 rounded-full bg-muted-foreground/20" />
+            <span className="text-xs sm:text-sm text-muted-foreground/60 font-medium">Real pricing data</span>
+            <span className="w-1 h-1 rounded-full bg-muted-foreground/20" />
+            <span className="text-xs sm:text-sm text-muted-foreground/60 font-medium">Free to use</span>
+          </div>
+
+          <div className="calculator-glow rounded-2xl animate-fade-up" style={{ animationDelay: '200ms' }}>
+            <CostCalculator tools={(calcToolsResult.data || []).map(t => ({ id: t.id, name: t.name, slug: t.slug, logo_url: t.logo_url, pricing_model: t.pricing_model }))} isLoggedIn={!!user} />
+          </div>
         </section>
 
         {/* ═══ The hook — one punchy stat ═══ */}
@@ -93,29 +108,36 @@ export default async function HomePage() {
           </p>
         </section>
 
-        {/* ═══ How it works — 3 steps ═══ */}
-        <section className="px-4 max-w-3xl mx-auto w-full">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 stagger-in">
-            <div className="text-center">
-              <div className="h-10 w-10 rounded-xl bg-foreground/[0.04] flex items-center justify-center mx-auto mb-3">
-                <Layers className="h-5 w-5 text-foreground/60" />
+        {/* ═══ Bento Grid Features ═══ */}
+        <section className="px-4 max-w-4xl mx-auto w-full">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 stagger-in">
+            <div className="bento-card group">
+              <div className="h-11 w-11 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/15 transition-colors">
+                <BarChart3 className="h-5.5 w-5.5 text-primary" />
               </div>
-              <p className="font-medium text-sm mb-1">1. Add your stack</p>
-              <p className="text-xs text-muted-foreground">Tap the tools you pay for. Takes 10 seconds.</p>
+              <h3 className="font-bold text-base mb-1.5 text-foreground">Track Spend</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">See exactly where your money goes across every AI subscription.</p>
             </div>
-            <div className="text-center">
-              <div className="h-10 w-10 rounded-xl bg-foreground/[0.04] flex items-center justify-center mx-auto mb-3">
-                <Eye className="h-5 w-5 text-foreground/60" />
+            <div className="bento-card group">
+              <div className="h-11 w-11 rounded-xl bg-amber-500/10 flex items-center justify-center mb-4 group-hover:bg-amber-500/15 transition-colors">
+                <Layers className="h-5.5 w-5.5 text-amber-500" />
               </div>
-              <p className="font-medium text-sm mb-1">2. See the overlap</p>
-              <p className="text-xs text-muted-foreground">We flag tools competing for the same job.</p>
+              <h3 className="font-bold text-base mb-1.5 text-foreground">Detect Overlap</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">We flag when multiple tools compete for the same job in your stack.</p>
             </div>
-            <div className="text-center">
-              <div className="h-10 w-10 rounded-xl bg-foreground/[0.04] flex items-center justify-center mx-auto mb-3">
-                <Scissors className="h-5 w-5 text-foreground/60" />
+            <div className="bento-card group">
+              <div className="h-11 w-11 rounded-xl bg-blue-500/10 flex items-center justify-center mb-4 group-hover:bg-blue-500/15 transition-colors">
+                <Eye className="h-5.5 w-5.5 text-blue-500" />
               </div>
-              <p className="font-medium text-sm mb-1">3. Cut the waste</p>
-              <p className="text-xs text-muted-foreground">Compare overlaps side-by-side. You decide what stays.</p>
+              <h3 className="font-bold text-base mb-1.5 text-foreground">Compare Side-by-Side</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">Features, pricing, and limits — everything you need to decide.</p>
+            </div>
+            <div className="bento-card group">
+              <div className="h-11 w-11 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-4 group-hover:bg-emerald-500/15 transition-colors">
+                <TrendingDown className="h-5.5 w-5.5 text-emerald-500" />
+              </div>
+              <h3 className="font-bold text-base mb-1.5 text-foreground">Cut Waste</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">Identify redundant tools and save hundreds per year.</p>
             </div>
           </div>
         </section>
@@ -124,7 +146,7 @@ export default async function HomePage() {
         {mostTracked.length > 0 && (
           <section className="px-4 max-w-4xl mx-auto w-full">
             <div className="flex items-center justify-center gap-2 mb-6">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+              <div className="pulse-dot" />
               <h2 className="text-sm font-medium text-muted-foreground">Most tracked right now</h2>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 stagger-in">
@@ -132,7 +154,7 @@ export default async function HomePage() {
                 <Link
                   key={tool.id}
                   href={`/tools/${tool.slug}`}
-                  className="rounded-xl border border-black/[0.06] bg-white dark:bg-card p-4 flex flex-col items-center gap-2.5 text-center hover:border-black/[0.12] transition-colors duration-150 group"
+                  className="rounded-xl border border-white/[0.06] bg-white/[0.03] backdrop-blur-sm p-4 flex flex-col items-center gap-2.5 text-center hover:border-white/[0.12] hover:bg-white/[0.05] transition-all duration-200 group"
                 >
                   {tool.logo_url ? (
                     <img src={tool.logo_url} alt={tool.name} className="w-10 h-10 rounded-lg object-contain" />
@@ -154,8 +176,8 @@ export default async function HomePage() {
 
         {/* ═══ CTA ═══ */}
         <section className="px-4 max-w-3xl mx-auto w-full">
-          <div className="relative overflow-hidden rounded-2xl border border-foreground/[0.06] p-8 sm:p-12 text-center">
-            <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight mb-3">
+          <div className="relative overflow-hidden rounded-2xl cta-gradient-bg border border-white/[0.08] p-8 sm:p-12 text-center">
+            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight mb-3 text-foreground">
               Find out which tools to cancel.
             </h2>
             <p className="text-sm text-muted-foreground max-w-md mx-auto mb-8">
@@ -164,18 +186,18 @@ export default async function HomePage() {
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-3">
               <Link href={user ? '/tracker' : '/login?redirectTo=/tracker'}>
-                <Button size="lg" className="btn-glow font-bold gap-2 w-full sm:w-auto h-12 px-8 text-base">
+                <Button size="lg" className="btn-cta-glow font-bold gap-2 w-full sm:w-auto h-12 px-8 text-base bg-primary hover:bg-primary/90 text-white">
                   Track My AI Spend
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </Link>
               <Link href="/compare">
-                <Button size="lg" variant="outline" className="font-bold border-foreground/15 w-full sm:w-auto h-12 px-8">
+                <Button size="lg" variant="outline" className="font-bold border-white/15 hover:border-white/25 hover:bg-white/5 w-full sm:w-auto h-12 px-8">
                   Compare Tools
                 </Button>
               </Link>
             </div>
-            <p className="text-xs text-muted-foreground mt-6">
+            <p className="text-xs text-muted-foreground/60 mt-6">
               Free to use · {siteStats.toolCount}+ tools · Real pricing data
             </p>
           </div>
@@ -183,16 +205,16 @@ export default async function HomePage() {
 
         {/* ═══ Newsletter + Submit ═══ */}
         <section className="px-4 max-w-4xl mx-auto w-full">
-          <div className="grid grid-cols-1 md:grid-cols-2 border border-foreground/[0.06] rounded-2xl overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-2 border border-white/[0.06] rounded-2xl overflow-hidden">
             <div className="p-8 flex flex-col gap-5">
               <div>
                 <p className="text-xs font-medium text-primary mb-2">The AI Stack Report</p>
                 <h2 className="text-lg font-bold mb-1">Weekly AI cost intelligence</h2>
                 <p className="text-sm text-muted-foreground">Price changes, new tools, and where smart teams are cutting spend.</p>
               </div>
-              <NewsletterBanner source="homepage-mid" tone="light" />
+              <NewsletterBanner source="homepage-mid" tone="dark" />
             </div>
-            <div className="p-8 flex flex-col justify-center gap-4 bg-foreground/[0.015] md:border-l border-t md:border-t-0 border-foreground/[0.06]">
+            <div className="p-8 flex flex-col justify-center gap-4 bg-white/[0.02] md:border-l border-t md:border-t-0 border-white/[0.06]">
               <div>
                 <h2 className="text-lg font-bold text-foreground">Built an AI tool?</h2>
                 <p className="text-sm text-muted-foreground mt-1">Get in front of teams actively comparing solutions and tracking spend.</p>
@@ -209,7 +231,7 @@ export default async function HomePage() {
 
         {/* ═══ Blog Posts ═══ */}
         {briefingItems.length > 0 && (
-          <section className="border-y border-foreground/[0.06]">
+          <section className="border-y border-white/[0.06]">
             <div className="max-w-4xl mx-auto px-4 py-12">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-sm font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
@@ -224,7 +246,7 @@ export default async function HomePage() {
                   <Link
                     key={news.id}
                     href={news.url}
-                    className="group rounded-xl overflow-hidden border border-foreground/[0.06] hover:border-primary/20 transition-all"
+                    className="group rounded-xl overflow-hidden border border-white/[0.06] hover:border-primary/20 transition-all bg-white/[0.02]"
                   >
                     {news.image_url ? (
                       <div className="relative h-36 overflow-hidden">
@@ -234,9 +256,10 @@ export default async function HomePage() {
                           fill
                           className="object-cover transition-transform duration-500 group-hover:scale-105"
                         />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                       </div>
                     ) : (
-                      <div className="h-36 bg-muted/30" />
+                      <div className="h-36 bg-white/[0.03]" />
                     )}
                     <div className="p-4 flex flex-col gap-1.5">
                       <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
@@ -268,11 +291,11 @@ export default async function HomePage() {
             <Link href="/tools" className="text-sm font-semibold text-primary hover:underline">
               Browse {siteStats.toolCount}+ tools →
             </Link>
-            <span className="text-muted-foreground/30">·</span>
+            <span className="text-muted-foreground/20">·</span>
             <Link href="/categories" className="text-sm font-semibold text-primary hover:underline">
               Categories →
             </Link>
-            <span className="text-muted-foreground/30">·</span>
+            <span className="text-muted-foreground/20">·</span>
             <Link href="/compare" className="text-sm font-semibold text-primary hover:underline">
               Compare →
             </Link>

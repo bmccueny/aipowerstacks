@@ -92,16 +92,10 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`${GeistSans.variable} ${inter.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`dark ${GeistSans.variable} ${inter.variable}`} suppressHydrationWarning>
       <head>
-        <meta name="theme-color" content="#0a0a0f" media="(prefers-color-scheme: dark)" />
-        <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+        <meta name="theme-color" content="#09090b" />
         <link rel="alternate" type="application/rss+xml" title="AIPowerStacks Blog RSS" href="/api/rss" />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme: dark)').matches)){document.documentElement.classList.add('dark')}}catch(e){}})()`,
-          }}
-        />
         <JsonLd data={generateOrganizationJsonLd()} />
         <JsonLd data={{
           '@context': 'https://schema.org',
