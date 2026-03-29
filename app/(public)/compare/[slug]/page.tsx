@@ -243,13 +243,13 @@ export default async function VsComparisonPage({
             {/* Header: Tool logos and names */}
             <thead>
               <tr className="border-b border-border/50">
-                <th className="w-[200px] px-6 py-5 text-left text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                <th className="w-[200px] px-6 py-5 text-left text-xs font-bold uppercase tracking-wider text-muted-foreground align-top">
                   Feature
                 </th>
                 {tools.map((tool) => (
-                  <th key={tool.id} className="px-6 py-5 text-center">
+                  <th key={tool.id} className="px-6 py-5 text-center align-top">
                     <div className="flex flex-col items-center gap-3">
-                      <div className="h-14 w-14 rounded-xl bg-muted overflow-hidden flex items-center justify-center">
+                      <div className="h-14 w-14 rounded-xl bg-muted overflow-hidden flex items-center justify-center shrink-0">
                         {tool.logo_url ? (
                           <img
                             src={tool.logo_url}
@@ -264,7 +264,7 @@ export default async function VsComparisonPage({
                           </span>
                         )}
                       </div>
-                      <div>
+                      <div className="min-h-[48px] flex flex-col justify-start">
                         <Link href={`/tools/${tool.slug}`} className="font-bold text-base hover:text-primary transition-colors">
                           {tool.name}
                         </Link>
