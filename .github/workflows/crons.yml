@@ -14,6 +14,7 @@ on:
     - cron: '0 5 * * *'     # 05:00 UTC daily
     - cron: '0 4 * * *'     # 04:00 UTC daily
     - cron: '15 3 * * *'    # 03:15 UTC daily
+    - cron: '0 9 1 * *'     # 09:00 UTC 1st of month
   workflow_dispatch:
     inputs:
       job:
@@ -165,6 +166,17 @@ jobs:
       - name: Call Cleanup News Cron
         run: |
           status=$(curl -s -o /tmp/response.txt -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/cleanup-news")
+          echo "HTTP $status"
+          cat /tmp/response.txt
+          [ "$status" -ge 200 ] && [ "$status" -lt 300 ]
+
+  spend-report:
+    runs-on: ubuntu-latest
+    if: github.event.schedule == '0 9 1 * *' || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Call Spend Report Cron
+        run: |
+          status=$(curl -s -o /tmp/response.txt -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/spend-report")
           echo "HTTP $status"
           cat /tmp/response.txt
           [ "$status" -ge 200 ] && [ "$status" -lt 300 ]
