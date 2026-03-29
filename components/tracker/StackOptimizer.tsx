@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Loader2, Zap, Wallet, ArrowRight, X, Repeat2 } from 'lucide-react'
+import { Loader2, Zap, Wallet, ArrowRight, X, Repeat2, ExternalLink } from 'lucide-react'
 
 type OptimizedTool = {
   name: string
@@ -13,6 +13,7 @@ type OptimizedTool = {
   reason: string
   action: 'keep' | 'replace' | 'drop'
   replaces: string | null
+  affiliate_url: string | null
 }
 
 type OptimizedStack = {
@@ -30,6 +31,14 @@ type CurrentTool = {
   slug: string
   logo_url: string | null
   cost: number
+}
+
+function recordAffiliateClick(toolId: string) {
+  fetch('/api/tracker/affiliate-click', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ tool_id: toolId }),
+  }).catch(() => {})
 }
 
 export function StackOptimizer({ currentTools }: { currentTools: CurrentTool[] }) {
@@ -196,14 +205,15 @@ export function StackOptimizer({ currentTools }: { currentTools: CurrentTool[] }
               <div className="space-y-1.5">
                 {keptTools.map((tool, i) => {
                   const isNew = tool.action === 'replace'
-                  return (
-                    <div key={i} className={`rounded-lg px-3 py-2 flex items-center gap-2 border ${
-                      isNew
-                        ? mode === 'performance'
-                          ? 'border-violet-400/20 bg-violet-400/[0.04]'
-                          : 'border-emerald-400/20 bg-emerald-400/[0.04]'
-                        : 'border-foreground/[0.06]'
-                    }`}>
+                  const cardClass = `rounded-lg px-3 py-2 flex items-center gap-2 border ${
+                    isNew
+                      ? mode === 'performance'
+                        ? 'border-violet-400/20 bg-violet-400/[0.04]'
+                        : 'border-emerald-400/20 bg-emerald-400/[0.04]'
+                      : 'border-foreground/[0.06]'
+                  }`
+                  const inner = (
+                    <>
                       <div className="h-6 w-6 rounded-md overflow-hidden flex items-center justify-center shrink-0">
                         {tool.logo_url ? (
                           <Image src={tool.logo_url} alt={tool.name} width={24} height={24} className="w-6 h-6 object-contain" unoptimized />
@@ -212,12 +222,34 @@ export function StackOptimizer({ currentTools }: { currentTools: CurrentTool[] }
                         )}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-[11px] font-semibold truncate">{tool.name}</p>
+                        <p className="text-[11px] font-semibold truncate flex items-center gap-1">
+                          {tool.name}
+                          {isNew && tool.affiliate_url && <ExternalLink className="h-2.5 w-2.5 shrink-0 opacity-50" />}
+                        </p>
                         {isNew && <p className="text-[9px] text-muted-foreground truncate">replaces {tool.replaces}</p>}
+                        {isNew && tool.affiliate_url && (
+                          <p className="text-[9px] text-muted-foreground/60">(partner link)</p>
+                        )}
                       </div>
                       <span className="text-[11px] font-bold shrink-0">${tool.price}</span>
-                    </div>
+                    </>
                   )
+
+                  if (isNew && tool.affiliate_url) {
+                    return (
+                      <a
+                        key={i}
+                        href={tool.affiliate_url}
+                        rel="nofollow sponsored"
+                        target="_blank"
+                        onClick={() => recordAffiliateClick(tool.slug)}
+                        className={`${cardClass} hover:opacity-80 transition-opacity`}
+                      >
+                        {inner}
+                      </a>
+                    )
+                  }
+                  return <div key={i} className={cardClass}>{inner}</div>
                 })}
               </div>
               <div className="mt-2 text-center">
@@ -238,7 +270,22 @@ export function StackOptimizer({ currentTools }: { currentTools: CurrentTool[] }
                 <div key={i} className="flex items-start gap-2">
                   <ArrowRight className="h-3 w-3 text-primary mt-0.5 shrink-0" />
                   <p className="text-xs text-muted-foreground">
-                    <strong className="text-foreground">{tool.replaces} → {tool.name}:</strong> {tool.reason}
+                    <strong className="text-foreground">{tool.replaces} → </strong>
+                    {tool.affiliate_url ? (
+                      <a
+                        href={tool.affiliate_url}
+                        rel="nofollow sponsored"
+                        target="_blank"
+                        onClick={() => recordAffiliateClick(tool.slug)}
+                        className="font-bold text-foreground hover:underline"
+                      >
+                        {tool.name}
+                      </a>
+                    ) : (
+                      <strong className="text-foreground">{tool.name}</strong>
+                    )}
+                    {': '}{tool.reason}
+                    {tool.affiliate_url && <span className="text-muted-foreground/50 ml-1">(partner link)</span>}
                   </p>
                 </div>
               ))}

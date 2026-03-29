@@ -147,6 +147,8 @@ export type Database = {
           not_for: string | null
           needs_review: boolean
           needs_review_reason: string | null
+          affiliate_url: string | null
+          affiliate_commission_pct: number | null
           created_at: string
           updated_at: string
         }
@@ -199,6 +201,8 @@ export type Database = {
           not_for?: string | null
           needs_review?: boolean
           needs_review_reason?: string | null
+          affiliate_url?: string | null
+          affiliate_commission_pct?: number | null
           created_at?: string
           updated_at?: string
         }
@@ -249,8 +253,28 @@ export type Database = {
           not_for?: string | null
           needs_review?: boolean
           needs_review_reason?: string | null
+          affiliate_url?: string | null
+          affiliate_commission_pct?: number | null
           updated_at?: string
         }
+        Relationships: []
+      }
+      affiliate_clicks: {
+        Row: {
+          id: string
+          tool_id: string | null
+          user_id: string | null
+          page: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          tool_id?: string | null
+          user_id?: string | null
+          page?: string | null
+          created_at?: string
+        }
+        Update: Record<string, never>
         Relationships: []
       }
       tool_benchmarks: {
