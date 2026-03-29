@@ -185,7 +185,7 @@ export async function POST() {
       q: GMAIL_QUERY,
       maxResults: 100,
     })
-    messageIds = (listRes.data.messages ?? []).map(m => m.id!).filter(Boolean)
+    messageIds = (listRes.data.messages ?? []).map((m: { id?: string | null }) => m.id!).filter(Boolean)
   } catch {
     return NextResponse.json(
       { error: 'Failed to read Gmail. Please reconnect.' },
@@ -210,8 +210,8 @@ export async function POST() {
           metadataHeaders: ['From', 'Subject'],
         })
         const headers = msgRes.data.payload?.headers ?? []
-        const from = headers.find(h => h.name === 'From')?.value ?? ''
-        const subject = headers.find(h => h.name === 'Subject')?.value ?? ''
+        const from = headers.find((h) => h.name === 'From')?.value ?? ''
+        const subject = headers.find((h) => h.name === 'Subject')?.value ?? ''
         const snippet = msgRes.data.snippet ?? ''
 
         const sender = extractEmailAddress(from)
