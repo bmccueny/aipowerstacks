@@ -156,7 +156,7 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ tool_id: tool.id, monthly_cost: price }),
-        }).then(async r => { if (!r.ok) { const body = await r.json().catch(() => ({})); console.error('[tracker import] POST failed:', r.status, body); throw new Error(`${r.status}: ${body.error || 'unknown'}`) } return r })
+        }).then(r => { if (!r.ok) throw new Error(`${r.status}`); return r })
       )
     ).then((results) => {
       const succeeded = results.filter(r => r.status === 'fulfilled').length
@@ -170,8 +170,7 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
           } else if (succeeded > 0) {
             toast.success(`Added ${succeeded} of ${toAdd.length} subscriptions`)
           } else {
-            const firstErr = results.find(r => r.status === 'rejected') as PromiseRejectedResult | undefined
-            toast.error(`Failed to import subscriptions${firstErr ? `: ${firstErr.reason}` : ''}`)
+            toast.error('Failed to import subscriptions')
           }
         })
         .catch(() => setImporting(false))
@@ -263,9 +262,7 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
       setSelectedTool(null)
       toast.success('Subscription added')
     } else {
-      const errBody = await res.json().catch(() => ({}))
-      console.error('[tracker add] POST failed:', res.status, errBody)
-      toast.error(`Failed to add: ${errBody.error || res.status}`)
+      toast.error('Failed to add')
     }
     setAdding(false)
   }, [selectedTool, clientLoggedIn, anonSubs])

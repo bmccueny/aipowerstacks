@@ -237,7 +237,7 @@ export default async function VsComparisonPage({
       </div>
 
       {/* ═══ Visual Side-by-Side Comparison Table ═══ */}
-      <div className="glass-card rounded-xl overflow-hidden mb-12">
+      <div className="rounded-xl overflow-hidden mb-12 border border-border bg-card">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[600px]">
             {/* Header: Tool logos and names */}
@@ -277,7 +277,7 @@ export default async function VsComparisonPage({
             </thead>
             <tbody>
               {/* Rating */}
-              <tr className="border-b border-border/30 bg-muted/20">
+              <tr className="border-b border-border/30 bg-muted">
                 <td className="px-6 py-3 text-sm font-medium">Rating</td>
                 {tools.map((t) => (
                   <td key={t.id} className="px-6 py-3 text-center">
@@ -318,7 +318,7 @@ export default async function VsComparisonPage({
               </tr>
 
               {/* Category */}
-              <tr className="border-b border-border/30 bg-muted/20">
+              <tr className="border-b border-border/30 bg-muted">
                 <td className="px-6 py-3 text-sm font-medium">Category</td>
                 {tools.map((t) => (
                   <td key={t.id} className="px-6 py-3 text-sm text-center">
@@ -354,7 +354,7 @@ export default async function VsComparisonPage({
               </tr>
 
               {/* Feature rows with icons */}
-              <tr className="border-b border-border/30 bg-muted/20">
+              <tr className="border-b border-border/30 bg-muted">
                 <td className="px-6 py-3 text-sm font-medium flex items-center gap-2">
                   <Code className="h-3.5 w-3.5 text-muted-foreground" /> Has API
                 </td>
@@ -376,7 +376,7 @@ export default async function VsComparisonPage({
                 ))}
               </tr>
 
-              <tr className="border-b border-border/30 bg-muted/20">
+              <tr className="border-b border-border/30 bg-muted">
                 <td className="px-6 py-3 text-sm font-medium flex items-center gap-2">
                   <Globe className="h-3.5 w-3.5 text-muted-foreground" /> Open Source
                 </td>
@@ -398,7 +398,7 @@ export default async function VsComparisonPage({
                 ))}
               </tr>
 
-              <tr className="border-b border-border/30 bg-muted/20">
+              <tr className="border-b border-border/30 bg-muted">
                 <td className="px-6 py-3 text-sm font-medium">Trains on Your Data</td>
                 {tools.map((t) => (
                   <td key={t.id} className="px-6 py-3 text-center">
@@ -422,7 +422,7 @@ export default async function VsComparisonPage({
               </tr>
 
               {/* Deployment */}
-              <tr className="border-b border-border/30 bg-muted/20">
+              <tr className="border-b border-border/30 bg-muted">
                 <td className="px-6 py-3 text-sm font-medium flex items-center gap-2">
                   <Server className="h-3.5 w-3.5 text-muted-foreground" /> Deployment
                 </td>
@@ -452,7 +452,7 @@ export default async function VsComparisonPage({
               </tr>
 
               {/* Target Audience */}
-              <tr className="border-b border-border/30 bg-muted/20">
+              <tr className="border-b border-border/30 bg-muted">
                 <td className="px-6 py-3 text-sm font-medium">Best For</td>
                 {tools.map((t) => (
                   <td key={t.id} className="px-6 py-3 text-sm text-center">
@@ -491,7 +491,7 @@ export default async function VsComparisonPage({
               ) : null}
 
               {/* Verified */}
-              <tr className="bg-muted/20">
+              <tr className="bg-muted">
                 <td className="px-6 py-3 text-sm font-medium">Verified</td>
                 {tools.map((t) => (
                   <td key={t.id} className="px-6 py-3 text-center">
@@ -507,7 +507,7 @@ export default async function VsComparisonPage({
       {/* Pros & Cons */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
         {tools.map((tool) => (
-          <div key={tool.id} className="glass-card rounded-xl p-6">
+          <div key={tool.id} className="rounded-xl border border-border bg-card p-6">
             <div className="flex items-center gap-3 mb-5">
               <div className="h-10 w-10 rounded-lg bg-muted overflow-hidden flex items-center justify-center">
                 {tool.logo_url ? (
@@ -568,7 +568,7 @@ export default async function VsComparisonPage({
               <Link
                 key={tool.id}
                 href={`/tools/${tool.slug}`}
-                className="glass-card rounded-xl p-4 flex flex-col items-center gap-2 text-center hover:border-primary/25 hover:shadow-md transition-all group"
+                className="rounded-xl border border-border bg-card p-4 flex flex-col items-center gap-2 text-center hover:border-primary/25 hover:shadow-md transition-all group"
               >
                 {tool.logo_url ? (
                   <img src={tool.logo_url} alt={tool.name} className="w-10 h-10 rounded-lg object-contain" />
@@ -589,7 +589,7 @@ export default async function VsComparisonPage({
       )}
 
       {/* CTA */}
-      <div className="text-center glass-card rounded-xl p-8">
+      <div className="text-center rounded-xl border border-border bg-card p-8">
         <h2 className="text-xl font-bold mb-2">Need a deeper comparison?</h2>
         <p className="text-muted-foreground mb-6">
           Use our full comparison tool to compare up to 4 tools across every

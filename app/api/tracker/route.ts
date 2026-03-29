@@ -13,25 +13,10 @@ export async function GET(request: Request) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  // Try with use_tags first, fall back without if column doesn't exist yet
-  let data = null
-  let error = null
-  const result = await supabase.from('user_subscriptions')
+  const { data, error } = await supabase.from('user_subscriptions')
     .select('id, tool_id, monthly_cost, billing_cycle, created_at, use_tags, tools:tool_id(name, slug, logo_url, pricing_model, use_case, category_id, categories:category_id(name))')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
-  data = result.data
-  error = result.error
-
-  if (error) {
-    // Retry without use_tags in case column doesn't exist
-    const fallback = await supabase.from('user_subscriptions')
-      .select('id, tool_id, monthly_cost, billing_cycle, created_at, tools:tool_id(name, slug, logo_url, pricing_model, use_case, category_id, categories:category_id(name))')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false })
-    data = fallback.data
-    error = fallback.error
-  }
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
@@ -91,23 +76,14 @@ export async function POST(request: Request) {
     use_tags: Array.isArray(use_tags) && use_tags.length > 0 ? use_tags : null,
   }
 
-  let { data: insertData, error: insertError } = await supabase.from('user_subscriptions')
+  const { data: insertData, error: insertError } = await supabase.from('user_subscriptions')
     .upsert(row, { onConflict: 'user_id,tool_id' })
     .select('id')
     .single()
 
-  if (insertError && row.use_tags) {
-    // Retry without use_tags in case column doesn't exist
-    const { use_tags: _, ...rowWithoutTags } = row
-    const retry = await supabase.from('user_subscriptions')
-      .upsert({ ...rowWithoutTags, use_tags: null }, { onConflict: 'user_id,tool_id' })
-      .select('id')
-      .single()
-    insertData = retry.data
-    insertError = retry.error
+  if (insertError) {
+    return NextResponse.json({ error: insertError.message }, { status: 500 })
   }
-
-  if (insertError) return NextResponse.json({ error: insertError.message }, { status: 500 })
   return NextResponse.json({ id: insertData?.id })
 }
 
