@@ -17,6 +17,7 @@ import { TrackerSubscriptionList } from './TrackerSubscriptionList'
 import { BudgetBar } from './BudgetBar'
 import { StackScore } from './StackScore'
 import { ShareStackButton } from './ShareStackButton'
+import { GmailImport } from './GmailImport'
 
 type Subscription = {
   id: string
@@ -411,6 +412,16 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
         onSelectTool={setSelectedTool}
         adding={adding}
       />
+
+      {/* Gmail import — only for logged-in users */}
+      {clientLoggedIn && (
+        <GmailImport onImported={() => {
+          fetch('/api/tracker')
+            .then(r => r.json())
+            .then(d => setSubs(d.subscriptions || []))
+            .catch(() => { /* refresh failed silently */ })
+        }} />
+      )}
 
       {/* Quick-add popular tools */}
       {!selectedTool && popularTools.length > 0 && (

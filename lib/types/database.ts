@@ -1098,6 +1098,55 @@ export type Database = {
         }
         Relationships: []
       }
+      user_gmail_tokens: {
+        Row: {
+          user_id: string
+          access_token: string
+          refresh_token: string
+          expires_at: string
+          connected_at: string
+        }
+        Insert: {
+          user_id: string
+          access_token: string
+          refresh_token: string
+          expires_at: string
+          connected_at?: string
+        }
+        Update: {
+          access_token?: string
+          refresh_token?: string
+          expires_at?: string
+        }
+        Relationships: []
+      }
+      gmail_import_logs: {
+        Row: {
+          id: string
+          user_id: string
+          tool_id: string | null
+          email_subject: string | null
+          email_from: string | null
+          amount_detected: number | null
+          imported_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          tool_id?: string | null
+          email_subject?: string | null
+          email_from?: string | null
+          amount_detected?: number | null
+          imported_at?: string
+        }
+        Update: {
+          tool_id?: string | null
+          email_subject?: string | null
+          email_from?: string | null
+          amount_detected?: number | null
+        }
+        Relationships: []
+      }
     }
     Views: Record<string, never>
     Functions: {
