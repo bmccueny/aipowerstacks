@@ -14,6 +14,9 @@ import { TrackerCostSummary } from './TrackerCostSummary'
 import { TrackerToolSearch } from './TrackerToolSearch'
 import { TrackerPopularTools } from './TrackerPopularTools'
 import { TrackerSubscriptionList } from './TrackerSubscriptionList'
+import { BudgetBar } from './BudgetBar'
+import { StackScore } from './StackScore'
+import { ShareStackButton } from './ShareStackButton'
 
 type Subscription = {
   id: string
@@ -153,7 +156,7 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ tool_id: tool.id, monthly_cost: price }),
-        }).then(r => { if (!r.ok) throw new Error(`${r.status}`); return r })
+        }).then(async r => { if (!r.ok) { const body = await r.json().catch(() => ({})); console.error('[tracker import] POST failed:', r.status, body); throw new Error(`${r.status}: ${body.error || 'unknown'}`) } return r })
       )
     ).then((results) => {
       const succeeded = results.filter(r => r.status === 'fulfilled').length
@@ -167,7 +170,8 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
           } else if (succeeded > 0) {
             toast.success(`Added ${succeeded} of ${toAdd.length} subscriptions`)
           } else {
-            toast.error('Failed to import subscriptions')
+            const firstErr = results.find(r => r.status === 'rejected') as PromiseRejectedResult | undefined
+            toast.error(`Failed to import subscriptions${firstErr ? `: ${firstErr.reason}` : ''}`)
           }
         })
         .catch(() => setImporting(false))
@@ -259,7 +263,9 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
       setSelectedTool(null)
       toast.success('Subscription added')
     } else {
-      toast.error('Failed to add')
+      const errBody = await res.json().catch(() => ({}))
+      console.error('[tracker add] POST failed:', res.status, errBody)
+      toast.error(`Failed to add: ${errBody.error || res.status}`)
     }
     setAdding(false)
   }, [selectedTool, clientLoggedIn, anonSubs])
@@ -377,6 +383,13 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
 
   return (
     <div className="space-y-6">
+      {/* Share button — shown for logged-in users with 2+ subs */}
+      {clientLoggedIn && subsCount >= 2 && (
+        <div className="flex justify-end">
+          <ShareStackButton />
+        </div>
+      )}
+
       <TrackerCostSummary
         total={total}
         yearly={yearly}
@@ -386,6 +399,11 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
         clientLoggedIn={clientLoggedIn}
         importing={importing}
       />
+
+      {/* Budget tracking — shown for logged-in users with 1+ sub */}
+      {clientLoggedIn && effectiveCount >= 1 && (
+        <BudgetBar totalSpend={total} />
+      )}
 
       {/* Add subscription */}
       <TrackerToolSearch
@@ -417,6 +435,9 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
         onRemoveSub={removeSub}
         onUpdateSubCost={updateSubCost}
       />
+
+      {/* Stack score — shown for logged-in users with 2+ subs */}
+      {clientLoggedIn && subsCount >= 2 && <StackScore />}
 
       {/* Switch prompt — shown when user removes a tool */}
       {switchPrompt && clientLoggedIn && (

@@ -12,6 +12,7 @@ export type Database = {
           bio: string | null
           website: string | null
           role: 'user' | 'editor' | 'admin'
+          monthly_budget: number | null
           created_at: string
           updated_at: string
         }
@@ -23,6 +24,7 @@ export type Database = {
           bio?: string | null
           website?: string | null
           role?: 'user' | 'editor' | 'admin'
+          monthly_budget?: number | null
           created_at?: string
           updated_at?: string
         }
@@ -33,6 +35,7 @@ export type Database = {
           bio?: string | null
           website?: string | null
           role?: 'user' | 'editor' | 'admin'
+          monthly_budget?: number | null
           updated_at?: string
         }
         Relationships: []
@@ -1035,6 +1038,39 @@ export type Database = {
         Update: {
           total_monthly?: number
           tool_count?: number
+        }
+        Relationships: []
+      }
+      shared_stacks: {
+        Row: {
+          id: string
+          user_id: string
+          display_name: string | null
+          snapshot: Record<string, unknown>
+          total_monthly: number
+          tool_count: number
+          grade: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id: string
+          user_id: string
+          display_name?: string | null
+          snapshot: Record<string, unknown>
+          total_monthly?: number
+          tool_count?: number
+          grade?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          display_name?: string | null
+          snapshot?: Record<string, unknown>
+          total_monthly?: number
+          tool_count?: number
+          grade?: string | null
+          updated_at?: string
         }
         Relationships: []
       }
