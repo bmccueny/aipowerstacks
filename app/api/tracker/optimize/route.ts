@@ -8,11 +8,12 @@ type Sub = {
   tools: { name: string; slug: string; logo_url: string | null; use_case: string | null; category_id: string | null; pricing_model: string; tagline: string | null; avg_rating: number; review_count: number }
 }
 
-type Alt = { id: string; name: string; slug: string; logo_url: string | null; pricing_model: string; tagline: string | null; avg_rating: number; review_count: number }
+type Alt = { id: string; name: string; slug: string; logo_url: string | null; pricing_model: string; tagline: string | null; avg_rating: number; review_count: number; affiliate_url: string | null }
 
 type OptTool = {
   name: string; slug: string; logo_url: string | null; price: number
   reason: string; action: 'keep' | 'replace' | 'drop'; replaces: string | null
+  affiliate_url: string | null
 }
 
 function score(rating: number, reviews: number) {
@@ -60,7 +61,7 @@ export async function GET(request: Request) {
     optimizedTools.push({
       name: sub.tools.name, slug: sub.tools.slug, logo_url: sub.tools.logo_url,
       price: Number(sub.monthly_cost), reason: 'No alternatives in this category',
-      action: 'keep', replaces: null,
+      action: 'keep', replaces: null, affiliate_url: null,
     })
   }
 
@@ -103,7 +104,7 @@ export async function GET(request: Request) {
       optimizedTools.push({
         name: d.sub.tools.name, slug: d.sub.tools.slug, logo_url: d.sub.tools.logo_url,
         price: d.cost, reason: `Overlaps with ${betterExternal.name} in this category`,
-        action: 'drop', replaces: null,
+        action: 'drop', replaces: null, affiliate_url: null,
       })
     }
   }
@@ -155,7 +156,7 @@ async function findBestAlternative(
 
   const { data: alts } = await supabase
     .from('tools')
-    .select('id, name, slug, logo_url, pricing_model, tagline, avg_rating, review_count')
+    .select('id, name, slug, logo_url, pricing_model, tagline, avg_rating, review_count, affiliate_url')
     .eq('status', 'published')
     .eq('category_id', catId)
     .neq('id', sub.tool_id)
@@ -169,7 +170,7 @@ async function findBestAlternative(
     return {
       name: sub.tools.name, slug: sub.tools.slug, logo_url: sub.tools.logo_url,
       price: userCost, reason: 'No rated alternatives found',
-      action: 'keep', replaces: null,
+      action: 'keep', replaces: null, affiliate_url: null,
     }
   }
 
@@ -200,7 +201,7 @@ async function findBestAlternative(
         name: best.alt.name, slug: best.alt.slug, logo_url: best.alt.logo_url,
         price: best.price,
         reason: `$${userCost - best.price}/mo cheaper. ${best.alt.avg_rating.toFixed(1)} stars (${best.alt.review_count} reviews).`,
-        action: 'replace', replaces: sub.tools.name,
+        action: 'replace', replaces: sub.tools.name, affiliate_url: best.alt.affiliate_url,
       }
     }
   } else {
@@ -216,7 +217,7 @@ async function findBestAlternative(
         name: best.alt.name, slug: best.alt.slug, logo_url: best.alt.logo_url,
         price: best.price,
         reason: `Higher rated: ${best.alt.avg_rating.toFixed(1)} stars (${best.alt.review_count} reviews) vs ${(sub.tools.avg_rating || 0).toFixed(1)}.`,
-        action: 'replace', replaces: sub.tools.name,
+        action: 'replace', replaces: sub.tools.name, affiliate_url: best.alt.affiliate_url,
       }
     }
   }
@@ -225,6 +226,6 @@ async function findBestAlternative(
     name: sub.tools.name, slug: sub.tools.slug, logo_url: sub.tools.logo_url,
     price: userCost,
     reason: mode === 'savings' ? 'Already the best value' : 'Already top-rated',
-    action: 'keep', replaces: null,
+    action: 'keep', replaces: null, affiliate_url: null,
   }
 }
