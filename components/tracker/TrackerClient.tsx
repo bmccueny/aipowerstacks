@@ -529,7 +529,7 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
       {clientLoggedIn && subsCount >= 2 && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <BenchmarkCard />
-          <ROIScorecard />
+          {/* <ROIScorecard /> — re-enable when usage check-in adoption grows */}
           <CohortInsights />
         </div>
       )}
