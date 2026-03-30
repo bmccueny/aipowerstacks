@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Trash2, TrendingDown, TrendingUp, Loader2, DollarSign } from 'lucide-react'
+import { TrendSparkline } from './TrendSparklines'
 
 type Subscription = {
   id: string
@@ -121,6 +122,7 @@ export function TrackerSubscriptionList({
                     )}
                   </div>
                 </div>
+                <TrendSparkline toolId={sub.tool_id} />
                 <button
                   onClick={() => startEditTier(sub.id, sub.tool_id)}
                   className="flex items-center gap-1.5 hover:bg-muted/80 px-2 py-1 rounded-lg transition-colors cursor-pointer shrink-0"
