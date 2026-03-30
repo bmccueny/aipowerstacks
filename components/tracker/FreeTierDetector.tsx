@@ -22,20 +22,25 @@ type Comparison = {
   all_tiers: TierInfo[]
 }
 
-export function FreeTierDetector() {
+type AnonTool = { tool_id: string; monthly_cost: number }
+
+export function FreeTierDetector({ anonTools }: { anonTools?: AnonTool[] } = {}) {
   const [comparisons, setComparisons] = useState<Comparison[]>([])
   const [loading, setLoading] = useState(true)
   const [expanded, setExpanded] = useState<string | null>(null)
 
   useEffect(() => {
-    fetch('/api/tracker/tier-compare')
+    const opts = anonTools && anonTools.length > 0
+      ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ tools: anonTools }) }
+      : {}
+    fetch('/api/tracker/tier-compare', opts)
       .then(r => r.json())
       .then(d => {
         setComparisons(d.comparisons || [])
         setLoading(false)
       })
       .catch(() => setLoading(false))
-  }, [])
+  }, [anonTools])
 
   if (loading) {
     return (

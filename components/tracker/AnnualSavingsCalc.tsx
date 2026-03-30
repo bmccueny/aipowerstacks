@@ -18,13 +18,18 @@ type SavingsItem = {
   savings_percent: number
 }
 
-export function AnnualSavingsCalc() {
+type AnonTool = { tool_id: string; monthly_cost: number }
+
+export function AnnualSavingsCalc({ anonTools }: { anonTools?: AnonTool[] } = {}) {
   const [savings, setSavings] = useState<SavingsItem[]>([])
   const [totalSavings, setTotalSavings] = useState(0)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('/api/tracker/annual-savings')
+    const opts = anonTools && anonTools.length > 0
+      ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ tools: anonTools }) }
+      : {}
+    fetch('/api/tracker/annual-savings', opts)
       .then(r => r.json())
       .then(d => {
         setSavings(d.savings || [])
@@ -32,7 +37,7 @@ export function AnnualSavingsCalc() {
         setLoading(false)
       })
       .catch(() => setLoading(false))
-  }, [])
+  }, [anonTools])
 
   if (loading) {
     return (

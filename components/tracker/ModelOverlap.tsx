@@ -20,13 +20,18 @@ const USE_CASE_LABELS: Record<string, string> = {
 
 const DISPLAY_USE_CASES = ['coding', 'writing', 'research', 'image_generation', 'audio', 'chat'] as const
 
-export function ModelOverlap() {
+type AnonTool = { tool_id: string; monthly_cost: number }
+
+export function ModelOverlap({ anonTools }: { anonTools?: AnonTool[] } = {}) {
   const [data, setData] = useState<OverlapData | null>(null)
   const [loading, setLoading] = useState(true)
   const [expanded, setExpanded] = useState(false)
 
   useEffect(() => {
-    fetch('/api/tracker/model-overlap')
+    const opts = anonTools && anonTools.length > 0
+      ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ tools: anonTools }) }
+      : {}
+    fetch('/api/tracker/model-overlap', opts)
       .then(r => {
         if (!r.ok) throw new Error(`${r.status}`)
         return r.json()
@@ -36,7 +41,7 @@ export function ModelOverlap() {
         toast.error('Could not load model intelligence')
         setLoading(false)
       })
-  }, [])
+  }, [anonTools])
 
   if (loading) {
     return (

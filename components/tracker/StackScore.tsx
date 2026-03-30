@@ -44,7 +44,9 @@ function getGradeRing(grade: string): string {
   }
 }
 
-export function StackScore() {
+type AnonTool = { tool_id: string; monthly_cost: number }
+
+export function StackScore({ anonTools }: { anonTools?: AnonTool[] } = {}) {
   const [data, setData] = useState<ScoreData | null>(null)
   const [loading, setLoading] = useState(true)
   const [animatedScore, setAnimatedScore] = useState(0)
@@ -52,7 +54,10 @@ export function StackScore() {
   const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    fetch('/api/tracker/score')
+    const opts = anonTools && anonTools.length > 0
+      ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ tools: anonTools }) }
+      : {}
+    fetch('/api/tracker/score', opts)
       .then(r => {
         if (!r.ok) throw new Error('Failed')
         return r.json()
@@ -60,7 +65,7 @@ export function StackScore() {
       .then(d => setData(d))
       .catch(() => { /* not enough subs or not logged in */ })
       .finally(() => setLoading(false))
-  }, [])
+  }, [anonTools])
 
   // Animate score counter
   useEffect(() => {

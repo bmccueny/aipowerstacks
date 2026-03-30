@@ -436,20 +436,29 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
         onUpdateSubCost={updateSubCost}
       />
 
-      {/* Cost Optimization — shown for logged-in users with 2+ subs */}
-      {clientLoggedIn && subsCount >= 2 && (
+      {/* Cost Optimization — shown for anyone with 2+ tools */}
+      {effectiveCount >= 2 && (
         <div className="space-y-4">
           <h2 className="text-lg font-black">Cost Optimization</h2>
-          <AnnualSavingsCalc />
-          <FreeTierDetector />
+          <AnnualSavingsCalc anonTools={!clientLoggedIn ? anonSubs.map(s => ({ tool_id: s.tool_id, monthly_cost: s.monthly_cost })) : undefined} />
+          <FreeTierDetector anonTools={!clientLoggedIn ? anonSubs.map(s => ({ tool_id: s.tool_id, monthly_cost: s.monthly_cost })) : undefined} />
         </div>
       )}
 
-      {/* Stack score — shown for logged-in users with 2+ subs */}
-      {clientLoggedIn && subsCount >= 2 && <StackScore />}
+      {/* Stack score — shown for anyone with 2+ tools */}
+      {effectiveCount >= 2 && <StackScore anonTools={!clientLoggedIn ? anonSubs.map(s => ({ tool_id: s.tool_id, monthly_cost: s.monthly_cost })) : undefined} />}
 
-      {/* Model intelligence — shown for logged-in users with 2+ subs */}
-      {clientLoggedIn && subsCount >= 2 && <ModelOverlap />}
+      {/* Model intelligence — shown for anyone with 2+ tools */}
+      {effectiveCount >= 2 && <ModelOverlap anonTools={!clientLoggedIn ? anonSubs.map(s => ({ tool_id: s.tool_id, monthly_cost: s.monthly_cost })) : undefined} />}
+
+      {/* Sign-up prompt for anonymous users */}
+      {!clientLoggedIn && effectiveCount >= 2 && (
+        <div className="rounded-xl border border-primary/20 bg-primary/5 p-5 text-center space-y-2">
+          <p className="text-sm font-semibold">Want more insights?</p>
+          <p className="text-xs text-muted-foreground">Sign up to save your stack, get personalized recommendations, and track pricing changes over time.</p>
+          <a href="/auth/sign-up" className="inline-block mt-2 text-xs font-semibold text-primary hover:underline">Create free account →</a>
+        </div>
+      )}
 
       {/* Insights panel — shown for logged-in users with 1+ subs */}
       {clientLoggedIn && subsCount >= 1 && (
