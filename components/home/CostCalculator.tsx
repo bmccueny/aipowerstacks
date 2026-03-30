@@ -429,10 +429,7 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
             We&apos;ll show you which ones to cut.
           </p>
           <Link
-            href={isLoggedIn
-              ? `/tracker?import=${added.map(t => `${t.slug}:${t.price}`).join(',')}`
-              : `/login?redirectTo=${encodeURIComponent(`/tracker?import=${added.map(t => `${t.slug}:${t.price}`).join(',')}`)}`
-            }
+            href={`/tracker?import=${added.map(t => `${t.slug}:${t.price}`).join(',')}`}
             className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2"
           >
             Get My Savings Report
