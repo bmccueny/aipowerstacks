@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { Search, X, Plus, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { toast } from 'sonner'
 
 type ToolOption = {
   id: string
@@ -54,6 +55,10 @@ export function TrackerToolSearch({
   const [tiersLoading, setTiersLoading] = useState(false)
   const [customCost, setCustomCost] = useState('')
   const [selectedIntents, setSelectedIntents] = useState<string[]>([])
+  const [reportingTier, setReportingTier] = useState<string | null>(null)
+  const [reportPrice, setReportPrice] = useState('')
+  const [reportUrl, setReportUrl] = useState('')
+  const [reportSubmitting, setReportSubmitting] = useState(false)
   const wrapperRef = useRef<HTMLDivElement>(null)
 
   // Close dropdown on outside click
@@ -87,6 +92,35 @@ export function TrackerToolSearch({
     await onAddSub(price, selectedIntents)
     setCustomCost('')
     setSelectedIntents([])
+  }
+
+  const handleReportPrice = async (tierName: string) => {
+    if (!selectedTool || !reportPrice) return
+    setReportSubmitting(true)
+    try {
+      const res = await fetch('/api/tracker/report-price', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tool_id: selectedTool.id,
+          tier_name: tierName,
+          reported_price: parseFloat(reportPrice),
+          actual_price_url: reportUrl || undefined,
+        }),
+      })
+      if (res.ok) {
+        toast.success("Thanks! We'll verify this soon.")
+        setReportingTier(null)
+        setReportPrice('')
+        setReportUrl('')
+      } else {
+        toast.error('Failed to submit report. Please try again.')
+      }
+    } catch {
+      toast.error('Failed to submit report. Please try again.')
+    } finally {
+      setReportSubmitting(false)
+    }
   }
 
   const filteredTools = search.length > 1
@@ -202,6 +236,66 @@ export function TrackerToolSearch({
                 </div>
                 <p className="text-[10px] text-muted-foreground mt-1 text-center">/month</p>
               </div>
+            </div>
+            {/* Report wrong price */}
+            <div className="mt-1">
+              {reportingTier === null ? (
+                <button
+                  type="button"
+                  onClick={() => setReportingTier(tiers[0]?.tier_name ?? '')}
+                  className="text-[11px] text-muted-foreground hover:text-foreground underline underline-offset-2 transition-colors"
+                >
+                  Price wrong? Let us know
+                </button>
+              ) : (
+                <div className="mt-2 p-3 rounded-xl border border-border bg-muted/30 space-y-2">
+                  <p className="text-xs font-medium">Report incorrect price</p>
+                  <div className="flex gap-2 flex-wrap">
+                    <select
+                      value={reportingTier}
+                      onChange={e => setReportingTier(e.target.value)}
+                      className="h-8 text-xs rounded-lg border border-border bg-background px-2 flex-1 min-w-0"
+                    >
+                      {tiers.map(t => (
+                        <option key={t.tier_name} value={t.tier_name}>{t.tier_name}</option>
+                      ))}
+                    </select>
+                    <Input
+                      type="number"
+                      placeholder="Correct price ($)"
+                      value={reportPrice}
+                      onChange={e => setReportPrice(e.target.value)}
+                      className="h-8 text-xs flex-1 min-w-[120px]"
+                      min="0"
+                      step="0.01"
+                    />
+                  </div>
+                  <Input
+                    type="url"
+                    placeholder="Source URL (optional)"
+                    value={reportUrl}
+                    onChange={e => setReportUrl(e.target.value)}
+                    className="h-8 text-xs"
+                  />
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      className="h-7 text-xs px-3"
+                      onClick={() => handleReportPrice(reportingTier)}
+                      disabled={!reportPrice || reportSubmitting}
+                    >
+                      {reportSubmitting ? <Loader2 className="h-3 w-3 animate-spin" /> : 'Submit'}
+                    </Button>
+                    <button
+                      type="button"
+                      onClick={() => { setReportingTier(null); setReportPrice(''); setReportUrl('') }}
+                      className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           ) : (
             /* No tiers found, show generic input */
