@@ -77,13 +77,14 @@ export async function GET(request: Request) {
 
       const { data: alternatives } = await supabase
         .from('tool_pricing_tiers')
-        .select('tool_id, tier_name, monthly_price, tools:tool_id(name, slug, category_id)')
+        .select('tool_id, tier_name, monthly_price, tools:tool_id(name, slug, category_id, status)')
         .eq('tools.category_id', tool.category_id)
+        .eq('tools.status', 'published')
         .gt('monthly_price', 0)
         .lt('monthly_price', userCost)
         .neq('tool_id', toolId)
         .order('monthly_price', { ascending: true })
-        .limit(3) as { data: Array<{ tool_id: string; tier_name: string; monthly_price: number; tools: { name: string; slug: string; category_id: string } | null }> | null }
+        .limit(3) as { data: Array<{ tool_id: string; tier_name: string; monthly_price: number; tools: { name: string; slug: string; category_id: string; status: string } | null }> | null }
 
       const validAlts = (alternatives || []).filter(a => a.tools?.category_id === tool.category_id)
       if (validAlts.length > 0) {
@@ -98,24 +99,44 @@ export async function GET(request: Request) {
       }
     }
 
-    // 4. Check for new tools published in same category in last 30 days
-    const { data: newTools } = await supabase
-      .from('tools')
-      .select('id, name, slug')
-      .eq('category_id', tool.category_id)
-      .neq('id', toolId)
-      .gte('created_at', thirtyDaysAgo)
-      .order('created_at', { ascending: false })
-      .limit(3)
+    // 4. Check for new tools in same category that are cheaper (last 30 days)
+    if (sub && Number(sub.monthly_cost) > 0) {
+      const { data: newCheaperTools } = await supabase
+        .from('tools')
+        .select('id, name, slug')
+        .eq('category_id', tool.category_id)
+        .eq('status', 'published')
+        .neq('id', toolId)
+        .gte('created_at', thirtyDaysAgo)
+        .order('created_at', { ascending: false })
+        .limit(10)
 
-    if (newTools && newTools.length > 0) {
-      for (const nt of newTools) {
-        insights.push({
-          type: 'new_alternative',
-          message: `${nt.name} just launched in the same category`,
-          severity: 'info',
-          toolSlug: nt.slug,
-        })
+      if (newCheaperTools && newCheaperTools.length > 0) {
+        // Only alert about new tools that have a cheaper tier than user's current cost
+        const userCost = Number(sub.monthly_cost)
+        const newToolIds = newCheaperTools.map(t => t.id)
+        const { data: newTiers } = await supabase
+          .from('tool_pricing_tiers')
+          .select('tool_id, monthly_price')
+          .in('tool_id', newToolIds)
+          .gt('monthly_price', 0)
+          .lt('monthly_price', userCost)
+          .limit(5) as { data: Array<{ tool_id: string; monthly_price: number }> | null }
+
+        if (newTiers && newTiers.length > 0) {
+          const cheaperToolIds = new Set(newTiers.map(t => t.tool_id))
+          const cheaperNew = newCheaperTools.filter(t => cheaperToolIds.has(t.id)).slice(0, 1)
+          for (const nt of cheaperNew) {
+            const tier = newTiers.find(t => t.tool_id === nt.id)
+            const saving = tier ? Math.round(userCost - tier.monthly_price) : 0
+            insights.push({
+              type: 'new_alternative',
+              message: `${nt.name} just launched — $${saving}/mo cheaper than your ${tool.name} plan`,
+              severity: 'info',
+              toolSlug: nt.slug,
+            })
+          }
+        }
       }
     }
   }

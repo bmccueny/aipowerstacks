@@ -77,6 +77,23 @@ export function TrackerSubscriptionList({
     setEditingSubId(null)
   }
 
+  if (loading) {
+    return (
+      <div className="space-y-2">
+        {[1, 2, 3].map(i => (
+          <div key={i} className="glass-card rounded-xl p-4 flex items-center gap-3 animate-pulse">
+            <div className="h-10 w-10 rounded-lg bg-muted shrink-0" />
+            <div className="flex-1 space-y-2">
+              <div className="h-3 w-28 bg-muted rounded" />
+              <div className="h-2 w-20 bg-muted/60 rounded" />
+            </div>
+            <div className="h-4 w-16 bg-muted rounded" />
+          </div>
+        ))}
+      </div>
+    )
+  }
+
   if (effectiveCount === 0) {
     return (
       <div className="glass-card rounded-xl p-8 sm:p-12 text-center">

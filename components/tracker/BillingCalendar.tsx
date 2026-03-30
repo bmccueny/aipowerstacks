@@ -37,7 +37,7 @@ export function BillingCalendar({ subscriptions }: { subscriptions: Subscription
     .reduce((s, r) => s + Number(r.monthly_cost), 0)
 
   return (
-    <div className="rounded-xl border border-foreground/[0.06] p-4">
+    <div className="glass-card rounded-xl p-4">
       <div className="flex items-center justify-between mb-3">
         <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Upcoming Renewals</p>
         {totalUpcoming7d > 0 && (

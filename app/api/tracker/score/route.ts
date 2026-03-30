@@ -25,6 +25,7 @@ type SubRow = {
     use_case: string | null
     use_cases: string[] | null
     category_id: string | null
+    is_supertools: boolean | null
     avg_rating: number | null
     review_count: number | null
     categories: { name: string } | null
@@ -66,7 +67,7 @@ export async function GET(request: Request) {
 
   const { data: subs, error } = await supabase
     .from('user_subscriptions')
-    .select('tool_id, monthly_cost, use_tags, tools:tool_id(name, slug, pricing_model, use_case, use_cases, category_id, avg_rating, review_count, categories:category_id(name))')
+    .select('tool_id, monthly_cost, use_tags, tools:tool_id(name, slug, pricing_model, use_case, use_cases, category_id, is_supertools, avg_rating, review_count, categories:category_id(name))')
     .eq('user_id', user.id)
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
@@ -146,6 +147,7 @@ export async function GET(request: Request) {
       const a = typedSubs[i]
       const b = typedSubs[j]
       if (!a.tools || !b.tools) continue
+      if (a.tools.is_supertools || b.tools.is_supertools) continue
 
       // Check use_cases array overlap (strongest signal)
       const aUseCases = a.tools.use_cases || (a.tools.use_case ? [a.tools.use_case] : [])
@@ -256,24 +258,25 @@ export async function GET(request: Request) {
   // ── Generate specific, actionable tips ──
   const tips: string[] = []
 
-  // Overpaying tips (most actionable)
+  // Pricing tips — note that difference may be annual vs monthly billing
   for (const tool of overpayingTools.slice(0, 2)) {
+    const diff = tool.paying - tool.median
     tips.push(
-      `You pay $${tool.paying}/mo for ${tool.name} — most users pay around $${tool.median}/mo. Check if you can downgrade tiers.`
+      `You pay $${tool.paying}/mo for ${tool.name} — the average is $${tool.median}/mo ($${diff} difference). An annual plan may offer savings.`
     )
   }
 
   // Redundancy tips
   for (const pair of redundantPairs.slice(0, 2)) {
     tips.push(
-      `${pair.toolA} and ${pair.toolB} overlap (${pair.reason}). Dropping one saves ~$${pair.wastedCost}/mo.`
+      `${pair.toolA} and ${pair.toolB} overlap (${pair.reason}). Consolidating could save ~$${pair.wastedCost}/mo.`
     )
   }
 
-  // Unused tool tips
+  // Low-usage tool tips
   for (const tool of unusedTools.slice(0, 2)) {
     tips.push(
-      `You barely use ${tool.name} but pay $${tool.cost}/mo. Cancel or switch to a free tier.`
+      `${tool.name} ($${tool.cost}/mo) has low usage — consider whether you're getting full value.`
     )
   }
 

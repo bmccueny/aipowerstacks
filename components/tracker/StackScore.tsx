@@ -88,7 +88,7 @@ export function StackScore() {
   const offset = circumference - (animatedScore / 100) * circumference
 
   return (
-    <div ref={containerRef} className="rounded-xl border border-foreground/[0.06] p-5 space-y-5">
+    <div ref={containerRef} className="glass-card rounded-xl p-5 space-y-5">
       <h3 className="text-sm font-medium text-muted-foreground">Stack Score</h3>
 
       <div className="flex flex-col sm:flex-row items-center gap-6">

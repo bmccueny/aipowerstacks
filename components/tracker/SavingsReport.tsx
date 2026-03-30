@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { Loader2, TrendingDown, AlertTriangle, ArrowRight, ArrowDown, ChevronDown, ChevronUp, Download, Share2, Image as ImageIcon, Sparkles } from 'lucide-react'
+import Image from 'next/image'
 import { toast } from 'sonner'
 
 type OverlapTool = { name: string; slug: string; logo_url: string | null; cost: number; rating: number; reviews: number; score: number }
@@ -208,7 +209,7 @@ export function SavingsReport({ data }: { data: SavingsData | null }) {
                         <div key={j} className={`flex items-center gap-3 rounded-lg px-3 py-2 ${isTopPick ? 'bg-emerald-400/[0.06] border border-emerald-400/15' : 'bg-background/50'}`}>
                           <div className="h-7 w-7 rounded-md overflow-hidden flex items-center justify-center shrink-0">
                             {tool.logo_url ? (
-                              <img src={tool.logo_url} alt={tool.name} className="w-7 h-7 object-contain" />
+                              <Image src={tool.logo_url} alt={tool.name} width={28} height={28} className="w-7 h-7 object-contain" unoptimized />
                             ) : (
                               <span className="w-7 h-7 rounded-md bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary">{tool.name[0]}</span>
                             )}
@@ -254,7 +255,7 @@ export function SavingsReport({ data }: { data: SavingsData | null }) {
                     </span>
                   </div>
                   <p className="text-xs text-muted-foreground mb-3">
-                    You&apos;re paying premium on {po.tools.length} {po.label.toLowerCase()} tools (${po.totalCost}/mo total). Pick your favorite at the top tier — downgrade or drop the rest.
+                    You&apos;re paying premium on {po.tools.length} {po.label.toLowerCase()} tools (${po.totalCost}/mo total). If their features overlap, consolidating to one could save you money.
                   </p>
                   <div className="space-y-2 mb-3">
                     {po.tools.map((tool, j) => (

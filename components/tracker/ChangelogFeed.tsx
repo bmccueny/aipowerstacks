@@ -45,7 +45,7 @@ export function ChangelogFeed() {
   if (loading || entries.length === 0) return null
 
   return (
-    <div className="rounded-xl border border-foreground/[0.06] p-4">
+    <div className="glass-card rounded-xl p-4">
       <div className="flex items-center gap-2 mb-3">
         <Newspaper className="h-3.5 w-3.5 text-primary" />
         <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">What changed in your stack</span>

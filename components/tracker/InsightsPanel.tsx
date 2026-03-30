@@ -92,7 +92,7 @@ export function InsightsPanel({ subscriptions }: { subscriptions: ToolSub[] }) {
 
   if (loading) {
     return (
-      <div className="rounded-xl border border-foreground/[0.06] p-4">
+      <div className="glass-card rounded-xl p-4">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Loader2 className="h-4 w-4 animate-spin" />
           Checking for insights…
@@ -107,13 +107,13 @@ export function InsightsPanel({ subscriptions }: { subscriptions: ToolSub[] }) {
   const warningCount = insights.filter(i => i.severity === 'warning').length
 
   return (
-    <div className="rounded-xl border border-foreground/[0.06] overflow-hidden">
+    <div className="glass-card rounded-xl overflow-hidden">
       <button
         onClick={() => setExpanded(!expanded)}
         className="w-full flex items-center justify-between p-4 hover:bg-muted/30 transition-colors"
       >
         <div className="flex items-center gap-2">
-          <Sparkles className="h-4 w-4 text-[#d03050]" />
+          <Sparkles className="h-4 w-4 text-primary" />
           <span className="text-sm font-semibold">
             Stack Insights
           </span>

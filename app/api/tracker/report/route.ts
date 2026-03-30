@@ -22,6 +22,7 @@ type Sub = {
     logo_url: string | null
     category_id: string | null
     use_case: string | null
+    is_supertools: boolean | null
     avg_rating: number
     review_count: number
   }
@@ -40,7 +41,7 @@ export async function GET(request: Request) {
 
   // Get user's subscriptions with tool details
   const { data: rawSubs } = await supabase.from('user_subscriptions')
-    .select('tool_id, monthly_cost, tools:tool_id(name, slug, logo_url, category_id, use_case, avg_rating, review_count)')
+    .select('tool_id, monthly_cost, tools:tool_id(name, slug, logo_url, category_id, use_case, is_supertools, avg_rating, review_count)')
     .eq('user_id', user.id)
 
   const subs = (rawSubs || []) as Sub[]
@@ -70,6 +71,7 @@ export async function GET(request: Request) {
   const categoryGroups = new Map<string, Sub[]>()
   for (const sub of subs) {
     if (isUsageBased(sub)) continue
+    if (sub.tools?.is_supertools) continue
     const catId = sub.tools?.category_id
     if (!catId) continue
     const useCase = sub.tools?.use_case || 'general'

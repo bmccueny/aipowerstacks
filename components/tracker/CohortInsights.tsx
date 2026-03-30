@@ -37,7 +37,7 @@ export function CohortInsights() {
 
   if (loading) {
     return (
-      <div className="rounded-xl border border-foreground/[0.06] p-5 space-y-4">
+      <div className="glass-card rounded-xl p-5 space-y-4">
         <div className="h-4 w-36 bg-muted animate-pulse rounded" />
         <div className="space-y-2">
           {[1, 2, 3].map(i => (
@@ -53,7 +53,7 @@ export function CohortInsights() {
   }
 
   return (
-    <div className="rounded-xl border border-foreground/[0.06] p-5 space-y-4">
+    <div className="glass-card rounded-xl p-5 space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Users className="h-4 w-4 text-purple-500" />

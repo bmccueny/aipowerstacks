@@ -21,16 +21,7 @@ type PricingTier = {
   features: string | null
 }
 
-const INTENT_TAGS = [
-  { value: 'coding', label: 'Coding', icon: '⌨️' },
-  { value: 'writing', label: 'Writing', icon: '✍️' },
-  { value: 'research', label: 'Research', icon: '🔬' },
-  { value: 'chat', label: 'Chat / Q&A', icon: '💬' },
-  { value: 'design', label: 'Design', icon: '🎨' },
-  { value: 'marketing', label: 'Marketing', icon: '📈' },
-  { value: 'video', label: 'Video / Audio', icon: '🎬' },
-  { value: 'data', label: 'Data / Analytics', icon: '📊' },
-]
+import { INTENT_TAGS } from './constants'
 
 type TrackerToolSearchProps = {
   tools: ToolOption[]
@@ -59,6 +50,7 @@ export function TrackerToolSearch({
   const [reportPrice, setReportPrice] = useState('')
   const [reportUrl, setReportUrl] = useState('')
   const [reportSubmitting, setReportSubmitting] = useState(false)
+  const [highlightIdx, setHighlightIdx] = useState(-1)
   const wrapperRef = useRef<HTMLDivElement>(null)
 
   // Close dropdown on outside click
@@ -127,6 +119,23 @@ export function TrackerToolSearch({
     ? tools.filter(t => t.name.toLowerCase().includes(search.toLowerCase()) && !alreadyTracked.has(t.id)).slice(0, 10)
     : []
 
+  const handleSearchKeyDown = (e: React.KeyboardEvent) => {
+    if (!showDropdown || filteredTools.length === 0) return
+    if (e.key === 'ArrowDown') {
+      e.preventDefault()
+      setHighlightIdx(prev => (prev + 1) % filteredTools.length)
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault()
+      setHighlightIdx(prev => (prev <= 0 ? filteredTools.length - 1 : prev - 1))
+    } else if (e.key === 'Enter' && highlightIdx >= 0 && highlightIdx < filteredTools.length) {
+      e.preventDefault()
+      selectTool(filteredTools[highlightIdx])
+    } else if (e.key === 'Escape') {
+      setShowDropdown(false)
+      setHighlightIdx(-1)
+    }
+  }
+
   return (
     <div className="glass-card rounded-xl p-6 relative z-20">
       <h2 className="text-base font-bold mb-4">Add a subscription</h2>
@@ -139,21 +148,29 @@ export function TrackerToolSearch({
               type="text"
               placeholder="Search for a tool (e.g. ChatGPT, Cursor, Midjourney)..."
               value={search}
-              onChange={e => { setSearch(e.target.value); setShowDropdown(true) }}
+              onChange={e => { setSearch(e.target.value); setShowDropdown(true); setHighlightIdx(-1) }}
               onFocus={() => { if (search.length > 1) setShowDropdown(true) }}
+              onKeyDown={handleSearchKeyDown}
+              role="combobox"
+              aria-expanded={showDropdown && filteredTools.length > 0}
+              aria-controls="tool-search-listbox"
+              aria-autocomplete="list"
+              aria-activedescendant={highlightIdx >= 0 ? `tool-option-${highlightIdx}` : undefined}
               className="w-full pl-10 pr-4 py-3 text-base sm:text-sm rounded-xl border border-foreground/[0.12] bg-background focus:outline-none focus:border-primary/40 focus:ring-2 focus:ring-primary/20 transition-all"
             />
           </div>
           {showDropdown && filteredTools.length > 0 && (
-            <div className="absolute top-full left-0 right-0 z-[100] mt-2 bg-white dark:bg-neutral-900 border border-border rounded-xl shadow-2xl max-h-80 overflow-y-auto">
-              {filteredTools.map(t => (
+            <div id="tool-search-listbox" role="listbox" className="absolute top-full left-0 right-0 z-[100] mt-2 bg-white dark:bg-neutral-900 border border-border rounded-xl shadow-2xl max-h-80 overflow-y-auto">
+              {filteredTools.map((t, idx) => (
                 <div
                   key={t.id}
-                  role="button"
-                  tabIndex={0}
+                  id={`tool-option-${idx}`}
+                  role="option"
+                  aria-selected={idx === highlightIdx}
                   onMouseDown={(e) => { e.preventDefault(); selectTool(t) }}
                   onTouchEnd={(e) => { e.preventDefault(); selectTool(t) }}
-                  className="px-4 py-3 flex items-center gap-3 hover:bg-muted/80 active:bg-muted cursor-pointer border-b border-border/30 last:border-0 transition-colors"
+                  onMouseEnter={() => setHighlightIdx(idx)}
+                  className={`px-4 py-3 flex items-center gap-3 active:bg-muted cursor-pointer border-b border-border/30 last:border-0 transition-colors ${idx === highlightIdx ? 'bg-muted/80' : 'hover:bg-muted/80'}`}
                 >
                   {t.logo_url ? (
                     <Image src={t.logo_url} alt={t.name} width={32} height={32} className="w-8 h-8 rounded-lg object-contain shrink-0" unoptimized />

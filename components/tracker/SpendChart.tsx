@@ -92,7 +92,7 @@ export function SpendChart({ subscriptions }: SpendChartProps) {
   const uniqueLabels = [...new Set(labelIndices)]
 
   return (
-    <div className="rounded-xl border border-foreground/[0.06] p-4">
+    <div className="glass-card rounded-xl p-4">
       <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">Monthly Spend Over Time</p>
       <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto" preserveAspectRatio="xMidYMid meet">
         {/* Grid lines */}

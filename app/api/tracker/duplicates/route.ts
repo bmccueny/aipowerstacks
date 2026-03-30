@@ -16,9 +16,9 @@ export async function GET(request: Request) {
   // Get user's subscriptions with tool details
   const { data: rawSubs } = await supabase
     .from('user_subscriptions')
-    .select('tool_id, monthly_cost, tools:tool_id(name, slug, logo_url, use_case, use_cases, category_id, avg_rating, review_count, categories:category_id(name))')
+    .select('tool_id, monthly_cost, tools:tool_id(name, slug, logo_url, use_case, use_cases, category_id, is_supertools, avg_rating, review_count, categories:category_id(name))')
     .eq('user_id', user.id)
-  const subs = (rawSubs ?? []) as unknown as Array<{ tool_id: string; monthly_cost: number; tools: { name: string; slug: string; logo_url: string | null; use_case: string | null; use_cases: string[] | null; category_id: string | null; avg_rating: number | null; review_count: number | null; categories: { name: string } | null } | null }>
+  const subs = (rawSubs ?? []) as unknown as Array<{ tool_id: string; monthly_cost: number; tools: { name: string; slug: string; logo_url: string | null; use_case: string | null; use_cases: string[] | null; category_id: string | null; is_supertools: boolean | null; avg_rating: number | null; review_count: number | null; categories: { name: string } | null } | null }>
 
   if (!subs || subs.length < 2) {
     return NextResponse.json({ duplicates: [] })
@@ -43,7 +43,7 @@ export async function GET(request: Request) {
   }
 
   const subsWithTools: SubWithTool[] = subs
-    .filter(s => s.tools)
+    .filter(s => s.tools && !s.tools.is_supertools)
     .map(s => ({
       tool_id: s.tool_id,
       monthly_cost: Number(s.monthly_cost),
@@ -71,25 +71,17 @@ export async function GET(request: Request) {
       const pairKey = [a.tool_id, b.tool_id].sort().join(':')
       if (seen.has(pairKey)) continue
 
-      // Check for overlap: same category or overlapping use_cases
-      let overlapReason: string | null = null
-
-      if (a.tool.category_id && a.tool.category_id === b.tool.category_id) {
-        overlapReason = `Both in ${a.tool.categories?.name || 'same category'}`
-      }
-
-      // Check use_cases array overlap
+      // Only flag overlap when tools share specific use_cases — same category alone is not enough
       const aUseCases = a.tool.use_cases || (a.tool.use_case ? [a.tool.use_case] : [])
       const bUseCases = b.tool.use_cases || (b.tool.use_case ? [b.tool.use_case] : [])
       const sharedUseCases = aUseCases.filter(uc => bUseCases.includes(uc))
 
-      if (sharedUseCases.length > 0) {
-        overlapReason = overlapReason
-          ? `${overlapReason}, shared use: ${sharedUseCases.join(', ')}`
-          : `Shared use cases: ${sharedUseCases.join(', ')}`
-      }
+      if (sharedUseCases.length === 0) continue
 
-      if (!overlapReason) continue
+      const categoryName = a.tool.categories?.name || b.tool.categories?.name
+      const overlapReason = categoryName
+        ? `${categoryName} · ${sharedUseCases.join(', ')}`
+        : `Shared use: ${sharedUseCases.join(', ')}`
 
       seen.add(pairKey)
 

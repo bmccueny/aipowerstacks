@@ -11,7 +11,7 @@ const USE_CASE_LABELS: Record<string, string> = {
 type Sub = {
   tool_id: string
   monthly_cost: number
-  tools: { name: string; slug: string; use_case: string | null; category_id: string | null; pricing_model: string; tagline: string | null; avg_rating: number; review_count: number; has_api: boolean; is_open_source: boolean }
+  tools: { name: string; slug: string; use_case: string | null; category_id: string | null; is_supertools: boolean | null; pricing_model: string; tagline: string | null; avg_rating: number; review_count: number; has_api: boolean; is_open_source: boolean }
 }
 
 export async function GET(request: Request) {
@@ -26,7 +26,7 @@ export async function GET(request: Request) {
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { data: rawSubs } = await supabase.from('user_subscriptions')
-    .select('tool_id, monthly_cost, tools:tool_id(name, slug, use_case, category_id, pricing_model, tagline, avg_rating, review_count, has_api, is_open_source)')
+    .select('tool_id, monthly_cost, tools:tool_id(name, slug, use_case, category_id, is_supertools, pricing_model, tagline, avg_rating, review_count, has_api, is_open_source)')
     .eq('user_id', user.id)
 
   const subs = (rawSubs || []) as Sub[]
@@ -62,6 +62,7 @@ export async function GET(request: Request) {
   const catGroups = new Map<string, Sub[]>()
   for (const sub of subs) {
     if (usagePrices.get(sub.tool_id)?.has(Number(sub.monthly_cost))) continue
+    if (sub.tools?.is_supertools) continue
     const catId = sub.tools?.category_id
     if (!catId) continue
     const useCase = sub.tools?.use_case || 'general'
@@ -137,7 +138,7 @@ export async function GET(request: Request) {
     })
     if (premiumItems.length >= 2) {
       const names = premiumItems.map(s => `${s.tools.name} ($${Number(s.monthly_cost)}/mo)`)
-      tierLines.push(`You're on premium tiers for both ${names.join(' and ')}. If you keep one at the top tier, downgrade the other.`)
+      tierLines.push(`You're on premium tiers for both ${names.join(' and ')}. If their features overlap, consolidating to one could save you money.`)
     }
   }
   if (tierLines.length > 0) paragraphs.push(tierLines.join(' '))

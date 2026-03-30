@@ -22,7 +22,8 @@ async function loadCohortData(): Promise<CohortCache> {
 
   const { data: allSubs } = await admin
     .from('user_subscriptions')
-    .select('user_id, tool_id, tools!inner(name, slug, logo_url)')
+    .select('user_id, tool_id, tools!inner(name, slug, logo_url, status)')
+    .eq('tools.status', 'published')
 
   const userTools = new Map<string, Set<string>>()
   const toolNames = new Map<string, { name: string; slug: string; logoUrl: string | null }>()

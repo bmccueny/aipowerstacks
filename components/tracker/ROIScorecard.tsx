@@ -90,7 +90,7 @@ export function ROIScorecard() {
 
   if (loading) {
     return (
-      <div className="rounded-xl border border-foreground/[0.06] p-5 space-y-4">
+      <div className="glass-card rounded-xl p-5 space-y-4">
         <div className="h-4 w-32 bg-muted animate-pulse rounded" />
         <div className="space-y-3">
           {[1, 2, 3].map(i => (
@@ -104,7 +104,7 @@ export function ROIScorecard() {
   if (tools.length === 0) return null
 
   return (
-    <div className="rounded-xl border border-foreground/[0.06] p-5 space-y-4">
+    <div className="glass-card rounded-xl p-5 space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <TrendingUp className="h-4 w-4 text-emerald-500" />

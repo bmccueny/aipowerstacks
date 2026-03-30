@@ -1,12 +1,11 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
 import Link from 'next/link'
 import { SavingsReport } from './SavingsReport'
 import { StackOptimizer } from './StackOptimizer'
-// StackIntel removed — replaced by Stack Score v2, CohortInsights, and AnnualSavingsCalc
 import { SpendChart } from './SpendChart'
 import { ChangelogFeed } from './ChangelogFeed'
 import { SwitchPrompt } from './SwitchPrompt'
@@ -17,15 +16,11 @@ import { TrackerSubscriptionList } from './TrackerSubscriptionList'
 import { BudgetBar } from './BudgetBar'
 import { StackScore } from './StackScore'
 import { ShareStackButton } from './ShareStackButton'
-import { GmailImport } from './GmailImport'
 import { InsightsPanel } from './InsightsPanel'
 import { BenchmarkCard } from './BenchmarkCard'
-import { ROIScorecard } from './ROIScorecard'
-// CategoryConcentration removed — overlaps with existing dashboard spend-by-category
 import { CohortInsights } from './CohortInsights'
 import { AnnualSavingsCalc } from './AnnualSavingsCalc'
 import { FreeTierDetector } from './FreeTierDetector'
-import { DuplicateDetector } from './DuplicateDetector'
 
 type Subscription = {
   id: string
@@ -35,7 +30,7 @@ type Subscription = {
   created_at: string
   is_usage_based?: boolean
   use_tags?: string[] | null
-  tools: { name: string; slug: string; logo_url: string | null; pricing_model: string; use_case?: string | null; category_id?: string | null; categories?: { name: string } | null } | null
+  tools: { name: string; slug: string; logo_url: string | null; pricing_model: string; use_case?: string | null; category_id?: string | null; is_supertools?: boolean | null; categories?: { name: string } | null } | null
 }
 
 type ToolOption = {
@@ -53,18 +48,9 @@ type PopularTool = {
   logo_url: string | null
 }
 
-const ANON_STORAGE_KEY = 'aips_tracker_anon'
+import { INTENT_TAGS } from './constants'
 
-const INTENT_TAGS = [
-  { value: 'coding', label: 'Coding', icon: '⌨️' },
-  { value: 'writing', label: 'Writing', icon: '✍️' },
-  { value: 'research', label: 'Research', icon: '🔬' },
-  { value: 'chat', label: 'Chat / Q&A', icon: '💬' },
-  { value: 'design', label: 'Design', icon: '🎨' },
-  { value: 'marketing', label: 'Marketing', icon: '📈' },
-  { value: 'video', label: 'Video / Audio', icon: '🎬' },
-  { value: 'data', label: 'Data / Analytics', icon: '📊' },
-]
+const ANON_STORAGE_KEY = 'aips_tracker_anon'
 
 const USE_CASE_NAMES: Record<string, string> = {
   'content-creation': 'Content Creation',
@@ -83,8 +69,8 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
   const [loading, setLoading] = useState(true)
   const [adding, setAdding] = useState(false)
   const [selectedTool, setSelectedTool] = useState<ToolOption | null>(null)
-  const [autoAddHandled, setAutoAddHandled] = useState(false)
-  const [importHandled, setImportHandled] = useState(false)
+  const autoAddHandledRef = useRef(false)
+  const importHandledRef = useRef(false)
   const [dashboardData, setDashboardData] = useState<Record<string, unknown> | null>(null)
   const [dashboardLoading, setDashboardLoading] = useState(false)
   const [switchPrompt, setSwitchPrompt] = useState<{ toolId: string; toolName: string } | null>(null)
@@ -125,19 +111,19 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
 
   // Auto-select tool from ?add= query param after subs load
   useEffect(() => {
-    if (autoAddHandled || loading || !autoAddSlug) return
-    setAutoAddHandled(true)
+    if (autoAddHandledRef.current || loading || !autoAddSlug) return
+    autoAddHandledRef.current = true
     const alreadyTrackedSet = new Set(subs.map(s => s.tool_id))
     const match = tools.find(t => t.slug === autoAddSlug && !alreadyTrackedSet.has(t.id))
     if (match) {
       setSelectedTool(match)
     }
-  }, [autoAddSlug, autoAddHandled, loading, subs, tools])
+  }, [autoAddSlug, loading, subs, tools])
 
   // Bulk import tools from ?import=slug:price,slug:price (from homepage calculator)
   useEffect(() => {
-    if (importHandled || loading || !importTools) return
-    setImportHandled(true)
+    if (importHandledRef.current || loading || !importTools) return
+    importHandledRef.current = true
     const allTracked = new Set([...subs.map(s => s.tool_id), ...anonSubs.map(s => s.tool_id)])
     const entries = importTools.split(',').map(entry => {
       const [slug, priceStr] = entry.split(':')
@@ -184,14 +170,18 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
         })
         .catch(() => setImporting(false))
     })
-  }, [importTools, importHandled, loading, subs, anonSubs, tools, clientLoggedIn])
+  }, [importTools, loading, subs, anonSubs, tools, clientLoggedIn])
 
-  // Fetch price trends for tracked tools
+  // Fetch price trends for tracked tools — only for tool_ids not already cached
   useEffect(() => {
     if (subs.length === 0) return
+    const controller = new AbortController()
+    const newSubs = subs.filter(s => !(s.tool_id in priceTrends))
+    if (newSubs.length === 0) return
+
     Promise.allSettled(
-      subs.map(s =>
-        fetch(`/api/tracker/tiers?tool_id=${s.tool_id}`)
+      newSubs.map(s =>
+        fetch(`/api/tracker/tiers?tool_id=${s.tool_id}`, { signal: controller.signal })
           .then(r => r.json())
           .then(d => {
             const tiers = d.tiers || []
@@ -213,15 +203,18 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
           .catch(() => null)
       )
     ).then(results => {
+      if (controller.signal.aborted) return
       const trends: Record<string, number> = {}
       for (const r of results) {
         if (r.status === 'fulfilled' && r.value) {
           trends[r.value.tool_id] = r.value.change
         }
       }
-      if (Object.keys(trends).length > 0) setPriceTrends(trends)
+      if (Object.keys(trends).length > 0) setPriceTrends(prev => ({ ...prev, ...trends }))
     })
-  }, [subs])
+
+    return () => controller.abort()
+  }, [subs]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Single dashboard fetch
   const subsCount = subs.length
@@ -328,7 +321,7 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
 
   // Compute overlaps
   const overlaps = subs.length >= 2 ? (() => {
-    const fixedSubs = subs.filter(s => !s.is_usage_based)
+    const fixedSubs = subs.filter(s => !s.is_usage_based && !s.tools?.is_supertools)
     const groups: Record<string, Subscription[]> = {}
 
     for (const sub of fixedSubs) {
@@ -421,16 +414,6 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
         adding={adding}
       />
 
-      {/* Gmail import — disabled until Google OAuth verification is complete */}
-      {/* {clientLoggedIn && (
-        <GmailImport onImported={() => {
-          fetch('/api/tracker')
-            .then(r => r.json())
-            .then(d => setSubs(d.subscriptions || []))
-            .catch(() => { /* refresh failed silently * / })
-        }} />
-      )} */}
-
       {/* Quick-add popular tools */}
       {!selectedTool && popularTools.length > 0 && (
         <TrackerPopularTools
@@ -458,7 +441,6 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
           <h2 className="text-lg font-black">Cost Optimization</h2>
           <AnnualSavingsCalc />
           <FreeTierDetector />
-          <DuplicateDetector />
         </div>
       )}
 
@@ -526,7 +508,6 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
       {clientLoggedIn && subsCount >= 2 && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <BenchmarkCard />
-          {/* <ROIScorecard /> — re-enable when usage check-in adoption grows */}
           <CohortInsights />
         </div>
       )}

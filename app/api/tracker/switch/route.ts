@@ -40,10 +40,10 @@ export async function GET() {
   const admin = createAdminClient()
 
   // Get aggregate switch data for popular tools
-  type SwitchRow = { from_tool_id: string; to_tool_id: string; satisfaction: number | null; tools_from: { name: string; slug: string } | null; tools_to: { name: string; slug: string } | null }
+  type SwitchRow = { from_tool_id: string; to_tool_id: string; satisfaction: number | null; tools_from: { name: string; slug: string; status: string } | null; tools_to: { name: string; slug: string; status: string } | null }
   const { data } = await admin
     .from('tool_switches')
-    .select('from_tool_id, to_tool_id, satisfaction, tools_from:from_tool_id(name, slug), tools_to:to_tool_id(name, slug)')
+    .select('from_tool_id, to_tool_id, satisfaction, tools_from:from_tool_id(name, slug, status), tools_to:to_tool_id(name, slug, status)')
     .order('created_at', { ascending: false })
     .limit(100) as { data: SwitchRow[] | null }
 
@@ -52,6 +52,7 @@ export async function GET() {
   // Aggregate: count switches per pair
   const pairs = new Map<string, { from: string; to: string; fromSlug: string; toSlug: string; count: number; avgSatisfaction: number }>()
   for (const s of data) {
+    if (s.tools_from?.status !== 'published' || s.tools_to?.status !== 'published') continue
     const key = `${s.from_tool_id}→${s.to_tool_id}`
     const existing = pairs.get(key)
     if (existing) {

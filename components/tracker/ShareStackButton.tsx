@@ -15,11 +15,10 @@ export function ShareStackButton() {
     setSharing(true)
     try {
       const res = await fetch('/api/tracker/share', { method: 'POST' })
+      const data = await res.json().catch(() => ({}))
       if (!res.ok) {
-        const body = await res.json().catch(() => ({}))
-        throw new Error(body.error || 'Failed to generate share link')
+        throw new Error(data.error || 'Failed to generate share link')
       }
-      const data = await res.json()
       const fullUrl = `${window.location.origin}${data.url}`
       setShareUrl(fullUrl)
       setShowModal(true)
