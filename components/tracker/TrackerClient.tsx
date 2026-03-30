@@ -413,15 +413,15 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
         adding={adding}
       />
 
-      {/* Gmail import — only for logged-in users */}
-      {clientLoggedIn && (
+      {/* Gmail import — disabled until Google OAuth verification is complete */}
+      {/* {clientLoggedIn && (
         <GmailImport onImported={() => {
           fetch('/api/tracker')
             .then(r => r.json())
             .then(d => setSubs(d.subscriptions || []))
-            .catch(() => { /* refresh failed silently */ })
+            .catch(() => { /* refresh failed silently * / })
         }} />
-      )}
+      )} */}
 
       {/* Quick-add popular tools */}
       {!selectedTool && popularTools.length > 0 && (
