@@ -15,6 +15,7 @@ on:
     - cron: '0 4 * * *'     # 04:00 UTC daily
     - cron: '15 3 * * *'    # 03:15 UTC daily
     - cron: '0 9 1 * *'     # 09:00 UTC 1st of month
+    - cron: '0 12 * * *'    # 12:00 UTC daily
   workflow_dispatch:
     inputs:
       job:
@@ -177,6 +178,28 @@ jobs:
       - name: Call Spend Report Cron
         run: |
           status=$(curl -s -o /tmp/response.txt -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/spend-report")
+          echo "HTTP $status"
+          cat /tmp/response.txt
+          [ "$status" -ge 200 ] && [ "$status" -lt 300 ]
+
+  price-alerts:
+    runs-on: ubuntu-latest
+    if: github.event.schedule == '0 12 * * *' || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Call Price Alerts Cron
+        run: |
+          status=$(curl -s -o /tmp/response.txt -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/price-alerts")
+          echo "HTTP $status"
+          cat /tmp/response.txt
+          [ "$status" -ge 200 ] && [ "$status" -lt 300 ]
+
+  new-alternatives:
+    runs-on: ubuntu-latest
+    if: github.event.schedule == '0 12 * * *' || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Call New Alternatives Cron
+        run: |
+          status=$(curl -s -o /tmp/response.txt -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/cron/new-alternatives")
           echo "HTTP $status"
           cat /tmp/response.txt
           [ "$status" -ge 200 ] && [ "$status" -lt 300 ]

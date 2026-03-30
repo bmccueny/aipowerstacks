@@ -18,6 +18,7 @@ import { BudgetBar } from './BudgetBar'
 import { StackScore } from './StackScore'
 import { ShareStackButton } from './ShareStackButton'
 import { GmailImport } from './GmailImport'
+import { InsightsPanel } from './InsightsPanel'
 
 type Subscription = {
   id: string
@@ -446,6 +447,16 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
 
       {/* Stack score — shown for logged-in users with 2+ subs */}
       {clientLoggedIn && subsCount >= 2 && <StackScore />}
+
+      {/* Insights panel — shown for logged-in users with 1+ subs */}
+      {clientLoggedIn && subsCount >= 1 && (
+        <InsightsPanel
+          subscriptions={subs.map(s => ({
+            tool_id: s.tool_id,
+            tools: s.tools ? { name: s.tools.name, slug: s.tools.slug } : null,
+          }))}
+        />
+      )}
 
       {/* Switch prompt — shown when user removes a tool */}
       {switchPrompt && clientLoggedIn && (
