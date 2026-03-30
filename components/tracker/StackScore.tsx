@@ -1,25 +1,27 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { Lightbulb, Shield, Gauge, Layers, Gem } from 'lucide-react'
+import { Lightbulb, Gauge, Layers, Star, Activity, Scale } from 'lucide-react'
 
 type ScoreData = {
   score: number
   grade: string
   breakdown: {
-    overlap: number
     efficiency: number
-    coverage: number
-    value: number
+    redundancy: number
+    quality: number
+    utilization: number
+    balance: number
   }
   tips: string[]
 }
 
 const BREAKDOWN_META = [
-  { key: 'overlap' as const, label: 'No Overlap', icon: Layers, color: 'bg-blue-500' },
-  { key: 'efficiency' as const, label: 'Cost Efficiency', icon: Gauge, color: 'bg-emerald-500' },
-  { key: 'coverage' as const, label: 'Coverage', icon: Shield, color: 'bg-purple-500' },
-  { key: 'value' as const, label: 'Value', icon: Gem, color: 'bg-amber-500' },
+  { key: 'efficiency' as const, label: 'Cost Efficiency', icon: Gauge, color: 'bg-emerald-500', weight: '30%' },
+  { key: 'redundancy' as const, label: 'No Redundancy', icon: Layers, color: 'bg-blue-500', weight: '25%' },
+  { key: 'quality' as const, label: 'Tool Quality', icon: Star, color: 'bg-amber-500', weight: '20%' },
+  { key: 'utilization' as const, label: 'Utilization', icon: Activity, color: 'bg-purple-500', weight: '15%' },
+  { key: 'balance' as const, label: 'Balance', icon: Scale, color: 'bg-cyan-500', weight: '10%' },
 ]
 
 function getGradeColor(grade: string): string {
@@ -70,14 +72,12 @@ export function StackScore() {
     function tick(now: number) {
       const elapsed = now - start
       const progress = Math.min(elapsed / duration, 1)
-      // Ease out cubic
       const eased = 1 - Math.pow(1 - progress, 3)
       setAnimatedScore(Math.round(eased * target))
       if (progress < 1) requestAnimationFrame(tick)
     }
     requestAnimationFrame(tick)
 
-    // Trigger bar animations after short delay
     const timer = setTimeout(() => setBarsAnimated(true), 300)
     return () => clearTimeout(timer)
   }, [data])
@@ -121,12 +121,13 @@ export function StackScore() {
 
         {/* Breakdown bars */}
         <div className="flex-1 w-full space-y-3">
-          {BREAKDOWN_META.map(({ key, label, icon: Icon, color }) => (
+          {BREAKDOWN_META.map(({ key, label, icon: Icon, color, weight }) => (
             <div key={key} className="space-y-1">
               <div className="flex items-center justify-between text-xs">
                 <span className="flex items-center gap-1.5 text-muted-foreground">
                   <Icon className="h-3 w-3" />
                   {label}
+                  <span className="text-muted-foreground/50">{weight}</span>
                 </span>
                 <span className="font-medium">{data.breakdown[key]}</span>
               </div>
@@ -141,10 +142,10 @@ export function StackScore() {
         </div>
       </div>
 
-      {/* Tips */}
+      {/* Tips — only shown when actionable */}
       {data.tips.length > 0 && (
         <div className="space-y-2 pt-2 border-t border-foreground/[0.06]">
-          {data.tips.slice(0, 3).map((tip, i) => (
+          {data.tips.map((tip, i) => (
             <div key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
               <Lightbulb className="h-4 w-4 shrink-0 text-yellow-500 mt-0.5" />
               <span>{tip}</span>
