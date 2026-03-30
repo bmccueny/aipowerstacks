@@ -217,6 +217,7 @@ export function TrackerToolSearch({
           {tiersLoading ? (
             <div className="flex justify-center py-6"><Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /></div>
           ) : tiers.length > 0 ? (
+            <>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 mb-3">
               {tiers.map(tier => (
                 <button
@@ -314,6 +315,7 @@ export function TrackerToolSearch({
                 </div>
               )}
             </div>
+            </>
           ) : (
             /* No tiers found, show generic input */
             <div className="flex gap-3">

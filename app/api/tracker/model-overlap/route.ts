@@ -91,13 +91,14 @@ export async function GET() {
     .select('tool_id, monthly_cost, tools:tool_id(name, slug)')
     .eq('user_id', user.id)
 
-  if (!subs || subs.length === 0) {
+  const typedSubs = (subs || []) as unknown as { tool_id: string; monthly_cost: number; tools: { name: string; slug: string } | null }[]
+  if (typedSubs.length === 0) {
     return NextResponse.json({ models: [], overlaps: [], coverage: buildEmptyCoverage() })
   }
 
-  const toolIds = subs.map(s => s.tool_id)
-  const costByToolId = new Map(subs.map(s => [s.tool_id, Number(s.monthly_cost)]))
-  const toolMeta = new Map(subs.map(s => [s.tool_id, s.tools as { name: string; slug: string } | null]))
+  const toolIds = typedSubs.map(s => s.tool_id)
+  const costByToolId = new Map(typedSubs.map(s => [s.tool_id, Number(s.monthly_cost)]))
+  const toolMeta = new Map(typedSubs.map(s => [s.tool_id, s.tools]))
 
   const { data: modelRows } = await supabase
     .from('tool_models')

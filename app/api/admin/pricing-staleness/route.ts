@@ -22,11 +22,11 @@ export async function GET() {
   const STALE_DAYS = 30
   const staleThreshold = new Date(Date.now() - STALE_DAYS * 24 * 60 * 60 * 1000).toISOString()
 
-  const { data: tiers, error } = await admin
+  const { data: tiers, error } = await (admin
     .from('tool_pricing_tiers')
     .select('tool_id, last_verified_at, tools!inner(id, name, slug)')
     .or(`last_verified_at.is.null,last_verified_at.lt.${staleThreshold}`)
-    .order('last_verified_at', { ascending: true, nullsFirst: true })
+    .order('last_verified_at', { ascending: true, nullsFirst: true }) as unknown as Promise<{ data: { tool_id: string; last_verified_at: string | null; tools: { id: string; name: string; slug: string } }[] | null; error: { message: string } | null }>)
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 

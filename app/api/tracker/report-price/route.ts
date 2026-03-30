@@ -22,7 +22,7 @@ export async function POST(request: Request) {
   const { data: { user } } = await supabase.auth.getUser()
 
   const admin = createAdminClient()
-  const { error } = await admin.from('pricing_reports').insert({
+  const { error } = await (admin.from('pricing_reports' as 'tools') as unknown as { insert: (data: Record<string, unknown>) => Promise<{ error: { message: string } | null }> }).insert({
     tool_id,
     tier_name,
     reported_price: parseFloat(reported_price),
