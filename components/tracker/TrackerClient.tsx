@@ -18,6 +18,9 @@ import { BudgetBar } from './BudgetBar'
 import { StackScore } from './StackScore'
 import { ShareStackButton } from './ShareStackButton'
 import { GmailImport } from './GmailImport'
+import { AnnualSavingsCalc } from './AnnualSavingsCalc'
+import { FreeTierDetector } from './FreeTierDetector'
+import { DuplicateDetector } from './DuplicateDetector'
 
 type Subscription = {
   id: string
@@ -443,6 +446,16 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
         onRemoveSub={removeSub}
         onUpdateSubCost={updateSubCost}
       />
+
+      {/* Cost Optimization — shown for logged-in users with 2+ subs */}
+      {clientLoggedIn && subsCount >= 2 && (
+        <div className="space-y-4">
+          <h2 className="text-lg font-black">Cost Optimization</h2>
+          <AnnualSavingsCalc />
+          <FreeTierDetector />
+          <DuplicateDetector />
+        </div>
+      )}
 
       {/* Stack score — shown for logged-in users with 2+ subs */}
       {clientLoggedIn && subsCount >= 2 && <StackScore />}
