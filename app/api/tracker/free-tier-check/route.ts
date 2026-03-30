@@ -14,11 +14,13 @@ export async function GET(request: Request) {
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   // Get user's paid subscriptions
-  const { data: subs } = await supabase
+  type Sub = { tool_id: string; monthly_cost: number; tools: { name: string; slug: string; logo_url: string | null } | null }
+  const { data: rawSubs } = await supabase
     .from('user_subscriptions')
     .select('tool_id, monthly_cost, tools:tool_id(name, slug, logo_url)')
     .eq('user_id', user.id)
     .gt('monthly_cost', 0)
+  const subs = (rawSubs ?? []) as unknown as Sub[]
 
   if (!subs || subs.length === 0) {
     return NextResponse.json({ alternatives: [] })
@@ -63,15 +65,16 @@ export async function GET(request: Request) {
         ? t : best
     , null as (typeof paidTiers)[0] | null)
 
-    const parseFeatures = (f: string | null): string[] => {
+    const parseFeatures = (f: string[] | string | null): string[] => {
       if (!f) return []
+      if (Array.isArray(f)) return f
       try { return JSON.parse(f) } catch { return f.split(',').map(s => s.trim()).filter(Boolean) }
     }
 
-    const freeFeatures = parseFeatures(freeTier.features)
-    const paidFeatures = currentTier ? parseFeatures(currentTier.features) : []
+    const freeFeatures = parseFeatures(freeTier.features as string[] | string | null)
+    const paidFeatures = currentTier ? parseFeatures(currentTier.features as string[] | string | null) : []
 
-    const tool = sub.tools as unknown as { name: string; slug: string; logo_url: string | null } | null
+    const tool = sub.tools
     alternatives.push({
       tool_id: sub.tool_id,
       tool_name: tool?.name || 'Unknown',

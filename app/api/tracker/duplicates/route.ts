@@ -14,10 +14,11 @@ export async function GET(request: Request) {
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   // Get user's subscriptions with tool details
-  const { data: subs } = await supabase
+  const { data: rawSubs } = await supabase
     .from('user_subscriptions')
     .select('tool_id, monthly_cost, tools:tool_id(name, slug, logo_url, use_case, use_cases, category_id, avg_rating, review_count, categories:category_id(name))')
     .eq('user_id', user.id)
+  const subs = (rawSubs ?? []) as unknown as Array<{ tool_id: string; monthly_cost: number; tools: { name: string; slug: string; logo_url: string | null; use_case: string | null; use_cases: string[] | null; category_id: string | null; avg_rating: number | null; review_count: number | null; categories: { name: string } | null } | null }>
 
   if (!subs || subs.length < 2) {
     return NextResponse.json({ duplicates: [] })

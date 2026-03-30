@@ -14,10 +14,12 @@ export async function GET(request: Request) {
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   // Get user's subscriptions
-  const { data: subs } = await supabase
+  type Sub = { tool_id: string; monthly_cost: number; tools: { name: string; slug: string; logo_url: string | null } | null }
+  const { data: rawSubs } = await supabase
     .from('user_subscriptions')
     .select('tool_id, monthly_cost, tools:tool_id(name, slug, logo_url)')
     .eq('user_id', user.id)
+  const subs = (rawSubs ?? []) as unknown as Sub[]
 
   if (!subs || subs.length === 0) {
     return NextResponse.json({ savings: [], totalAnnualSavings: 0 })
@@ -71,7 +73,7 @@ export async function GET(request: Request) {
     // Only include if savings > 5%
     if (savingsPercent <= 5) continue
 
-    const tool = sub.tools as unknown as { name: string; slug: string; logo_url: string | null } | null
+    const tool = sub.tools
     savings.push({
       tool_id: sub.tool_id,
       tool_name: tool?.name || 'Unknown',
