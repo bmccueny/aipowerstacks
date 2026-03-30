@@ -320,6 +320,10 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
   const alreadyTracked = allToolIds
   const effectiveCount = effectiveSubs.length + anonSubs.length
 
+  // Key that changes when tool list changes — forces analysis components to re-fetch
+  const stackKey = [...subs.map(s => s.tool_id), ...anonSubs.map(s => s.tool_id)].sort().join(',')
+  const anonToolData = anonSubs.map(s => ({ tool_id: s.tool_id, monthly_cost: s.monthly_cost }))
+
   // Compute overlaps
   const overlaps = subs.length >= 2 ? (() => {
     const fixedSubs = subs.filter(s => !s.is_usage_based && !s.tools?.is_supertools)
@@ -440,16 +444,16 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
       {effectiveCount >= 2 && (
         <div className="space-y-4">
           <h2 className="text-lg font-black">Cost Optimization</h2>
-          <AnnualSavingsCalc anonTools={!clientLoggedIn ? anonSubs.map(s => ({ tool_id: s.tool_id, monthly_cost: s.monthly_cost })) : undefined} />
-          <FreeTierDetector anonTools={!clientLoggedIn ? anonSubs.map(s => ({ tool_id: s.tool_id, monthly_cost: s.monthly_cost })) : undefined} />
+          <AnnualSavingsCalc key={`asc-${stackKey}`} anonTools={!clientLoggedIn ? anonToolData : undefined} />
+          <FreeTierDetector key={`ftd-${stackKey}`} anonTools={!clientLoggedIn ? anonToolData : undefined} />
         </div>
       )}
 
       {/* Stack score — shown for anyone with 2+ tools */}
-      {effectiveCount >= 2 && <StackScore anonTools={!clientLoggedIn ? anonSubs.map(s => ({ tool_id: s.tool_id, monthly_cost: s.monthly_cost })) : undefined} />}
+      {effectiveCount >= 2 && <StackScore key={`ss-${stackKey}`} anonTools={!clientLoggedIn ? anonToolData : undefined} />}
 
       {/* Model intelligence — shown for anyone with 2+ tools */}
-      {effectiveCount >= 2 && <ModelOverlap anonTools={!clientLoggedIn ? anonSubs.map(s => ({ tool_id: s.tool_id, monthly_cost: s.monthly_cost })) : undefined} />}
+      {effectiveCount >= 2 && <ModelOverlap key={`mo-${stackKey}`} anonTools={!clientLoggedIn ? anonToolData : undefined} />}
 
       {/* Sign-up prompt for anonymous users */}
       {!clientLoggedIn && effectiveCount >= 2 && (
