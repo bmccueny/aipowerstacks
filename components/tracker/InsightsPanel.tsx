@@ -147,7 +147,7 @@ export function InsightsPanel({ subscriptions }: { subscriptions: ToolSub[] }) {
               </div>
               {insight.toolSlug && (
                 <Link
-                  href={`/ai/${insight.toolSlug}`}
+                  href={`/tools/${insight.toolSlug}`}
                   className="text-xs font-medium underline underline-offset-2 shrink-0 hover:opacity-80"
                 >
                   View
