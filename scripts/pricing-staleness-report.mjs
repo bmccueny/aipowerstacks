@@ -71,13 +71,11 @@ for (const tier of tiers) {
   }
 }
 
-const toolIds = [...toolMap.keys()]
-
-// Fetch tracker counts per tool from user_subscriptions
+// Fetch ALL tracker counts from user_subscriptions (small table, no need to filter)
 const { data: subs, error: subsError } = await supabase
   .from('user_subscriptions')
   .select('tool_id')
-  .in('tool_id', toolIds)
+  .limit(5000)
 
 if (subsError) {
   console.error('Subscriptions query failed:', subsError.message)
