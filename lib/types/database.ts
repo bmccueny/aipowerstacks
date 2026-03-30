@@ -1147,6 +1147,50 @@ export type Database = {
         }
         Relationships: []
       }
+      tool_models: {
+        Row: {
+          id: string
+          tool_id: string
+          model_name: string
+          model_provider: string
+          is_primary: boolean
+          use_cases: string[]
+          strength_score: number | null
+          notes: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          tool_id: string
+          model_name: string
+          model_provider: string
+          is_primary?: boolean
+          use_cases?: string[]
+          strength_score?: number | null
+          notes?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          model_name?: string
+          model_provider?: string
+          is_primary?: boolean
+          use_cases?: string[]
+          strength_score?: number | null
+          notes?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tool_models_tool_id_fkey"
+            columns: ["tool_id"]
+            isOneToOne: false
+            referencedRelation: "tools"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
     }
     Views: Record<string, never>
     Functions: {

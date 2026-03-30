@@ -21,6 +21,7 @@ import { BenchmarkCard } from './BenchmarkCard'
 import { CohortInsights } from './CohortInsights'
 import { AnnualSavingsCalc } from './AnnualSavingsCalc'
 import { FreeTierDetector } from './FreeTierDetector'
+import { ModelOverlap } from './ModelOverlap'
 
 type Subscription = {
   id: string
@@ -446,6 +447,9 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
 
       {/* Stack score — shown for logged-in users with 2+ subs */}
       {clientLoggedIn && subsCount >= 2 && <StackScore />}
+
+      {/* Model intelligence — shown for logged-in users with 2+ subs */}
+      {clientLoggedIn && subsCount >= 2 && <ModelOverlap />}
 
       {/* Insights panel — shown for logged-in users with 1+ subs */}
       {clientLoggedIn && subsCount >= 1 && (
