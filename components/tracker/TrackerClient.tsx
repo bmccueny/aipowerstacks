@@ -19,6 +19,10 @@ import { StackScore } from './StackScore'
 import { ShareStackButton } from './ShareStackButton'
 import { GmailImport } from './GmailImport'
 import { InsightsPanel } from './InsightsPanel'
+import { BenchmarkCard } from './BenchmarkCard'
+import { ROIScorecard } from './ROIScorecard'
+import { CategoryConcentration } from './CategoryConcentration'
+import { CohortInsights } from './CohortInsights'
 
 type Subscription = {
   id: string
@@ -505,6 +509,16 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
             <div className="h-3 w-24 bg-muted animate-pulse rounded" />
             <div className="h-2 w-full bg-muted/40 animate-pulse rounded" />
           </div>
+        </div>
+      )}
+
+      {/* Analytics section — shown for logged-in users with 2+ subs */}
+      {clientLoggedIn && subsCount >= 2 && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <BenchmarkCard />
+          <CategoryConcentration />
+          <ROIScorecard />
+          <CohortInsights />
         </div>
       )}
 
