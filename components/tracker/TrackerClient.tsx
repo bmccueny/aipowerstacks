@@ -21,7 +21,7 @@ import { GmailImport } from './GmailImport'
 import { InsightsPanel } from './InsightsPanel'
 import { BenchmarkCard } from './BenchmarkCard'
 import { ROIScorecard } from './ROIScorecard'
-import { CategoryConcentration } from './CategoryConcentration'
+// CategoryConcentration removed — overlaps with existing dashboard spend-by-category
 import { CohortInsights } from './CohortInsights'
 import { AnnualSavingsCalc } from './AnnualSavingsCalc'
 import { FreeTierDetector } from './FreeTierDetector'
@@ -529,7 +529,6 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
       {clientLoggedIn && subsCount >= 2 && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <BenchmarkCard />
-          <CategoryConcentration />
           <ROIScorecard />
           <CohortInsights />
         </div>
