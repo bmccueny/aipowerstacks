@@ -27,7 +27,8 @@
     "test:watch": "vitest",
     "seo:audit": "node scripts/seo-audit.mjs",
     "seo:posts:dry": "node scripts/generate-seo-posts.mjs",
-    "seo:rankings": "node scripts/check-rankings.mjs"
+    "seo:rankings": "node scripts/check-rankings.mjs",
+    "seo:stale-pricing": "node --env-file=.env.local scripts/pricing-staleness-report.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",
