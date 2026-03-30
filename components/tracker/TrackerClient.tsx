@@ -6,7 +6,7 @@ import { toast } from 'sonner'
 import Link from 'next/link'
 import { SavingsReport } from './SavingsReport'
 import { StackOptimizer } from './StackOptimizer'
-import { StackIntel } from './StackIntel'
+// StackIntel removed — replaced by Stack Score v2, CohortInsights, and AnnualSavingsCalc
 import { SpendChart } from './SpendChart'
 import { ChangelogFeed } from './ChangelogFeed'
 import { SwitchPrompt } from './SwitchPrompt'
@@ -497,12 +497,9 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
         }))} />
       )}
 
-      {/* Stack intelligence + savings report */}
+      {/* Savings report */}
       {subsCount >= 2 && dashboardData && (
-        <>
-          <StackIntel data={dashboardData} />
-          <SavingsReport data={dashboardData} />
-        </>
+        <SavingsReport data={dashboardData} />
       )}
       {subsCount >= 2 && !dashboardData && !dashboardLoading && clientLoggedIn && (
         <div className="rounded-xl border border-foreground/[0.06] p-5 text-center">
