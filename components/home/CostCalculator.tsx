@@ -411,7 +411,7 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
           </div>
           <div className="flex items-center justify-between px-4 py-2.5 sm:py-2 bg-foreground/[0.02]">
             <span className="text-xs text-muted-foreground">Annual cost</span>
-            <span className="text-sm font-bold text-muted-foreground">${Math.round(yearly)}/year</span>
+            <span className="text-sm font-bold text-muted-foreground">${yearly % 1 === 0 ? yearly : yearly.toFixed(2)}/year</span>
           </div>
         </div>
       )}
@@ -421,8 +421,8 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
         <div className="text-center">
           <p className="text-sm text-muted-foreground mb-1">
             {comparison
-              ? <>That&apos;s <strong className="text-foreground">${Math.round(yearly)}/year</strong> — more than {comparison}.</>
-              : <>That&apos;s <strong className="text-foreground">${Math.round(yearly)}/year</strong> on {added.length} AI tools.</>
+              ? <>That&apos;s <strong className="text-foreground">${yearly % 1 === 0 ? yearly : yearly.toFixed(2)}/year</strong> — more than {comparison}.</>
+              : <>That&apos;s <strong className="text-foreground">${yearly % 1 === 0 ? yearly : yearly.toFixed(2)}/year</strong> on {added.length} AI tools.</>
             }
           </p>
           <p className="text-sm text-muted-foreground mb-4">
