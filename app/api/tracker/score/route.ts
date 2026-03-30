@@ -14,6 +14,8 @@ import { rateLimit, getClientIp } from '@/lib/rate-limit'
  *   Balance     (10%) — Is your spend dangerously concentrated on one tool?
  */
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
 type SubRow = {
   tool_id: string
   monthly_cost: number
@@ -52,30 +54,12 @@ function qualityScore(rating: number | null, reviews: number | null): number {
   return r * Math.log2(n + 1)
 }
 
-export async function GET(request: Request) {
-  const ip = getClientIp(request)
-  const { success } = rateLimit(`tracker:score:get:${ip}`)
-  if (!success) {
-    return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
-  }
-
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const admin = createAdminClient()
-
-  const { data: subs, error } = await supabase
-    .from('user_subscriptions')
-    .select('tool_id, monthly_cost, use_tags, tools:tool_id(name, slug, pricing_model, use_case, use_cases, category_id, is_supertools, avg_rating, review_count, categories:category_id(name))')
-    .eq('user_id', user.id)
-
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  if (!subs || subs.length < 2) {
-    return NextResponse.json({ error: 'Need at least 2 subscriptions' }, { status: 400 })
-  }
-
-  const typedSubs = subs as unknown as SubRow[]
+async function analyzeScore(
+  typedSubs: SubRow[],
+  admin: ReturnType<typeof createAdminClient>,
+  utilizationScore: number,
+  unusedTools: { name: string; cost: number }[]
+) {
   const toolIds = typedSubs.map(s => s.tool_id)
   const totalSpend = typedSubs.reduce((sum, s) => sum + Number(s.monthly_cost), 0)
 
@@ -179,60 +163,13 @@ export async function GET(request: Request) {
   else redundancyScore = 30
 
   // ── 3. Quality (20%) — are the tools well-reviewed? ──
-  const maxPossibleQuality = 5 * Math.log2(1001) // 5-star tool with 1000 reviews ≈ 50
   let qualityTotal = 0
-
   for (const sub of typedSubs) {
-    const qs = qualityScore(sub.tools?.avg_rating ?? null, sub.tools?.review_count ?? null)
-    qualityTotal += qs
+    qualityTotal += qualityScore(sub.tools?.avg_rating ?? null, sub.tools?.review_count ?? null)
   }
-
   const avgQuality = typedSubs.length > 0 ? qualityTotal / typedSubs.length : 0
   // Normalize: a "good" average quality score is ~20 (4 stars, ~30 reviews)
   const qualityNormalized = Math.min(100, Math.round((avgQuality / 20) * 100))
-
-  // ── 4. Utilization (15%) — check-in data ──
-  const twelveWeeksAgo = new Date(Date.now() - 84 * 86400000).toISOString()
-  const { data: checkins } = await admin
-    .from('usage_checkins')
-    .select('tool_id, week_start, used')
-    .eq('user_id', user.id)
-    .gte('week_start', twelveWeeksAgo)
-
-  let utilizationScore: number
-  const unusedTools: { name: string; cost: number }[] = []
-
-  if (!checkins || checkins.length === 0) {
-    // No check-in data — benefit of the doubt, neutral score
-    utilizationScore = 70
-  } else {
-    const usageByTool = new Map<string, { tracked: number; used: number }>()
-    for (const c of checkins) {
-      if (!usageByTool.has(c.tool_id)) usageByTool.set(c.tool_id, { tracked: 0, used: 0 })
-      const entry = usageByTool.get(c.tool_id)!
-      entry.tracked++
-      if (c.used) entry.used++
-    }
-
-    let utilTotal = 0
-    let utilCount = 0
-    for (const sub of typedSubs) {
-      const usage = usageByTool.get(sub.tool_id)
-      if (!usage || usage.tracked < 2) continue // not enough data for this tool
-      const rate = usage.used / usage.tracked
-      utilTotal += rate * 100
-      utilCount++
-      if (rate < 0.25 && Number(sub.monthly_cost) > 10 && sub.tools) {
-        unusedTools.push({ name: sub.tools.name, cost: Number(sub.monthly_cost) })
-      }
-    }
-
-    if (utilCount === 0) {
-      utilizationScore = 70
-    } else {
-      utilizationScore = Math.round(utilTotal / utilCount)
-    }
-  }
 
   // ── 5. Balance (10%) — is spend concentrated on one tool? ──
   let balanceScore = 100
@@ -293,10 +230,7 @@ export async function GET(request: Request) {
     }
   }
 
-  // Cap at 3 tips, never show filler
-  const finalTips = tips.slice(0, 3)
-
-  return NextResponse.json({
+  return {
     score: finalScore,
     grade: getGrade(finalScore),
     breakdown: {
@@ -306,6 +240,142 @@ export async function GET(request: Request) {
       utilization: utilizationScore,
       balance: balanceScore,
     },
-    tips: finalTips,
-  })
+    tips: tips.slice(0, 3),
+  }
+}
+
+export async function GET(request: Request) {
+  const ip = getClientIp(request)
+  const { success } = rateLimit(`tracker:score:get:${ip}`)
+  if (!success) {
+    return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+  }
+
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const admin = createAdminClient()
+
+  const { data: subs, error } = await supabase
+    .from('user_subscriptions')
+    .select('tool_id, monthly_cost, use_tags, tools:tool_id(name, slug, pricing_model, use_case, use_cases, category_id, is_supertools, avg_rating, review_count, categories:category_id(name))')
+    .eq('user_id', user.id)
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  if (!subs || subs.length < 2) {
+    return NextResponse.json({ error: 'Need at least 2 subscriptions' }, { status: 400 })
+  }
+
+  const typedSubs = subs as unknown as SubRow[]
+
+  // ── 4. Utilization (15%) — check-in data (authenticated only) ──
+  const twelveWeeksAgo = new Date(Date.now() - 84 * 86400000).toISOString()
+  const { data: checkins } = await admin
+    .from('usage_checkins')
+    .select('tool_id, week_start, used')
+    .eq('user_id', user.id)
+    .gte('week_start', twelveWeeksAgo)
+
+  let utilizationScore = 70
+  const unusedTools: { name: string; cost: number }[] = []
+
+  if (checkins && checkins.length > 0) {
+    const usageByTool = new Map<string, { tracked: number; used: number }>()
+    for (const c of checkins) {
+      if (!usageByTool.has(c.tool_id)) usageByTool.set(c.tool_id, { tracked: 0, used: 0 })
+      const entry = usageByTool.get(c.tool_id)!
+      entry.tracked++
+      if (c.used) entry.used++
+    }
+
+    let utilTotal = 0
+    let utilCount = 0
+    for (const sub of typedSubs) {
+      const usage = usageByTool.get(sub.tool_id)
+      if (!usage || usage.tracked < 2) continue
+      const rate = usage.used / usage.tracked
+      utilTotal += rate * 100
+      utilCount++
+      if (rate < 0.25 && Number(sub.monthly_cost) > 10 && sub.tools) {
+        unusedTools.push({ name: sub.tools.name, cost: Number(sub.monthly_cost) })
+      }
+    }
+
+    if (utilCount > 0) utilizationScore = Math.round(utilTotal / utilCount)
+  }
+
+  const result = await analyzeScore(typedSubs, admin, utilizationScore, unusedTools)
+  return NextResponse.json(result)
+}
+
+export async function POST(request: Request) {
+  const ip = getClientIp(request)
+  // Tighter limit for anonymous analysis
+  const { success } = rateLimit(`tracker:score:anon:${ip}`, 10)
+  if (!success) {
+    return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+  }
+
+  let body: unknown
+  try {
+    body = await request.json()
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
+  }
+
+  const tools = (body as { tools?: unknown }).tools
+  if (!Array.isArray(tools) || tools.length < 2 || tools.length > 50) {
+    return NextResponse.json({ error: 'tools must be an array of 2–50 items' }, { status: 400 })
+  }
+
+  const items = tools as { tool_id?: unknown; monthly_cost?: unknown }[]
+  if (!items.every(t => typeof t.tool_id === 'string' && UUID_RE.test(t.tool_id) && typeof t.monthly_cost === 'number')) {
+    return NextResponse.json({ error: 'Each tool must have a valid UUID tool_id and numeric monthly_cost' }, { status: 400 })
+  }
+
+  const validTools = items as { tool_id: string; monthly_cost: number }[]
+  const toolIds = validTools.map(t => t.tool_id)
+
+  const admin = createAdminClient()
+
+  const { data: toolRows, error } = await admin
+    .from('tools')
+    .select('id, name, slug, pricing_model, use_case, use_cases, category_id, is_supertools, avg_rating, review_count')
+    .in('id', toolIds)
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+
+  const toolMeta = new Map((toolRows ?? []).map(t => [t.id, t]))
+
+  const typedSubs: SubRow[] = validTools
+    .filter(t => toolMeta.has(t.tool_id))
+    .map(t => {
+      const meta = toolMeta.get(t.tool_id)!
+      return {
+        tool_id: t.tool_id,
+        monthly_cost: t.monthly_cost,
+        use_tags: null,
+        tools: {
+          name: meta.name,
+          slug: meta.slug,
+          pricing_model: (meta.pricing_model as string) ?? '',
+          use_case: (meta.use_case as string | null) ?? null,
+          use_cases: (meta.use_cases as string[] | null) ?? null,
+          category_id: (meta.category_id as string | null) ?? null,
+          is_supertools: (meta.is_supertools as boolean | null) ?? null,
+          avg_rating: (meta.avg_rating as number | null) ?? null,
+          review_count: (meta.review_count as number | null) ?? null,
+          categories: null,
+        },
+      }
+    })
+
+  if (typedSubs.length < 2) {
+    return NextResponse.json({ error: 'Need at least 2 valid tools' }, { status: 400 })
+  }
+
+  // No utilization data for anonymous users — use neutral default
+  const result = await analyzeScore(typedSubs, admin, 70, [])
+  return NextResponse.json(result)
 }

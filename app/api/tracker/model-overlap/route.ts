@@ -1,53 +1,37 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
+import { rateLimit, getClientIp } from '@/lib/rate-limit'
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
 const USE_CASES = ['coding', 'writing', 'research', 'image_generation', 'audio', 'video', 'design', 'chat'] as const
 type UseCase = typeof USE_CASES[number]
 
-type ModelRow = {
+type ModelRowDb = {
+  tool_id: string
   model_name: string
   model_provider: string
   use_cases: string[]
   strength_score: number | null
   is_primary: boolean
-  tools: {
-    name: string
-    slug: string
-    monthly_cost: number
-  } | null
 }
 
-export async function GET() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+function buildEmptyCoverage(): Record<UseCase, number> {
+  return { coding: 0, writing: 0, research: 0, image_generation: 0, audio: 0, video: 0, design: 0, chat: 0 }
+}
 
-  // Fetch user's subscribed tool IDs
-  const { data: subs } = await supabase
-    .from('user_subscriptions')
-    .select('tool_id, monthly_cost, tools:tool_id(name, slug)')
-    .eq('user_id', user.id)
-
-  if (!subs || subs.length === 0) {
-    return NextResponse.json({ models: [], overlaps: [], coverage: buildEmptyCoverage() })
-  }
-
-  const toolIds = subs.map(s => s.tool_id)
-  const costByToolId = new Map(subs.map(s => [s.tool_id, Number(s.monthly_cost)]))
-  const toolMeta = new Map(subs.map(s => [s.tool_id, s.tools as { name: string; slug: string } | null]))
-
-  // Fetch all model rows for those tools in one query
-  const { data: modelRows } = await supabase
-    .from('tool_models')
-    .select('model_name, model_provider, use_cases, strength_score, is_primary, tool_id')
-    .in('tool_id', toolIds)
-
-  if (!modelRows || modelRows.length === 0) {
-    return NextResponse.json({ models: [], overlaps: [], coverage: buildEmptyCoverage() })
-  }
-
+function computeModelOverlap(
+  costByToolId: Map<string, number>,
+  toolMeta: Map<string, { name: string; slug: string } | null>,
+  modelRows: ModelRowDb[]
+) {
   // Group by model_name → list of tools that provide it
-  const byModel = new Map<string, { provider: string; useCases: Set<string>; tools: Array<{ name: string; slug: string; cost: number; strength: number }> }>()
+  const byModel = new Map<string, {
+    provider: string
+    useCases: Set<string>
+    tools: Array<{ name: string; slug: string; cost: number; strength: number }>
+  }>()
 
   for (const row of modelRows) {
     const meta = toolMeta.get(row.tool_id)
@@ -93,9 +77,85 @@ export async function GET() {
     coverage[uc] = coveredUseCases.has(uc) ? 100 : 0
   }
 
-  return NextResponse.json({ models, overlaps, coverage })
+  return { models, overlaps, coverage }
 }
 
-function buildEmptyCoverage(): Record<UseCase, number> {
-  return { coding: 0, writing: 0, research: 0, image_generation: 0, audio: 0, video: 0, design: 0, chat: 0 }
+export async function GET() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  // Fetch user's subscribed tool IDs
+  const { data: subs } = await supabase
+    .from('user_subscriptions')
+    .select('tool_id, monthly_cost, tools:tool_id(name, slug)')
+    .eq('user_id', user.id)
+
+  if (!subs || subs.length === 0) {
+    return NextResponse.json({ models: [], overlaps: [], coverage: buildEmptyCoverage() })
+  }
+
+  const toolIds = subs.map(s => s.tool_id)
+  const costByToolId = new Map(subs.map(s => [s.tool_id, Number(s.monthly_cost)]))
+  const toolMeta = new Map(subs.map(s => [s.tool_id, s.tools as { name: string; slug: string } | null]))
+
+  const { data: modelRows } = await supabase
+    .from('tool_models')
+    .select('model_name, model_provider, use_cases, strength_score, is_primary, tool_id')
+    .in('tool_id', toolIds)
+
+  if (!modelRows || modelRows.length === 0) {
+    return NextResponse.json({ models: [], overlaps: [], coverage: buildEmptyCoverage() })
+  }
+
+  return NextResponse.json(computeModelOverlap(costByToolId, toolMeta, modelRows as unknown as ModelRowDb[]))
+}
+
+export async function POST(request: Request) {
+  const ip = getClientIp(request)
+  const { success } = rateLimit(`tracker:model-overlap:anon:${ip}`, 10)
+  if (!success) {
+    return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+  }
+
+  let body: unknown
+  try {
+    body = await request.json()
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
+  }
+
+  const tools = (body as { tools?: unknown }).tools
+  if (!Array.isArray(tools) || tools.length < 2 || tools.length > 50) {
+    return NextResponse.json({ error: 'tools must be an array of 2–50 items' }, { status: 400 })
+  }
+
+  const items = tools as { tool_id?: unknown; monthly_cost?: unknown }[]
+  if (!items.every(t => typeof t.tool_id === 'string' && UUID_RE.test(t.tool_id) && typeof t.monthly_cost === 'number')) {
+    return NextResponse.json({ error: 'Each tool must have a valid UUID tool_id and numeric monthly_cost' }, { status: 400 })
+  }
+
+  const validTools = items as { tool_id: string; monthly_cost: number }[]
+  const toolIds = validTools.map(t => t.tool_id)
+
+  const admin = createAdminClient()
+
+  const [{ data: toolRows, error: toolsError }, { data: modelRows, error: modelsError }] = await Promise.all([
+    admin.from('tools').select('id, name, slug').in('id', toolIds),
+    admin.from('tool_models')
+      .select('model_name, model_provider, use_cases, strength_score, is_primary, tool_id')
+      .in('tool_id', toolIds),
+  ])
+
+  if (toolsError) return NextResponse.json({ error: toolsError.message }, { status: 500 })
+  if (modelsError) return NextResponse.json({ error: modelsError.message }, { status: 500 })
+
+  if (!modelRows || modelRows.length === 0) {
+    return NextResponse.json({ models: [], overlaps: [], coverage: buildEmptyCoverage() })
+  }
+
+  const costByToolId = new Map(validTools.map(t => [t.tool_id, t.monthly_cost]))
+  const toolMeta = new Map((toolRows ?? []).map(t => [t.id, { name: t.name, slug: t.slug }]))
+
+  return NextResponse.json(computeModelOverlap(costByToolId, toolMeta, modelRows as unknown as ModelRowDb[]))
 }
