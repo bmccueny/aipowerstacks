@@ -1,0 +1,9 @@
+<svg viewBox="0 0 480 80" width="480" height="80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <text x="0" y="60"
+    font-family="system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', sans-serif"
+    font-size="56"
+    fill="#d4402b"
+    letter-spacing="-1">
+    <tspan font-weight="800">AI</tspan><tspan font-weight="400">PowerStacks</tspan>
+  </text>
+</svg>

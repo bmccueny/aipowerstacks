@@ -1,0 +1,169 @@
+<svg viewBox="0 0 1200 840" width="1200" height="840" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="840" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#fafaf8"/>
+      <stop offset="100%" stop-color="#f0eeeb"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="840" fill="url(#bg)"/>
+
+  <!-- Header -->
+  <rect x="0" y="0" width="1200" height="80" fill="#1a1512"/>
+  <text x="48" y="50"
+    font-family="system-ui, -apple-system, 'Segoe UI', sans-serif"
+    font-size="28"
+    font-weight="700"
+    fill="white"
+    letter-spacing="-0.5">AIPowerStacks — Color Palette</text>
+  <text x="1152" y="50"
+    font-family="system-ui, -apple-system, 'Segoe UI', sans-serif"
+    font-size="14"
+    fill="white"
+    fill-opacity="0.45"
+    text-anchor="end">Design System Reference</text>
+
+  <!-- Row labels -->
+  <text x="48" y="130"
+    font-family="system-ui, -apple-system, 'Segoe UI', sans-serif"
+    font-size="11"
+    font-weight="600"
+    fill="#1a1512"
+    fill-opacity="0.4"
+    letter-spacing="1.5">PRIMARY</text>
+
+  <!-- Swatch helper: x, y, color, name, hex, rgb, oklch -->
+
+  <!-- Primary -->
+  <rect x="48" y="140" width="160" height="100" rx="10" fill="#d4402b"/>
+  <text x="128" y="196" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="white" text-anchor="middle">Primary</text>
+  <rect x="48" y="248" width="160" height="60" rx="0 0 10 10" fill="#f5f3f0" stroke="#e8e4de" stroke-width="1"/>
+  <text x="128" y="268" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#1a1512" text-anchor="middle">#D4402B</text>
+  <text x="128" y="284" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="10" fill="#1a1512" fill-opacity="0.55" text-anchor="middle">rgb(212, 64, 43)</text>
+  <text x="128" y="298" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="9.5" fill="#1a1512" fill-opacity="0.45" text-anchor="middle">oklch(0.55 0.20 15)</text>
+
+  <!-- Primary Dark -->
+  <rect x="228" y="140" width="160" height="100" rx="10" fill="#c43422"/>
+  <text x="308" y="196" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="white" text-anchor="middle">Primary Dark</text>
+  <rect x="228" y="248" width="160" height="60" rx="0 0 10 10" fill="#f5f3f0" stroke="#e8e4de" stroke-width="1"/>
+  <text x="308" y="268" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#1a1512" text-anchor="middle">#C43422</text>
+  <text x="308" y="284" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="10" fill="#1a1512" fill-opacity="0.55" text-anchor="middle">rgb(196, 52, 34)</text>
+  <text x="308" y="298" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="9.5" fill="#1a1512" fill-opacity="0.45" text-anchor="middle">oklch(0.62 0.22 15)</text>
+
+  <!-- Primary Hover -->
+  <rect x="408" y="140" width="160" height="100" rx="10" fill="#b22e1e"/>
+  <text x="488" y="196" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="white" text-anchor="middle">Primary Hover</text>
+  <rect x="408" y="248" width="160" height="60" rx="0 0 10 10" fill="#f5f3f0" stroke="#e8e4de" stroke-width="1"/>
+  <text x="488" y="268" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#1a1512" text-anchor="middle">#B22E1E</text>
+  <text x="488" y="284" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="10" fill="#1a1512" fill-opacity="0.55" text-anchor="middle">rgb(178, 46, 30)</text>
+  <text x="488" y="298" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="9.5" fill="#1a1512" fill-opacity="0.45" text-anchor="middle">oklch(0.48 0.19 15)</text>
+
+  <!-- Primary Subtle -->
+  <rect x="588" y="140" width="160" height="100" rx="10" fill="#fce8e5"/>
+  <text x="668" y="196" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#b22e1e" text-anchor="middle">Primary Subtle</text>
+  <rect x="588" y="248" width="160" height="60" rx="0 0 10 10" fill="#f5f3f0" stroke="#e8e4de" stroke-width="1"/>
+  <text x="668" y="268" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#1a1512" text-anchor="middle">#FCE8E5</text>
+  <text x="668" y="284" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="10" fill="#1a1512" fill-opacity="0.55" text-anchor="middle">rgb(252, 232, 229)</text>
+  <text x="668" y="298" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="9.5" fill="#1a1512" fill-opacity="0.45" text-anchor="middle">10% primary tint</text>
+
+  <!-- Secondary -->
+  <rect x="768" y="140" width="160" height="100" rx="10" fill="#edf0f5"/>
+  <text x="848" y="196" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#1a1512" text-anchor="middle">Secondary</text>
+  <rect x="768" y="248" width="160" height="60" rx="0 0 10 10" fill="#f5f3f0" stroke="#e8e4de" stroke-width="1"/>
+  <text x="848" y="268" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#1a1512" text-anchor="middle">#EDF0F5</text>
+  <text x="848" y="284" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="10" fill="#1a1512" fill-opacity="0.55" text-anchor="middle">rgb(237, 240, 245)</text>
+  <text x="848" y="298" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="9.5" fill="#1a1512" fill-opacity="0.45" text-anchor="middle">oklch(0.94 0.01 240)</text>
+
+  <!-- Destructive -->
+  <rect x="992" y="140" width="160" height="100" rx="10" fill="#dc2626"/>
+  <text x="1072" y="196" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="white" text-anchor="middle">Destructive</text>
+  <rect x="992" y="248" width="160" height="60" rx="0 0 10 10" fill="#f5f3f0" stroke="#e8e4de" stroke-width="1"/>
+  <text x="1072" y="268" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#1a1512" text-anchor="middle">#DC2626</text>
+  <text x="1072" y="284" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="10" fill="#1a1512" fill-opacity="0.55" text-anchor="middle">rgb(220, 38, 38)</text>
+  <text x="1072" y="298" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="9.5" fill="#1a1512" fill-opacity="0.45" text-anchor="middle">Tailwind red-600</text>
+
+  <!-- Row 2 header -->
+  <text x="48" y="370"
+    font-family="system-ui, -apple-system, 'Segoe UI', sans-serif"
+    font-size="11"
+    font-weight="600"
+    fill="#1a1512"
+    fill-opacity="0.4"
+    letter-spacing="1.5">NEUTRALS / BACKGROUNDS</text>
+
+  <!-- BG Light -->
+  <rect x="48" y="380" width="160" height="100" rx="10" fill="#fafaf8" stroke="#e8e4de" stroke-width="1"/>
+  <text x="128" y="436" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#1a1512" text-anchor="middle">BG Light</text>
+  <rect x="48" y="488" width="160" height="60" rx="0 0 10 10" fill="#f5f3f0" stroke="#e8e4de" stroke-width="1"/>
+  <text x="128" y="508" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#1a1512" text-anchor="middle">#FAFAF8</text>
+  <text x="128" y="524" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="10" fill="#1a1512" fill-opacity="0.55" text-anchor="middle">rgb(250, 250, 248)</text>
+  <text x="128" y="538" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="9.5" fill="#1a1512" fill-opacity="0.45" text-anchor="middle">Background (light)</text>
+
+  <!-- BG Dark -->
+  <rect x="228" y="380" width="160" height="100" rx="10" fill="#1d1916"/>
+  <text x="308" y="436" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="white" text-anchor="middle">BG Dark</text>
+  <rect x="228" y="488" width="160" height="60" rx="0 0 10 10" fill="#f5f3f0" stroke="#e8e4de" stroke-width="1"/>
+  <text x="308" y="508" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#1a1512" text-anchor="middle">#1D1916</text>
+  <text x="308" y="524" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="10" fill="#1a1512" fill-opacity="0.55" text-anchor="middle">rgb(29, 25, 22)</text>
+  <text x="308" y="538" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="9.5" fill="#1a1512" fill-opacity="0.45" text-anchor="middle">oklch(0.13 0.008 40)</text>
+
+  <!-- FG Light -->
+  <rect x="408" y="380" width="160" height="100" rx="10" fill="#211d1a"/>
+  <text x="488" y="436" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="white" text-anchor="middle">FG Light</text>
+  <rect x="408" y="488" width="160" height="60" rx="0 0 10 10" fill="#f5f3f0" stroke="#e8e4de" stroke-width="1"/>
+  <text x="488" y="508" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#1a1512" text-anchor="middle">#211D1A</text>
+  <text x="488" y="524" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="10" fill="#1a1512" fill-opacity="0.55" text-anchor="middle">rgb(33, 29, 26)</text>
+  <text x="488" y="538" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="9.5" fill="#1a1512" fill-opacity="0.45" text-anchor="middle">oklch(0.14 0.01 40)</text>
+
+  <!-- FG Dark -->
+  <rect x="588" y="380" width="160" height="100" rx="10" fill="#ece9e4"/>
+  <text x="668" y="436" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#1a1512" text-anchor="middle">FG Dark</text>
+  <rect x="588" y="488" width="160" height="60" rx="0 0 10 10" fill="#f5f3f0" stroke="#e8e4de" stroke-width="1"/>
+  <text x="668" y="508" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#1a1512" text-anchor="middle">#ECE9E4</text>
+  <text x="668" y="524" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="10" fill="#1a1512" fill-opacity="0.55" text-anchor="middle">rgb(236, 233, 228)</text>
+  <text x="668" y="538" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="9.5" fill="#1a1512" fill-opacity="0.45" text-anchor="middle">oklch(0.93 0.005 60)</text>
+
+  <!-- Card Light -->
+  <rect x="768" y="380" width="160" height="100" rx="10" fill="#ffffff" stroke="#e8e4de" stroke-width="1"/>
+  <text x="848" y="436" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#1a1512" text-anchor="middle">Card Light</text>
+  <rect x="768" y="488" width="160" height="60" rx="0 0 10 10" fill="#f5f3f0" stroke="#e8e4de" stroke-width="1"/>
+  <text x="848" y="508" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#1a1512" text-anchor="middle">#FFFFFF</text>
+  <text x="848" y="524" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="10" fill="#1a1512" fill-opacity="0.55" text-anchor="middle">rgb(255, 255, 255)</text>
+  <text x="848" y="538" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="9.5" fill="#1a1512" fill-opacity="0.45" text-anchor="middle">Card (light mode)</text>
+
+  <!-- Card Dark -->
+  <rect x="992" y="380" width="160" height="100" rx="10" fill="#252019"/>
+  <text x="1072" y="436" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="white" text-anchor="middle">Card Dark</text>
+  <rect x="992" y="488" width="160" height="60" rx="0 0 10 10" fill="#f5f3f0" stroke="#e8e4de" stroke-width="1"/>
+  <text x="1072" y="508" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#1a1512" text-anchor="middle">#252019</text>
+  <text x="1072" y="524" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="10" fill="#1a1512" fill-opacity="0.55" text-anchor="middle">rgb(37, 32, 25)</text>
+  <text x="1072" y="538" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="9.5" fill="#1a1512" fill-opacity="0.45" text-anchor="middle">oklch(0.17 0.008 40)</text>
+
+  <!-- Color bar gradient strip -->
+  <defs>
+    <linearGradient id="swatch-strip" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#d4402b"/>
+      <stop offset="20%" stop-color="#c43422"/>
+      <stop offset="40%" stop-color="#b22e1e"/>
+      <stop offset="60%" stop-color="#fce8e5"/>
+      <stop offset="75%" stop-color="#1d1916"/>
+      <stop offset="85%" stop-color="#fafaf8"/>
+      <stop offset="100%" stop-color="#edf0f5"/>
+    </linearGradient>
+  </defs>
+  <rect x="48" y="610" width="1104" height="16" rx="8" fill="url(#swatch-strip)"/>
+
+  <!-- Footer note -->
+  <text x="48" y="660"
+    font-family="system-ui, -apple-system, 'Segoe UI', sans-serif"
+    font-size="12"
+    fill="#1a1512"
+    fill-opacity="0.4"
+    letter-spacing="0.5">All colors specified in oklch() where applicable. Hex values are approximate conversions for design tool use.</text>
+
+  <text x="48" y="690"
+    font-family="system-ui, -apple-system, 'Segoe UI', sans-serif"
+    font-size="12"
+    fill="#1a1512"
+    fill-opacity="0.3">AIPowerStacks Brand System · March 2026</text>
+</svg>

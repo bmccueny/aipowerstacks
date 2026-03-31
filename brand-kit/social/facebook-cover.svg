@@ -1,0 +1,60 @@
+<svg viewBox="0 0 820 312" width="820" height="312" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background gradient -->
+  <rect width="820" height="312" fill="#1a1512"/>
+  <defs>
+    <linearGradient id="bg-grad" x1="0" y1="0" x2="820" y2="312" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1f1a16"/>
+      <stop offset="100%" stop-color="#0e0c0a"/>
+    </linearGradient>
+    <linearGradient id="red-glow" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d4402b" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#d4402b" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="820" height="312" fill="url(#bg-grad)"/>
+  <!-- Glow circle top-left -->
+  <circle cx="100" cy="80" r="220" fill="url(#red-glow)"/>
+
+  <!-- Decorative stacked bar motif (right side) -->
+  <rect x="560" y="80" width="180" height="22" rx="11" fill="#d4402b" fill-opacity="0.12"/>
+  <rect x="560" y="116" width="130" height="22" rx="11" fill="#d4402b" fill-opacity="0.09"/>
+  <rect x="560" y="152" width="80" height="22" rx="11" fill="#d4402b" fill-opacity="0.07"/>
+
+  <rect x="620" y="180" width="140" height="18" rx="9" fill="#d4402b" fill-opacity="0.10"/>
+  <rect x="620" y="210" width="100" height="18" rx="9" fill="#d4402b" fill-opacity="0.07"/>
+  <rect x="620" y="240" width="60" height="18" rx="9" fill="#d4402b" fill-opacity="0.05"/>
+
+  <!-- Icon -->
+  <rect x="60" y="80" width="90" height="90" rx="20" fill="#d4402b"/>
+  <rect x="76" y="103" width="58" height="11" rx="5.5" fill="#1a1512"/>
+  <rect x="76" y="120" width="42" height="11" rx="5.5" fill="#1a1512"/>
+  <rect x="76" y="137" width="26" height="11" rx="5.5" fill="#1a1512"/>
+
+  <!-- Wordmark -->
+  <text x="164" y="135"
+    font-family="system-ui, -apple-system, 'Segoe UI', sans-serif"
+    font-size="42"
+    fill="white"
+    letter-spacing="-0.5">
+    <tspan font-weight="800">AI</tspan><tspan font-weight="400">PowerStacks</tspan>
+  </text>
+
+  <!-- Tagline -->
+  <text x="164" y="168"
+    font-family="system-ui, -apple-system, 'Segoe UI', sans-serif"
+    font-size="16"
+    fill="#d4402b"
+    font-weight="500"
+    letter-spacing="0.5">Track Your AI Spend &amp; Stop Overpaying</text>
+
+  <!-- Divider -->
+  <rect x="60" y="198" width="440" height="1" fill="white" fill-opacity="0.08"/>
+
+  <!-- Stats -->
+  <text x="60" y="232"
+    font-family="system-ui, -apple-system, 'Segoe UI', sans-serif"
+    font-size="13"
+    fill="white"
+    fill-opacity="0.5"
+    letter-spacing="1.5">422+ TOOLS  ·  44+ CATEGORIES  ·  UPDATED DAILY</text>
+</svg>

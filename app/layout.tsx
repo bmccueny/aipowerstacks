@@ -63,15 +63,13 @@ export const metadata: Metadata = {
     locale: 'en_US',
     siteName: 'AIPowerStacks',
     title: 'AIPowerStacks | Track Your AI Spend & Stop Overpaying',
-    description: 'How much is AI costing you? Track subscriptions, detect overlap, and find where you\'re overspending.',
-    images: [{ url: '/og-home-v3.png', width: 1200, height: 630, alt: 'AIPowerStacks - How much is AI costing you?' }],
+    description: 'Track your AI subscriptions. See what overlaps. Cut what you don\'t need. 422+ tools tracked.',
   },
   twitter: {
     card: 'summary_large_image',
     site: '@aipowerstacks',
     title: 'AIPowerStacks | Track Your AI Spend & Stop Overpaying',
-    description: 'How much is AI costing you? Track subscriptions, detect overlap, and find where you\'re overspending.',
-    images: ['/og-home-v3.png'],
+    description: 'Track your AI subscriptions. See what overlaps. Cut what you don\'t need. 422+ tools tracked.',
   },
   robots: {
     index: true,

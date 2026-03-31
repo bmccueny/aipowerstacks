@@ -1,0 +1,15 @@
+<svg viewBox="0 0 620 120" width="620" height="120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Icon -->
+  <rect x="0" y="0" width="120" height="120" rx="27" fill="#d4402b"/>
+  <rect x="21" y="30" width="78" height="15" rx="7.5" fill="#1a1512"/>
+  <rect x="21" y="52.5" width="56" height="15" rx="7.5" fill="#1a1512"/>
+  <rect x="21" y="75" width="34" height="15" rx="7.5" fill="#1a1512"/>
+  <!-- Wordmark: "AI" bold + "PowerStacks" regular -->
+  <text x="144" y="78"
+    font-family="system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', sans-serif"
+    font-size="56"
+    fill="#d4402b"
+    letter-spacing="-1">
+    <tspan font-weight="800">AI</tspan><tspan font-weight="400">PowerStacks</tspan>
+  </text>
+</svg>
