@@ -18,6 +18,20 @@ const nextConfig: NextConfig = {
       },
     ]
   },
+  async redirects() {
+    return [
+      {
+        source: '/auth/sign-up',
+        destination: '/register',
+        permanent: true,
+      },
+      {
+        source: '/auth/sign-in',
+        destination: '/login',
+        permanent: true,
+      },
+    ]
+  },
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: '**' },
