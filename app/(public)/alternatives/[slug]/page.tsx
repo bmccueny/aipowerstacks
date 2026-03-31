@@ -8,6 +8,7 @@ import { JsonLd } from '@/components/common/JsonLd'
 import { PRICING_LABELS, PRICING_BADGE_COLORS } from '@/lib/constants'
 import { SITE_URL } from '@/lib/constants/site'
 import { cn } from '@/lib/utils'
+import { OutboundLink } from '@/components/common/OutboundLink'
 
 type AlternativeTool = {
   id: string
@@ -302,11 +303,11 @@ export default async function AlternativesPage({ params }: Props) {
                       View Details <ArrowRight className="h-3 w-3" />
                     </Button>
                   </Link>
-                  <a href={alt.website_url} target="_blank" rel="noopener noreferrer">
+                  <OutboundLink href={alt.website_url} toolName={alt.name} toolSlug={alt.slug} placement="alternatives">
                     <Button variant="ghost" size="sm" className="gap-1.5 text-xs">
                       Visit <ExternalLink className="h-3 w-3" />
                     </Button>
-                  </a>
+                  </OutboundLink>
                 </div>
               </div>
             ))}

@@ -14,6 +14,7 @@ import { AddToStackButton } from '@/components/tools/AddToStackButton'
 import { AddToCompareButton } from '@/components/tools/AddToCompareButton'
 import { NewsletterBanner } from '@/components/layout/NewsletterBanner'
 import { RelatedLinks } from '@/components/common/RelatedLinks'
+import { OutboundLink } from '@/components/common/OutboundLink'
 import { AdminReviewPanel } from '@/components/admin/AdminReviewPanel'
 import { createClient } from '@/lib/supabase/server'
 import { getToolBySlug, getRelatedToolsByCategory, getPopularToolsExcluding } from '@/lib/supabase/queries/tools'
@@ -221,12 +222,12 @@ export default async function ToolDetailPage({ params }: Props) {
                 </p>
               </div>
               <div className="flex items-center gap-3 flex-wrap">
-                <a href={tool.website_url} target="_blank" rel="noopener noreferrer">
+                <OutboundLink href={tool.website_url} toolName={tool.name} toolSlug={tool.slug} placement="hero">
                   <Button size="lg" className="gap-2 font-bold h-11 px-6">
                     Visit {tool.name}
                     <ExternalLink className="h-4 w-4" />
                   </Button>
-                </a>
+                </OutboundLink>
                 {tool.admin_review_video_url && (
                   <a href={tool.admin_review_video_url} target="_blank" rel="noopener noreferrer">
                     <Button variant="outline" className="gap-2 border-primary text-primary hover:bg-primary/5">
@@ -456,12 +457,12 @@ export default async function ToolDetailPage({ params }: Props) {
           <div className="space-y-4 lg:sticky lg:top-24 self-start">
             <div className="glass-card rounded-xl p-5 space-y-3 hidden lg:block">
               <h3 className="text-sm font-semibold">Try This Tool</h3>
-              <a href={tool.website_url} target="_blank" rel="noopener noreferrer" className="block">
+              <OutboundLink href={tool.website_url} toolName={tool.name} toolSlug={tool.slug} placement="sidebar" className="block">
                 <Button className="w-full h-11 gap-2">
                   Visit Website
                   <ExternalLink className="h-4 w-4" />
                 </Button>
-              </a>
+              </OutboundLink>
               <Link href={`/tracker?add=${tool.slug}`} className="block">
                 <Button variant="outline" className="w-full h-11 gap-2">
                   <DollarSign className="h-4 w-4" />
@@ -687,12 +688,12 @@ export default async function ToolDetailPage({ params }: Props) {
 
       <div className="lg:hidden fixed bottom-0 left-0 right-0 z-[60] border-t border-foreground/10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/85 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
         <div className="flex items-center gap-2">
-          <a href={tool.website_url} target="_blank" rel="noopener noreferrer" className="flex-1">
+          <OutboundLink href={tool.website_url} toolName={tool.name} toolSlug={tool.slug} placement="mobile-bar" className="flex-1">
             <Button className="w-full h-11 gap-2">
               Visit
               <ExternalLink className="h-4 w-4" />
             </Button>
-          </a>
+          </OutboundLink>
           <Link href={`/tracker?add=${tool.slug}`} className="flex-1">
             <Button variant="outline" className="w-full h-11 gap-1.5">
               <DollarSign className="h-4 w-4" />

@@ -9,6 +9,7 @@ import { JsonLd } from '@/components/common/JsonLd'
 import { PRICING_LABELS, PRICING_BADGE_COLORS } from '@/lib/constants'
 import { SITE_URL } from '@/lib/constants/site'
 import { cn } from '@/lib/utils'
+import { OutboundLink } from '@/components/common/OutboundLink'
 
 export const revalidate = 86400
 
@@ -329,14 +330,15 @@ export default async function PricingSlugPage({ params }: Props) {
               >
                 View full profile
               </Link>
-              <a
+              <OutboundLink
                 href={tool.website_url}
-                target="_blank"
-                rel="noopener noreferrer"
+                toolName={tool.name}
+                toolSlug={tool.slug}
+                placement="pricing-header"
                 className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors"
               >
                 Website <ExternalLink className="h-3 w-3" />
-              </a>
+              </OutboundLink>
             </div>
           </div>
         </div>
@@ -352,14 +354,15 @@ export default async function PricingSlugPage({ params }: Props) {
           <div className="glass-card rounded-xl p-8 text-center text-muted-foreground">
             <DollarSign className="h-8 w-8 mx-auto mb-3 opacity-40" />
             <p>No pricing tiers available yet.</p>
-            <a
+            <OutboundLink
               href={tool.website_url}
-              target="_blank"
-              rel="noopener noreferrer"
+              toolName={tool.name}
+              toolSlug={tool.slug}
+              placement="pricing-empty"
               className="text-sm text-primary hover:underline mt-2 inline-flex items-center gap-1"
             >
               Check {tool.name} website <ExternalLink className="h-3 w-3" />
-            </a>
+            </OutboundLink>
           </div>
         ) : (
           <div className={cn('grid gap-4', tiers.length === 1 ? 'grid-cols-1 max-w-sm' : tiers.length === 2 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3')}>
@@ -407,16 +410,17 @@ export default async function PricingSlugPage({ params }: Props) {
                     </ul>
                   )}
 
-                  <a
+                  <OutboundLink
                     href={tool.website_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    toolName={tool.name}
+                    toolSlug={tool.slug}
+                    placement="pricing-tier"
                     className="mt-auto"
                   >
                     <Button variant="outline" size="sm" className="w-full">
                       Get {tier.tier_name} <ExternalLink className="h-3 w-3 ml-1" />
                     </Button>
-                  </a>
+                  </OutboundLink>
                 </div>
               )
             })}
@@ -559,9 +563,9 @@ export default async function PricingSlugPage({ params }: Props) {
           ? new Date(updatedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
           : new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}.{' '}
         Always verify pricing on{' '}
-        <a href={tool.website_url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+        <OutboundLink href={tool.website_url} toolName={tool.name} toolSlug={tool.slug} placement="pricing-disclaimer" className="text-primary hover:underline">
           {tool.name}&apos;s website
-        </a>.
+        </OutboundLink>.
       </p>
     </div>
   )

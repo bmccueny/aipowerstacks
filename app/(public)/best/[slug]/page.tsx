@@ -9,6 +9,7 @@ import { PRICING_LABELS, PRICING_BADGE_COLORS } from '@/lib/constants'
 import { SITE_URL } from '@/lib/constants/site'
 import { BEST_PAGE_CONFIGS, getAllBestPageSlugs } from '@/lib/constants/best-pages'
 import { cn } from '@/lib/utils'
+import { OutboundLink } from '@/components/common/OutboundLink'
 
 type BestTool = {
   id: string
@@ -224,11 +225,11 @@ export default async function BestPage({ params }: Props) {
                     View Details <ArrowRight className="h-3 w-3" />
                   </Button>
                 </Link>
-                <a href={tool.website_url} target="_blank" rel="noopener noreferrer">
+                <OutboundLink href={tool.website_url} toolName={tool.name} toolSlug={tool.slug} placement="best-list">
                   <Button variant="ghost" size="sm" className="gap-1.5 text-xs">
                     Visit <ExternalLink className="h-3 w-3" />
                   </Button>
-                </a>
+                </OutboundLink>
               </div>
             </div>
           ))}
