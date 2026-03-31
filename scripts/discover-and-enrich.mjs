@@ -202,19 +202,10 @@ async function discoverFromHackerNews(fetch_n) {
 }
 
 // ─── Step 4 — Scrape tool's own website via Jina AI Reader ───────────────────
+import { scrapeUrl } from './lib/scrape.mjs'
+
 async function scrapeWebsite(url) {
-  if (!url) return null
-  try {
-    const res = await fetch(`https://r.jina.ai/${url}`, {
-      headers: { Accept: 'text/plain', 'X-Return-Format': 'markdown' },
-      signal: AbortSignal.timeout(15000),
-    })
-    if (!res.ok) return null
-    const text = await res.text()
-    return text.slice(0, 4000) // keep prompt lean
-  } catch {
-    return null
-  }
+  return scrapeUrl(url, { maxChars: 4000 })
 }
 
 // ─── Step 5 — Enrich with Claude ─────────────────────────────────────────────

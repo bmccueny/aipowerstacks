@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { execFileSync } from 'child_process'
 import { readFileSync, existsSync, mkdirSync } from 'fs'
+import { scrapeUrl } from './lib/scrape.mjs'
 
 const c = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY)
 const XAI = 'https://api.x.ai/v1'
@@ -43,20 +44,9 @@ for (let batch = 0; batch < missing.length; batch += batchSize) {
     let scrapedContent = ''
     if (url && !isGithub) {
       const pricingUrl = url.replace(/\/$/, '') + '/pricing'
-      const outFile = `${dir}/${tool.slug}.md`
-      if (!existsSync(outFile)) {
-        try {
-          execFileSync('firecrawl', ['scrape', pricingUrl, '--only-main-content', '-o', outFile], { timeout: 12000, stdio: 'pipe' })
-        } catch {
-          try {
-            execFileSync('firecrawl', ['scrape', url, '--only-main-content', '-o', outFile], { timeout: 12000, stdio: 'pipe' })
-          } catch {}
-        }
-      }
-      if (existsSync(outFile)) {
-        const content = readFileSync(outFile, 'utf-8')
-        if (content.length > 100) scrapedContent = content.substring(0, 2000)
-      }
+      // Try pricing page first, then main page
+      const content = await scrapeUrl(pricingUrl, { maxChars: 2000 }) || await scrapeUrl(url, { maxChars: 2000 })
+      if (content && content.length > 100) scrapedContent = content
     }
 
     toolData.push({ tool, scrapedContent })

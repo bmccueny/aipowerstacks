@@ -248,18 +248,11 @@ async function discoverFromHackerNews(target) {
   return results
 }
 
-// ─── Scrape tool website via Jina AI Reader ───────────────────────────────────
+// ─── Scrape tool website (Firecrawl → Jina fallback) ─────────────────────────
+import { scrapeUrl } from './lib/scrape.mjs'
+
 async function scrapeWebsite(url) {
-  try {
-    const res = await fetch(`https://r.jina.ai/${url}`, {
-      headers: { Accept: 'text/plain', 'X-Return-Format': 'markdown' },
-      signal: AbortSignal.timeout(15000),
-    })
-    if (!res.ok) return null
-    return (await res.text()).slice(0, 4000)
-  } catch {
-    return null
-  }
+  return scrapeUrl(url, { maxChars: 4000 })
 }
 
 // ─── Enrich with Grok via xAI (full schema) ──────────────────────────────────

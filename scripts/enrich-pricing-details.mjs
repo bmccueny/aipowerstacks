@@ -11,7 +11,8 @@
 
 import { createClient } from '@supabase/supabase-js'
 
-const JINA_BASE = 'https://r.jina.ai'
+import { scrapeUrl } from './lib/scrape.mjs'
+
 const XAI_BASE = 'https://api.x.ai/v1'
 const apply = process.argv.includes('--apply')
 const limitArg = process.argv.find(a => a.startsWith('--limit='))
@@ -23,17 +24,7 @@ const c = createClient(
 )
 
 async function scrape(url) {
-  try {
-    const res = await fetch(`${JINA_BASE}/${url}`, {
-      headers: { Accept: 'text/plain' },
-      signal: AbortSignal.timeout(15_000),
-    })
-    if (!res.ok) return null
-    const text = await res.text()
-    return text.slice(0, 8000)
-  } catch {
-    return null
-  }
+  return scrapeUrl(url, { maxChars: 8000 })
 }
 
 async function extractDescription(toolName, pricingModel, websiteContent, pricingContent) {

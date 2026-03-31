@@ -51,22 +51,10 @@ function isSkippableUrl(url) {
 }
 
 /** Fetch via Jina reader — works with JS-rendered pages */
+import { scrapeUrl } from './lib/scrape.mjs'
+
 async function fetchText(url, timeoutMs = 12000) {
-  try {
-    const jinaUrl = `https://r.jina.ai/${url}`;
-    const ctrl = new AbortController();
-    const t = setTimeout(() => ctrl.abort(), timeoutMs);
-    const res = await fetch(jinaUrl, {
-      signal: ctrl.signal,
-      headers: { 'Accept': 'text/plain', 'User-Agent': 'Mozilla/5.0' },
-    });
-    clearTimeout(t);
-    if (!res.ok) return null;
-    const text = await res.text();
-    return text.slice(0, 6000);
-  } catch {
-    return null;
-  }
+  return scrapeUrl(url, { maxChars: 6000, timeoutMs })
 }
 
 /** Derive a clean brand name from a hostname, e.g. tryruminate.com → Ruminate */
