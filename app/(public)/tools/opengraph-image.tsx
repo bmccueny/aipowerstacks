@@ -19,7 +19,6 @@ export default function Image() {
           fontFamily: 'system-ui, sans-serif',
           color: 'white',
           padding: '60px',
-          position: 'relative',
         }}
       >
         {/* Brand logo */}
@@ -29,16 +28,17 @@ export default function Image() {
             <div style={{ width: 34, height: 10, borderRadius: 5, background: 'rgba(0,0,0,0.7)' }} />
             <div style={{ width: 22, height: 10, borderRadius: 5, background: 'rgba(0,0,0,0.7)' }} />
           </div>
-          <div style={{ fontSize: 36, fontWeight: 700 }}>
-            <span style={{ color: '#d4402b' }}>AI</span>PowerStacks
+          <div style={{ display: 'flex', fontSize: 36, fontWeight: 700 }}>
+            <span style={{ color: '#d4402b' }}>AI</span>
+            <span>PowerStacks</span>
           </div>
         </div>
 
         <div style={{ fontSize: 64, fontWeight: 900, letterSpacing: '-0.03em', marginBottom: 20 }}>
           AI Tools Directory
         </div>
-        <div style={{ fontSize: 30, color: '#a0a0a0', textAlign: 'center', maxWidth: '80%', lineHeight: 1.4 }}>
-          Browse, filter & compare 422+ AI tools across every category
+        <div style={{ fontSize: 30, color: '#a0a0a0', textAlign: 'center', lineHeight: 1.4 }}>
+          Browse, filter &amp; compare 422+ AI tools across every category
         </div>
         <div
           style={{
@@ -47,21 +47,15 @@ export default function Image() {
             gap: 20,
           }}
         >
-          {['Compare Side-by-Side', 'Real User Reviews', 'Price Tracking'].map((item) => (
-            <div
-              key={item}
-              style={{
-                fontSize: 20,
-                background: 'rgba(212, 64, 43, 0.12)',
-                padding: '10px 24px',
-                borderRadius: 999,
-                border: '1px solid rgba(212, 64, 43, 0.25)',
-                color: '#e8a090',
-              }}
-            >
-              {item}
-            </div>
-          ))}
+          <div style={{ fontSize: 20, background: 'rgba(212, 64, 43, 0.12)', padding: '10px 24px', borderRadius: 999, border: '1px solid rgba(212, 64, 43, 0.25)', color: '#e8a090' }}>
+            Compare Side-by-Side
+          </div>
+          <div style={{ fontSize: 20, background: 'rgba(212, 64, 43, 0.12)', padding: '10px 24px', borderRadius: 999, border: '1px solid rgba(212, 64, 43, 0.25)', color: '#e8a090' }}>
+            Real User Reviews
+          </div>
+          <div style={{ fontSize: 20, background: 'rgba(212, 64, 43, 0.12)', padding: '10px 24px', borderRadius: 999, border: '1px solid rgba(212, 64, 43, 0.25)', color: '#e8a090' }}>
+            Price Tracking
+          </div>
         </div>
       </div>
     ),

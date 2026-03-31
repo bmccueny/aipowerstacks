@@ -19,22 +19,8 @@ export default function Image() {
           fontFamily: 'system-ui, sans-serif',
           color: 'white',
           padding: '60px',
-          position: 'relative',
-          overflow: 'hidden',
         }}
       >
-        {/* Background bar motifs */}
-        <div style={{ position: 'absolute', top: 40, left: -60, opacity: 0.06, display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <div style={{ width: 300, height: 24, borderRadius: 12, background: '#d4402b' }} />
-          <div style={{ width: 220, height: 24, borderRadius: 12, background: '#d4402b' }} />
-          <div style={{ width: 140, height: 24, borderRadius: 12, background: '#d4402b' }} />
-        </div>
-        <div style={{ position: 'absolute', bottom: 40, right: -60, opacity: 0.06, display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <div style={{ width: 300, height: 24, borderRadius: 12, background: '#d4402b' }} />
-          <div style={{ width: 220, height: 24, borderRadius: 12, background: '#d4402b' }} />
-          <div style={{ width: 140, height: 24, borderRadius: 12, background: '#d4402b' }} />
-        </div>
-
         {/* Logo icon */}
         <div
           style={{
@@ -56,6 +42,7 @@ export default function Image() {
         {/* Title */}
         <div
           style={{
+            display: 'flex',
             fontSize: 72,
             fontWeight: 900,
             letterSpacing: '-0.04em',
@@ -64,7 +51,8 @@ export default function Image() {
             marginBottom: 16,
           }}
         >
-          <span style={{ color: '#d4402b' }}>AI</span>PowerStacks
+          <span style={{ color: '#d4402b' }}>AI</span>
+          <span>PowerStacks</span>
         </div>
 
         {/* Tagline */}
@@ -73,11 +61,10 @@ export default function Image() {
             fontSize: 32,
             color: '#a0a0a0',
             textAlign: 'center',
-            maxWidth: '80%',
             lineHeight: 1.4,
           }}
         >
-          Track Your AI Spend & Stop Overpaying
+          Track Your AI Spend &amp; Stop Overpaying
         </div>
 
         {/* Stats */}
@@ -89,21 +76,42 @@ export default function Image() {
             alignItems: 'center',
           }}
         >
-          {['422+ Tools', '44+ Categories', 'Updated Daily'].map((item) => (
-            <div
-              key={item}
-              style={{
-                fontSize: 20,
-                background: 'rgba(212, 64, 43, 0.12)',
-                padding: '10px 24px',
-                borderRadius: '999px',
-                border: '1px solid rgba(212, 64, 43, 0.25)',
-                color: '#e8a090',
-              }}
-            >
-              {item}
-            </div>
-          ))}
+          <div
+            style={{
+              fontSize: 20,
+              background: 'rgba(212, 64, 43, 0.12)',
+              padding: '10px 24px',
+              borderRadius: 999,
+              border: '1px solid rgba(212, 64, 43, 0.25)',
+              color: '#e8a090',
+            }}
+          >
+            422+ Tools
+          </div>
+          <div
+            style={{
+              fontSize: 20,
+              background: 'rgba(212, 64, 43, 0.12)',
+              padding: '10px 24px',
+              borderRadius: 999,
+              border: '1px solid rgba(212, 64, 43, 0.25)',
+              color: '#e8a090',
+            }}
+          >
+            44+ Categories
+          </div>
+          <div
+            style={{
+              fontSize: 20,
+              background: 'rgba(212, 64, 43, 0.12)',
+              padding: '10px 24px',
+              borderRadius: 999,
+              border: '1px solid rgba(212, 64, 43, 0.25)',
+              color: '#e8a090',
+            }}
+          >
+            Updated Daily
+          </div>
         </div>
       </div>
     ),
