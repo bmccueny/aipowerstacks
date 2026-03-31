@@ -10,7 +10,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const supabase = await createClient()
   const adminSupabase = createAdminClient()
 
-  const [toolsRes, categoriesRes, postsRes, stacksRes, curatorsRes, vsToolsRes] = await Promise.allSettled([
+  const [toolsRes, categoriesRes, postsRes, stacksRes, curatorsRes, vsToolsRes, pricingToolsRes] = await Promise.allSettled([
     supabase.from('tools').select('slug, updated_at').eq('status', 'published').limit(5000),
     supabase.from('categories').select('slug, created_at'),
     supabase.from('blog_posts').select('slug, updated_at').eq('status', 'published').limit(1000),
@@ -23,6 +23,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .gt('review_count', 0)
       .order('review_count', { ascending: false })
       .limit(200),
+    adminSupabase
+      .from('tool_pricing_tiers')
+      .select('tool_id, updated_at')
+      .limit(5000),
   ])
 
   const settled = <T,>(r: PromiseSettledResult<{ data: T | null }>) =>
@@ -63,6 +67,35 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }))
 
   // Generate vs comparison pairs from top tools grouped by category
+  // Build pricing page URLs for tools that have pricing tiers
+  const pricingTierRows = (settled(pricingToolsRes) ?? []) as { tool_id: string; updated_at: string }[]
+  const toolsWithPricingIds = new Set(pricingTierRows.map((r) => r.tool_id))
+  const pricingUpdatedAt = new Map<string, string>()
+  for (const r of pricingTierRows) {
+    const existing = pricingUpdatedAt.get(r.tool_id)
+    if (!existing || r.updated_at > existing) pricingUpdatedAt.set(r.tool_id, r.updated_at)
+  }
+  const toolsWithPricing = tools.filter((t) => {
+    // tools are { slug, updated_at } but we need id — join via adminSupabase above gives us tool_id
+    // We can only match if the tool_pricing_tiers.tool_id is in our set and the slug matches
+    // Since we don't have tool id here, we fetch slugs directly below
+    return false // placeholder — handled separately
+  })
+
+  const { data: pricingToolSlugs } = await adminSupabase
+    .from('tools')
+    .select('slug, updated_at, id')
+    .eq('status', 'published')
+    .in('id', [...toolsWithPricingIds])
+    .limit(5000)
+
+  const pricingUrls: MetadataRoute.Sitemap = (pricingToolSlugs ?? []).map((t) => ({
+    url: `${BASE_URL}/pricing/${t.slug}`,
+    lastModified: pricingUpdatedAt.get(t.id) ?? t.updated_at,
+    changeFrequency: 'weekly' as const,
+    priority: 0.6,
+  }))
+
   const vsTools = (settled(vsToolsRes) ?? []) as { slug: string; category_id: string; updated_at: string }[]
   const vsByCategory = new Map<string, typeof vsTools>()
   for (const t of vsTools) {
