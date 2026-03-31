@@ -79,7 +79,7 @@ export default async function HomePage() {
           {/* Hero gradient background */}
           <div className="pointer-events-none absolute inset-0 -top-20 overflow-hidden" aria-hidden="true">
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full bg-primary/[0.04] blur-[100px] dark:bg-primary/[0.08]" />
-            <div className="absolute top-20 left-1/4 w-[300px] h-[300px] rounded-full bg-orange-200/20 blur-[80px] dark:bg-orange-500/[0.06]" />
+            <div className="absolute top-20 left-1/4 w-[300px] h-[300px] rounded-full blur-[80px]" style={{ background: 'rgba(212, 64, 43, 0.10)' }} />
           </div>
 
           <div className="relative text-center mb-10 sm:mb-12 animate-fade-up">

@@ -110,14 +110,14 @@ export function Navbar() {
                     'px-4 py-2 text-sm font-semibold rounded-lg transition-all duration-200',
                     ('/' + pathname.split('/')[1]) === link.href
                       ? 'text-primary bg-primary/10'
-                      : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800'
+                      : 'text-foreground/80 dark:text-foreground/70 hover:text-foreground dark:hover:text-foreground hover:bg-muted/60 dark:hover:bg-muted/40'
                   )}
                 >
                   {link.label}
                 </Link>
               ))}
               <DropdownMenu>
-                <DropdownMenuTrigger className="px-4 py-2 text-sm font-semibold rounded-lg text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 outline-none">
+                <DropdownMenuTrigger className="px-4 py-2 text-sm font-semibold rounded-lg text-foreground/80 dark:text-foreground/70 hover:text-foreground dark:hover:text-foreground hover:bg-muted/60 dark:hover:bg-muted/40 transition-all duration-200 outline-none">
                   More
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
@@ -140,7 +140,7 @@ export function Navbar() {
                 type="button"
                 onClick={() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }))}
                 aria-label="Search tools (⌘K)"
-                className="hidden sm:flex items-center gap-2 h-9 px-3 rounded-lg border border-gray-200 dark:border-gray-700 text-sm text-muted-foreground hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 cursor-pointer"
+                className="hidden sm:flex items-center gap-2 h-9 px-3 rounded-lg border border-border text-sm text-muted-foreground hover:bg-muted/60 dark:hover:bg-muted/40 transition-colors duration-200 cursor-pointer"
               >
                 <Search className="h-3.5 w-3.5" />
                 <span className="text-xs">Search…</span>
@@ -150,7 +150,7 @@ export function Navbar() {
                 type="button"
                 onClick={() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }))}
                 aria-label="Search"
-                className="sm:hidden flex items-center justify-center h-11 w-11 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
+                className="sm:hidden flex items-center justify-center h-11 w-11 rounded-lg hover:bg-muted/60 dark:hover:bg-muted/40 transition-colors duration-200"
               >
                 <Search className="h-5 w-5" />
               </button>
@@ -159,8 +159,8 @@ export function Navbar() {
               {user ? (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon-lg" className="rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 hover:opacity-90 focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 flex-shrink-0 relative z-10">
-                      <Avatar className="h-9 w-9 ring-2 ring-gray-200 dark:ring-gray-700 ring-offset-1 transition-transform duration-200 hover:scale-110">
+                      <Button variant="ghost" size="icon-lg" className="rounded-full hover:bg-muted/60 dark:hover:bg-muted/40 transition-all duration-200 hover:opacity-90 focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 flex-shrink-0 relative z-10">
+                      <Avatar className="h-9 w-9 ring-2 ring-border ring-offset-1 transition-transform duration-200 hover:scale-110">
                         <AvatarImage
                           src={profile?.avatar_url || undefined}
                           alt={user.user_metadata?.full_name || user.user_metadata?.name || 'User'}
@@ -177,26 +177,26 @@ export function Navbar() {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
                     align="end"
-                    className="w-64 max-w-[90vw] shadow-xl border-gray-200 dark:border-gray-700 z-[60]"
+                    className="w-64 max-w-[90vw] shadow-xl border-border z-[60]"
                     sideOffset={8}
                     alignOffset={0}
                     avoidCollisions={true}
                     collisionPadding={{ top: 16, right: 16, bottom: 16, left: 16 }}
                   >
-                    <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 rounded-t-lg">
+                    <div className="px-4 py-3 border-b border-border bg-muted/50 dark:bg-card rounded-t-lg">
                       <p className="text-sm font-semibold text-gray-900 dark:text-white">
                         {profile?.display_name || user.user_metadata?.full_name || 'User'}
                       </p>
                       <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">{user.email}</p>
                     </div>
                     <DropdownMenuItem asChild>
-                      <Link href="/dashboard" className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md mx-1">
+                      <Link href="/dashboard" className="cursor-pointer hover:bg-muted/60 dark:hover:bg-muted/40 rounded-md mx-1">
                         <User className="h-4 w-4 mr-3" />
                         <span className="font-medium">Dashboard</span>
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link href="/settings" className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md mx-1">
+                      <Link href="/settings" className="cursor-pointer hover:bg-muted/60 dark:hover:bg-muted/40 rounded-md mx-1">
                         <Settings className="h-4 w-4 mr-3" />
                         <span className="font-medium">Settings</span>
                       </Link>
@@ -212,7 +212,7 @@ export function Navbar() {
                 <div className="hidden sm:flex items-center gap-3">
                   <Link
                     href="/login"
-                    className="px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all duration-200"
+                    className="px-4 py-2 text-sm font-semibold text-foreground/80 dark:text-foreground/70 hover:text-foreground dark:hover:text-foreground hover:bg-muted/60 dark:hover:bg-muted/40 rounded-lg transition-all duration-200"
                   >
                     Log in
                   </Link>
@@ -230,7 +230,7 @@ export function Navbar() {
                 type="button"
                 onClick={() => setMobileOpen(!mobileOpen)}
                 aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
-                className="md:hidden flex items-center justify-center h-11 w-11 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
+                className="md:hidden flex items-center justify-center h-11 w-11 rounded-lg hover:bg-muted/60 dark:hover:bg-muted/40 transition-colors duration-200"
               >
                 {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
               </button>
@@ -264,7 +264,7 @@ export function Navbar() {
                       'flex items-center gap-3 px-4 py-3 min-h-[48px] text-base font-medium rounded-lg transition-colors duration-200',
                       isActive
                         ? 'text-primary bg-primary/10'
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                        : 'text-gray-700 dark:text-gray-300 hover:bg-muted/60 dark:hover:bg-muted/40'
                     )}
                   >
                     {isActive && <span className="w-1 h-5 rounded-full bg-primary shrink-0" />}
@@ -276,11 +276,11 @@ export function Navbar() {
 
             {/* Mobile Auth */}
             {!user && (
-              <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700 space-y-3">
+              <div className="mt-8 pt-6 border-t border-border space-y-3">
                 <Link
                   href="/login"
                   onClick={() => setMobileOpen(false)}
-                  className="block w-full px-6 py-3 min-h-[48px] text-center font-semibold text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 rounded-full hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-200 hover:opacity-90"
+                  className="block w-full px-6 py-3 min-h-[48px] text-center font-semibold text-gray-700 dark:text-gray-300 border border-border rounded-full hover:bg-muted/40 dark:hover:bg-muted/40 transition-all duration-200 hover:opacity-90"
                 >
                   Log in
                 </Link>
