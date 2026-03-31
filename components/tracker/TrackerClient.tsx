@@ -460,7 +460,7 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
         <div className="rounded-xl border border-primary/20 bg-primary/5 p-5 text-center space-y-2">
           <p className="text-sm font-semibold">Want more insights?</p>
           <p className="text-xs text-muted-foreground">Sign up to save your stack, get personalized recommendations, and track pricing changes over time.</p>
-          <a href="/auth/sign-up" className="inline-block mt-2 text-xs font-semibold text-primary hover:underline">Create free account →</a>
+          <a href="/register" className="inline-block mt-2 text-xs font-semibold text-primary hover:underline">Create free account →</a>
         </div>
       )}
 
