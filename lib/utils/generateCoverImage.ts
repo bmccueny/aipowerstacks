@@ -3,7 +3,7 @@ import sharp from 'sharp'
 import { readFileSync } from 'fs'
 import { join } from 'path'
 
-const XAI_BASE_URL = 'https://api.x.ai/v1'
+const GEMINI_BASE_URL = 'https://generativelanguage.googleapis.com/v1beta'
 
 // Embed font as base64 so it works on Vercel (no system fonts available)
 let antonFontBase64: string | null = null
@@ -303,20 +303,20 @@ export async function generateCoverImage(
   try {
     const style = VISUAL_STYLE_PROMPTS[visualStyle] ?? VISUAL_STYLE_PROMPTS['youtube-thumbnail']
 
-    // Step 1: Have Grok generate an image prompt with headline text baked in
-    const metaRes = await fetch(`${XAI_BASE_URL}/chat/completions`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.XAI_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: 'grok-3-mini',
-        max_tokens: 600,
-        temperature: 0.9,
-        messages: [{
-          role: 'user',
-          content: `You write image generation prompts for blog cover thumbnails.
+    // Step 1: Have Gemini generate an image prompt with headline text baked in
+    const googleApiKey = process.env.GOOGLE_API_KEY
+    if (!googleApiKey) {
+      console.error('GOOGLE_API_KEY not set')
+      return null
+    }
+
+    const metaRes = await fetch(
+      `${GEMINI_BASE_URL}/models/gemini-2.5-flash:generateContent?key=${googleApiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: `You write image generation prompts for blog cover thumbnails.
 
 ARTICLE TITLE: "${title}"
 TOPIC: ${topic}
@@ -348,10 +348,12 @@ ${style.typography}
 The headline text must be clearly readable, properly spelled, and visually integrated.
 No other text, labels, UI elements, watermarks, or captions — ONLY the headline words.
 
-Reply with ONLY the two lines. Nothing else.`,
-        }],
-      }),
-    })
+Reply with ONLY the two lines. Nothing else.` }] }],
+          generationConfig: { temperature: 0.9, maxOutputTokens: 600 },
+        }),
+        signal: AbortSignal.timeout(30_000),
+      },
+    )
 
     if (!metaRes.ok) {
       console.error(`Image prompt generation failed: ${metaRes.status}`)
@@ -359,7 +361,7 @@ Reply with ONLY the two lines. Nothing else.`,
     }
 
     const metaData = await metaRes.json()
-    const response = (metaData.choices?.[0]?.message?.content ?? '').trim()
+    const response = (metaData.candidates?.[0]?.content?.parts?.[0]?.text ?? '').trim()
 
     const headlineLine = response.match(/HEADLINE:\s*(.+)/i)?.[1]?.trim() ?? ''
     const promptMatch = response.match(/PROMPT:\s*([\s\S]+)/i)
@@ -373,96 +375,59 @@ Reply with ONLY the two lines. Nothing else.`,
     const imagePrompt = promptMatch?.[1]?.trim() ?? ''
 
     if (!imagePrompt || imagePrompt.length < 20) {
-      console.error('Empty image prompt from Grok')
+      console.error('Empty image prompt from Gemini')
       return null
     }
 
     console.log(`Headline: "${headlineWords}" | Keyword: "${keyword}" | Color: ${accentColor}`)
     console.log(`Image prompt: ${imagePrompt.substring(0, 120)}...`)
 
-    // Step 2: Generate image with Gemini, fall back to xAI Grok Imagine
+    // Step 2: Generate image with Gemini
     let finalBuffer: Buffer | null = null
 
-    // Try Gemini first (higher quality photorealistic generation)
-    const googleApiKey = process.env.GOOGLE_API_KEY
-    if (googleApiKey) {
-      try {
-        console.log('Attempting Gemini image generation...')
-        const geminiRes = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent?key=${googleApiKey}`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents: [{ parts: [{ text: imagePrompt }] }],
-              generationConfig: { responseModalities: ['TEXT', 'IMAGE'] },
-            }),
-            signal: AbortSignal.timeout(90_000),
-          }
-        )
+    try {
+      console.log('Generating image with Gemini...')
+      const geminiRes = await fetch(
+        `${GEMINI_BASE_URL}/models/gemini-2.5-flash-image:generateContent?key=${googleApiKey}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: imagePrompt }] }],
+            generationConfig: { responseModalities: ['TEXT', 'IMAGE'] },
+          }),
+          signal: AbortSignal.timeout(90_000),
+        }
+      )
 
-        if (geminiRes.ok) {
-          const geminiData = await geminiRes.json()
-          for (const candidate of geminiData.candidates ?? []) {
-            for (const part of candidate.content?.parts ?? []) {
-              if (part.inlineData?.data) {
-                const imgBuffer = Buffer.from(part.inlineData.data, 'base64')
-                if (imgBuffer.length > 1000) {
-                  console.log(`Gemini image generated: ${imgBuffer.length} bytes`)
-                  // Add watermark
-                  finalBuffer = await overlayWatermark(imgBuffer.buffer as ArrayBuffer)
-                  break
-                }
+      if (geminiRes.ok) {
+        const geminiData = await geminiRes.json()
+        for (const candidate of geminiData.candidates ?? []) {
+          for (const part of candidate.content?.parts ?? []) {
+            if (part.inlineData?.data) {
+              const imgBuffer = Buffer.from(part.inlineData.data, 'base64')
+              if (imgBuffer.length > 1000) {
+                console.log(`Gemini image generated: ${imgBuffer.length} bytes`)
+                finalBuffer = await overlayWatermark(imgBuffer.buffer as ArrayBuffer)
+                break
               }
             }
-            if (finalBuffer) break
           }
-        } else {
-          const errBody = await geminiRes.text().catch(() => '')
-          console.warn(`Gemini image generation failed (${geminiRes.status}), falling back to xAI: ${errBody.slice(0, 200)}`)
+          if (finalBuffer) break
         }
-      } catch (geminiErr) {
-        console.warn('Gemini image generation error, falling back to xAI:', geminiErr)
+      } else {
+        const errBody = await geminiRes.text().catch(() => '')
+        console.error(`Gemini image generation failed (${geminiRes.status}): ${errBody.slice(0, 200)}`)
+        return null
       }
+    } catch (geminiErr) {
+      console.error('Gemini image generation error:', geminiErr)
+      return null
     }
 
-    // Fallback: xAI Grok Imagine
     if (!finalBuffer) {
-      console.log('Using xAI Grok Imagine fallback...')
-      const res = await fetch(`${XAI_BASE_URL}/images/generations`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${process.env.XAI_API_KEY}`,
-        },
-        body: JSON.stringify({
-          model: 'grok-imagine-image',
-          prompt: imagePrompt,
-          aspect_ratio: '16:9',
-        }),
-      })
-
-      if (!res.ok) {
-        console.error(`xAI image generation failed: ${res.status}`)
-        return null
-      }
-
-      const data = await res.json()
-      const tempImageUrl = data?.data?.[0]?.url
-
-      if (!tempImageUrl) {
-        console.error('No image URL returned from xAI')
-        return null
-      }
-
-      const imageResponse = await fetch(tempImageUrl)
-      if (!imageResponse.ok) {
-        console.error(`Failed to download image: ${imageResponse.status}`)
-        return null
-      }
-
-      const rawBuffer = await imageResponse.arrayBuffer()
-      finalBuffer = await overlayWatermark(rawBuffer)
+      console.error('No image data received from Gemini')
+      return null
     }
 
     // Step 3: Upload to permanent storage

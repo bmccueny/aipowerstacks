@@ -114,7 +114,7 @@ const EDITORS: Record<string, { id: string; voice: string; beat: string; visualS
 
 /* ── Constants ─────────────────────────────────────────────────────────────── */
 
-const XAI_BASE_URL = 'https://api.x.ai/v1'
+const GEMINI_BASE_URL = 'https://generativelanguage.googleapis.com/v1beta'
 const JINA_BASE = 'https://r.jina.ai'
 
 const AI_KEYWORDS = ['ai', 'llm', 'gpt', 'model', 'machine learning', 'neural', 'transformer', 'openai', 'anthropic', 'claude', 'gemini', 'copilot', 'agent', 'chatbot', 'diffusion', 'fine-tun', 'rag', 'embedding', 'inference', 'deep learning', 'artificial intelligence']
@@ -498,7 +498,7 @@ function slugify(title: string): string {
     .replace(/-$/, '')
 }
 
-/** Generate a blog post via Grok from scraped sources */
+/** Generate a blog post via Gemini from scraped sources */
 async function generateBlogPost(
   editor: { name: string; voice: string; beat: string; visualStyle: string },
   topic: string,
@@ -592,27 +592,33 @@ Respond in EXACTLY this JSON format (no extra text before or after):
   "topic_category": "${topic}"
 }`
 
-  const res = await fetch(`${XAI_BASE_URL}/chat/completions`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${process.env.XAI_API_KEY}`,
+  const googleApiKey = process.env.GOOGLE_API_KEY
+  if (!googleApiKey) throw new Error('GOOGLE_API_KEY not set')
+
+  const res = await fetch(
+    `${GEMINI_BASE_URL}/models/gemini-2.5-flash:generateContent?key=${googleApiKey}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: {
+          temperature: 0.85,
+          maxOutputTokens: 10000,
+          responseMimeType: 'application/json',
+        },
+      }),
+      signal: AbortSignal.timeout(120_000),
     },
-    body: JSON.stringify({
-      model: 'grok-3-mini-fast',
-      max_tokens: 10000,
-      temperature: 0.85,
-      messages: [{ role: 'user', content: prompt }],
-    }),
-  })
+  )
 
   if (!res.ok) {
     const errText = await res.text()
-    throw new Error(`Grok API error: ${res.status} ${errText.slice(0, 200)}`)
+    throw new Error(`Gemini API error: ${res.status} ${errText.slice(0, 200)}`)
   }
 
   const data = await res.json()
-  const text = (data.choices?.[0]?.message?.content ?? '').trim()
+  const text = (data.candidates?.[0]?.content?.parts?.[0]?.text ?? '').trim()
 
   let parsed: Record<string, unknown>
   try {
@@ -655,8 +661,8 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  if (!process.env.XAI_API_KEY) {
-    return NextResponse.json({ error: 'XAI_API_KEY not set' }, { status: 500 })
+  if (!process.env.GOOGLE_API_KEY) {
+    return NextResponse.json({ error: 'GOOGLE_API_KEY not set' }, { status: 500 })
   }
 
   const supabase = createAdminClient()
