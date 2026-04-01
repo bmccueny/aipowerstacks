@@ -380,44 +380,92 @@ Reply with ONLY the two lines. Nothing else.`,
     console.log(`Headline: "${headlineWords}" | Keyword: "${keyword}" | Color: ${accentColor}`)
     console.log(`Image prompt: ${imagePrompt.substring(0, 120)}...`)
 
-    // Step 2: Generate the image (headline text rendered by Grok Imagine)
-    const res = await fetch(`${XAI_BASE_URL}/images/generations`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.XAI_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: 'grok-imagine-image',
-        prompt: imagePrompt,
-        aspect_ratio: '16:9',
-      }),
-    })
+    // Step 2: Generate image with Gemini, fall back to xAI Grok Imagine
+    let finalBuffer: Buffer | null = null
 
-    if (!res.ok) {
-      console.error(`Image generation failed: ${res.status}`)
-      return null
+    // Try Gemini first (higher quality photorealistic generation)
+    const googleApiKey = process.env.GOOGLE_API_KEY
+    if (googleApiKey) {
+      try {
+        console.log('Attempting Gemini image generation...')
+        const geminiRes = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent?key=${googleApiKey}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: imagePrompt }] }],
+              generationConfig: { responseModalities: ['TEXT', 'IMAGE'] },
+            }),
+            signal: AbortSignal.timeout(90_000),
+          }
+        )
+
+        if (geminiRes.ok) {
+          const geminiData = await geminiRes.json()
+          for (const candidate of geminiData.candidates ?? []) {
+            for (const part of candidate.content?.parts ?? []) {
+              if (part.inlineData?.data) {
+                const imgBuffer = Buffer.from(part.inlineData.data, 'base64')
+                if (imgBuffer.length > 1000) {
+                  console.log(`Gemini image generated: ${imgBuffer.length} bytes`)
+                  // Add watermark
+                  finalBuffer = await overlayWatermark(imgBuffer.buffer as ArrayBuffer)
+                  break
+                }
+              }
+            }
+            if (finalBuffer) break
+          }
+        } else {
+          const errBody = await geminiRes.text().catch(() => '')
+          console.warn(`Gemini image generation failed (${geminiRes.status}), falling back to xAI: ${errBody.slice(0, 200)}`)
+        }
+      } catch (geminiErr) {
+        console.warn('Gemini image generation error, falling back to xAI:', geminiErr)
+      }
     }
 
-    const data = await res.json()
-    const tempImageUrl = data?.data?.[0]?.url
+    // Fallback: xAI Grok Imagine
+    if (!finalBuffer) {
+      console.log('Using xAI Grok Imagine fallback...')
+      const res = await fetch(`${XAI_BASE_URL}/images/generations`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${process.env.XAI_API_KEY}`,
+        },
+        body: JSON.stringify({
+          model: 'grok-imagine-image',
+          prompt: imagePrompt,
+          aspect_ratio: '16:9',
+        }),
+      })
 
-    if (!tempImageUrl) {
-      console.error('No image URL returned from xAI')
-      return null
+      if (!res.ok) {
+        console.error(`xAI image generation failed: ${res.status}`)
+        return null
+      }
+
+      const data = await res.json()
+      const tempImageUrl = data?.data?.[0]?.url
+
+      if (!tempImageUrl) {
+        console.error('No image URL returned from xAI')
+        return null
+      }
+
+      const imageResponse = await fetch(tempImageUrl)
+      if (!imageResponse.ok) {
+        console.error(`Failed to download image: ${imageResponse.status}`)
+        return null
+      }
+
+      const rawBuffer = await imageResponse.arrayBuffer()
+      finalBuffer = await overlayWatermark(rawBuffer)
     }
 
-    // Step 3: Download and add watermark only (headline is in the generated image)
-    const imageResponse = await fetch(tempImageUrl)
-    if (!imageResponse.ok) {
-      console.error(`Failed to download image: ${imageResponse.status}`)
-      return null
-    }
-
-    const rawBuffer = await imageResponse.arrayBuffer()
-    const finalBuffer = await overlayWatermark(rawBuffer)
-
-    // Step 4: Upload to permanent storage
+    // Step 3: Upload to permanent storage
     const filename = title
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
