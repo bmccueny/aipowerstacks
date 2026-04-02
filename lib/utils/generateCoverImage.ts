@@ -342,11 +342,10 @@ Reply with ONLY the two lines. Nothing else.` }] }],
       return null
     }
 
-    // Build final prompt with text as the PRIMARY instruction (Gemini prioritizes early instructions)
-    const accent = ACCENT_COLORS[accentColor.toLowerCase()] || ACCENT_COLORS.yellow
-    const finalImagePrompt = `Generate a WIDE 16:9 landscape image (wider than tall, like a YouTube thumbnail). The image must contain the bold text "${headlineWords}" as a large headline in the LOWER THIRD of the image (not at the very bottom edge — leave margin). The word "${keyword}" must be much bigger (50% larger) and colored ${accentColor}. Other words in white. All text must have thick black outlines and drop shadows for maximum readability. The text must be perfectly spelled with zero garbled characters. The text should occupy roughly 25-35% of the image height.
+    // Build final prompt - generate image WITHOUT text, we'll add overlay separately
+    const finalImagePrompt = `Generate a WIDE 16:9 landscape image (1280x720). A high-resolution REAL PHOTOGRAPH (not AI art) showing: ${imagePrompt}. 
 
-Background scene behind the text: ${imagePrompt}`
+IMPORTANT: Do NOT include any text in the image. Generate only the background scene/photograph. Professional stock photography style with natural lighting and realistic depth of field. No text, no words, no letters anywhere in the image.`
 
     console.log(`Headline: "${headlineWords}" | Keyword: "${keyword}" | Color: ${accentColor}`)
     console.log(`Image prompt: ${finalImagePrompt.substring(0, 150)}...`)
@@ -404,16 +403,25 @@ Background scene behind the text: ${imagePrompt}`
       }
     }
 
-    // Step 3: Resize to 16:9 and add watermark (text already in Gemini image)
+    // Step 3: Resize to 16:9 and add text overlay + watermark
     const resizedBuffer = await sharp(sceneBuffer)
       .resize(1280, 720, { fit: 'cover', position: 'centre' })
       .jpeg({ quality: 92 })
       .toBuffer()
 
-    const finalBuffer = await overlayWatermark(resizedBuffer.buffer as ArrayBuffer)
-    console.log('Resized to 16:9 + watermark applied')
+    // Add YouTube-style text overlay with 2-3 word hook
+    const textOverlayBuffer = await overlayTextOnImage(
+      resizedBuffer.buffer as ArrayBuffer,
+      headlineWords,
+      keyword,
+      accentColor
+    )
+    console.log('Text overlay applied')
 
-    // Step 3: Upload to permanent storage
+    const finalBuffer = await overlayWatermark(textOverlayBuffer.buffer as ArrayBuffer)
+    console.log('Resized to 16:9 + text + watermark applied')
+
+    // Step 4: Upload to permanent storage
     const filename = title
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
