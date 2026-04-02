@@ -456,6 +456,7 @@ export type Database = {
           video_embed_url: string | null
           reading_time_min: number | null
           view_count: number
+          topic_category: string | null
           published_at: string | null
           created_at: string
           updated_at: string
@@ -475,6 +476,7 @@ export type Database = {
           video_embed_url?: string | null
           reading_time_min?: number | null
           view_count?: number
+          topic_category?: string | null
           published_at?: string | null
           created_at?: string
           updated_at?: string
@@ -491,6 +493,7 @@ export type Database = {
           is_featured?: boolean
           video_embed_url?: string | null
           reading_time_min?: number | null
+          topic_category?: string | null
           published_at?: string | null
           updated_at?: string
         }
