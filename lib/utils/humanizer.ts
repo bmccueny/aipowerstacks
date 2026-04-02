@@ -382,6 +382,8 @@ export function deterministicFixes(html: string): string {
   result = removeMetaCommentary(result)
   result = removeEmDashes(result)
   result = breakParallelStructure(result)
+  // Convert markdown bold that LLM may have introduced
+  result = result.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
   // Clean up empty paragraphs left behind
   result = result.replace(/<p>\s*<\/p>/g, '')
   return result
