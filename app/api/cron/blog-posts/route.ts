@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { generateCoverImage } from '@/lib/utils/generateCoverImage'
 import { addInternalLinks } from '@/lib/utils/blog-internal-links'
+import { humanize } from '@/lib/utils/humanizer'
 import { BLOG_CLUSTERS, type BlogCluster } from '@/lib/constants/clusters'
 
 /* ── Editor personas (same as editor-reviews) ─────────────────────────────── */
@@ -843,56 +844,6 @@ Respond in EXACTLY this JSON format (no extra text before or after):
 
 /* ── Post-processing helpers ───────────────────────────────────────────────── */
 
-/** Second-pass humanization: catch AI patterns the generation prompt missed */
-async function humanizePass(content: string, googleApiKey: string): Promise<string> {
-  const prompt = `You are a ruthless editor removing AI writing patterns. Rewrite this blog post HTML to sound like a real human wrote it.
-
-KILL THESE PATTERNS:
-1. PERFORMATIVE OPENERS: "Hey folks", "Fellow humans", "[Name] here", "Buckle up", "Picture this" — replace with the actual point
-2. META-COMMENTARY: "I know what you're thinking", "Stay with me", "Bear with me", "(just kidding)" — delete entirely
-3. STACKED ADJECTIVES: "the swirling, delightful, and utterly bewildering" — pick ONE or use none
-4. FORMULAIC TRANSITIONS: "But here's the thing:", "What most people don't realize is...", "Here's where it gets interesting:" — just make the next point
-5. MANUFACTURED ENTHUSIASM: "genuinely mind bending!", "absolutely blown away" — express excitement through specific details instead
-6. FAKE ANECDOTES: "I tried this last week and was surprised..." with no specifics — add a concrete detail (version number, UI element, date) or remove
-7. IDENTICAL PARAGRAPH STRUCTURE: if 3+ paragraphs follow the same pattern, vary them
-
-STRICT RULES:
-- KEEP all <a href="..."> links exactly as they are
-- KEEP all <table> content intact
-- KEEP all <h2> and <h3> headers (you may slightly rephrase if they sound AI-generated)
-- KEEP all facts, tool names, pricing data, statistics
-- KEEP the same number of sections and topics
-- Output MUST be valid HTML
-- Do NOT wrap in markdown code blocks
-
-Return ONLY the transformed HTML.`
-
-  const res = await fetch(
-    `${GEMINI_BASE_URL}/models/gemini-2.5-flash:generateContent?key=${googleApiKey}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: `${prompt}\n\n${content}` }] }],
-        generationConfig: { temperature: 0.7, maxOutputTokens: 16000 },
-      }),
-      signal: AbortSignal.timeout(120_000),
-    },
-  )
-
-  if (!res.ok) return content
-
-  const data = await res.json()
-  let result = (data.candidates?.[0]?.content?.parts?.[0]?.text ?? '').trim()
-  result = result.replace(/^```(?:html)?\s*\n?/i, '').replace(/\n?```\s*$/i, '').trim()
-
-  // Safety checks
-  if (result.length < content.length * 0.7) return content
-  if (!result.includes('<h2') && content.includes('<h2')) return content
-
-  return result
-}
-
 /** Strip ALL dashes from display text (safety net for LLM output) */
 function stripDashes(text: string): string {
   return text
@@ -1013,8 +964,16 @@ export async function GET(request: Request) {
     post.excerpt = stripDashes(post.excerpt)
     post.content = stripDashes(post.content)
 
-    // 7b. Second-pass humanization: catch AI patterns the generation prompt missed
-    post.content = await humanizePass(post.content, process.env.GOOGLE_API_KEY!)
+    // 7b. Multi-pass humanization: deterministic fixes + metrics-driven LLM rewrite
+    const humanized = await humanize(
+      post.content,
+      post.title,
+      post.excerpt,
+      process.env.GOOGLE_API_KEY!,
+    )
+    post.content = humanized.content
+    post.title = humanized.title
+    post.excerpt = humanized.excerpt
 
     // Ensure at least one cluster tag is present
     if (!post.tags.some((t) => cluster.tags.includes(t))) {
@@ -1058,6 +1017,13 @@ export async function GET(request: Request) {
         slot,
         status: error ? `db error: ${error.message}` : postStatus,
         qualityIssues: quality.reasons.length > 0 ? quality.reasons : undefined,
+        humanization: {
+          scoreBefore: humanized.before.score,
+          scoreAfter: humanized.after.score,
+          passes: humanized.passes,
+          sentenceVariance: humanized.after.sentenceLengthStdDev,
+          formulaicTransitions: humanized.after.formulaicTransitions,
+        },
         sources: { reddit: postReddit.length, youtube: postYoutube.length, twitter: postTwitter.length, transcripts: ytTranscripts.size },
       },
     })
