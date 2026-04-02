@@ -185,16 +185,24 @@ export function analyzeContent(html: string): HumanizeMetrics {
     if (matches) missingApostrophes += matches.length
   }
 
+  // Count em-dashes (major AI fingerprint)
+  const emDashCount = (text.match(/[\u2014\u2013]|(\s--\s)/g) ?? []).length
+
+  // Count rhetorical questions (humans use these, AI rarely does)
+  const rhetoricalQuestions = (text.match(/\?\s/g) ?? []).length
+
   // Composite score (0-100, higher = more human)
-  let score = 50
+  let score = 45
   score += Math.min(15, (sentenceLengthStdDev - 4) * 3)     // reward high variance
   score += Math.min(10, shortSentenceRatio * 50)              // reward short sentences
   score += Math.min(10, longSentenceRatio * 50)               // reward long sentences
   score += Math.min(10, (paragraphLengthVariance - 1) * 5)   // reward varied paragraphs
+  score += Math.min(8, rhetoricalQuestions * 2)                // reward questions
   score -= startsWithSameWord * 3                              // penalize same-start
-  score -= formulaicTransitions * 4                            // penalize formulaic transitions
-  score -= bannedWords * 2                                     // penalize AI words
+  score -= formulaicTransitions * 5                            // penalize formulaic transitions
+  score -= bannedWords * 3                                     // penalize AI words
   score -= missingApostrophes * 1                              // penalize missing apostrophes
+  score -= emDashCount * 2                                     // penalize em-dashes
   score = Math.max(0, Math.min(100, Math.round(score)))
 
   return {
@@ -285,12 +293,44 @@ function removeMetaCommentary(html: string): string {
   return parts.join('')
 }
 
+/** Remove em-dashes — one of the biggest AI fingerprints per GPTZero */
+function removeEmDashes(html: string): string {
+  const parts = html.split(/(<[^>]+>)/)
+  for (let i = 0; i < parts.length; i++) {
+    if (i % 2 === 1) continue
+    // Em dash → comma or period
+    parts[i] = parts[i].replace(/\s*\u2014\s*/g, '. ')
+    parts[i] = parts[i].replace(/\s*\u2013\s*/g, ', ')
+    parts[i] = parts[i].replace(/\s*--\s*/g, '. ')
+    // Fix double periods
+    parts[i] = parts[i].replace(/\.\.\s/g, '. ')
+  }
+  return parts.join('')
+}
+
+/** Remove overly balanced list structures (a, b, and c patterns) that flag as AI */
+function breakParallelStructure(html: string): string {
+  const parts = html.split(/(<[^>]+>)/)
+  for (let i = 0; i < parts.length; i++) {
+    if (i % 2 === 1) continue
+    // "X, Y, and Z" three-item lists with identical structure → vary
+    // Detect: "adjective noun, adjective noun, and adjective noun"
+    parts[i] = parts[i].replace(
+      /(\w+) (\w+), (\w+) (\w+), and (\w+) (\w+)/g,
+      (_, a1, n1, a2, n2, a3, n3) => `${a1} ${n1}, ${a2} ${n2}. And ${a3} ${n3}`
+    )
+  }
+  return parts.join('')
+}
+
 export function deterministicFixes(html: string): string {
   let result = html
   result = fixApostrophesHtml(result)
   result = removeBannedWords(result)
   result = removePerformativeOpeners(result)
   result = removeMetaCommentary(result)
+  result = removeEmDashes(result)
+  result = breakParallelStructure(result)
   // Clean up empty paragraphs left behind
   result = result.replace(/<p>\s*<\/p>/g, '')
   return result
@@ -343,33 +383,52 @@ function buildRewritePrompt(metrics: HumanizeMetrics): string {
     )
   }
 
-  return `You are a human editor. Your job is to rewrite this blog post so it passes AI detection tools.
+  return `You are rewriting a blog post to defeat AI detectors. This is a technical task, not creative writing.
 
-AI DETECTORS WORK BY MEASURING:
-1. PERPLEXITY: How predictable the next word is. AI text is very predictable. Human text has surprises.
-2. BURSTINESS: Humans write in bursts — short punchy sentences mixed with long rambling ones. AI keeps sentences uniform.
-3. STRUCTURAL REPETITION: AI repeats the same paragraph structure. Humans are messy and inconsistent.
+HOW AI DETECTORS ACTUALLY WORK (from GPTZero's own documentation):
+- PERPLEXITY: They run each sentence through a language model and measure how predictable each word is. "The sky is blue" = low perplexity (AI-like). "The sky is remembering the rain we never had" = high perplexity (human-like). A perplexity score above 85 per sentence reads as human.
+- BURSTINESS: They measure the VARIANCE of perplexity across all sentences. Humans naturally write some very predictable sentences AND some very unpredictable ones. AI keeps perplexity uniform throughout. HIGH burstiness = human.
+- The key insight: you need BOTH boring predictable sentences AND weird surprising ones. The MIX is what reads as human, not consistently "creative" writing.
 
-SPECIFIC ISSUES TO FIX IN THIS POST:
-${issues.length > 0 ? issues.map((iss, i) => `${i + 1}. ${iss}`).join('\n') : 'No specific structural issues detected — focus on reducing predictability.'}
+SPECIFIC METRICS TO FIX:
+${issues.length > 0 ? issues.map((iss, i) => `${i + 1}. ${iss}`).join('\n') : 'Metrics pass thresholds but content may still feel AI-generated. Focus on increasing perplexity variance.'}
 
-REWRITE RULES:
-- VARY SENTENCE LENGTH DRAMATICALLY. Aim for a mix: "No." (1 word), "That changes things." (3 words), then a 30-word sentence with subclauses. The standard deviation of sentence lengths should be above 8 words.
-- ADD SENTENCE FRAGMENTS. Real people write fragments. On purpose. Especially for emphasis.
-- BREAK PARAGRAPH PATTERNS. If you see three paragraphs in a row with the same structure (topic → explanation → example), restructure at least one. Start mid-thought. Combine two short paragraphs. Split a long one unexpectedly.
-- USE UNEXPECTED WORD CHOICES. Instead of "significant" use "wild" or "weird" or "ridiculous". Instead of "demonstrates" use "shows" or "proves" or just cut it.
-- START SENTENCES WITH CONJUNCTIONS: "And", "But", "So", "Or". Real writers do this constantly.
-- ADD SPECIFICITY THAT CREATES SURPRISE. Exact version numbers, specific dates, named UI elements, precise dollar amounts. These lower perplexity because detectors don't expect them.
-- LEAVE SOME IMPERFECTIONS. A comma splice here. A sentence that ends abruptly. A thought that continues across two paragraphs without a clean break.
+TECHNIQUES THAT ACTUALLY BEAT DETECTORS (from testing):
 
-ABSOLUTE RULES (violating these = rejection):
-- KEEP all <a href="..."> links with exact same URLs and link text
-- KEEP all <table>, <thead>, <tbody>, <tr>, <td>, <th> content identical
-- KEEP all <h2> and <h3> text (minor rephrasing OK if it sounds AI-generated)
-- KEEP all factual claims, tool names, pricing, statistics
-- KEEP approximately the same word count (within 15%)
-- Output valid HTML only — no markdown, no code fences, no commentary
-- Do NOT add sections, disclaimers, or conclusions that weren't in the original
+1. WORD-LEVEL SURPRISE: Replace the most predictable word in a sentence with something unexpected but still correct. "This is a significant improvement" → "This is a ridiculous improvement". "The tool provides excellent results" → "The tool produces weirdly good results". One unexpected word per 2-3 sentences raises perplexity dramatically.
+
+2. SENTENCE RHYTHM (BURSTINESS): Write some sentences that are dead simple and boring. Then immediately follow with a long, winding sentence that goes on a tangent. The CONTRAST is what matters.
+   Bad (uniform): "The model is fast. The accuracy is high. The pricing is fair."
+   Good (bursty): "Fast. Like, unreasonably fast for what you're paying, which is $20 a month if you go annual, though honestly the monthly plan isn't much worse."
+
+3. RHETORICAL QUESTIONS: Scatter 3-5 throughout the post. "Why does this matter?" "Who actually uses this?" "Sound familiar?" These create structural unpredictability.
+
+4. IDIOMS AND CULTURAL REFERENCES: Use 2-3 per post. "That's like bringing a knife to a gunfight." "This is the Toyota Corolla of AI tools — boring, reliable, gets the job done." AI models rarely produce these naturally.
+
+5. INTERRUPTED THOUGHTS: Start a point, abandon it, start a new one. "The pricing is — actually, let me talk about the free tier first, because that's where most people start."
+
+6. DELIBERATE IMPERFECTIONS:
+   - Start 2-3 sentences with "And" or "But" or "So"
+   - Use a comma splice once: "The tool is good, it just costs too much"
+   - End a paragraph abruptly without wrapping up the thought
+   - Use "like" as filler once: "It's like, really hard to explain"
+
+7. SPECIFIC DETAILS THAT CREATE SURPRISE: Instead of "the interface is intuitive", write "there's a blue dropdown in the top-left that took me 3 clicks to find". Detectors don't expect arbitrary specifics.
+
+8. VARY PARAGRAPH STRUCTURE:
+   - One paragraph should be a single sentence
+   - One should be 5+ sentences
+   - One should start mid-thought (no topic sentence)
+   - One should be a question
+
+ABSOLUTE RULES (violating = rejection):
+- KEEP all <a href="..."> links with exact URLs and link text
+- KEEP all <table> content identical
+- KEEP all <h2> and <h3> headers (minor rephrasing OK)
+- KEEP all facts, tool names, pricing data, statistics
+- KEEP approximately same word count (within 15%)
+- Output valid HTML only — no markdown code fences
+- Do NOT add new sections or conclusions
 
 Return ONLY the rewritten HTML.`
 }
@@ -410,14 +469,14 @@ export async function llmRewrite(
 
 /* ── Full Pipeline ─────────────────────────────────────────────────────── */
 
-const PASSING_SCORE = 68
+const PASSING_SCORE = 75
 
 export async function humanize(
   content: string,
   title: string,
   excerpt: string,
   googleApiKey: string,
-  maxPasses = 2,
+  maxPasses = 3,
 ): Promise<HumanizeResult> {
   let current = content
   const before = analyzeContent(content)
