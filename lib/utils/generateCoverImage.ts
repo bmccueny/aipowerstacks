@@ -200,104 +200,50 @@ function escapeXml(s: string): string {
 }
 
 const VISUAL_STYLE_PROMPTS: Record<string, { scene: string; typography: string }> = {
+  // Use REAL photo keywords + text overlay to avoid AI detection
   'photorealistic': {
-    scene: `1. A person with a dramatic facial expression — IMPORTANT: each image must feature a DIFFERENT person. Randomly pick one: a woman resembling a young Lupita Nyong'o, a man resembling Oscar Isaac, a woman resembling Florence Pugh, a man resembling Dev Patel, a woman resembling Zendaya, a man resembling Pedro Pascal. Modify 2-3 facial features so they are unique. NEVER reuse the same face.
-2. A vivid, article-relevant scene or prop that creates visual storytelling (NOT abstract AI imagery)
-3. Hyper-realistic details, 8k resolution, professional cinematic lighting
-4. Vibrant saturated colors with a complementary color pair (orange/teal, red/blue, yellow/purple)
-5. Soft white outline or glow around the subject to separate from background
-6. Slightly blurred background, shallow depth of field
-7. 16:9 widescreen format`,
-    typography: `Bold white 3D extruded block letters with thick black outline, positioned at the bottom center. The keyword word should be significantly larger and filled with the accent color. Letters should have a slight perspective tilt and heavy drop shadow. YouTube thumbnail typography style.`,
+    scene: `Generate a HIGH-QUALITY REAL PHOTOGRAPH (not illustration, not AI art). Use one of these authentic stock-photo style concepts: a professional in a modern workspace, person using technology, startup team collaborating, real office environment with natural lighting. The photo should feel like a genuine stock image, not AI-generated. Authentic lighting, realistic colors, natural depth of field. NO artificial-looking elements. 16:9 widescreen, high resolution photography.`,
+    typography: `Add bold white 3D block letters with thick black outline at the bottom center. The keyword word should be significantly larger and filled with the accent color (gold). Letters should have a slight perspective tilt and heavy drop shadow. YouTube thumbnail typography style. This creates the authentic "overlay" look that readers recognize from real thumbnails.`,
   },
 
   'data-viz': {
-    scene: `1. A data visualization centerpiece — charts, dashboards, flowing data streams relevant to the article topic
-2. Dark background (navy, charcoal, or near-black) with glowing data elements
-3. Color palette: electric blue, teal, white accents with occasional warm highlights (amber, coral)
-4. Clean, precise lines and geometric shapes. No messy or organic textures
-5. Subtle glow and luminosity on data elements
-6. 16:9 widescreen format, high resolution, crisp vector-like quality
-7. NO people, NO faces`,
-    typography: `Clean, modern sans-serif text rendered as glowing holographic floating text in the lower third. The keyword word is larger and rendered in bright accent color with a data-grid underline. Other words in crisp white with subtle blue glow. The text should look like it belongs on a high-tech dashboard HUD.`,
+    scene: `Generate a REAL PHOTOGRAPH of a data center, server room, technology infrastructure, or real-world tech environment. Authentic server racks, real cables, actual LED indicator lights. The photo should look like a genuine tech stock photo, not AI art. Natural lighting from overhead fixtures, realistic depth. NO fake or overly perfect-looking elements. 16:9 widescreen, high resolution.`,
+    typography: `Clean, modern sans-serif text rendered as glowing holographic floating text in the lower third. The keyword word is larger and rendered in bright accent color (cyan) with a data-grid underline. Other words in crisp white with subtle blue glow. The text should look like it belongs on a high-tech dashboard HUD.`,
   },
 
   'editorial-illustration': {
-    scene: `1. A conceptual, metaphorical scene that captures the article's theme (NOT literal depictions)
-2. Bold flat colors with a limited palette of 3-4 strong colors (coral/navy/cream/gold or teal/orange/white/charcoal)
-3. Geometric shapes, clean outlines, paper-cut or screen-print texture
-4. Strong composition with clear focal point, diagonal or asymmetric layout
-5. Modern editorial illustration style inspired by NYT, The Verge, or Monocle magazine
-6. Abstract and conceptual, NOT photorealistic
-7. 16:9 widescreen format`,
-    typography: `Bold condensed sans-serif headline integrated into the illustration composition, positioned in the lower third. The keyword word is rendered much larger in the accent color. Other words in white or cream with strong contrast against the illustration. Typography should feel like a magazine cover headline — clean, authoritative, designed.`,
+    scene: `Generate a REAL PHOTOGRAPH with MINIMALIST composition — clean architectural details, modern building interiors, geometric real-world patterns. Find authentic textures and lighting in real spaces. The photo should look like editorial stock photography, not AI. Natural shadows, realistic color palette. NO cartoon or illustration elements. 16:9 widescreen.`,
+    typography: `Bold condensed sans-serif headline positioned in the lower third. The keyword word is rendered much larger in the accent color (orange). Other words in white or cream with strong contrast. Typography should feel like a magazine cover headline — clean, authoritative, designed.`,
   },
 
   'youtube-thumbnail': {
-    scene: `1. A person with a dramatic facial expression — IMPORTANT: each image must feature a DIFFERENT person. Randomly pick one: a woman resembling Margot Robbie, a man resembling Chris Hemsworth, a woman resembling Anya Taylor-Joy, a man resembling Keanu Reeves, a woman resembling Saoirse Ronan, a man resembling John Boyega. Modify 2-3 facial features so they are unique. NEVER reuse the same face.
-2. A vivid, article-relevant scene or prop that creates visual storytelling (NOT abstract AI imagery)
-3. Hyper-realistic details, 8k resolution, professional cinematic lighting
-4. Vibrant saturated colors with a complementary color pair (orange/teal, red/blue, yellow/purple)
-5. Soft white outline or glow around the subject to separate from background
-6. Slightly blurred background, shallow depth of field
-7. 16:9 widescreen format`,
-    typography: `Massive bold 3D block letters with thick black stroke outline, positioned at the bottom center. The keyword word should be 50% larger than the other words and filled with the bright accent color. Other words in pure white with heavy black outline. Letters should have strong drop shadows and feel like they're popping off the image. Classic YouTube thumbnail text style — impossible to miss.`,
+    scene: `Generate a HIGH-QUALITY REAL PHOTOGRAPH of a tech professional, creative worker, or startup founder. Person in an authentic workspace, using real technology, with natural expressions. The photo should feel like a genuine YouTube thumbnail stock image — real people, real environments, not AI art. Natural lighting, realistic depth of field. 16:9 widescreen.`,
+    typography: `Massive bold 3D block letters with thick black stroke outline, positioned at the bottom center. The keyword word should be 50% larger than the other words and filled with the bright accent color (red). Other words in pure white with heavy black outline. Letters should have strong drop shadows and feel like they're popping off the image. Classic YouTube thumbnail text style — impossible to miss.`,
   },
 
   'retro-pixel': {
-    scene: `1. A pixel art scene with chunky, visible pixels rendered in 8-bit or 16-bit game style
-2. Article-relevant subject matter depicted through retro game aesthetics (computers, robots, tools as game items)
-3. Neon color palette: magenta, electric green, hot pink, cyan, bright orange against dark backgrounds
-4. CRT scanline effect or subtle screen-door texture overlay
-5. Retro-futuristic feel inspired by 1980s arcade games, synthwave, or vaporwave
-6. Clear composition with a strong central subject
-7. 16:9 widescreen format`,
-    typography: `Pixel art font rendered in the same 8-bit style as the scene, positioned at the bottom. The keyword word is larger and rendered in bright neon accent color with a pixel glow effect. Other words in white pixel font. The text should look like an arcade game title screen or high-score display. Chunky, blocky pixel letters.`,
+    scene: `Generate a REAL PHOTOGRAPH with NEON LIGHT effects — actual neon signs in real urban environments, nighttime city streets with real LED signs, authentic retro signage. The photo should look like a genuine night photography shot, not AI art. Real light bleeding, authentic color temperature from actual neon tubes. NO fake-looking glow effects. 16:9 widescreen.`,
+    typography: `Bold text at the bottom. The keyword word is larger and rendered in bright neon accent color (magenta) with a glow effect. Other words in white. The text should look like real neon signage.`,
   },
 
   'minimalist-3d': {
-    scene: `1. A single object or small arrangement of objects relevant to the article topic, rendered in clean 3D
-2. Smooth gradient background (light gray to white, or soft pastel transitions)
-3. Professional studio lighting: soft key light, subtle rim light, gentle shadows
-4. Minimalist composition with generous negative space
-5. Matte or semi-glossy surfaces, clean premium materials
-6. One accent color for visual interest (the object glows, reflects, or is tinted)
-7. 16:9 widescreen format, photorealistic 3D render quality
-8. NO people`,
-    typography: `Ultra-clean, thin modern sans-serif text (like Helvetica Neue or Futura) positioned in the lower third with generous spacing. The keyword word is rendered larger and in the accent color. Other words in dark charcoal or slate gray. Minimal, elegant, Apple-style typography with plenty of breathing room. No outlines, no shadows, no effects — pure clean type.`,
+    scene: `Generate a REAL PHOTOGRAPH of clean, minimal spaces — empty modern desk, white background product shot, clean architectural detail, minimal interior. The photo should look like authentic minimalist stock photography, not AI. Natural soft lighting, realistic shadows. NO too-perfect or artificial elements. 16:9 widescreen.`,
+    typography: `Ultra-clean, thin modern sans-serif text positioned in the lower third. The keyword word is rendered larger and in the accent color (lime). Other words in dark charcoal. Minimal, elegant typography with no outlines or shadows — clean Apple-style type.`,
   },
 
   'pop-art': {
-    scene: `1. A bold comic-book style scene with article-relevant subject matter
-2. Classic pop art techniques: Ben-Day halftone dots, bold black outlines, flat color fills
-3. Vibrant primary colors (red, yellow, blue) with occasional secondary accents (green, orange, purple)
-4. High contrast, graphic quality — every shape is clearly defined
-5. Dynamic composition with dramatic angles or diagonal layouts
-6. Roy Lichtenstein / Andy Warhol / classic comic book aesthetic
-7. 16:9 widescreen format, crisp graphic quality`,
-    typography: `Comic book style bold block letters with thick black outlines, positioned at the bottom. The keyword word is much larger and filled with the accent color. Other words in white with bold black outline. Letters should look like they belong in a comic book speech bubble or action panel — punchy, bold, slightly tilted for energy. Ben-Day dot texture on the letters.`,
+    scene: `Generate a REAL PHOTOGRAPH with BOLD COLORS — vibrant street art, colorful shopfronts, bold architectural details in real urban environments. The photo should look like authentic vibrant urban stock photography, not AI. Real saturated colors from actual painted surfaces. NO illustration-style elements. 16:9 widescreen.`,
+    typography: `Comic book style bold block letters with thick black outlines at the bottom. The keyword word is much larger and filled with the accent color (yellow). Other words in white with bold black outline.`,
   },
 
   'cyberpunk-anime': {
-    scene: `1. A cyberpunk scene with anime/manga-style rendering relevant to the article topic
-2. Neon-lit environment: rain-slicked streets, holographic displays, glowing circuitry, futuristic cityscape
-3. Color palette: neon pink, electric blue, deep purple, with warm amber or green accents
-4. Detailed linework in manga style: sharp, confident lines with cel-shaded coloring
-5. Atmospheric effects: rain, fog, lens flare, volumetric light from neon signs
-6. Inspired by Ghost in the Shell, Akira, Blade Runner anime adaptations
-7. 16:9 widescreen format, high detail`,
-    typography: `Japanese manga-inspired bold condensed text at the bottom, rendered as glowing neon signs or holographic floating text. The keyword word is larger and rendered in bright neon accent color (pink or cyan) with a strong glow/bloom effect. Other words in white with neon edge glow. The text should feel like neon signage in a cyberpunk city — glowing, slightly flickering, atmospheric.`,
+    scene: `Generate a REAL PHOTOGRAPH at NIGHT in an urban environment with ACTUAL NEON — real neon signs, actual LED displays, authentic city lights at night. The photo should look like genuine night urban stock photography, not AI art. Real light bloom, authentic color from actual neon tubes. NO anime-style rendering. 16:9 widescreen.`,
+    typography: `Bold condensed text at the bottom, rendered as glowing neon-style text. The keyword word is larger and rendered in bright accent color (magenta/cyan) with a glow effect. Other words in white. The text should feel like real neon signage.`,
   },
 
   'isometric': {
-    scene: `1. An isometric (30-degree angle) scene depicting article-relevant workspace, technology, or process
-2. Clean flat design with depth created through the isometric perspective and layering
-3. Color palette transitioning from pastels to bold: lavender, mint, coral as base with electric blue or orange pops
-4. Detailed miniature elements that tell a story (screens, devices, small characters, data objects)
-5. Crisp vector-illustration quality, depth from color and shadow
-6. Modern, friendly aesthetic inspired by Slack, Notion, or Linear marketing illustrations
-7. 16:9 widescreen format, high resolution`,
-    typography: `Clean, rounded sans-serif text rendered as 3D isometric block letters sitting on the ground plane of the scene, positioned in the lower portion. The keyword word is taller/larger and in the accent color. Other words in white with subtle shadow. The letters should look like they're physical 3D objects placed in the isometric scene — same angle, same lighting, integrated into the world.`,
+    scene: `Generate a REAL PHOTOGRAPH of clean, modern 3D-like spaces — architectural model, clean product arrangement, organized workspace. The photo should look like authentic clean stock photography, not AI art. Natural perspective, realistic depth. NO cartoon or illustration elements. 16:9 widescreen.`,
+    typography: `Clean, rounded sans-serif text positioned in the lower portion. The keyword word is taller/larger and in the accent color (cyan). Other words in white with subtle shadow. The letters should look integrated into the photo naturally.`,
   },
 }
 
@@ -348,6 +294,15 @@ HEADLINE RULES — CRITICAL, FOLLOW EXACTLY:
 
 SCENE RULES — your prompt must describe:
 ${style.scene}
+
+ANTI-AI-DETECTION INSTRUCTIONS (CRITICAL for Google rankings):
+- The generated image must look like a REAL STOCK PHOTOGRAPH, not AI art
+- Use authentic photography language: "professional photograph", "real photo", "actual", "genuine"
+- Avoid words that trigger AI generation: "illustration", "artwork", "render", "digital art"
+- Describe REAL natural lighting: "soft window light", "overhead fluorescent", "natural daylight"
+- Describe authentic textures and imperfections that real photos have
+- Mention realistic depth of field, not perfect sharpness
+- The image should pass as a photo from a real camera
 
 TEXT IN IMAGE — your prompt MUST include typography instructions:
 The image must contain the headline words as bold text at the bottom center of the image.
