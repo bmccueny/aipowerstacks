@@ -1,13 +1,12 @@
 export function BrandMark({ className, variant = 'color' }: { className?: string; variant?: 'color' | 'dark' | 'white' }) {
-  const bg = variant === 'dark' ? '#000' : variant === 'white' ? '#fff' : 'oklch(0.62 0.23 22)'
-  // Bars: white on color/dark backgrounds, semi-transparent dark on white background
-  const bars = variant === 'white' ? 'rgba(0,0,0,0.15)' : 'rgba(255,255,255,0.90)'
+  const bg = variant === 'dark' ? '#1a1512' : variant === 'white' ? '#ffffff' : '#d4402b'
+  const bars = variant === 'color' ? '#1a1512' : variant === 'dark' ? '#ffffff' : 'rgba(0,0,0,0.15)'
   return (
-    <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-      <rect width="28" height="28" rx="7" fill={bg} />
-      <rect x="5" y="7" width="18" height="3.5" rx="1.75" fill={bars} />
-      <rect x="5" y="12.25" width="13" height="3.5" rx="1.75" fill={bars} />
-      <rect x="5" y="17.5" width="8" height="3.5" rx="1.75" fill={bars} />
+    <svg viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+      <rect width="512" height="512" rx="114" fill={bg} />
+      <rect x="91" y="128" width="330" height="64" rx="32" fill={bars} />
+      <rect x="91" y="224" width="238" height="64" rx="32" fill={bars} />
+      <rect x="91" y="320" width="146" height="64" rx="32" fill={bars} />
     </svg>
   )
 }
