@@ -30,6 +30,21 @@ const nextConfig: NextConfig = {
         destination: '/login',
         permanent: true,
       },
+      {
+        source: '/blog/ai-productivity',
+        destination: '/blog/productivity',
+        permanent: true,
+      },
+      {
+        source: '/blog/productivity-tools',
+        destination: '/blog/productivity',
+        permanent: true,
+      },
+      {
+        source: '/blog/ai-workflow',
+        destination: '/blog/productivity',
+        permanent: true,
+      },
     ]
   },
   images: {
