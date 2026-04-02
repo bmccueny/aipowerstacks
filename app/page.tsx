@@ -261,6 +261,7 @@ export default async function HomePage() {
                           src={news.image_url}
                           alt={news.title}
                           fill
+                          sizes="(max-width: 640px) 75vw, 33vw"
                           className="object-cover transition-transform duration-500 group-hover:scale-105"
                         />
                       </div>
