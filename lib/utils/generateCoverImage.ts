@@ -4,6 +4,7 @@ import { readFileSync } from 'fs'
 import { join } from 'path'
 
 const GEMINI_BASE_URL = 'https://generativelanguage.googleapis.com/v1beta'
+const XAI_BASE = 'https://api.x.ai/v1'
 
 // Embed font as base64 so it works on Vercel (no system fonts available)
 let antonFontBase64: string | null = null
@@ -350,44 +351,57 @@ Background scene behind the text: ${imagePrompt}`
     console.log(`Headline: "${headlineWords}" | Keyword: "${keyword}" | Color: ${accentColor}`)
     console.log(`Image prompt: ${finalImagePrompt.substring(0, 150)}...`)
 
-    // Step 2: Generate image with text via Gemini
+    // Step 2: Generate image via Grok Image (xAI)
     let sceneBuffer: Buffer | null = null
     const MAX_IMAGE_RETRIES = 3
 
     for (let attempt = 1; attempt <= MAX_IMAGE_RETRIES; attempt++) {
       try {
-        console.log(`Generating scene image with Gemini (attempt ${attempt}/${MAX_IMAGE_RETRIES})...`)
-        const geminiRes = await fetch(
-          `${GEMINI_BASE_URL}/models/gemini-3.1-flash-image-preview:generateContent?key=${googleApiKey}`,
+        console.log(`Generating scene image with Grok Image (attempt ${attempt}/${MAX_IMAGE_RETRIES})...`)
+        
+        const xaiKey = process.env.XAI_API_KEY
+        if (!xaiKey) {
+          console.error('XAI_API_KEY not set, falling back to text overlay')
+          break
+        }
+
+        const grokRes = await fetch(
+          `${XAI_BASE}/images/generations`,
           {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${xaiKey}`
+            },
             body: JSON.stringify({
-              contents: [{ parts: [{ text: finalImagePrompt }] }],
-              generationConfig: { responseModalities: ['TEXT', 'IMAGE'] },
+              model: 'grok-2-image',
+              prompt: finalImagePrompt,
+              n: 1
             }),
             signal: AbortSignal.timeout(90_000),
           }
         )
 
-        if (geminiRes.ok) {
-          const geminiData = await geminiRes.json()
-          for (const candidate of geminiData.candidates ?? []) {
-            for (const part of candidate.content?.parts ?? []) {
-              if (part.inlineData?.data) {
-                const imgBuffer = Buffer.from(part.inlineData.data, 'base64')
-                if (imgBuffer.length > 1000) {
-                  console.log(`Scene image generated: ${imgBuffer.length} bytes`)
-                  sceneBuffer = imgBuffer
-                  break
-                }
+        if (grokRes.ok) {
+          const grokData = await grokRes.json()
+          const imageUrl = grokData?.data?.[0]?.url
+          
+          if (imageUrl) {
+            console.log(`Image generated, downloading from: ${imageUrl.substring(0, 50)}...`)
+            
+            // Download the image
+            const imgRes = await fetch(imageUrl, { signal: AbortSignal.timeout(30_000) })
+            if (imgRes.ok) {
+              const imgBuffer = Buffer.from(await imgRes.arrayBuffer())
+              if (imgBuffer.length > 1000) {
+                console.log(`Scene image downloaded: ${imgBuffer.length} bytes`)
+                sceneBuffer = imgBuffer
               }
             }
-            if (sceneBuffer) break
           }
         } else {
-          const errBody = await geminiRes.text().catch(() => '')
-          console.error(`Gemini scene generation failed (${geminiRes.status}): ${errBody.slice(0, 200)}`)
+          const errBody = await grokRes.text().catch(() => '')
+          console.error(`Grok image generation failed (${grokRes.status}): ${errBody.slice(0, 200)}`)
         }
 
         if (sceneBuffer) break
@@ -397,8 +411,8 @@ Background scene behind the text: ${imagePrompt}`
           console.log(`No image data, retrying in ${delayMs / 1000}s...`)
           await new Promise(r => setTimeout(r, delayMs))
         }
-      } catch (geminiErr) {
-        console.error(`Gemini scene generation error (attempt ${attempt}):`, geminiErr)
+      } catch (grokErr) {
+        console.error(`Grok image generation error (attempt ${attempt}):`, grokErr)
         if (attempt < MAX_IMAGE_RETRIES) {
           const delayMs = attempt * 5_000
           await new Promise(r => setTimeout(r, delayMs))

@@ -39,12 +39,35 @@ export function generateOrganizationJsonLd() {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: 'AIPowerStacks',
+    alternateName: 'AI Power Stacks',
     url: SITE_URL,
     logo: `${SITE_URL}/logo.png`,
+    description: 'Discover and compare 420+ AI tools. Track your AI subscriptions, detect overlap, and stop overpaying. Daily updates with verified listings and real user reviews.',
+    foundingDate: '2024',
+    numberOfEmployees: {
+      '@type': 'QuantitativeValue',
+      minValue: 1,
+      maxValue: 10
+    },
+    areaServed: 'Worldwide',
+    serviceType: 'AI Tools Directory',
     sameAs: [
       'https://twitter.com/aipowerstacks',
       'https://www.linkedin.com/company/aipowerstacks',
+      'https://github.com/bmccueny/aipowerstacks',
+      'https://www.youtube.com/@AIPowerStacks'
     ],
+    contactPoint: {
+      '@type': 'ContactPoint',
+      contactType: 'customer service',
+      email: 'hello@aipowerstacks.com',
+      availableHours: 'Mo-Fr 09:00-18:00 America/New_York'
+    },
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: `${SITE_URL}/tools?search={search_term_string}`,
+      'query-input': 'required name=search_term_string'
+    }
   }
 }
 
