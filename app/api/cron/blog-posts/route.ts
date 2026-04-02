@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { generateCoverImage } from '@/lib/utils/generateCoverImage'
 import { addInternalLinks } from '@/lib/utils/blog-internal-links'
+import { BLOG_CLUSTERS, type BlogCluster } from '@/lib/constants/clusters'
 
 /* ── Editor personas (same as editor-reviews) ─────────────────────────────── */
 
@@ -176,6 +177,60 @@ const TOPIC_SOURCES: Record<string, {
 }
 
 const TOPIC_CATEGORIES = Object.keys(TOPIC_SOURCES)
+
+/* ── Cluster ↔ Topic mapping ─────────────────────────────────────────────── */
+
+const CLUSTER_TOPICS: Record<string, string[]> = {
+  'llm-comparison': ['AI Tools & Product Launches', 'AI Research & Breakthroughs'],
+  'ai-costs': ['AI for Business & Productivity', 'AI Tools & Product Launches'],
+  'ai-agents': ['AI for Business & Productivity', 'AI and the Future of Work'],
+  'productivity': ['AI for Business & Productivity', 'AI and the Future of Work', 'AI Tools & Product Launches'],
+  'local-ai': ['Local AI & Open Source Models', 'AI Coding & Developer Tools'],
+}
+
+/** Pick the cluster with the fewest posts in the last 14 days (not saturated at 5+) */
+async function pickThinnestCluster(supabase: ReturnType<typeof createAdminClient>): Promise<BlogCluster> {
+  const twoWeeksAgo = new Date(Date.now() - 14 * 86400000).toISOString()
+
+  const { data: recentPosts } = await supabase
+    .from('blog_posts')
+    .select('tags')
+    .eq('status', 'published')
+    .gte('published_at', twoWeeksAgo)
+
+  const clusterCounts = new Map<string, number>()
+  for (const cluster of BLOG_CLUSTERS) {
+    clusterCounts.set(cluster.slug, 0)
+  }
+
+  for (const post of recentPosts ?? []) {
+    const tags: string[] = post.tags ?? []
+    for (const cluster of BLOG_CLUSTERS) {
+      if (tags.some((t) => cluster.tags.includes(t))) {
+        clusterCounts.set(cluster.slug, (clusterCounts.get(cluster.slug) ?? 0) + 1)
+        break
+      }
+    }
+  }
+
+  // Sort clusters by count ascending, skip saturated (5+)
+  const eligible = BLOG_CLUSTERS
+    .map((c) => ({ cluster: c, count: clusterCounts.get(c.slug) ?? 0 }))
+    .filter((c) => c.count < 5)
+    .sort((a, b) => a.count - b.count)
+
+  // If all saturated, pick the one with fewest posts anyway
+  if (eligible.length === 0) {
+    return BLOG_CLUSTERS.reduce((min, c) =>
+      (clusterCounts.get(c.slug) ?? 0) < (clusterCounts.get(min.slug) ?? 0) ? c : min
+    )
+  }
+
+  // Pick randomly among the thinnest (ties)
+  const minCount = eligible[0].count
+  const thinnest = eligible.filter((c) => c.count === minCount)
+  return thinnest[Math.floor(Math.random() * thinnest.length)].cluster
+}
 
 /* ── Scraping helpers ──────────────────────────────────────────────────────── */
 
@@ -437,6 +492,116 @@ async function scrapeTwitter(queries: string[]): Promise<ScrapedItem[]> {
     .slice(0, 10)
 }
 
+/** Fetch first-party platform data for the chosen cluster */
+async function fetchPlatformData(
+  supabase: ReturnType<typeof createAdminClient>,
+  cluster: BlogCluster,
+): Promise<string> {
+  const parts: string[] = []
+
+  // Get tools in this cluster's use cases
+  const useCaseMap: Record<string, string[]> = {
+    'llm-comparison': ['chatbot', 'writing', 'research', 'coding'],
+    'ai-costs': ['productivity', 'writing', 'coding', 'marketing'],
+    'ai-agents': ['automation', 'productivity', 'coding'],
+    'productivity': ['productivity', 'writing', 'marketing', 'design'],
+    'local-ai': ['coding', 'research', 'chatbot'],
+  }
+  const useCases = useCaseMap[cluster.slug] ?? ['productivity']
+
+  // Tool pricing data
+  const { data: pricingData } = await supabase
+    .from('tool_pricing_tiers')
+    .select('tool_id, tier_name, monthly_price, annual_price, tools!inner(name, slug, use_case, pricing_model)')
+    .in('tools.use_case', useCases)
+    .order('monthly_price', { ascending: true })
+    .limit(30)
+
+  if (pricingData && pricingData.length > 0) {
+    const rows = pricingData.map((p) => {
+      const tool = p.tools as unknown as { name: string; slug: string; pricing_model: string }
+      return `${tool.name} | ${p.tier_name} | $${p.monthly_price}/mo | $${p.annual_price ?? 'N/A'}/yr | ${tool.pricing_model}`
+    })
+    parts.push(`REAL PRICING DATA FROM OUR PLATFORM (use this in comparison tables):\nTool | Tier | Monthly | Annual | Model\n${rows.join('\n')}`)
+  }
+
+  // Most tracked tools in relevant categories
+  const { data: trackedData } = await supabase
+    .from('user_subscriptions')
+    .select('tool_id, monthly_cost, tools!inner(name, slug, use_case)')
+    .in('tools.use_case', useCases)
+    .limit(100)
+
+  if (trackedData && trackedData.length > 0) {
+    const toolCounts = new Map<string, { name: string; count: number; totalCost: number }>()
+    for (const sub of trackedData) {
+      const tool = sub.tools as unknown as { name: string }
+      const existing = toolCounts.get(sub.tool_id)
+      if (existing) {
+        existing.count++
+        existing.totalCost += Number(sub.monthly_cost)
+      } else {
+        toolCounts.set(sub.tool_id, { name: tool.name, count: 1, totalCost: Number(sub.monthly_cost) })
+      }
+    }
+    const sorted = Array.from(toolCounts.values()).sort((a, b) => b.count - a.count).slice(0, 10)
+    const rows = sorted.map((t) => `${t.name}: tracked by ${t.count} users, avg $${Math.round(t.totalCost / t.count)}/mo`)
+    parts.push(`MOST TRACKED TOOLS IN THIS CATEGORY (from our user data):\n${rows.join('\n')}`)
+  }
+
+  // Tool overlap data
+  const { data: overlapTools } = await supabase
+    .from('tools')
+    .select('name, slug, use_case, pricing_model')
+    .eq('status', 'published')
+    .in('use_case', useCases)
+    .order('upvote_count', { ascending: false })
+    .limit(20)
+
+  if (overlapTools && overlapTools.length > 0) {
+    const byUseCase = new Map<string, string[]>()
+    for (const t of overlapTools) {
+      if (!t.use_case) continue
+      const list = byUseCase.get(t.use_case) ?? []
+      list.push(`${t.name} (${t.pricing_model})`)
+      byUseCase.set(t.use_case, list)
+    }
+    const rows = Array.from(byUseCase.entries()).map(([uc, tools]) => `${uc}: ${tools.join(', ')}`)
+    parts.push(`TOOL OVERLAP DATA (tools competing in same categories):\n${rows.join('\n')}`)
+  }
+
+  // Site stats
+  const { count: totalTools } = await supabase.from('tools').select('*', { count: 'exact', head: true }).eq('status', 'published')
+  parts.push(`SITE STATS: ${totalTools ?? 400}+ tools tracked on AIPowerStacks`)
+
+  return parts.join('\n\n')
+}
+
+/** Fetch recent posts in the same cluster for cross-linking */
+async function fetchClusterSiblings(
+  supabase: ReturnType<typeof createAdminClient>,
+  cluster: BlogCluster,
+  excludeSlug?: string,
+): Promise<{ title: string; slug: string }[]> {
+  const { data } = await supabase
+    .from('blog_posts')
+    .select('title, slug, tags')
+    .eq('status', 'published')
+    .order('published_at', { ascending: false })
+    .limit(50)
+
+  if (!data) return []
+
+  return data
+    .filter((p) => {
+      if (excludeSlug && p.slug === excludeSlug) return false
+      const tags: string[] = p.tags ?? []
+      return tags.some((t) => cluster.tags.includes(t))
+    })
+    .slice(0, 5)
+    .map((p) => ({ title: p.title, slug: p.slug }))
+}
+
 /** Scrape a URL via Jina Reader */
 async function scrapeUrl(url: string): Promise<string | null> {
   try {
@@ -502,10 +667,13 @@ function slugify(title: string): string {
 async function generateBlogPost(
   editor: { name: string; voice: string; beat: string; visualStyle: string },
   topic: string,
+  cluster: BlogCluster,
   redditItems: ScrapedItem[],
   youtubeItems: ScrapedItem[],
   twitterItems: ScrapedItem[],
   scrapedContent: string,
+  platformData: string,
+  siblingPosts: { title: string; slug: string }[],
 ): Promise<GeneratedPost> {
   const redditContext = redditItems
     .map((r) => `- [r/${r.subreddit}] "${r.title}" (score: ${r.score})${r.snippet ? `\n  ${r.snippet.slice(0, 200)}` : ''}`)
@@ -545,20 +713,32 @@ ${twitterContext || 'No Twitter data available today.'}
 == SCRAPED SOURCE CONTENT (for deeper context) ==
 ${scrapedContent || 'No additional scraped content available.'}
 
+== YOUR PLATFORM'S REAL DATA (MUST use in at least one comparison table) ==
+${platformData || 'No platform data available.'}
+
+== THIS POST IS PART OF THE "${cluster.label}" CONTENT CLUSTER ==
+This post belongs to our ${cluster.label} series. You MUST:
+- Write content that fits this cluster topic
+- Include at least ONE tag from this list: ${cluster.tags.join(', ')}
+- Reference and link to these related posts from our site where natural:
+${siblingPosts.length > 0 ? siblingPosts.map((p) => `  - <a href="/blog/${p.slug}">${p.title}</a>`).join('\n') : '  (No sibling posts yet — this is one of the first in the cluster)'}
+- Link to the cluster hub page: <a href="/blog/${cluster.slug}">${cluster.label} Guide</a>
+
 SEO REQUIREMENTS (CRITICAL — this post must rank on Google):
-1. TARGET KEYWORD: Pick ONE specific long-tail search query that people are actively Googling related to "${topic}". Examples: "best AI tools for [use case] 2026", "[tool] vs [tool] comparison", "how to use AI for [task]", "free AI [category] tools". The title MUST contain this keyword naturally.
+1. TARGET KEYWORD: Pick ONE specific long-tail search query that people are actively Googling related to "${topic}" within the "${cluster.label}" theme. Examples: "best AI tools for [use case] 2026", "[tool] vs [tool] comparison", "how to use AI for [task]", "free AI [category] tools". The title MUST contain this keyword naturally.
 2. Title must be under 60 characters for Google SERPs. Include the year (2026) when relevant. Use power words (best, free, guide, vs, how to).
 3. Write 1500 to 2500 words. This is NON-NEGOTIABLE. Short posts do not rank. Google's top results average 1,800 words. Include enough depth, examples, and analysis to fill this length naturally. Do NOT pad with filler. Add more sections, more comparisons, more practical advice.
 4. Structure with clear H2 headers that include secondary keywords. Google uses H2s for featured snippets.
-5. Include at least ONE comparison table, numbered list, or structured data section. These get rich snippets.
+5. Include at least ONE comparison table using REAL DATA from the platform data above. Do NOT make up numbers. Use the actual pricing, tracking counts, and tool names from our database. This is original data no other site has.
 6. The excerpt/meta description must be 150-160 characters, include the target keyword, and compel clicks.
 7. Include a FAQ-style section at the end with 2-3 questions people actually search for (use "People Also Ask" style questions as H3s with direct answers).
 8. Write in HTML format (use <h2>, <h3>, <p>, <ul>/<li>, <blockquote>, <strong>, <em>, <table> tags)
 9. Do NOT include <h1> (the title is rendered separately)
 10. Reference specific tools, projects, or discussions from the source material when relevant
-11. Include 3 to 5 relevant tags (lowercase, single words or hyphenated compounds)
+11. Include 3 to 5 relevant tags. At least ONE tag MUST be from this cluster's tag list: ${cluster.tags.join(', ')}
 12. Estimate reading time in minutes (typically 6 to 10 for 1500-2500 word posts)
-13. INTERNAL LINKING: When you mention a tool that exists on our site, link the FIRST mention using <a href="/tools/SLUG">Tool Name</a>. Include 4-6 tool links per article. Link to our compare page (/compare) or browse page (/tools) where natural. Only link tools from the list below.
+13. INTERNAL LINKING: When you mention a tool that exists on our site, link the FIRST mention using <a href="/tools/SLUG">Tool Name</a>. Include 4-6 tool links per article. Also include 1-2 links to related blog posts listed above. Link to our compare page (/compare) or browse page (/tools) where natural. Only link tools from the list below.
+14. Add a "Related in this series" section at the very end (after FAQs) with links to 2-3 sibling posts from the cluster.
 
 == TOOLS ON OUR SITE (name -> URL path) ==
 ${toolList}
@@ -674,7 +854,7 @@ function stripDashes(text: string): string {
 }
 
 /** Quality gate: check post meets minimum standards */
-function qualityCheck(post: GeneratedPost): { pass: boolean; reasons: string[] } {
+function qualityCheck(post: GeneratedPost, cluster: BlogCluster): { pass: boolean; reasons: string[] } {
   const reasons: string[] = []
   const wordCount = post.content.replace(/<[^>]+>/g, '').split(/\s+/).length
 
@@ -682,6 +862,9 @@ function qualityCheck(post: GeneratedPost): { pass: boolean; reasons: string[] }
   if (!post.content.includes('<h3')) reasons.push('Missing FAQ section (no H3 headers)')
   if (/[\u2014\u2013]|(\s-\s)|(--)/g.test(post.content)) reasons.push('Contains dashes after sanitization')
   if (post.tags.length < 3) reasons.push(`Fewer than 3 tags: ${post.tags.length}`)
+  if (!post.content.includes('<table')) reasons.push('Missing data table with real numbers')
+  if (!post.tags.some((t) => cluster.tags.includes(t))) reasons.push(`No cluster tag from: ${cluster.tags.join(', ')}`)
+  if (!post.content.includes('href="/blog/')) reasons.push('No cross-links to other blog posts')
 
   return { pass: reasons.length === 0, reasons }
 }
@@ -706,35 +889,35 @@ export async function GET(request: Request) {
 
   const supabase = createAdminClient()
 
-  // Editor rotation: exclude authors of last 3 posts to prevent repeats
+  // 1. Pick the thinnest cluster (fewest recent posts)
+  const cluster = await pickThinnestCluster(supabase)
+
+  // 2. Pick a topic within that cluster's mapped topics
+  const clusterTopics = CLUSTER_TOPICS[cluster.slug] ?? TOPIC_CATEGORIES
+  const topic = shuffle(clusterTopics)[0]
+  const topicConfig = TOPIC_SOURCES[topic]
+
+  // 3. Editor rotation: exclude authors of last 3 posts
   const { data: recentPosts } = await supabase
     .from('blog_posts')
-    .select('author_id, topic_category')
+    .select('author_id')
     .eq('status', 'published')
     .order('published_at', { ascending: false })
     .limit(3)
 
   const recentAuthorIds = new Set((recentPosts ?? []).map((p) => p.author_id))
-  const recentTopics = new Set(
-    (recentPosts ?? [])
-      .slice(0, 2)
-      .map((p) => p.topic_category)
-      .filter((t): t is string => t != null),
-  )
-
   const allEditors = Object.entries(EDITORS).map(([name, e]) => ({ name, ...e }))
   const eligibleEditors = allEditors.filter((e) => !recentAuthorIds.has(e.id))
   const editor = shuffle(eligibleEditors.length > 0 ? eligibleEditors : allEditors)[0]
 
-  const eligibleTopics = TOPIC_CATEGORIES.filter((t) => !recentTopics.has(t))
-  const topic = shuffle(eligibleTopics.length > 0 ? eligibleTopics : TOPIC_CATEGORIES)[0]
-  const topicConfig = TOPIC_SOURCES[topic]
-
   try {
-    const [postReddit, youtubeResult, postTwitter] = await Promise.all([
+    // 4. Scrape sources + fetch platform data + sibling posts in parallel
+    const [postReddit, youtubeResult, postTwitter, platformData, siblingPosts] = await Promise.all([
       scrapeReddit(topicConfig.subreddits),
       scrapeYouTube(topicConfig.ytdlpQueries, topicConfig.ytSearches),
       scrapeTwitter(topicConfig.twitterQueries),
+      fetchPlatformData(supabase, cluster),
+      fetchClusterSiblings(supabase, cluster),
     ])
     const { items: postYoutube, transcripts: ytTranscripts } = youtubeResult
 
@@ -743,10 +926,11 @@ export async function GET(request: Request) {
       return NextResponse.json({
         ok: true,
         published: 0,
-        result: { editor: editor.name, topic, slot, status: 'skipped: no source material' },
+        result: { editor: editor.name, topic, cluster: cluster.slug, slot, status: 'skipped: no source material' },
       })
     }
 
+    // 5. Scrape top URLs for deeper context
     const topUrls = [
       ...postReddit.slice(0, 1).map((r) => r.url),
       ...postYoutube.slice(0, 1).map((y) => y.url),
@@ -756,30 +940,39 @@ export async function GET(request: Request) {
       .filter(Boolean)
       .map((c, idx) => `--- Web Source ${idx + 1} ---\n${c}`)
 
-    for (const [url, transcript] of ytTranscripts) {
-      const video = postYoutube.find((y) => y.url === url)
+    for (const [ytUrl, transcript] of ytTranscripts) {
+      const video = postYoutube.find((y) => y.url === ytUrl)
       scrapedParts.push(`--- YouTube Transcript: "${video?.title ?? 'Unknown'}" ---\n${transcript}`)
     }
 
+    // 6. Generate with cluster context, platform data, and sibling links
     const post = await generateBlogPost(
       editor,
       topic,
+      cluster,
       postReddit,
       postYoutube,
       postTwitter,
       scrapedParts.join('\n\n'),
+      platformData,
+      siblingPosts,
     )
 
-    // Sanitize dashes from all display text (not slugs)
+    // 7. Post-process
     post.title = stripDashes(post.title)
     post.excerpt = stripDashes(post.excerpt)
     post.content = stripDashes(post.content)
 
-    // Post-process: catch any tool mentions the AI prompt missed
+    // Ensure at least one cluster tag is present
+    if (!post.tags.some((t) => cluster.tags.includes(t))) {
+      post.tags.unshift(cluster.tags[0])
+    }
+
+    // Catch any tool mentions the AI prompt missed
     const linkedContent = await addInternalLinks(post.content)
 
-    // Quality gate: failed posts go to draft
-    const quality = qualityCheck(post)
+    // 8. Quality gate
+    const quality = qualityCheck(post, cluster)
     const postStatus = quality.pass ? 'published' : 'draft'
 
     const { error } = await supabase.from('blog_posts').upsert(
@@ -808,6 +1001,7 @@ export async function GET(request: Request) {
         title: post.title,
         slug: post.slug,
         topic,
+        cluster: cluster.slug,
         slot,
         status: error ? `db error: ${error.message}` : postStatus,
         qualityIssues: quality.reasons.length > 0 ? quality.reasons : undefined,
@@ -819,7 +1013,7 @@ export async function GET(request: Request) {
     return NextResponse.json({
       ok: false,
       published: 0,
-      result: { editor: editor.name, topic, slot, status: `error: ${msg.slice(0, 200)}` },
+      result: { editor: editor.name, topic, cluster: cluster.slug, slot, status: `error: ${msg.slice(0, 200)}` },
     }, { status: 500 })
   }
 }
