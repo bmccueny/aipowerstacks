@@ -57,12 +57,19 @@ SEO RULES:
 TOOLS ON OUR SITE:
 ${toolList.substring(0, 3000)}
 
-WRITING STYLE:
+WRITING STYLE - CRITICAL FOR AVOIDING AI DETECTION:
+- Write like you're explaining to a friend, not a journalist
 - First person, opinionated, conversational
-- No em dashes or semicolons
-- Strong hook opening
-- Personal experience and specific examples
-- Honest about limitations
+- Use contractions: "don't", "can't", "it's", "I'm"
+- Add hedging words naturally: "I think", "might be", "in my experience"
+- Mix sentence lengths - add short punchy sentences for emphasis
+- Include a specific personal story or experience (invent one if needed)
+- Add a "hot take" or opinion that some might disagree with
+- Use casual language: "honestly", "actually", "basically", "stuff", "things"
+- NO em dashes or semicolons
+- NO perfect structure - slightly imperfect is better
+- Strong hook opening - grab attention in first sentence
+- Be honest about limitations and what didn't work
 
 FORMATTING:
 - HTML only (h2, h3, p, ul/li, table, blockquote, strong, em, a)
