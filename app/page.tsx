@@ -64,10 +64,10 @@ export default async function HomePage() {
             <h1 className="text-[clamp(2.25rem,5vw,3.75rem)] font-extrabold tracking-tight text-foreground mb-4 leading-[1.08] sm:leading-[1.1]">
               How much is AI{' '}<br className="hidden sm:block" />costing you?
             </h1>
-            <p className="text-lg sm:text-xl text-muted-foreground/70 max-w-lg mx-auto leading-relaxed">
+            <p className="text-lg sm:text-xl text-muted-foreground max-w-lg mx-auto leading-relaxed">
               Track your AI subscriptions. See what overlaps. Cut what you don&apos;t need.
             </p>
-            <p className="mt-3 text-xs sm:text-sm text-muted-foreground/50 font-medium">
+            <p className="mt-3 text-xs sm:text-sm text-muted-foreground font-medium">
               {siteStats.toolCount}+ tools tracked · Updated daily · Free to use
             </p>
           </div>
@@ -249,9 +249,9 @@ export default async function HomePage() {
                       <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
                         {news.source_name}
                       </span>
-                      <h4 className="font-bold text-sm leading-snug line-clamp-2 group-hover:text-primary transition-colors">
+                      <h3 className="font-bold text-sm leading-snug line-clamp-2 group-hover:text-primary transition-colors">
                         {news.title}
-                      </h4>
+                      </h3>
                       <span className="text-xs text-muted-foreground">
                         {new Date(news.published_at).toLocaleDateString('en-US', {
                           month: 'short',
