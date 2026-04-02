@@ -10,14 +10,14 @@ const CostCalculator = dynamic(() => import('@/components/home/CostCalculator').
 import { OverlapTeaser } from '@/components/home/OverlapTeaser'
 import { CompareProvider } from '@/lib/context/CompareContext'
 import { CompareTray } from '@/components/tools/CompareTray'
-import { getSiteStats, getMostTrackedTools, getOverlapExamples } from '@/lib/supabase/queries/tools'
-import { getLatestPosts } from '@/lib/supabase/queries/blog'
-import { getAllCategories } from '@/lib/supabase/queries/categories'
+import { getHomepageData } from '@/lib/supabase/queries/homepage'
 
 import { SocialProofBar } from '@/components/home/SocialProofBar'
 import { JsonLd } from '@/components/common/JsonLd'
 import { SITE_URL } from '@/lib/constants/site'
-import { createClient } from '@/lib/supabase/server'
+import { AuthCTALink } from '@/components/home/AuthCTALink'
+
+export const revalidate = 60
 
 export const metadata = {
   title: 'AIPowerStacks | Track Your AI Spend & Stop Overpaying',
@@ -28,29 +28,7 @@ export const metadata = {
 }
 
 export default async function HomePage() {
-  const supabase = await createClient()
-  let user = null
-  try {
-    const { data } = await supabase.auth.getUser()
-    user = data?.user ?? null
-  } catch {
-    // Corrupted auth cookie
-  }
-
-  const calcToolsQuery = supabase
-    .from('tools')
-    .select('id, name, slug, logo_url, pricing_model')
-    .eq('status', 'published')
-    .order('name')
-
-  const [siteStats, mostTracked, overlaps, latestPosts, calcToolsResult, categories] = await Promise.all([
-    getSiteStats(),
-    getMostTrackedTools(8),
-    getOverlapExamples(),
-    getLatestPosts(3),
-    calcToolsQuery,
-    getAllCategories(),
-  ])
+  const { siteStats, mostTracked, overlaps, latestPosts, calcTools, categories } = await getHomepageData()
 
   const briefingItems = latestPosts
     .filter((post) => post.published_at)
@@ -58,7 +36,7 @@ export default async function HomePage() {
       id: post.id,
       title: post.title,
       url: `/blog/${post.slug}`,
-      source_name: post.author?.display_name ?? 'AIPowerStacks',
+      source_name: post.author_display_name ?? 'AIPowerStacks',
       image_url: post.cover_image_url,
       published_at: post.published_at ?? new Date().toISOString(),
     }))
@@ -95,7 +73,7 @@ export default async function HomePage() {
             </p>
           </div>
 
-          <CostCalculator tools={(calcToolsResult.data || []).map(t => ({ id: t.id, name: t.name, slug: t.slug, logo_url: t.logo_url, pricing_model: t.pricing_model }))} isLoggedIn={!!user} />
+          <CostCalculator tools={calcTools} />
         </section>
 
         {/* ═══ Social Proof Bar ═══ */}
@@ -191,12 +169,12 @@ export default async function HomePage() {
                 exactly where to cut — you make the call.
               </p>
               <div className="flex flex-col sm:flex-row justify-center gap-3">
-                <Link href={user ? '/tracker' : '/login?redirectTo=/tracker'} className="w-full sm:w-auto">
+                <AuthCTALink fallbackHref="/login?redirectTo=/tracker" authHref="/tracker" className="w-full sm:w-auto">
                   <Button size="lg" className="btn-glow font-bold gap-2 w-full sm:w-auto h-12 px-8 text-base">
                     Track My AI Spend
                     <ArrowRight className="h-4 w-4" />
                   </Button>
-                </Link>
+                </AuthCTALink>
                 <Link href="/compare" className="w-full sm:w-auto">
                   <Button size="lg" variant="outline" className="font-bold border-foreground/15 w-full sm:w-auto h-12 px-8">
                     Compare Tools
