@@ -14,7 +14,7 @@ export function OverlapTeaser({ overlaps }: { overlaps: OverlapCategory[] }) {
   return (
     <section className="px-4 max-w-3xl mx-auto w-full">
       <div className="text-center mb-8">
-        <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber-500 mb-3">Overlap Alert</p>
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber-700 mb-3">Overlap Alert</p>
         <h2 className="text-xl sm:text-2xl font-black text-foreground">
           Are you paying twice for the same thing?
         </h2>
