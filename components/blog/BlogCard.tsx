@@ -69,7 +69,7 @@ export function BlogCard({ post, featured = false, variant }: { post: BlogPostSu
         <div className="override grid h-full overflow-hidden rounded-lg brutalist-card-effect burn-glow-card no-underline lg:grid-cols-2">
           {coverImageUrl ? (
             <div className="relative aspect-[16/9] lg:aspect-auto lg:min-h-[320px] shrink-0">
-              <Image src={coverImageUrl} alt={post.title} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className="object-cover" />
+              <Image src={coverImageUrl} alt={post.title} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" priority className="object-cover" />
             </div>
           ) : (
             <div className="aspect-[16/9] lg:aspect-auto lg:min-h-[320px] shrink-0 bg-gradient-to-br from-primary/10 to-amber-100 flex items-center justify-center">

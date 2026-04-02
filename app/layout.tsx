@@ -7,7 +7,7 @@ import { SpeedInsights } from '@vercel/speed-insights/react'
 
 const inter = Inter({
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700', '800'],
+  weight: ['700', '800'],
   variable: '--font-display',
   display: 'swap',
 })

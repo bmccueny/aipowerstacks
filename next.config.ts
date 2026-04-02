@@ -45,12 +45,25 @@ const nextConfig: NextConfig = {
         destination: '/blog/productivity',
         permanent: true,
       },
+      // Deduplicate cannibalized blog posts
+      {
+        source: '/blog/chatgpt-vs-claude-vs-gemini-2026-mn510n2r',
+        destination: '/blog/chatgpt-vs-claude-vs-gemini-2026',
+        permanent: true,
+      },
+      {
+        source: '/blog/best-ai-tools-for-developers-in-2026-mn75hxcl',
+        destination: '/blog/best-ai-coding-tools-for-developers-in-2026-mn8jz90o',
+        permanent: true,
+      },
     ]
   },
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: '**' },
     ],
+    deviceSizes: [640, 828, 1080, 1200],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256],
   },
 }
 

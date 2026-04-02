@@ -20,12 +20,15 @@ export type BlogPostSummary = {
   } | null
 }
 
-export type BlogPostFull = BlogPostSummary & {
+export type BlogPostFull = Omit<BlogPostSummary, 'author'> & {
   content: string
   is_featured: boolean
   video_embed_url: string | null
   created_at: string
   updated_at: string
+  author: (BlogPostSummary['author'] & {
+    social_links?: { platform: string; url: string }[] | null
+  }) | null
 }
 
 export async function getPublishedPosts(page = 1, category?: string) {
@@ -81,7 +84,7 @@ export async function getBlogPostBySlug(slug: string) {
   // Fetch author
   const { data: author } = await supabase
     .from('profiles')
-    .select('display_name, username, avatar_url, bio')
+    .select('display_name, username, avatar_url, bio, social_links')
     .eq('id', post.author_id)
     .single()
 
@@ -130,6 +133,61 @@ export async function getLatestPosts(limit = 3): Promise<BlogPostSummary[]> {
   if (!dataRaw) return []
   const posts = dataRaw.map(p => ({ ...p, author: null })) as BlogPostSummary[]
 
+  const authorIds = Array.from(new Set(posts.map(p => p.author_id).filter(Boolean)))
+  if (authorIds.length > 0) {
+    const { data: authors } = await supabase
+      .from('profiles')
+      .select('id, display_name, username, avatar_url, bio')
+      .in('id', authorIds)
+
+    if (authors) {
+      const authorMap = new Map(authors.map(a => [a.id, a]))
+      posts.forEach(p => {
+        p.author = authorMap.get(p.author_id) || null
+      })
+    }
+  }
+
+  return posts
+}
+
+export async function getRelatedPosts(
+  currentSlug: string,
+  tags: string[],
+  limit = 3
+): Promise<BlogPostSummary[]> {
+  const supabase = await createClient()
+
+  // Try tag-based matches first
+  let posts: BlogPostSummary[] = []
+  if (tags.length > 0) {
+    const { data } = await supabase
+      .from('blog_posts')
+      .select('id, title, slug, excerpt, cover_image_url, tags, reading_time_min, published_at, view_count, author_id')
+      .eq('status', 'published')
+      .neq('slug', currentSlug)
+      .overlaps('tags', tags)
+      .order('published_at', { ascending: false })
+      .limit(limit)
+
+    posts = (data ?? []).map(p => ({ ...p, author: null })) as BlogPostSummary[]
+  }
+
+  // Fall back to latest posts if not enough tag matches
+  if (posts.length < limit) {
+    const existingSlugs = [currentSlug, ...posts.map(p => p.slug)]
+    const { data } = await supabase
+      .from('blog_posts')
+      .select('id, title, slug, excerpt, cover_image_url, tags, reading_time_min, published_at, view_count, author_id')
+      .eq('status', 'published')
+      .not('slug', 'in', `(${existingSlugs.join(',')})`)
+      .order('published_at', { ascending: false })
+      .limit(limit - posts.length)
+
+    posts = [...posts, ...(data ?? []).map(p => ({ ...p, author: null })) as BlogPostSummary[]]
+  }
+
+  // Fetch authors
   const authorIds = Array.from(new Set(posts.map(p => p.author_id).filter(Boolean)))
   if (authorIds.length > 0) {
     const { data: authors } = await supabase

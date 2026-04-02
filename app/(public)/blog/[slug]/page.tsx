@@ -4,7 +4,7 @@ import sanitizeHtml from 'sanitize-html'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { Calendar, Clock, ArrowLeft } from 'lucide-react'
-import { getBlogPostBySlug, getPublishedPosts } from '@/lib/supabase/queries/blog'
+import { getBlogPostBySlug, getRelatedPosts } from '@/lib/supabase/queries/blog'
 import { JsonLd } from '@/components/common/JsonLd'
 import { BlogCard } from '@/components/blog/BlogCard'
 import { NewsletterBanner } from '@/components/layout/NewsletterBanner'
@@ -12,6 +12,7 @@ import { ReadingProgressBar } from '@/components/blog/ReadingProgressBar'
 import { TableOfContents } from '@/components/blog/TableOfContents'
 import { FacebookIcon, LinkedInIcon, XIcon } from '@/components/common/SocialIcons'
 import { SITE_URL } from '@/lib/constants/site'
+import { findCluster } from '@/lib/constants/clusters'
 import { normalizeThumUrl } from '@/lib/utils/url'
 import { injectHeadingIds } from '@/lib/utils/heading-ids'
 
@@ -76,8 +77,8 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   const post = await getBlogPostBySlug(slug)
   if (!post) notFound()
 
-  const { posts } = await getPublishedPosts(1)
-  const relatedPosts = posts.filter((candidate) => candidate.slug !== post.slug).slice(0, 3)
+  const relatedPosts = await getRelatedPosts(post.slug, post.tags ?? [], 3)
+  const cluster = findCluster(post.tags ?? [])
   const coverImageUrl = normalizeThumUrl(post.cover_image_url)
   const postUrl = `${SITE_URL}/blog/${post.slug}`
   const encodedPostUrl = encodeURIComponent(postUrl)
@@ -139,7 +140,10 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       '@type': 'Person',
       name: authorName,
       description: authorBio,
-      url: `${SITE_URL}/blog`,
+      url: post.author?.username ? `${SITE_URL}/curators/${post.author.username}` : `${SITE_URL}/blog`,
+      ...(post.author?.social_links?.length && {
+        sameAs: post.author.social_links.map((l: { platform: string; url: string }) => l.url),
+      }),
     },
     publisher: {
       '@type': 'Organization',
@@ -149,14 +153,20 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     },
   }
 
+  const breadcrumbItems = [
+    { '@type': 'ListItem' as const, position: 1, name: 'Home', item: SITE_URL },
+    { '@type': 'ListItem' as const, position: 2, name: 'Blog', item: `${SITE_URL}/blog` },
+  ]
+  if (cluster) {
+    breadcrumbItems.push({ '@type': 'ListItem', position: 3, name: cluster.label, item: `${SITE_URL}/blog/${cluster.slug}` })
+    breadcrumbItems.push({ '@type': 'ListItem', position: 4, name: post.title, item: `${SITE_URL}/blog/${post.slug}` })
+  } else {
+    breadcrumbItems.push({ '@type': 'ListItem', position: 3, name: post.title, item: `${SITE_URL}/blog/${post.slug}` })
+  }
   const breadcrumbLd = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
-    itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
-      { '@type': 'ListItem', position: 2, name: 'Blog', item: `${SITE_URL}/blog` },
-      { '@type': 'ListItem', position: 3, name: post.title, item: `${SITE_URL}/blog/${post.slug}` },
-    ],
+    itemListElement: breadcrumbItems,
   }
 
   const faqLd = faqItems.length > 0 ? {
@@ -173,16 +183,26 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       <ReadingProgressBar />
 
       <article className="page-shell max-w-7xl mx-auto">
-        {/* Back link */}
-        <Link href="/blog" className="inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors mb-6">
-          <ArrowLeft className="h-4 w-4" />
-          Back to all posts
-        </Link>
+        {/* Breadcrumb nav */}
+        <nav className="flex items-center gap-1.5 text-sm text-muted-foreground mb-6" aria-label="Breadcrumb">
+          <Link href="/blog" className="inline-flex items-center gap-1.5 font-semibold hover:text-foreground transition-colors">
+            <ArrowLeft className="h-4 w-4" />
+            Blog
+          </Link>
+          {cluster && (
+            <>
+              <span className="text-border">/</span>
+              <Link href={`/blog/${cluster.slug}`} className="font-semibold hover:text-primary transition-colors">
+                {cluster.label}
+              </Link>
+            </>
+          )}
+        </nav>
 
         {/* Cover image — responsive: full on mobile, gentle cinematic crop on desktop */}
         {coverImageUrl && (
           <div className="relative aspect-video lg:aspect-[2/1] rounded-2xl overflow-hidden mb-8">
-            <Image src={coverImageUrl} alt={post.title} fill unoptimized className="object-cover object-top" />
+            <Image src={coverImageUrl} alt={post.title} fill unoptimized priority className="object-cover object-top" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
           </div>
         )}
@@ -196,7 +216,12 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
               {/* Header */}
               <div className="p-8 sm:p-10 pb-0">
                 <div className="flex flex-wrap items-center gap-3 mb-5">
-                  {post.tags?.[0] && (
+                  {cluster && (
+                    <Link href={`/blog/${cluster.slug}`} className="gum-pill px-3 py-1 text-xs font-bold uppercase tracking-wider text-primary hover:bg-primary/10 transition-colors">
+                      {cluster.label}
+                    </Link>
+                  )}
+                  {post.tags?.[0] && !cluster && (
                     <span className="gum-pill px-3 py-1 text-xs font-bold uppercase tracking-wider text-primary">
                       {post.tags[0]}
                     </span>
@@ -293,15 +318,17 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                     prose-headings:font-black prose-headings:tracking-tight prose-headings:text-foreground
                     prose-h2:text-2xl sm:prose-h2:text-3xl prose-h2:mt-14 prose-h2:mb-5 prose-h2:pb-3 prose-h2:border-b prose-h2:border-border/30
                     prose-h3:text-xl prose-h3:mt-10 prose-h3:mb-4
-                    prose-p:text-[1.125rem] prose-p:leading-[1.75]
+                    prose-p:text-[1.125rem] prose-p:leading-[1.75] prose-p:break-words
                     prose-li:text-foreground/80 prose-li:leading-relaxed
-                    prose-a:text-primary prose-a:font-semibold prose-a:underline prose-a:decoration-primary/30 prose-a:underline-offset-4 hover:prose-a:decoration-primary/60 prose-a:transition-colors
-                    prose-img:rounded-xl prose-img:border prose-img:border-border/20
+                    prose-a:text-primary prose-a:font-semibold prose-a:underline prose-a:decoration-primary/30 prose-a:underline-offset-4 hover:prose-a:decoration-primary/60 prose-a:transition-colors prose-a:break-words
+                    prose-img:rounded-xl prose-img:border prose-img:border-border/20 prose-img:max-w-full prose-img:h-auto
                     prose-strong:text-foreground prose-strong:font-bold
-                    prose-code:text-primary prose-code:bg-primary/5 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:font-mono
-                    prose-table:block prose-table:overflow-x-auto prose-table:whitespace-nowrap sm:prose-table:table sm:prose-table:whitespace-normal
+                    prose-code:text-primary prose-code:bg-primary/5 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:font-mono prose-code:break-all
+                    prose-pre:overflow-x-auto prose-pre:max-w-full prose-pre:rounded-xl prose-pre:border prose-pre:border-border/20
+                    prose-table:block prose-table:overflow-x-auto prose-table:max-w-full sm:prose-table:table
                     prose-th:px-3 prose-th:py-2 prose-th:text-left prose-th:text-sm prose-th:font-bold
-                    prose-td:px-3 prose-td:py-2 prose-td:text-sm prose-td:border-t prose-td:border-border/20"
+                    prose-td:px-3 prose-td:py-2 prose-td:text-sm prose-td:border-t prose-td:border-border/20
+                    [&_pre]:!max-w-full [&_pre]:!overflow-x-auto [&_pre_code]:break-normal [&_pre_code]:whitespace-pre"
                   dangerouslySetInnerHTML={{ __html: safeContent }}
                 />
 
