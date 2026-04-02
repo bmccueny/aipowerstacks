@@ -62,17 +62,19 @@ async function overlayTextOnImage(
   const words = headlineWords.trim().toUpperCase()
   if (!words) return Buffer.from(imageBuffer)
 
-  const img = sharp(Buffer.from(imageBuffer))
-  const metadata = await img.metadata()
-  const w = metadata.width || 1280
-  const h = metadata.height || 720
+  // Force 16:9 @ 1280x720 — crop from center if source is square/different ratio
+  const TARGET_W = 1280
+  const TARGET_H = 720
+  const img = sharp(Buffer.from(imageBuffer)).resize(TARGET_W, TARGET_H, { fit: 'cover', position: 'centre' })
+  const w = TARGET_W
+  const h = TARGET_H
 
   const accent = ACCENT_COLORS[accentColor.toLowerCase()] || ACCENT_COLORS.yellow
   const kw = keyword.trim().toUpperCase()
-  const padding = Math.round(w * 0.06)
+  const padding = Math.round(w * 0.05)
   const maxTextWidth = w - padding * 2
   const charWidth = 0.67 // Anton is a wide display font
-  const kwScale = 1.35 // keyword rendered this much bigger
+  const kwScale = 1.5 // keyword rendered 50% bigger per thumbnail rules
 
   // Calculate total "effective characters" accounting for keyword being bigger
   const kwUpper = kw
@@ -83,10 +85,10 @@ async function overlayTextOnImage(
   const gapCount = (otherChars > 0 && kwChars > 0) ? (words.split(kwUpper).filter(Boolean).length) : 0
   const gapWidthInChars = gapCount * 0.5
 
-  // Size font to fit within maxTextWidth, then shrink until it actually fits
-  const maxFontSize = Math.round(w * 0.08)
+  // Size font to fill width — YouTube thumbnail style demands BIG text
+  const maxFontSize = Math.round(w * 0.14)
   let baseFontSize = Math.min(maxFontSize, Math.round(maxTextWidth / ((effectiveChars + gapWidthInChars) * charWidth)))
-  baseFontSize = Math.max(baseFontSize, Math.round(w * 0.03))
+  baseFontSize = Math.max(baseFontSize, Math.round(w * 0.06))
   let bigFontSize = Math.round(baseFontSize * kwScale)
 
   // Safety clamp: verify total pixel width fits, shrink if not
@@ -149,6 +151,10 @@ async function overlayTextOnImage(
           font-style: normal;
         }
       </style>
+      <linearGradient id="text-bg" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="black" stop-opacity="0"/>
+        <stop offset="100%" stop-color="black" stop-opacity="0.7"/>
+      </linearGradient>
       <filter id="wm-shadow" x="-10%" y="-10%" width="120%" height="120%">
         <feDropShadow dx="1" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.5"/>
       </filter>
@@ -156,6 +162,7 @@ async function overlayTextOnImage(
         <feDropShadow dx="3" dy="5" stdDeviation="4" flood-color="#000" flood-opacity="1"/>
       </filter>
     </defs>
+    <rect x="0" y="${Math.round(h * 0.55)}" width="${w}" height="${Math.round(h * 0.45)}" fill="url(#text-bg)"/>
     ${watermark}
     <g transform="rotate(${tiltDeg} ${padding} ${y})">
       ${svgText}
@@ -343,13 +350,13 @@ SCENE RULES — your prompt must describe:
 ${style.scene}
 
 TEXT IN IMAGE — your prompt MUST include typography instructions:
-The image must contain ONLY the headline words as text, rendered as part of the artwork.
+The image must contain the headline words as bold text at the bottom center of the image.
 ${style.typography}
-The headline text must be clearly readable, properly spelled, and visually integrated.
+LEGIBILITY IS CRITICAL: text must be clearly readable at mobile thumbnail sizes. Ensure HIGH CONTRAST between text and background. Place text over a darker or simpler region. The keyword word must be at least 50% larger than the other words and filled with the accent color. Heavy black stroke/outline around ALL letters. Strong drop shadow. Letters must be properly spelled with no artifacts or garbled characters.
 No other text, labels, UI elements, watermarks, or captions — ONLY the headline words.
 
 Reply with ONLY the two lines. Nothing else.` }] }],
-          generationConfig: { temperature: 0.9, maxOutputTokens: 600 },
+          generationConfig: { temperature: 0.9, maxOutputTokens: 2048 },
         }),
         signal: AbortSignal.timeout(30_000),
       },
@@ -379,56 +386,95 @@ Reply with ONLY the two lines. Nothing else.` }] }],
       return null
     }
 
+    // Build final prompt with text as the PRIMARY instruction (Gemini prioritizes early instructions)
+    const accent = ACCENT_COLORS[accentColor.toLowerCase()] || ACCENT_COLORS.yellow
+    const finalImagePrompt = `Generate a WIDE 16:9 landscape image (wider than tall, like a YouTube thumbnail). The image must contain the bold text "${headlineWords}" as a large headline in the LOWER THIRD of the image (not at the very bottom edge — leave margin). The word "${keyword}" must be much bigger (50% larger) and colored ${accentColor}. Other words in white. All text must have thick black outlines and drop shadows for maximum readability. The text must be perfectly spelled with zero garbled characters. The text should occupy roughly 25-35% of the image height.
+
+Background scene behind the text: ${imagePrompt}`
+
     console.log(`Headline: "${headlineWords}" | Keyword: "${keyword}" | Color: ${accentColor}`)
-    console.log(`Image prompt: ${imagePrompt.substring(0, 120)}...`)
+    console.log(`Image prompt: ${finalImagePrompt.substring(0, 150)}...`)
 
-    // Step 2: Generate image with Gemini
-    let finalBuffer: Buffer | null = null
+    // Step 2: Generate image with text via Gemini
+    let sceneBuffer: Buffer | null = null
+    const MAX_IMAGE_RETRIES = 3
 
-    try {
-      console.log('Generating image with Gemini...')
-      const geminiRes = await fetch(
-        `${GEMINI_BASE_URL}/models/gemini-2.5-flash-image:generateContent?key=${googleApiKey}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: imagePrompt }] }],
-            generationConfig: { responseModalities: ['TEXT', 'IMAGE'] },
-          }),
-          signal: AbortSignal.timeout(90_000),
-        }
-      )
+    for (let attempt = 1; attempt <= MAX_IMAGE_RETRIES; attempt++) {
+      try {
+        console.log(`Generating scene image with Gemini (attempt ${attempt}/${MAX_IMAGE_RETRIES})...`)
+        const geminiRes = await fetch(
+          `${GEMINI_BASE_URL}/models/gemini-3.1-flash-image-preview:generateContent?key=${googleApiKey}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: finalImagePrompt }] }],
+              generationConfig: { responseModalities: ['TEXT', 'IMAGE'] },
+            }),
+            signal: AbortSignal.timeout(90_000),
+          }
+        )
 
-      if (geminiRes.ok) {
-        const geminiData = await geminiRes.json()
-        for (const candidate of geminiData.candidates ?? []) {
-          for (const part of candidate.content?.parts ?? []) {
-            if (part.inlineData?.data) {
-              const imgBuffer = Buffer.from(part.inlineData.data, 'base64')
-              if (imgBuffer.length > 1000) {
-                console.log(`Gemini image generated: ${imgBuffer.length} bytes`)
-                finalBuffer = await overlayWatermark(imgBuffer.buffer as ArrayBuffer)
-                break
+        if (geminiRes.ok) {
+          const geminiData = await geminiRes.json()
+          for (const candidate of geminiData.candidates ?? []) {
+            for (const part of candidate.content?.parts ?? []) {
+              if (part.inlineData?.data) {
+                const imgBuffer = Buffer.from(part.inlineData.data, 'base64')
+                if (imgBuffer.length > 1000) {
+                  console.log(`Scene image generated: ${imgBuffer.length} bytes`)
+                  sceneBuffer = imgBuffer
+                  break
+                }
               }
             }
+            if (sceneBuffer) break
           }
-          if (finalBuffer) break
+        } else {
+          const errBody = await geminiRes.text().catch(() => '')
+          console.error(`Gemini scene generation failed (${geminiRes.status}): ${errBody.slice(0, 200)}`)
         }
-      } else {
-        const errBody = await geminiRes.text().catch(() => '')
-        console.error(`Gemini image generation failed (${geminiRes.status}): ${errBody.slice(0, 200)}`)
-        return null
+
+        if (sceneBuffer) break
+
+        if (attempt < MAX_IMAGE_RETRIES) {
+          const delayMs = attempt * 5_000
+          console.log(`No image data, retrying in ${delayMs / 1000}s...`)
+          await new Promise(r => setTimeout(r, delayMs))
+        }
+      } catch (geminiErr) {
+        console.error(`Gemini scene generation error (attempt ${attempt}):`, geminiErr)
+        if (attempt < MAX_IMAGE_RETRIES) {
+          const delayMs = attempt * 5_000
+          await new Promise(r => setTimeout(r, delayMs))
+        }
       }
-    } catch (geminiErr) {
-      console.error('Gemini image generation error:', geminiErr)
-      return null
     }
 
-    if (!finalBuffer) {
-      console.error('No image data received from Gemini')
-      return null
+    if (!sceneBuffer) {
+      console.warn('Scene generation failed after all retries, generating fallback...')
+      try {
+        const fallbackBg = await sharp({
+          create: { width: 1280, height: 720, channels: 4, background: { r: 26, g: 26, b: 46, alpha: 1 } }
+        }).jpeg().toBuffer()
+        const finalBuffer = await overlayTextOnImage(fallbackBg.buffer as ArrayBuffer, headlineWords, keyword, accentColor)
+        console.log('Fallback cover generated with Sharp text overlay')
+        const filename = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').substring(0, 50) + '-' + Date.now()
+        return uploadToSupabaseStorage(finalBuffer, filename)
+      } catch (fallbackErr) {
+        console.error('Fallback cover generation failed:', fallbackErr)
+        return null
+      }
     }
+
+    // Step 3: Resize to 16:9 and add watermark (text already in Gemini image)
+    const resizedBuffer = await sharp(sceneBuffer)
+      .resize(1280, 720, { fit: 'cover', position: 'centre' })
+      .jpeg({ quality: 92 })
+      .toBuffer()
+
+    const finalBuffer = await overlayWatermark(resizedBuffer.buffer as ArrayBuffer)
+    console.log('Resized to 16:9 + watermark applied')
 
     // Step 3: Upload to permanent storage
     const filename = title

@@ -83,7 +83,7 @@ export default async function HomePage() {
           </div>
 
           <div className="relative text-center mb-10 sm:mb-12 animate-fade-up">
-            <h1 className="text-[clamp(2.25rem,5vw,3.75rem)] font-semibold tracking-tight text-foreground mb-4 leading-[1.08] sm:leading-[1.1]">
+            <h1 className="text-[clamp(2.25rem,5vw,3.75rem)] font-extrabold tracking-tight text-foreground mb-4 leading-[1.08] sm:leading-[1.1]">
               How much is AI{' '}<br className="hidden sm:block" />costing you?
             </h1>
             <p className="text-lg sm:text-xl text-muted-foreground/70 max-w-lg mx-auto leading-relaxed">

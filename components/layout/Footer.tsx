@@ -42,8 +42,8 @@ export function Footer() {
           <div className="col-span-2 md:col-span-1">
             <Link href="/" className="inline-flex items-center gap-2 mb-4 hover:opacity-80 transition-opacity">
               <BrandMark className="h-5 w-5" />
-              <span className="font-display font-semibold text-[1.05rem] tracking-[-0.03em]">
-                <span className="text-primary">AI</span>PowerStacks
+              <span className="font-display text-[1.05rem] tracking-[-0.03em]">
+                <span className="text-primary font-extrabold">AI</span><span className="font-normal">PowerStacks</span>
               </span>
             </Link>
             <p className="text-sm text-muted-foreground max-w-xs leading-relaxed">

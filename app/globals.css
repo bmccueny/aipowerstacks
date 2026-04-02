@@ -64,7 +64,8 @@
 
 :root {
   color-scheme: light;
-  --font-geist-sans: "Inter", var(--font-display), system-ui, -apple-system, sans-serif;
+  /* Geist Sans is set by next/font via GeistSans.variable in layout.tsx — do not override */
+  /* Inter is available via var(--font-display) for editorial/display contexts */
   --font-geist-mono: "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --radius: 0.9rem;
   --background: #fafaf8;
@@ -84,7 +85,7 @@
   --muted-foreground: oklch(0.45 0.01 60);
   --accent: oklch(0.92 0.03 22);
   --accent-foreground: oklch(0.35 0.08 22);
-  --destructive: oklch(0.6 0.18 20);
+  --destructive: oklch(0.577 0.245 27.3); /* #DC2626 */
   --border: oklch(0.90 0.005 80);
   --input: oklch(0.99 0.002 80);
   --ring: oklch(0.55 0.20 15);
@@ -155,6 +156,19 @@
   h5,
   h6 {
     letter-spacing: -0.02em;
+  }
+
+  /* ─── Brand Typography Scale (brand-kit/guidelines/typography.svg) ─── */
+  h1 { font-size: 2.25rem; font-weight: 800; line-height: 1.15; }   /* 36px */
+  h2 { font-size: 1.75rem; font-weight: 700; line-height: 1.2; }    /* 28px */
+  h3 { font-size: 1.375rem; font-weight: 600; line-height: 1.3; }   /* 22px */
+  h4 { font-size: 1.0625rem; font-weight: 600; line-height: 1.4; }  /* 17px */
+
+  .text-body-sm { font-size: 0.875rem; font-weight: 400; line-height: 1.5; }   /* 14px */
+  .text-caption { font-size: 0.75rem; font-weight: 400; line-height: 1.5; }    /* 12px */
+  .text-label {
+    font-size: 0.6875rem; font-weight: 600; line-height: 1.3;                  /* 11px */
+    text-transform: uppercase; letter-spacing: 0.08em;
   }
 
   /* Accessible focus states for all interactive elements */
@@ -1307,7 +1321,7 @@ h1, h2, h3 { text-wrap: balance; }
   --muted-foreground: oklch(0.55 0.01 60);
   --accent: oklch(0.22 0.01 40);
   --accent-foreground: oklch(0.93 0.005 60);
-  --destructive: oklch(0.62 0.2 20);
+  --destructive: oklch(0.62 0.245 27.3); /* #DC2626 boosted for dark mode contrast */
   --border: oklch(0.26 0.008 40);
   --input: oklch(0.2 0.005 40);
   --ring: oklch(0.65 0.24 22 / 0.5);

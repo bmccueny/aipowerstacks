@@ -83,10 +83,9 @@ export function Navbar() {
       {/* Main Navbar */}
       <nav
         aria-label="Main navigation"
-        className="fixed top-0 w-screen z-50 bg-background/80 backdrop-blur-xl saturate-150 border-b border-white/15 dark:border-white/10 shadow-sm"
-        style={{ left: 0, right: 0, width: '100vw' }}
+        className="fixed top-0 left-0 right-0 w-full z-50 bg-background/80 backdrop-blur-xl saturate-150 border-b border-white/15 dark:border-white/10 shadow-sm"
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" style={{ width: '100%', maxWidth: '80rem' }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-14 min-w-0">
             {/* Logo */}
             <div className="flex items-center">
@@ -94,8 +93,8 @@ export function Navbar() {
                 <div className="relative">
                   <BrandMark className="h-8 w-8 transition-transform duration-200 group-hover:scale-110" />
                 </div>
-                <span className="text-lg font-semibold tracking-tight text-gray-900 dark:text-white hover:text-gray-700 dark:hover:text-gray-200 transition-colors duration-200">
-                  <span className="text-primary">AI</span>PowerStacks
+                <span className="text-lg tracking-tight text-gray-900 dark:text-white hover:text-gray-700 dark:hover:text-gray-200 transition-colors duration-200">
+                  <span className="text-primary font-extrabold">AI</span><span className="font-normal">PowerStacks</span>
                 </span>
               </Link>
             </div>

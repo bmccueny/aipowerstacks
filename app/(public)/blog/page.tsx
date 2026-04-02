@@ -38,7 +38,7 @@ export default async function BlogPage({
     <div className="page-shell">
       <JsonLd data={blogJsonLd} />
       <div className="text-center pt-4 pb-8">
-        <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight mb-2">AI news and briefings</h1>
+        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-2">AI news and briefings</h1>
         <p className="text-muted-foreground">What changed, why it matters, and what to do next.</p>
       </div>
 

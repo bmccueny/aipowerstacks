@@ -296,6 +296,22 @@ export async function GET(request: Request) {
 
         const excludeIds = (recentPostIds ?? []).map((r) => r.source_id).filter(Boolean)
 
+        // Priority: promote freshly published posts (last 3 hours) first
+        let freshQuery = supabase
+          .from('blog_posts')
+          .select('id, title, excerpt, slug, tags')
+          .eq('status', 'published')
+          .gte('published_at', new Date(Date.now() - 3 * 3600000).toISOString())
+          .order('published_at', { ascending: false })
+          .limit(5)
+
+        if (excludeIds.length > 0) {
+          freshQuery = freshQuery.not('id', 'in', `(${excludeIds.join(',')})`)
+        }
+
+        const { data: freshPosts } = await freshQuery
+
+        // Fallback: any recent post not yet promoted
         let query = supabase
           .from('blog_posts')
           .select('id, title, excerpt, slug, tags')
@@ -309,8 +325,10 @@ export async function GET(request: Request) {
 
         const { data: posts } = await query
 
-        if (posts && posts.length > 0) {
-          const post = posts[Math.floor(Math.random() * posts.length)]
+        const candidatePosts = (freshPosts && freshPosts.length > 0) ? freshPosts : posts
+
+        if (candidatePosts && candidatePosts.length > 0) {
+          const post = candidatePosts[Math.floor(Math.random() * candidatePosts.length)]
           content = await generateBlogPromo({
             title: post.title,
             excerpt: post.excerpt ?? '',

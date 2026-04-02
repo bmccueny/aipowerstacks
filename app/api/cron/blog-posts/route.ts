@@ -573,8 +573,7 @@ PERSONALITY AND EMOTIONAL TEXTURE:
 - Let your personality bleed through. You are not a neutral reporter, you are a columnist with taste and judgment.
 
 STRICT FORMATTING RULES:
-- NEVER use em dashes, en dashes, or spaced hyphens. No \u2014 \u2013 or " - " anywhere. Use commas, periods, or colons instead.
-- Hyphens ONLY allowed inside compound words (e.g. "open-source", "real-time"). Never as punctuation between clauses.
+- NEVER use hyphens, dashes, or any "-" character anywhere in your text. No em dashes (\u2014), en dashes (\u2013), hyphens (-), or double dashes (--). Write "open source" not "open-source", "real time" not "real-time", "well known" not "well-known". Use commas, periods, or colons for clause separation. This rule has ZERO exceptions.
 - NEVER use semicolons. Use periods or commas instead.
 - Write in a conversational but informed tone
 - No fluff, no filler, no "In this article we will discuss..."
@@ -650,9 +649,34 @@ Respond in EXACTLY this JSON format (no extra text before or after):
   }
 }
 
+/* ── Post-processing helpers ───────────────────────────────────────────────── */
+
+/** Strip ALL dashes from display text (safety net for LLM output) */
+function stripDashes(text: string): string {
+  return text
+    .replace(/\u2014/g, ', ')
+    .replace(/\u2013/g, ', ')
+    .replace(/\s*--\s*/g, ', ')
+    .replace(/(\w)-(\w)/g, '$1 $2')
+    .replace(/\s*-\s*/g, ' ')
+}
+
+/** Quality gate: check post meets minimum standards */
+function qualityCheck(post: GeneratedPost): { pass: boolean; reasons: string[] } {
+  const reasons: string[] = []
+  const wordCount = post.content.replace(/<[^>]+>/g, '').split(/\s+/).length
+
+  if (wordCount < 1500) reasons.push(`Word count too low: ${wordCount}`)
+  if (!post.content.includes('<h3')) reasons.push('Missing FAQ section (no H3 headers)')
+  if (/[\u2014\u2013]|(\s-\s)|(--)/g.test(post.content)) reasons.push('Contains dashes after sanitization')
+  if (post.tags.length < 3) reasons.push(`Fewer than 3 tags: ${post.tags.length}`)
+
+  return { pass: reasons.length === 0, reasons }
+}
+
 /* ── Route handler ─────────────────────────────────────────────────────────── */
 
-export const maxDuration = 300 // Allow up to 5 minutes for image generation
+export const maxDuration = 300
 
 export async function GET(request: Request) {
   const cronSecret = process.env.CRON_SECRET
@@ -665,11 +689,33 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'GOOGLE_API_KEY not set' }, { status: 500 })
   }
 
+  const url = new URL(request.url)
+  const slot = url.searchParams.get('slot') ?? 'morning'
+
   const supabase = createAdminClient()
 
-  // Single post per invocation to stay within Vercel timeout
-  const editor = pickRandomEditors(1)[0]
-  const topic = pickRandomTopics(1)[0]
+  // Editor rotation: exclude authors of last 3 posts to prevent repeats
+  const { data: recentPosts } = await supabase
+    .from('blog_posts')
+    .select('author_id, topic_category')
+    .eq('status', 'published')
+    .order('published_at', { ascending: false })
+    .limit(3)
+
+  const recentAuthorIds = new Set((recentPosts ?? []).map((p) => p.author_id))
+  const recentTopics = new Set(
+    (recentPosts ?? [])
+      .slice(0, 2)
+      .map((p) => p.topic_category)
+      .filter((t): t is string => t != null),
+  )
+
+  const allEditors = Object.entries(EDITORS).map(([name, e]) => ({ name, ...e }))
+  const eligibleEditors = allEditors.filter((e) => !recentAuthorIds.has(e.id))
+  const editor = shuffle(eligibleEditors.length > 0 ? eligibleEditors : allEditors)[0]
+
+  const eligibleTopics = TOPIC_CATEGORIES.filter((t) => !recentTopics.has(t))
+  const topic = shuffle(eligibleTopics.length > 0 ? eligibleTopics : TOPIC_CATEGORIES)[0]
   const topicConfig = TOPIC_SOURCES[topic]
 
   try {
@@ -685,7 +731,7 @@ export async function GET(request: Request) {
       return NextResponse.json({
         ok: true,
         published: 0,
-        result: { editor: editor.name, topic, status: 'skipped: no source material' },
+        result: { editor: editor.name, topic, slot, status: 'skipped: no source material' },
       })
     }
 
@@ -712,8 +758,17 @@ export async function GET(request: Request) {
       scrapedParts.join('\n\n'),
     )
 
+    // Sanitize dashes from all display text (not slugs)
+    post.title = stripDashes(post.title)
+    post.excerpt = stripDashes(post.excerpt)
+    post.content = stripDashes(post.content)
+
     // Post-process: catch any tool mentions the AI prompt missed
     const linkedContent = await addInternalLinks(post.content)
+
+    // Quality gate: failed posts go to draft
+    const quality = qualityCheck(post)
+    const postStatus = quality.pass ? 'published' : 'draft'
 
     const { error } = await supabase.from('blog_posts').upsert(
       {
@@ -724,9 +779,10 @@ export async function GET(request: Request) {
         cover_image_url: post.cover_image_url,
         author_id: editor.id,
         tags: post.tags,
-        status: 'published' as const,
+        status: postStatus as 'draft' | 'published',
         published_at: new Date().toISOString(),
         reading_time_min: post.reading_time_min,
+        topic_category: post.topic_category,
         is_featured: false,
       },
       { onConflict: 'slug' },
@@ -734,13 +790,15 @@ export async function GET(request: Request) {
 
     return NextResponse.json({
       ok: true,
-      published: error ? 0 : 1,
+      published: error ? 0 : (postStatus === 'published' ? 1 : 0),
       result: {
         editor: editor.name,
         title: post.title,
         slug: post.slug,
         topic,
-        status: error ? `db error: ${error.message}` : 'published',
+        slot,
+        status: error ? `db error: ${error.message}` : postStatus,
+        qualityIssues: quality.reasons.length > 0 ? quality.reasons : undefined,
         sources: { reddit: postReddit.length, youtube: postYoutube.length, twitter: postTwitter.length, transcripts: ytTranscripts.size },
       },
     })
@@ -749,7 +807,7 @@ export async function GET(request: Request) {
     return NextResponse.json({
       ok: false,
       published: 0,
-      result: { editor: editor.name, topic, status: `error: ${msg.slice(0, 200)}` },
+      result: { editor: editor.name, topic, slot, status: `error: ${msg.slice(0, 200)}` },
     }, { status: 500 })
   }
 }

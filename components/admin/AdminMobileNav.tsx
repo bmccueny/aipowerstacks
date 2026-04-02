@@ -43,7 +43,7 @@ export function AdminSidebar() {
       <div className="h-14 flex items-center px-4 border-b border-border/50 shrink-0">
         <Link href="/admin" className="flex items-center gap-2">
           <Sparkles className="h-5 w-5 text-primary" />
-          <span className="font-semibold text-sm">AIPowerStacks</span>
+          <span className="text-sm"><span className="font-extrabold">AI</span><span className="font-normal">PowerStacks</span></span>
         </Link>
       </div>
       <nav className="flex-1 overflow-y-auto py-2 px-2">
@@ -129,7 +129,7 @@ export function AdminMobileNav() {
         <div className="h-14 flex items-center px-4 border-b border-border/50 shrink-0">
           <Link href="/admin" className="flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-primary" />
-            <span className="font-semibold">AIPowerStacks Admin</span>
+            <span><span className="font-extrabold">AI</span><span className="font-normal">PowerStacks</span> Admin</span>
           </Link>
         </div>
 

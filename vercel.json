@@ -1,1 +1,26 @@
-{}
+{
+  "crons": [
+    { "path": "/api/cron/health-check",    "schedule": "0 5 * * *"    },
+    { "path": "/api/cron/review-spam",      "schedule": "15 3 * * *"   },
+    { "path": "/api/cron/benchmarks",       "schedule": "0 2 * * *"    },
+    { "path": "/api/cron/github-trending",  "schedule": "0 8 * * *"    },
+    { "path": "/api/cron/daily-stats",      "schedule": "0 23 * * *"   },
+    { "path": "/api/cron/featured-stack",   "schedule": "0 6 * * *"    },
+    { "path": "/api/cron/stale-tools",      "schedule": "0 4 * * *"    },
+    { "path": "/api/cron/editor-reviews",   "schedule": "0 9 * * *"    },
+    { "path": "/api/cron/blog-posts?slot=morning", "schedule": "0 12 * * *" },
+    { "path": "/api/cron/blog-posts?slot=evening", "schedule": "0 2 * * *"  },
+    { "path": "/api/cron/social-posts?slot=morning", "schedule": "0 13 * * *" },
+    { "path": "/api/cron/social-posts?slot=evening", "schedule": "0 3 * * *"  },
+    { "path": "/api/cron/newsletter",       "schedule": "0 9 * * 1"    },
+    { "path": "/api/cron/product-hunt",    "schedule": "0 11 * * *"   },
+    { "path": "/api/cron/billing-reminders", "schedule": "0 8 * * *"   },
+    { "path": "/api/cron/price-monitor",     "schedule": "0 3 * * *"   },
+    { "path": "/api/cron/weekly-checkin",    "schedule": "0 18 * * 0"  },
+    { "path": "/api/cron/monthly-snapshot",  "schedule": "0 6 1 * *"   },
+    { "path": "/api/cron/tool-changelog",    "schedule": "0 14 * * *"  },
+    { "path": "/api/cron/spend-report",      "schedule": "0 9 1 * *"   },
+    { "path": "/api/cron/price-alerts",     "schedule": "0 12 * * *"   },
+    { "path": "/api/cron/new-alternatives", "schedule": "0 12 * * *"   }
+  ]
+}

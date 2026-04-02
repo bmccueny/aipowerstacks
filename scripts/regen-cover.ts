@@ -6,22 +6,35 @@ import { generateCoverImage } from '../lib/utils/generateCoverImage'
 
 async function main() {
   const supabase = createAdminClient()
+  const slug = process.argv[2]
 
-  // Find March 21st posts
-  const { data: posts } = await supabase
-    .from('blog_posts')
-    .select('id, title, slug, excerpt, tags, cover_image_url, published_at')
-    .eq('status', 'published')
-    .gte('published_at', '2026-03-21T00:00:00')
-    .lte('published_at', '2026-03-22T00:00:00')
-    .order('published_at', { ascending: false })
+  // If slug provided, regenerate just that post; otherwise find all posts with null covers
+  let posts: { id: string; title: string; slug: string; excerpt: string | null; tags: string[] | null }[]
 
-  if (!posts || posts.length === 0) {
-    console.log('No posts found for March 21st')
+  if (slug) {
+    const { data, error } = await supabase
+      .from('blog_posts')
+      .select('id, title, slug, excerpt, tags')
+      .eq('slug', slug)
+      .single()
+    if (error || !data) { console.error('Post not found:', slug); process.exit(1) }
+    posts = [data]
+  } else {
+    const { data } = await supabase
+      .from('blog_posts')
+      .select('id, title, slug, excerpt, tags')
+      .eq('status', 'published')
+      .is('cover_image_url', null)
+      .order('published_at', { ascending: false })
+    posts = data ?? []
+  }
+
+  if (posts.length === 0) {
+    console.log('No posts need cover regeneration')
     return
   }
 
-  console.log(`Found ${posts.length} post(s) to regenerate:`)
+  console.log(`Regenerating covers for ${posts.length} post(s):`)
   for (const post of posts) {
     console.log(`  - "${post.title}" (${post.slug})`)
   }

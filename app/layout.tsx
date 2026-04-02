@@ -7,7 +7,7 @@ import { SpeedInsights } from '@vercel/speed-insights/react'
 
 const inter = Inter({
   subsets: ['latin'],
-  weight: ['400', '500', '600'],
+  weight: ['400', '500', '600', '700', '800'],
   variable: '--font-display',
   display: 'swap',
 })
@@ -116,7 +116,7 @@ export default function RootLayout({
           },
         }} />
       </head>
-      <body className="antialiased">
+      <body className="antialiased overflow-x-hidden">
         <div className="stars" aria-hidden="true" />
         <div className="nebula" aria-hidden="true" />
         <TwinklingStars />
