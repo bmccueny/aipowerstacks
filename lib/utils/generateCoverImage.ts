@@ -357,52 +357,20 @@ Background scene behind the text: ${imagePrompt}`
 
     for (let attempt = 1; attempt <= MAX_IMAGE_RETRIES; attempt++) {
       try {
-        console.log(`Generating scene image with Grok Image (attempt ${attempt}/${MAX_IMAGE_RETRIES})...`)
+        console.log(`Generating scene image with Gemini 3.1 Flash (attempt ${attempt}/${MAX_IMAGE_RETRIES})...`)
         
-        const xaiKey = process.env.XAI_API_KEY
-        if (!xaiKey) {
-          console.error('XAI_API_KEY not set, falling back to text overlay')
-          break
-        }
-
-        const grokRes = await fetch(
-          `${XAI_BASE}/images/generations`,
+        const geminiRes = await fetch(
+          `${GEMINI_BASE_URL}/models/gemini-3.1-flash-image-preview:generateContent?key=${googleApiKey}`,
           {
             method: 'POST',
-            headers: { 
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${xaiKey}`
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              model: 'grok-2-image',
-              prompt: finalImagePrompt,
-              n: 1
+              contents: [{ parts: [{ text: finalImagePrompt }] }],
+              generationConfig: { responseModalities: ['TEXT', 'IMAGE'] },
             }),
             signal: AbortSignal.timeout(90_000),
           }
         )
-
-        if (grokRes.ok) {
-          const grokData = await grokRes.json()
-          const imageUrl = grokData?.data?.[0]?.url
-          
-          if (imageUrl) {
-            console.log(`Image generated, downloading from: ${imageUrl.substring(0, 50)}...`)
-            
-            // Download the image
-            const imgRes = await fetch(imageUrl, { signal: AbortSignal.timeout(30_000) })
-            if (imgRes.ok) {
-              const imgBuffer = Buffer.from(await imgRes.arrayBuffer())
-              if (imgBuffer.length > 1000) {
-                console.log(`Scene image downloaded: ${imgBuffer.length} bytes`)
-                sceneBuffer = imgBuffer
-              }
-            }
-          }
-        } else {
-          const errBody = await grokRes.text().catch(() => '')
-          console.error(`Grok image generation failed (${grokRes.status}): ${errBody.slice(0, 200)}`)
-        }
 
         if (sceneBuffer) break
 
