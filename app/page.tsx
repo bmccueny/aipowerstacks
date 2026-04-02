@@ -1,12 +1,11 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import dynamic from 'next/dynamic'
 import { ArrowRight, ChevronRight, Newspaper, Scissors, Layers, Eye } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { NewsletterBanner } from '@/components/layout/NewsletterBanner'
-const CostCalculator = dynamic(() => import('@/components/home/CostCalculator').then(m => m.CostCalculator))
+import { CostCalculator } from '@/components/home/CostCalculator'
 import { OverlapTeaser } from '@/components/home/OverlapTeaser'
 import { CompareProvider } from '@/lib/context/CompareContext'
 import { CompareTray } from '@/components/tools/CompareTray'
