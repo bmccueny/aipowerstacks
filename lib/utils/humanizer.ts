@@ -55,6 +55,21 @@ const FORMULAIC_TRANSITIONS = [
   /having said that,/i,
   /with that in mind,/i,
   /on the flip side,/i,
+  // Research-added transitions (from GPTZero/academic studies)
+  /\bmoreover\b/i,
+  /\bfurthermore\b/i,
+  /\badditionally\b/i,
+  /\bconsequently\b/i,
+  /\bnotably\b/i,
+  /\bsubsequently\b/i,
+  /\bnonetheless\b/i,
+  /\bthereby\b/i,
+  /in the realm of/i,
+  /it'?s important to (understand|note|remember)/i,
+  /one might argue/i,
+  /at its core/i,
+  /in today'?s digital/i,
+  /in an era of/i,
 ]
 
 const PERFORMATIVE_OPENERS = [
@@ -84,6 +99,13 @@ const BANNED_WORDS = [
   'supercharge', 'supercharging', 'skyrocket', 'catapult', 'navigate',
   'navigating', 'streamline', 'streamlining', 'synergy', 'ecosystem',
   'deep dive', 'double down', 'move the needle', 'game changer',
+  // Research-added (from academic studies + GPTZero fingerprinting)
+  'facilitate', 'facilitating', 'foster', 'fostering', 'underscore',
+  'underscoring', 'embark', 'resonate', 'resonating', 'reverberate',
+  'cornerstone', 'testament', 'underpinnings', 'intricacies',
+  'interplay', 'labyrinth', 'symphony', 'nexus', 'beacon', 'realm',
+  'elevate', 'elevating', 'pivotal', 'commendable', 'meticulous',
+  'intricate', 'noteworthy',
 ]
 
 const APOSTROPHE_FIXES: [RegExp, string][] = [
@@ -191,18 +213,47 @@ export function analyzeContent(html: string): HumanizeMetrics {
   // Count rhetorical questions (humans use these, AI rarely does)
   const rhetoricalQuestions = (text.match(/\?\s/g) ?? []).length
 
+  // First-person pronouns per 1000 words (AI: 0-2, human: 5-15)
+  const wordCount = text.split(/\s+/).length
+  const firstPersonMatches = text.match(/\b(I|I'm|I've|I'll|I'd|my|me|we|we're|our|us)\b/g) ?? []
+  const firstPersonPer1k = wordCount > 0 ? (firstPersonMatches.length / wordCount) * 1000 : 0
+
+  // Sentence fragments (<=4 words ending in period, human: 2-6 per 1000 words)
+  const fragments = sentences.filter(s => s.split(/\s+/).length <= 4).length
+  const fragmentsPer1k = wordCount > 0 ? (fragments / wordCount) * 1000 : 0
+
+  // Max consecutive same-length sentences (+/- 3 words). AI: 5+, human: 2-3 max
+  let maxConsecutiveSameLength = 0
+  let currentRun = 1
+  for (let i = 1; i < sentenceLengths.length; i++) {
+    if (Math.abs(sentenceLengths[i] - sentenceLengths[i - 1]) <= 3) {
+      currentRun++
+      maxConsecutiveSameLength = Math.max(maxConsecutiveSameLength, currentRun)
+    } else {
+      currentRun = 1
+    }
+  }
+
+  // Definitional opener detection ("X is a Y that Z" as first sentence)
+  const firstSentence = sentences[0] ?? ''
+  const hasDefinitionalOpener = /^[A-Z][a-z]+ (?:is|are|was|were) (?:a|an|the) /i.test(firstSentence) ? 1 : 0
+
   // Composite score (0-100, higher = more human)
-  let score = 45
+  let score = 40
   score += Math.min(15, (sentenceLengthStdDev - 4) * 3)     // reward high variance
   score += Math.min(10, shortSentenceRatio * 50)              // reward short sentences
   score += Math.min(10, longSentenceRatio * 50)               // reward long sentences
   score += Math.min(10, (paragraphLengthVariance - 1) * 5)   // reward varied paragraphs
   score += Math.min(8, rhetoricalQuestions * 2)                // reward questions
+  score += Math.min(8, Math.max(0, firstPersonPer1k - 2) * 2) // reward first-person (above 2 per 1k)
+  score += Math.min(5, fragmentsPer1k * 2)                    // reward fragments
   score -= startsWithSameWord * 3                              // penalize same-start
   score -= formulaicTransitions * 5                            // penalize formulaic transitions
   score -= bannedWords * 3                                     // penalize AI words
   score -= missingApostrophes * 1                              // penalize missing apostrophes
   score -= emDashCount * 2                                     // penalize em-dashes
+  score -= Math.max(0, maxConsecutiveSameLength - 3) * 3      // penalize uniform sentence runs
+  score -= hasDefinitionalOpener * 5                           // penalize "X is a Y" openers
   score = Math.max(0, Math.min(100, Math.round(score)))
 
   return {
@@ -379,7 +430,16 @@ function buildRewritePrompt(metrics: HumanizeMetrics): string {
   if (metrics.formulaicTransitions > 0) {
     issues.push(
       `${metrics.formulaicTransitions} FORMULAIC TRANSITIONS DETECTED (e.g. "But here's the thing:", ` +
-      `"What most people don't realize"). Replace with natural flow or just start the next point directly.`
+      `"What most people don't realize"). Replace with "So", "And", "But", "Thing is," or just start the next point.`
+    )
+  }
+
+  // New research-backed checks
+  const wordCount = 1500 // approximate
+  if (metrics.shortSentenceRatio < 0.10) {
+    issues.push(
+      `NOT ENOUGH SENTENCE FRAGMENTS (only ${Math.round(metrics.shortSentenceRatio * 100)}% short sentences). ` +
+      `Add 5-8 sentences of 1-4 words: "Wild.", "Not even close.", "That's it.", "Big difference."`
     )
   }
 
