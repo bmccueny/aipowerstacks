@@ -28,7 +28,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         className="pointer-events-none fixed inset-0 z-0 opacity-0 dark:opacity-30 transition-opacity duration-700"
         style={{
           background:
-            'radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), oklch(0.62 0.23 22 / 0.12), transparent 60%)',
+            'radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), oklch(0.55 0.20 15 / 0.12), transparent 60%)',
         }}
         aria-hidden="true"
       />

@@ -89,14 +89,14 @@
   --border: oklch(0.90 0.005 80);
   --input: oklch(0.99 0.002 80);
   --ring: oklch(0.55 0.20 15);
-  --chart-1: oklch(0.62 0.23 22);
+  --chart-1: oklch(0.55 0.20 15);
   --chart-2: oklch(0.73 0.15 55);
   --chart-3: oklch(0.67 0.18 200);
   --chart-4: oklch(0.75 0.16 140);
   --chart-5: oklch(0.73 0.14 280);
   --sidebar: oklch(1 0 0);
   --sidebar-foreground: oklch(0 0 0);
-  --sidebar-primary: oklch(0.62 0.23 22);
+  --sidebar-primary: oklch(0.55 0.20 15);
   --sidebar-primary-foreground: oklch(1 0 0);
   --sidebar-accent: oklch(0.96 0 0);
   --sidebar-accent-foreground: oklch(0 0 0);
@@ -205,7 +205,7 @@
     radial-gradient(1px 1px   at 110px 50px,  rgba(255, 255, 255, 0.6),  transparent),
     radial-gradient(1.5px 1.5px at 170px 120px, rgba(255, 255, 255, 0.4),  transparent),
     radial-gradient(1px 1px   at 220px 30px,  rgba(255, 255, 255, 0.65), transparent),
-    radial-gradient(2px 2px   at 280px 80px,  oklch(0.62 0.23 22 / 0.5), transparent),
+    radial-gradient(2px 2px   at 280px 80px,  oklch(0.55 0.20 15 / 0.5), transparent),
     radial-gradient(1px 1px   at 340px 160px, rgba(255, 255, 255, 0.45), transparent),
     radial-gradient(1.5px 1.5px at 400px 60px,  oklch(0.72 0.15 55 / 0.45), transparent),
     radial-gradient(1px 1px   at 50px 170px,  rgba(255, 255, 255, 0.55), transparent),
@@ -218,9 +218,9 @@
 
 .nebula {
   background:
-    radial-gradient(ellipse 80% 50% at 15% 15%, oklch(0.62 0.23 22 / 0.10), transparent 50%),
+    radial-gradient(ellipse 80% 50% at 15% 15%, oklch(0.55 0.20 15 / 0.10), transparent 50%),
     radial-gradient(ellipse 60% 60% at 85% 25%, oklch(0.72 0.15 55 / 0.07), transparent 50%),
-    radial-gradient(ellipse 90% 70% at 50% 95%, oklch(0.62 0.23 22 / 0.05), transparent 50%);
+    radial-gradient(ellipse 90% 70% at 50% 95%, oklch(0.55 0.20 15 / 0.05), transparent 50%);
 }
 
 @keyframes twinkle {
@@ -631,9 +631,9 @@ h1, h2, h3 { text-wrap: balance; }
 }
 
 .badge-tier-pro {
-  background: linear-gradient(135deg, oklch(0.62 0.23 22 / 0.15), oklch(0.62 0.23 22 / 0.05));
-  border: 1px solid oklch(0.62 0.23 22 / 0.3);
-  box-shadow: 0 0 15px oklch(0.62 0.23 22 / 0.1);
+  background: linear-gradient(135deg, oklch(0.55 0.20 15 / 0.15), oklch(0.55 0.20 15 / 0.05));
+  border: 1px solid oklch(0.55 0.20 15 / 0.3);
+  box-shadow: 0 0 15px oklch(0.55 0.20 15 / 0.1);
 }
 
 .badge-admin {
@@ -718,9 +718,9 @@ h1, h2, h3 { text-wrap: balance; }
 }
 
 .dark .badge-tier-pro {
-  background: linear-gradient(135deg, oklch(0.62 0.23 22 / 0.25), oklch(0.62 0.23 22 / 0.1));
-  border-color: oklch(0.62 0.23 22 / 0.4);
-  box-shadow: 0 0 20px oklch(0.62 0.23 22 / 0.2);
+  background: linear-gradient(135deg, oklch(0.55 0.20 15 / 0.25), oklch(0.55 0.20 15 / 0.1));
+  border-color: oklch(0.55 0.20 15 / 0.4);
+  box-shadow: 0 0 20px oklch(0.55 0.20 15 / 0.2);
 }
 
 .dark .badge-editor {
@@ -994,7 +994,7 @@ h1, h2, h3 { text-wrap: balance; }
 .category-pill:hover {
   border-color: var(--primary);
   color: var(--foreground);
-  box-shadow: 0 8px 24px oklch(0.62 0.23 22 / 0.15);
+  box-shadow: 0 8px 24px oklch(0.55 0.20 15 / 0.15);
 }
 
 .category-pill:hover span {
@@ -1100,14 +1100,14 @@ h1, h2, h3 { text-wrap: balance; }
 /* ── Burning crimson glow: shared tokens ── */
 .add-to-stack-btn,
 .burn-glow-card {
-  --burn-color: oklch(0.62 0.23 22);
-  --burn-color-60: oklch(0.62 0.23 22 / 0.6);
-  --burn-color-40: oklch(0.62 0.23 22 / 0.4);
-  --burn-color-25: oklch(0.62 0.23 22 / 0.25);
-  --burn-color-20: oklch(0.62 0.23 22 / 0.2);
-  --burn-color-12: oklch(0.62 0.23 22 / 0.12);
-  --burn-color-10: oklch(0.62 0.23 22 / 0.1);
-  --burn-color-06: oklch(0.62 0.23 22 / 0.06);
+  --burn-color: oklch(0.55 0.20 15);
+  --burn-color-60: oklch(0.55 0.20 15 / 0.6);
+  --burn-color-40: oklch(0.55 0.20 15 / 0.4);
+  --burn-color-25: oklch(0.55 0.20 15 / 0.25);
+  --burn-color-20: oklch(0.55 0.20 15 / 0.2);
+  --burn-color-12: oklch(0.55 0.20 15 / 0.12);
+  --burn-color-10: oklch(0.55 0.20 15 / 0.1);
+  --burn-color-06: oklch(0.55 0.20 15 / 0.06);
 }
 
 /* ── Add to Stack button ── */
@@ -1123,7 +1123,7 @@ h1, h2, h3 { text-wrap: balance; }
 
 .dark .add-to-stack-btn:hover:not(:disabled) {
   border-color: var(--burn-color-40);
-  color: oklch(0.82 0.18 22);
+  color: oklch(0.82 0.18 15);
   background: var(--burn-color-06);
 }
 
@@ -1290,7 +1290,7 @@ h1, h2, h3 { text-wrap: balance; }
 
 .social-icon-btn:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px oklch(0.62 0.23 22 / 0.35);
+  box-shadow: 0 0 0 3px oklch(0.55 0.20 15 / 0.35);
 }
 
 .social-icon-btn.social-icon-btn--dark {
@@ -1327,13 +1327,13 @@ h1, h2, h3 { text-wrap: balance; }
   --ring: oklch(0.65 0.24 22 / 0.5);
   --sidebar: oklch(0.15 0.005 40);
   --sidebar-foreground: oklch(0.93 0.005 60);
-  --sidebar-primary: oklch(0.65 0.24 22);
+  --sidebar-primary: oklch(0.65 0.24 15);
   --sidebar-primary-foreground: oklch(1 0 0);
   --sidebar-accent: oklch(0.22 0.005 40);
   --sidebar-accent-foreground: oklch(0.93 0.005 60);
   --sidebar-border: oklch(0.26 0.008 40);
   --sidebar-ring: oklch(0.65 0.24 22 / 0.5);
-  --chart-1: oklch(0.65 0.24 22);
+  --chart-1: oklch(0.65 0.24 15);
   --aix-card-hover-shadow: 4px 4px 0 oklch(0.65 0.24 22 / 0.5);
   --aix-vote-shadow: 2px 2px 0 oklch(0.65 0.24 22 / 0.5);
   --aix-vote-hover-shadow: 4px 4px 0 oklch(0.65 0.24 22 / 0.7);
@@ -1491,7 +1491,7 @@ h1, h2, h3 { text-wrap: balance; }
 
 @media (hover: hover) {
   .btn-primary:hover:not(:disabled) {
-    background: linear-gradient(135deg, var(--primary-hover) 0%, oklch(0.48 0.21 22) 100%);
+    background: linear-gradient(135deg, var(--primary-hover) 0%, oklch(0.48 0.19 15) 100%);
     box-shadow:
       0px 8px calc(var(--lg-outer-shadow-blur) * 1.5) rgba(0, 0, 0, 0.22),
       inset 0 0 var(--lg-inner-shadow-blur) var(--lg-inner-shadow-spread) rgba(255, 255, 255, 0.45);
@@ -1630,7 +1630,7 @@ h1, h2, h3 { text-wrap: balance; }
   line-height: 0.8;
   margin-right: 0.08em;
   margin-top: 0.05em;
-  color: oklch(0.62 0.23 22);
+  color: oklch(0.55 0.20 15);
 }
 
 /* Headings stay in sans-serif for contrast */
@@ -1646,7 +1646,7 @@ h1, h2, h3 { text-wrap: balance; }
   font-size: 1.35rem;
   font-style: italic;
   line-height: 1.6;
-  border-left: 3px solid oklch(0.62 0.23 22);
+  border-left: 3px solid oklch(0.55 0.20 15);
   background: transparent;
   padding: 0.75rem 1.5rem;
   margin-top: 2rem;
@@ -1660,7 +1660,7 @@ h1, h2, h3 { text-wrap: balance; }
   font-size: 4rem;
   font-style: normal;
   line-height: 1;
-  color: oklch(0.62 0.23 22 / 0.25);
+  color: oklch(0.55 0.20 15 / 0.25);
   position: absolute;
   left: 0.75rem;
   top: -0.25rem;
@@ -1713,7 +1713,7 @@ h1, h2, h3 { text-wrap: balance; }
 .prose-editorial hr {
   border: none;
   height: 1px;
-  background: linear-gradient(to right, transparent, oklch(0.62 0.23 22 / 0.3), transparent);
+  background: linear-gradient(to right, transparent, oklch(0.55 0.20 15 / 0.3), transparent);
   margin: 3rem 0;
 }
 
@@ -1734,7 +1734,7 @@ h1, h2, h3 { text-wrap: balance; }
 }
 
 .dark .prose-editorial blockquote {
-  border-left-color: oklch(0.62 0.23 22 / 0.6);
+  border-left-color: oklch(0.55 0.20 15 / 0.6);
   color: oklch(0.88 0.005 80);
 }
 
@@ -1751,7 +1751,7 @@ h1, h2, h3 { text-wrap: balance; }
 }
 
 .dark .prose-editorial > p:first-of-type::first-letter {
-  color: oklch(0.72 0.20 22);
+  color: oklch(0.72 0.20 15);
 }
 
 /* Reading progress bar */
@@ -1760,7 +1760,7 @@ h1, h2, h3 { text-wrap: balance; }
   top: 0;
   left: 0;
   height: 3px;
-  background: oklch(0.62 0.23 22);
+  background: oklch(0.55 0.20 15);
   z-index: 50;
   transition: width 50ms linear;
 }
@@ -1779,12 +1779,12 @@ h1, h2, h3 { text-wrap: balance; }
 }
 
 .toc-link:hover {
-  color: oklch(0.62 0.23 22);
+  color: oklch(0.55 0.20 15);
 }
 
 .toc-link--active {
-  color: oklch(0.62 0.23 22);
-  border-left-color: oklch(0.62 0.23 22);
+  color: oklch(0.55 0.20 15);
+  border-left-color: oklch(0.55 0.20 15);
   font-weight: 600;
 }
 
@@ -1799,9 +1799,9 @@ h1, h2, h3 { text-wrap: balance; }
 
 .dark .toc-link:hover,
 .dark .toc-link--active {
-  color: oklch(0.72 0.20 22);
+  color: oklch(0.72 0.20 15);
 }
 
 .dark .toc-link--active {
-  border-left-color: oklch(0.72 0.20 22);
+  border-left-color: oklch(0.72 0.20 15);
 }
