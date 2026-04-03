@@ -342,21 +342,32 @@ Reply with ONLY the two lines. Nothing else.` }] }],
       return null
     }
 
-    // Build final prompt - generate image WITHOUT text, we'll add overlay separately
-    const finalImagePrompt = `Generate a WIDE 16:9 landscape image (1280x720). A high-resolution REAL PHOTOGRAPH (not AI art) showing: ${imagePrompt}. 
+    // Build prompt with text baked into the image by Gemini
+    const finalImagePrompt = `Generate a WIDE 16:9 landscape image (1280x720). A high-resolution REAL PHOTOGRAPH (not AI art) showing: ${imagePrompt}.
 
-IMPORTANT: Do NOT include any text in the image. Generate only the background scene/photograph. Professional stock photography style with natural lighting and realistic depth of field. No text, no words, no letters anywhere in the image.`
+CRITICAL TEXT OVERLAY REQUIREMENTS:
+The image MUST contain these exact words as bold text overlay at the bottom center of the image: "${headlineWords}"
+- The word "${keyword}" must be rendered LARGER (50% bigger) and in ${accentColor} color
+- All other words in pure white
+- ALL text must have thick black stroke/outline for legibility
+- Strong drop shadow behind all letters
+- Text positioned over a darker gradient region at the bottom
+- Letters must be PERFECTLY SPELLED with zero artifacts or garbled characters
+- YouTube thumbnail style — impossible to miss at small sizes
+- No other text, labels, UI elements, or watermarks — ONLY the headline words "${headlineWords}"
+
+Professional stock photography style with natural lighting and realistic depth of field.`
 
     console.log(`Headline: "${headlineWords}" | Keyword: "${keyword}" | Color: ${accentColor}`)
-    console.log(`Image prompt: ${finalImagePrompt.substring(0, 150)}...`)
+    console.log(`Image prompt (with text): ${finalImagePrompt.substring(0, 200)}...`)
 
-    // Step 2: Generate image via Grok Image (xAI)
+    // Step 2: Generate image with text baked in via Gemini
     let sceneBuffer: Buffer | null = null
     const MAX_IMAGE_RETRIES = 3
 
     for (let attempt = 1; attempt <= MAX_IMAGE_RETRIES; attempt++) {
       try {
-        console.log(`Generating scene image with Gemini 3.1 Flash (attempt ${attempt}/${MAX_IMAGE_RETRIES})...`)
+        console.log(`Generating cover image with Gemini 3.1 Flash (attempt ${attempt}/${MAX_IMAGE_RETRIES})...`)
         
         const geminiRes = await fetch(
           `${GEMINI_BASE_URL}/models/gemini-3.1-flash-image-preview:generateContent?key=${googleApiKey}`,
@@ -379,7 +390,7 @@ IMPORTANT: Do NOT include any text in the image. Generate only the background sc
           for (const part of parts) {
             if (part.inlineData?.data) {
               sceneBuffer = Buffer.from(part.inlineData.data, 'base64')
-              console.log(`Scene image received: ${sceneBuffer.length} bytes`)
+              console.log(`Cover image received: ${sceneBuffer.length} bytes`)
               break
             }
           }
@@ -392,8 +403,8 @@ IMPORTANT: Do NOT include any text in the image. Generate only the background sc
           console.log(`No image data, retrying in ${delayMs / 1000}s...`)
           await new Promise(r => setTimeout(r, delayMs))
         }
-      } catch (grokErr) {
-        console.error(`Gemini image generation error (attempt ${attempt}):`, grokErr)
+      } catch (genErr) {
+        console.error(`Gemini image generation error (attempt ${attempt}):`, genErr)
         if (attempt < MAX_IMAGE_RETRIES) {
           const delayMs = attempt * 5_000
           await new Promise(r => setTimeout(r, delayMs))
@@ -402,7 +413,7 @@ IMPORTANT: Do NOT include any text in the image. Generate only the background sc
     }
 
     if (!sceneBuffer) {
-      console.warn('Scene generation failed after all retries, generating fallback...')
+      console.warn('Gemini image generation failed after all retries, falling back to Sharp text overlay...')
       try {
         const fallbackBg = await sharp({
           create: { width: 1280, height: 720, channels: 4, background: { r: 26, g: 26, b: 46, alpha: 1 } }
@@ -417,23 +428,14 @@ IMPORTANT: Do NOT include any text in the image. Generate only the background sc
       }
     }
 
-    // Step 3: Resize to 16:9 and add text overlay + watermark
+    // Step 3: Resize to 16:9 and add watermark only (text already baked in by Gemini)
     const resizedBuffer = await sharp(sceneBuffer)
       .resize(1280, 720, { fit: 'cover', position: 'centre' })
       .jpeg({ quality: 92 })
       .toBuffer()
 
-    // Add YouTube-style text overlay with 2-3 word hook
-    const textOverlayBuffer = await overlayTextOnImage(
-      resizedBuffer.buffer as ArrayBuffer,
-      headlineWords,
-      keyword,
-      accentColor
-    )
-    console.log('Text overlay applied')
-
-    const finalBuffer = await overlayWatermark(textOverlayBuffer.buffer as ArrayBuffer)
-    console.log('Resized to 16:9 + text + watermark applied')
+    const finalBuffer = await overlayWatermark(resizedBuffer.buffer as ArrayBuffer)
+    console.log('Resized to 16:9 + watermark applied')
 
     // Step 4: Upload to permanent storage
     const filename = title
