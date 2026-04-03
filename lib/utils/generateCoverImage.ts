@@ -371,6 +371,20 @@ IMPORTANT: Do NOT include any text in the image. Generate only the background sc
           }
         )
 
+        if (!geminiRes.ok) {
+          console.error(`Gemini image API error: ${geminiRes.status}`)
+        } else {
+          const geminiData = await geminiRes.json()
+          const parts = geminiData.candidates?.[0]?.content?.parts ?? []
+          for (const part of parts) {
+            if (part.inlineData?.data) {
+              sceneBuffer = Buffer.from(part.inlineData.data, 'base64')
+              console.log(`Scene image received: ${sceneBuffer.length} bytes`)
+              break
+            }
+          }
+        }
+
         if (sceneBuffer) break
 
         if (attempt < MAX_IMAGE_RETRIES) {
@@ -379,7 +393,7 @@ IMPORTANT: Do NOT include any text in the image. Generate only the background sc
           await new Promise(r => setTimeout(r, delayMs))
         }
       } catch (grokErr) {
-        console.error(`Grok image generation error (attempt ${attempt}):`, grokErr)
+        console.error(`Gemini image generation error (attempt ${attempt}):`, grokErr)
         if (attempt < MAX_IMAGE_RETRIES) {
           const delayMs = attempt * 5_000
           await new Promise(r => setTimeout(r, delayMs))
