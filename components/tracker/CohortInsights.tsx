@@ -20,12 +20,16 @@ type CohortData = {
   message: string
 }
 
-export function CohortInsights() {
+export function CohortInsights({ anonTools }: { anonTools?: { tool_id: string }[] } = {}) {
   const [data, setData] = useState<CohortData | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('/api/tracker/cohort')
+    let url = '/api/tracker/cohort'
+    if (anonTools && anonTools.length > 0) {
+      url = `/api/tracker/cohort?tool_ids=${anonTools.map(t => t.tool_id).join(',')}`
+    }
+    fetch(url)
       .then(r => {
         if (!r.ok) throw new Error('Failed')
         return r.json()
@@ -33,7 +37,7 @@ export function CohortInsights() {
       .then(d => setData(d))
       .catch(() => setData(null))
       .finally(() => setLoading(false))
-  }, [])
+  }, [anonTools])
 
   if (loading) {
     return (

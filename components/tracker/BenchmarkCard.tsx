@@ -116,12 +116,18 @@ function CategoryBar({ name, userSpend, avgSpend }: { name: string; userSpend: n
   )
 }
 
-export function BenchmarkCard() {
+export function BenchmarkCard({ anonTools }: { anonTools?: { tool_id: string; monthly_cost: number }[] } = {}) {
   const [data, setData] = useState<BenchmarkData | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('/api/tracker/benchmark')
+    let url = '/api/tracker/benchmark'
+    if (anonTools && anonTools.length > 0) {
+      const total = anonTools.reduce((sum, t) => sum + t.monthly_cost, 0)
+      const ids = anonTools.map(t => t.tool_id).join(',')
+      url = `/api/tracker/benchmark?tool_ids=${ids}&total=${total}`
+    }
+    fetch(url)
       .then(r => {
         if (!r.ok) throw new Error('Failed')
         return r.json()
@@ -129,7 +135,7 @@ export function BenchmarkCard() {
       .then(d => setData(d))
       .catch(() => setData(null))
       .finally(() => setLoading(false))
-  }, [])
+  }, [anonTools])
 
   if (loading) {
     return (

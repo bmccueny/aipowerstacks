@@ -406,9 +406,9 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
         importing={importing}
       />
 
-      {/* Budget tracking — shown for logged-in users with 1+ sub */}
-      {clientLoggedIn && effectiveCount >= 1 && (
-        <BudgetBar totalSpend={total} />
+      {/* Budget tracking — shown for anyone with 1+ sub */}
+      {effectiveCount >= 1 && (
+        <BudgetBar totalSpend={total} isLoggedIn={clientLoggedIn} />
       )}
 
       {/* Add subscription */}
@@ -457,27 +457,22 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
       {/* Model intelligence — shown for anyone with 2+ tools */}
       {effectiveCount >= 2 && <ModelOverlap key={`mo-${stackKey}`} anonTools={!clientLoggedIn ? anonToolData : undefined} />}
 
-      {/* Sign-up prompt for anonymous users */}
-      {!clientLoggedIn && effectiveCount >= 2 && (
-        <div className="rounded-xl border border-primary/20 bg-primary/5 p-5 text-center space-y-2">
-          <p className="text-sm font-semibold">Want more insights?</p>
-          <p className="text-xs text-muted-foreground">Sign up to save your stack, get personalized recommendations, and track pricing changes over time.</p>
-          <a href="/register" className="inline-block mt-2 text-xs font-semibold text-primary hover:underline">Create free account →</a>
-        </div>
-      )}
-
-      {/* Insights panel — shown for logged-in users with 1+ subs */}
-      {clientLoggedIn && subsCount >= 1 && (
-        <InsightsPanel
-          subscriptions={subs.map(s => ({
-            tool_id: s.tool_id,
-            tools: s.tools ? { name: s.tools.name, slug: s.tools.slug } : null,
-          }))}
-        />
+      {/* Insights panel — shown for anyone with 1+ sub */}
+      {effectiveCount >= 1 && (
+        clientLoggedIn ? (
+          <InsightsPanel
+            subscriptions={subs.map(s => ({
+              tool_id: s.tool_id,
+              tools: s.tools ? { name: s.tools.name, slug: s.tools.slug } : null,
+            }))}
+          />
+        ) : (
+          <InsightsPanel anonToolIds={anonSubs.map(s => s.tool_id)} />
+        )
       )}
 
       {/* Switch prompt — shown when user removes a tool */}
-      {switchPrompt && clientLoggedIn && (
+      {switchPrompt && (
         <SwitchPrompt
           removedToolId={switchPrompt.toolId}
           removedToolName={switchPrompt.toolName}
@@ -486,8 +481,10 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
         />
       )}
 
-      {/* Changelog feed */}
-      {clientLoggedIn && subsCount >= 1 && <ChangelogFeed />}
+      {/* Changelog feed — shown for anyone with 1+ sub */}
+      {effectiveCount >= 1 && (
+        <ChangelogFeed anonTools={!clientLoggedIn ? anonSubs.map(s => ({ tool_id: s.tool_id })) : undefined} />
+      )}
 
       {/* Spend history chart */}
       {subsCount >= 2 && (
@@ -523,11 +520,20 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
         </div>
       )}
 
-      {/* Analytics section — shown for logged-in users with 2+ subs */}
-      {clientLoggedIn && subsCount >= 2 && (
+      {/* Analytics section — shown for anyone with 2+ subs */}
+      {effectiveCount >= 2 && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <BenchmarkCard />
-          <CohortInsights />
+          <BenchmarkCard anonTools={!clientLoggedIn ? anonToolData : undefined} />
+          <CohortInsights anonTools={!clientLoggedIn ? anonSubs.map(s => ({ tool_id: s.tool_id })) : undefined} />
+        </div>
+      )}
+
+      {/* Sign-up prompt for anonymous users — after all insights */}
+      {!clientLoggedIn && effectiveCount >= 2 && (
+        <div className="rounded-xl border border-primary/20 bg-primary/5 p-5 text-center space-y-2">
+          <p className="text-sm font-semibold">Want more insights?</p>
+          <p className="text-xs text-muted-foreground">Sign up to save your stack, get personalized recommendations, and track pricing changes over time.</p>
+          <a href="/register" className="inline-block mt-2 text-xs font-semibold text-primary hover:underline">Create free account →</a>
         </div>
       )}
 

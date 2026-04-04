@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { rateLimit, getClientIp } from '@/lib/rate-limit'
 
 const CACHE_TTL_MS = 60 * 60 * 1000 // 1 hour
 const MIN_OVERLAP = 3
@@ -46,13 +47,37 @@ async function loadCohortData(): Promise<CohortCache> {
   return cohortCache
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  let myTools: Set<string> | undefined
+  let excludeUserId: string | null = null
+
+  if (user) {
+    excludeUserId = user.id
+  } else {
+    // Anon: accept tool_ids from query param
+    const url = new URL(request.url)
+    const idsParam = url.searchParams.get('tool_ids')
+    if (!idsParam) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const ip = getClientIp(request)
+    const { success } = rateLimit(`tracker:cohort:anon:${ip}`, 20, 60_000)
+    if (!success) {
+      return NextResponse.json({ error: 'Rate limited' }, { status: 429 })
+    }
+
+    myTools = new Set(idsParam.split(',').filter(Boolean).slice(0, 20))
+  }
 
   const cache = await loadCohortData()
-  const myTools = cache.userTools.get(user.id)
+
+  if (user && !myTools) {
+    myTools = cache.userTools.get(user.id)
+  }
 
   if (!myTools || myTools.size < 2) {
     return NextResponse.json({ cohortSize: 0, recommendations: [], message: 'Add more tools to see cohort insights' })
@@ -63,9 +88,8 @@ export async function GET() {
   const recommendationCounts = new Map<string, number>()
 
   for (const [otherId, otherTools] of cache.userTools) {
-    if (otherId === user.id) continue
+    if (otherId === excludeUserId) continue
 
-    // Count overlap
     let overlap = 0
     for (const toolId of myTools) {
       if (otherTools.has(toolId)) overlap++
@@ -74,7 +98,6 @@ export async function GET() {
     if (overlap >= MIN_OVERLAP) {
       cohortUsers.push(otherId)
 
-      // Find tools they have that the user doesn't
       for (const toolId of otherTools) {
         if (!myTools.has(toolId)) {
           recommendationCounts.set(toolId, (recommendationCounts.get(toolId) || 0) + 1)

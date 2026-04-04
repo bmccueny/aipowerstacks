@@ -31,16 +31,19 @@ const EVENT_COLORS: Record<string, string> = {
   free_tier: 'text-primary bg-primary/5',
 }
 
-export function ChangelogFeed() {
+export function ChangelogFeed({ anonTools }: { anonTools?: { tool_id: string }[] } = {}) {
   const [entries, setEntries] = useState<ChangelogEntry[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('/api/tracker/changelog')
+    const url = anonTools && anonTools.length > 0
+      ? `/api/tracker/changelog?tool_ids=${anonTools.map(t => t.tool_id).join(',')}`
+      : '/api/tracker/changelog'
+    fetch(url)
       .then(r => r.ok ? r.json() : { entries: [] })
       .then(d => { setEntries(d.entries || []); setLoading(false) })
       .catch(() => setLoading(false))
-  }, [])
+  }, [anonTools])
 
   if (loading || entries.length === 0) return null
 

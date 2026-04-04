@@ -6,11 +6,14 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
 
+const ANON_BUDGET_KEY = 'aips_tracker_budget'
+
 type BudgetBarProps = {
   totalSpend: number
+  isLoggedIn?: boolean
 }
 
-export function BudgetBar({ totalSpend }: BudgetBarProps) {
+export function BudgetBar({ totalSpend, isLoggedIn = true }: BudgetBarProps) {
   const [budget, setBudget] = useState<number | null>(null)
   const [loading, setLoading] = useState(true)
   const [editing, setEditing] = useState(false)
@@ -19,6 +22,21 @@ export function BudgetBar({ totalSpend }: BudgetBarProps) {
   const [animated, setAnimated] = useState(false)
 
   useEffect(() => {
+    if (!isLoggedIn) {
+      try {
+        const stored = localStorage.getItem(ANON_BUDGET_KEY)
+        if (stored) {
+          const val = parseFloat(stored)
+          if (!isNaN(val) && val > 0) {
+            setBudget(val)
+            setInputValue(String(val))
+          }
+        }
+      } catch { /* localStorage unavailable */ }
+      setLoading(false)
+      return
+    }
+
     fetch('/api/tracker/budget')
       .then(r => {
         if (!r.ok) throw new Error('Failed')
@@ -30,7 +48,7 @@ export function BudgetBar({ totalSpend }: BudgetBarProps) {
       })
       .catch(() => { /* not logged in or failed */ })
       .finally(() => setLoading(false))
-  }, [])
+  }, [isLoggedIn])
 
   // Trigger animation after mount
   useEffect(() => {
@@ -47,6 +65,18 @@ export function BudgetBar({ totalSpend }: BudgetBarProps) {
       return
     }
     setSaving(true)
+
+    if (!isLoggedIn) {
+      try { localStorage.setItem(ANON_BUDGET_KEY, String(value)) } catch { /* noop */ }
+      setBudget(value)
+      setEditing(false)
+      setAnimated(false)
+      setTimeout(() => setAnimated(true), 100)
+      toast.success('Budget set!')
+      setSaving(false)
+      return
+    }
+
     const res = await fetch('/api/tracker/budget', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -62,10 +92,21 @@ export function BudgetBar({ totalSpend }: BudgetBarProps) {
       toast.error('Failed to save budget')
     }
     setSaving(false)
-  }, [inputValue])
+  }, [inputValue, isLoggedIn])
 
   const clearBudget = useCallback(async () => {
     setSaving(true)
+
+    if (!isLoggedIn) {
+      try { localStorage.removeItem(ANON_BUDGET_KEY) } catch { /* noop */ }
+      setBudget(null)
+      setInputValue('')
+      setEditing(false)
+      toast.success('Budget cleared')
+      setSaving(false)
+      return
+    }
+
     const res = await fetch('/api/tracker/budget', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -78,7 +119,7 @@ export function BudgetBar({ totalSpend }: BudgetBarProps) {
       toast.success('Budget cleared')
     }
     setSaving(false)
-  }, [])
+  }, [isLoggedIn])
 
   if (loading) return null
 

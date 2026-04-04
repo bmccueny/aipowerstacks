@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { rateLimit, getClientIp } from '@/lib/rate-limit'
 
 // Industry benchmarks when we don't have enough users for real data
 const INDUSTRY_AVG = 150
@@ -82,13 +83,30 @@ async function loadAggregates(): Promise<AggregateCache> {
   return aggregateCache
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  if (!user) {
+    // Anon: accept total from query param
+    const url = new URL(request.url)
+    const totalParam = url.searchParams.get('total')
+    const toolIdsParam = url.searchParams.get('tool_ids')
+    if (!totalParam || !toolIdsParam) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const ip = getClientIp(request)
+    const { success } = rateLimit(`tracker:benchmark:anon:${ip}`, 20, 60_000)
+    if (!success) {
+      return NextResponse.json({ error: 'Rate limited' }, { status: 429 })
+    }
+  }
 
   const agg = await loadAggregates()
-  const userTotal = agg.userTotals.get(user.id) || 0
+  const userTotal = user
+    ? (agg.userTotals.get(user.id) || 0)
+    : (parseFloat(new URL(request.url).searchParams.get('total') || '0') || 0)
 
   // Not enough users — return industry benchmark
   if (agg.sortedTotals.length < 5) {
@@ -125,7 +143,7 @@ export async function GET() {
     const cat = categoryMap.get(catId)!
     cat.avgSpend += catTotal
     cat.userCount += 1
-    if (userId === user.id) {
+    if (user && userId === user.id) {
       cat.userSpend = catTotal
     }
   }

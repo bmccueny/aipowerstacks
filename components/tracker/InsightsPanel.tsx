@@ -29,13 +29,18 @@ function InsightIcon({ type }: { type: string }) {
   return <Sparkles className="h-4 w-4 shrink-0" />
 }
 
-export function InsightsPanel({ subscriptions }: { subscriptions: ToolSub[] }) {
+export function InsightsPanel({ subscriptions, anonToolIds }: { subscriptions?: ToolSub[]; anonToolIds?: string[] }) {
   const [insights, setInsights] = useState<(Insight & { toolName: string })[]>([])
   const [loading, setLoading] = useState(true)
   const [expanded, setExpanded] = useState(true)
 
   useEffect(() => {
-    if (subscriptions.length === 0) {
+    // Build the list of tool IDs to fetch — either from subscriptions or anon IDs
+    const toolEntries: { tool_id: string; name: string }[] = anonToolIds
+      ? anonToolIds.map(id => ({ tool_id: id, name: 'Tool' }))
+      : (subscriptions || []).map(s => ({ tool_id: s.tool_id, name: s.tools?.name || 'Unknown' }))
+
+    if (toolEntries.length === 0) {
       setLoading(false)
       return
     }
@@ -46,24 +51,23 @@ export function InsightsPanel({ subscriptions }: { subscriptions: ToolSub[] }) {
     async function fetchAll() {
       const results: (Insight & { toolName: string })[] = []
 
-      // Fetch insights for all tools in parallel (max 10 concurrent)
-      const batches: ToolSub[][] = []
-      for (let i = 0; i < subscriptions.length; i += 10) {
-        batches.push(subscriptions.slice(i, i + 10))
+      const batches: { tool_id: string; name: string }[][] = []
+      for (let i = 0; i < toolEntries.length; i += 10) {
+        batches.push(toolEntries.slice(i, i + 10))
       }
 
       for (const batch of batches) {
         if (cancelled) break
-        const promises = batch.map(async (sub) => {
+        const promises = batch.map(async (entry) => {
           try {
-            const res = await fetch(`/api/tracker/insights?tool_id=${sub.tool_id}`, {
+            const res = await fetch(`/api/tracker/insights?tool_id=${entry.tool_id}`, {
               signal: controller.signal,
             })
             if (!res.ok) return []
             const data = await res.json()
             return (data.insights || []).map((ins: Insight) => ({
               ...ins,
-              toolName: sub.tools?.name || 'Unknown',
+              toolName: entry.name,
             }))
           } catch {
             return []
@@ -74,7 +78,6 @@ export function InsightsPanel({ subscriptions }: { subscriptions: ToolSub[] }) {
       }
 
       if (!cancelled) {
-        // Sort: critical first, then warning, then info
         const order = { critical: 0, warning: 1, info: 2 }
         results.sort((a, b) => (order[a.severity] ?? 2) - (order[b.severity] ?? 2))
         setInsights(results)
@@ -88,7 +91,7 @@ export function InsightsPanel({ subscriptions }: { subscriptions: ToolSub[] }) {
       cancelled = true
       controller.abort()
     }
-  }, [subscriptions])
+  }, [subscriptions, anonToolIds])
 
   if (loading) {
     return (
