@@ -22,7 +22,6 @@ import { getReviewsByTool } from '@/lib/supabase/queries/reviews'
 import { generateFaqJsonLd, generateJsonLd, generateToolMetadata, generateBreadcrumbJsonLd, generateReviewsJsonLd } from '@/lib/utils/seo'
 import { PRICING_BADGE_COLORS, PRICING_LABELS, MODEL_PROVIDER_LABELS } from '@/lib/constants'
 import { RelatedPages } from '@/components/seo/RelatedPages'
-import { FeatureDiscoveryStrip } from '@/components/tools/FeatureDiscoveryStrip'
 
 export const revalidate = 3600 // ISR: revalidate every hour
 
@@ -683,12 +682,6 @@ export default async function ToolDetailPage({ params }: Props) {
           </div>
         </div>
       </div>
-
-      <FeatureDiscoveryStrip
-        toolName={tool.name}
-        toolSlug={tool.slug}
-        categorySlug={tool.categories?.slug ?? null}
-      />
 
       {/* Related Pages — internal links for SEO */}
       <RelatedPages toolSlug={tool.slug} categorySlug={tool.categories?.slug ?? null} alternatives={alternatives} />

@@ -21,17 +21,13 @@ import { cn } from '@/lib/utils'
 
 const navLinks = [
   { href: '/tools', label: 'Browse' },
-  { href: '/matchmaker', label: 'Matchmaker' },
   { href: '/tracker', label: 'Tracker' },
   { href: '/compare', label: 'Compare' },
+  { href: '/blog', label: 'Blog' },
 ]
 
 const moreLinks = [
-  { href: '/stacks', label: 'Stacks' },
-  { href: '/blueprints', label: 'Blueprints' },
-  { href: '/alternatives', label: 'Alternatives' },
   { href: '/categories', label: 'Categories' },
-  { href: '/blog', label: 'Blog' },
 ]
 
 export function Navbar() {
