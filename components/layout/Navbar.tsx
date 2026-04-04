@@ -3,10 +3,11 @@
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
-import { User, Settings, LogOut, Menu, X, Search } from 'lucide-react'
+import { User, Settings, LogOut, Menu, X, Search, Bookmark } from 'lucide-react'
 import { BrandMark } from '@/components/common/BrandMark'
 import { CommandPalette } from '@/components/common/CommandPalette'
 import { createClient } from '@/lib/supabase/client'
+import { getAnonBookmarks } from '@/lib/bookmarks/merge'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import {
   DropdownMenu,
@@ -37,6 +38,7 @@ export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [user, setUser] = useState<{ id: string; email?: string; user_metadata?: Record<string, string> } | null>(null)
   const [profile, setProfile] = useState<{ avatar_url: string | null; display_name: string | null } | null>(null)
+  const [bookmarkCount, setBookmarkCount] = useState(0)
 
   useEffect(() => {
     const fetchProfile = async (userId: string) => {
@@ -48,11 +50,31 @@ export function Navbar() {
       setProfile(data)
     }
 
+    const fetchBookmarkCount = async (userId: string | null) => {
+      if (userId) {
+        const { count } = await supabase
+          .from('bookmarks')
+          .select('tool_id', { count: 'exact', head: true })
+          .eq('user_id', userId)
+        setBookmarkCount(count ?? 0)
+      } else {
+        setBookmarkCount(getAnonBookmarks().length)
+      }
+    }
+
     const getUser = async () => {
       const { data: { user }, error } = await supabase.auth.getUser()
-      if (error) return
+      if (error) {
+        fetchBookmarkCount(null)
+        return
+      }
       setUser(user)
-      if (user) fetchProfile(user.id)
+      if (user) {
+        fetchProfile(user.id)
+        fetchBookmarkCount(user.id)
+      } else {
+        fetchBookmarkCount(null)
+      }
     }
     getUser()
 
@@ -153,6 +175,20 @@ export function Navbar() {
               >
                 <Search className="h-5 w-5" />
               </button>
+
+              {/* Bookmarks */}
+              <Link
+                href={user ? '/dashboard' : '/tools?saved=true'}
+                aria-label={`Saved tools (${bookmarkCount})`}
+                className="relative flex items-center justify-center h-9 w-9 rounded-lg hover:bg-muted/60 dark:hover:bg-muted/40 transition-colors duration-200"
+              >
+                <Bookmark className="h-4 w-4" />
+                {bookmarkCount > 0 && (
+                  <span className="absolute -top-1 -right-1 flex items-center justify-center h-4 min-w-[16px] px-1 text-[10px] font-bold bg-primary text-white rounded-full">
+                    {bookmarkCount}
+                  </span>
+                )}
+              </Link>
 
               {/* User Menu */}
               {user ? (
