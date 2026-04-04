@@ -40,6 +40,10 @@ type ToolOption = {
   slug: string
   logo_url: string | null
   pricing_model: string
+  category_id?: string | null
+  use_case?: string | null
+  is_supertools?: boolean | null
+  categories?: { name: string } | null
 }
 
 type PopularTool = {
@@ -326,12 +330,20 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
   const stackKey = [...subs.map(s => s.tool_id), ...anonSubs.map(s => s.tool_id)].sort().join(',')
   const anonToolData = anonSubs.map(s => ({ tool_id: s.tool_id, monthly_cost: s.monthly_cost }))
 
-  // Compute overlaps
-  const overlaps = subs.length >= 2 ? (() => {
-    const fixedSubs = subs.filter(s => !s.is_usage_based && !s.tools?.is_supertools)
-    const groups: Record<string, Subscription[]> = {}
+  // Compute overlaps — works for both logged-in subs and anonymous subs
+  type OverlapItem = { tool_id: string; monthly_cost: number; is_usage_based?: boolean; use_tags?: string[] | null; tools: { name: string; slug: string; category_id?: string | null; use_case?: string | null; is_supertools?: boolean | null; categories?: { name: string } | null } | null }
+  const overlaps = (() => {
+    // Merge both sources into a unified shape
+    const allItems: OverlapItem[] = [
+      ...subs.map(s => ({ tool_id: s.tool_id, monthly_cost: Number(s.monthly_cost), is_usage_based: s.is_usage_based, use_tags: s.use_tags, tools: s.tools })),
+      ...anonSubs.map(s => ({ tool_id: s.tool_id, monthly_cost: s.monthly_cost, is_usage_based: false, use_tags: null as string[] | null, tools: s.tool ? { name: s.tool.name, slug: s.tool.slug, category_id: s.tool.category_id, use_case: s.tool.use_case, is_supertools: s.tool.is_supertools, categories: s.tool.categories } : null })),
+    ]
+    if (allItems.length < 2) return []
 
-    for (const sub of fixedSubs) {
+    const fixedItems = allItems.filter(s => !s.is_usage_based && !s.tools?.is_supertools)
+    const groups: Record<string, OverlapItem[]> = {}
+
+    for (const sub of fixedItems) {
       const tags = sub.use_tags && sub.use_tags.length > 0 ? sub.use_tags : null
 
       if (tags) {
@@ -375,8 +387,8 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
           totalCost: items.reduce((sum, s) => sum + Number(s.monthly_cost), 0),
         }
       })
-      .filter(Boolean) as { useCase: string; label: string; tools: Subscription[]; totalCost: number }[]
-  })() : []
+      .filter(Boolean) as { useCase: string; label: string; tools: OverlapItem[]; totalCost: number }[]
+  })()
 
   const overlapSavings = overlaps.reduce((sum, o) => {
     const costs = o.tools.map(t => Number(t.monthly_cost)).sort((a, b) => a - b)

@@ -56,7 +56,7 @@ export function TrackerCostSummary({
       )}
 
       {/* Optimizer banner — surface early when savings detected */}
-      {overlapSavings > 0 && effectiveCount >= 3 && clientLoggedIn && (
+      {overlapSavings > 0 && effectiveCount >= 3 && (
         <div className="rounded-xl border border-primary/20 bg-gradient-to-r from-primary/[0.04] to-emerald-500/[0.04] p-4 flex items-center gap-4">
           <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
             <TrendingDown className="h-5 w-5 text-primary" />

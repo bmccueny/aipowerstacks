@@ -37,7 +37,7 @@ export default async function TrackerPage({
   const adminSupabase = createAdminClient()
   const { data: tools } = await adminSupabase
     .from('tools')
-    .select('id, name, slug, logo_url, pricing_model, pricing_details')
+    .select('id, name, slug, logo_url, pricing_model, pricing_details, category_id, use_case, is_supertools, categories(name)')
     .eq('status', 'published')
     .order('name')
 
