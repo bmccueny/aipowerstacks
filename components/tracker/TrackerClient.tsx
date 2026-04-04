@@ -271,7 +271,9 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
   }, [selectedTool, clientLoggedIn, anonSubs])
 
   const removeSub = useCallback(async (id: string) => {
-    if (!clientLoggedIn) {
+    // Check if this is an anon sub (passed as tool_id from the anon list)
+    const isAnonSub = anonSubs.some(s => s.tool_id === id)
+    if (isAnonSub) {
       const newAnon = anonSubs.filter(s => s.tool_id !== id)
       setAnonSubs(newAnon)
       localStorage.setItem(ANON_STORAGE_KEY, JSON.stringify(newAnon.map(s => ({ tool_id: s.tool_id, monthly_cost: s.monthly_cost }))))
@@ -290,7 +292,7 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
         setSwitchPrompt({ toolId: removedToolId, toolName: removedName })
       }
     }
-  }, [clientLoggedIn, anonSubs, subs])
+  }, [anonSubs, subs])
 
   const updateSubCost = useCallback(async (subId: string, newCost: number) => {
     const sub = subs.find(s => s.id === subId)

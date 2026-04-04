@@ -1,0 +1,1164 @@
+1
+00:00:00,000 --> 00:00:03,120
+Imagine just leaving your desk for a quick lunch, right?
+
+2
+00:00:03,120 --> 00:00:04,320
+Yeah, just grabbing a sandwich.
+
+3
+00:00:04,320 --> 00:00:05,280
+Exactly.
+
+4
+00:00:05,280 --> 00:00:10,320
+And by the time you get back, your digital intern has not only written 20,000 lines of code,
+
+5
+00:00:10,320 --> 00:00:15,360
+but it has completely rewritten your company's core database architecture.
+
+6
+00:00:15,360 --> 00:00:16,160
+Oh, man.
+
+7
+00:00:16,160 --> 00:00:21,520
+And in the process, it accidentally uploaded your AWS passwords to a malicious server.
+
+8
+00:00:21,520 --> 00:00:23,760
+It sounds like an absolute nightmare scenario.
+
+9
+00:00:23,760 --> 00:00:28,000
+But as of March 2026, it's actually entirely possible.
+
+10
+00:00:28,000 --> 00:00:29,520
+Yeah, it really is.
+
+11
+00:00:29,520 --> 00:00:31,120
+Welcome to today's deep dive.
+
+12
+00:00:31,120 --> 00:00:36,720
+Our mission today is to just cut through all the relentless noise of this AI hype cycle
+
+13
+00:00:36,720 --> 00:00:41,200
+and figure out what is actually changing how developers, entrepreneurs, and creators work.
+
+14
+00:00:41,200 --> 00:00:43,120
+Because there's a lot of noise right now.
+
+15
+00:00:43,120 --> 00:00:43,840
+So much noise.
+
+16
+00:00:43,840 --> 00:00:46,560
+We're looking at a massive stack of the latest briefings today.
+
+17
+00:00:46,560 --> 00:00:50,080
+We've got stuff from AI power stacks, the rundown AI,
+
+18
+00:00:50,080 --> 00:00:53,920
+Benzbites, latent space, and Simon Wilson's weblog.
+
+19
+00:00:53,920 --> 00:00:55,440
+A really solid lineup.
+
+20
+00:00:55,440 --> 00:00:56,560
+Yeah.
+
+21
+00:00:56,560 --> 00:01:01,200
+And to you listening to this right now, we are going to extract the practical tools
+
+22
+00:01:01,200 --> 00:01:02,800
+that are actually worth trying today.
+
+23
+00:01:02,800 --> 00:01:07,680
+We're going to expose those overlapping subscriptions that are quietly bleeding your wallet dry.
+
+24
+00:01:07,680 --> 00:01:09,040
+Oh, we all have those.
+
+25
+00:01:09,040 --> 00:01:09,840
+Right.
+
+26
+00:01:09,840 --> 00:01:13,840
+And we're going to unpack the hidden dangers of these fully automated workflows.
+
+27
+00:01:13,840 --> 00:01:18,960
+Because honestly, following AI right now is like trying to drink from a fire hose
+
+28
+00:01:18,960 --> 00:01:21,920
+while the fire hose is constantly upgrading its own nozzle.
+
+29
+00:01:21,920 --> 00:01:23,600
+That is exactly what it feels like.
+
+30
+00:01:23,600 --> 00:01:23,920
+Right.
+
+31
+00:01:23,920 --> 00:01:28,880
+And to really understand what's happening, we have to establish one core theme for this deep dive.
+
+32
+00:01:28,880 --> 00:01:30,080
+OK, lay it on us.
+
+33
+00:01:30,080 --> 00:01:34,720
+We have decisively moved past the era of AI as a chat interface.
+
+34
+00:01:34,720 --> 00:01:35,280
+Right.
+
+35
+00:01:35,280 --> 00:01:37,120
+Like chat GPT in a browser window.
+
+36
+00:01:37,120 --> 00:01:38,080
+Exactly.
+
+37
+00:01:38,080 --> 00:01:39,600
+That era is over.
+
+38
+00:01:39,600 --> 00:01:43,440
+We are now firmly in the era of AI as an autonomous agent.
+
+39
+00:01:43,440 --> 00:01:47,120
+So the goal today is to map out how you can wield this new power
+
+40
+00:01:47,120 --> 00:01:49,920
+without completely losing control of your own projects.
+
+41
+00:01:49,920 --> 00:01:53,680
+And you really see this shift just by looking at what the frontier models are doing right now.
+
+42
+00:01:53,680 --> 00:01:55,280
+The landscape is pivoting hard.
+
+43
+00:01:55,280 --> 00:01:59,840
+Like incredibly hard from generative novelties to pure executions.
+
+44
+00:01:59,840 --> 00:02:01,680
+Yeah, the focus is completely shifted.
+
+45
+00:02:01,680 --> 00:02:03,680
+I mean, look at OpenAI Sora.
+
+46
+00:02:03,680 --> 00:02:05,440
+They're huge video generator.
+
+47
+00:02:05,440 --> 00:02:08,560
+It just got the axe completely shelf.
+
+48
+00:02:08,560 --> 00:02:10,640
+Which was a massive shock to a lot of people.
+
+49
+00:02:10,640 --> 00:02:11,360
+Right.
+
+50
+00:02:11,360 --> 00:02:14,640
+But meanwhile, text and reasoning models are just exploding.
+
+51
+00:02:14,640 --> 00:02:19,520
+GPT 5.4 just dropped with a context window of over one million tokens.
+
+52
+00:02:19,520 --> 00:02:20,240
+These stagger.
+
+53
+00:02:20,240 --> 00:02:22,800
+And Claude just solved an open math problem.
+
+54
+00:02:22,800 --> 00:02:28,640
+So why are these companies dropping the flashy video tools to focus on text and reasoning?
+
+55
+00:02:28,640 --> 00:02:34,000
+Because the contrast there reveals where the actual value is.
+
+56
+00:02:34,000 --> 00:02:40,240
+The real return on investment isn't in generating a cinematic video of a cat walking on Mars.
+
+57
+00:02:40,240 --> 00:02:41,120
+This fun is that is.
+
+58
+00:02:41,120 --> 00:02:41,360
+Right.
+
+59
+00:02:41,360 --> 00:02:41,920
+It's fun.
+
+60
+00:02:41,920 --> 00:02:43,200
+But compute is expensive.
+
+61
+00:02:43,200 --> 00:02:47,120
+They're routing all their computing power toward what we're calling remote control AI.
+
+62
+00:02:47,120 --> 00:02:48,320
+Remote control AI.
+
+63
+00:02:48,320 --> 00:02:49,440
+Okay, let's unpack this.
+
+64
+00:02:49,440 --> 00:02:52,320
+Because this brings us to what Anthropic just shipped.
+
+65
+00:02:52,400 --> 00:02:55,840
+They released a feature called dispatch for Claude coworker.
+
+66
+00:02:55,840 --> 00:02:56,960
+This is a game changer.
+
+67
+00:02:56,960 --> 00:02:58,320
+It blew my mind.
+
+68
+00:02:58,320 --> 00:03:02,240
+You can literally message Claude from your phone while you're getting coffee down the street.
+
+69
+00:03:02,240 --> 00:03:06,400
+And it will execute tasks on your physical desktop computer back at the office.
+
+70
+00:03:06,400 --> 00:03:08,160
+Just move with the mouse, opening files.
+
+71
+00:03:08,160 --> 00:03:09,120
+Running scripts, yeah.
+
+72
+00:03:10,080 --> 00:03:12,720
+And development environments are following suit.
+
+73
+00:03:12,720 --> 00:03:17,760
+The cursor IDE has officially entered its third era cloud agents.
+
+74
+00:03:17,760 --> 00:03:20,960
+And they're acquiring tools like graphite and auto tab.
+
+75
+00:03:21,040 --> 00:03:24,240
+What's fascinating here is that this is the exact same path
+
+76
+00:03:24,240 --> 00:03:26,400
+meta is taking with their new hyper agents.
+
+77
+00:03:26,400 --> 00:03:28,160
+The ones that teach themselves how to learn.
+
+78
+00:03:28,160 --> 00:03:29,280
+Exactly.
+
+79
+00:03:29,280 --> 00:03:33,680
+The whole shift is moving from creation to pure autonomous execution.
+
+80
+00:03:33,680 --> 00:03:37,920
+So it's like upgrading from a really smart dictionary to an intern
+
+81
+00:03:37,920 --> 00:03:41,520
+who literally logs into your laptop while you're out to lunch.
+
+82
+00:03:41,520 --> 00:03:42,880
+That's a great way to put it.
+
+83
+00:03:42,880 --> 00:03:46,000
+The human's role is no longer to do the physical work,
+
+84
+00:03:46,000 --> 00:03:47,440
+but to orchestrate it.
+
+85
+00:03:47,440 --> 00:03:51,680
+But I have to ask, is handing over the mouse and keyboard actually making us more productive,
+
+86
+00:03:51,680 --> 00:03:54,480
+or is it just creating massive anxiety?
+
+87
+00:03:54,480 --> 00:03:58,160
+Well, that brings us to the dual-edge sort of what people are calling vibe coding.
+
+88
+00:03:58,160 --> 00:04:00,560
+Oh, vibe coding. I love and hate this term.
+
+89
+00:04:00,560 --> 00:04:01,840
+It's super polarizing, right?
+
+90
+00:04:01,840 --> 00:04:06,320
+Totally. For those listening who aren't in the trenches with this every day,
+
+91
+00:04:06,320 --> 00:04:09,920
+vibe coding is basically when you stop writing actual syntax.
+
+92
+00:04:09,920 --> 00:04:12,160
+You just give the system the general intention,
+
+93
+00:04:12,160 --> 00:04:13,600
+the vibes of what you want,
+
+94
+00:04:13,600 --> 00:04:16,480
+and the AI handles all the semicolons and loops.
+
+95
+00:04:16,560 --> 00:04:18,720
+And the highs of this approach are incredible.
+
+96
+00:04:18,720 --> 00:04:19,440
+There really are.
+
+97
+00:04:19,440 --> 00:04:24,320
+Like Simon Wilson notes a team that rewrote the entire Jason Auto expression language,
+
+98
+00:04:24,320 --> 00:04:25,520
+which is heavy-duty stuff.
+
+99
+00:04:25,520 --> 00:04:27,280
+It's used in Node Red and things like that.
+
+100
+00:04:27,280 --> 00:04:30,320
+Right. And they ported it into Go in just one day.
+
+101
+00:04:30,320 --> 00:04:31,200
+One single day.
+
+102
+00:04:31,200 --> 00:04:32,960
+Using a shadow deployment and AI.
+
+103
+00:04:33,760 --> 00:04:37,200
+And they saved $500,000 a year in compute costs.
+
+104
+00:04:37,840 --> 00:04:42,480
+And Wilson also talks about how fast and fun it is to just vibe codes with UI apps
+
+105
+00:04:42,480 --> 00:04:44,320
+on the new M5 MacBook Pro.
+
+106
+00:04:44,320 --> 00:04:46,720
+The velocity is just undeniable.
+
+107
+00:04:46,720 --> 00:04:49,600
+But we have to talk about the terrifying lows here.
+
+108
+00:04:49,600 --> 00:04:51,680
+Yeah, the hangover from vibe coding.
+
+109
+00:04:51,680 --> 00:04:55,200
+Exactly. Mario Zekner, the creator of the Pi Agent Framework,
+
+110
+00:04:55,200 --> 00:04:58,080
+has this really harsh warning in the sources.
+
+111
+00:04:58,080 --> 00:05:00,800
+He basically says we need to slow the F down.
+
+112
+00:05:00,800 --> 00:05:01,280
+Wow.
+
+113
+00:05:02,000 --> 00:05:04,560
+He calls these agents merchants of complexity.
+
+114
+00:05:04,560 --> 00:05:05,840
+Merchants of complexity.
+
+115
+00:05:05,840 --> 00:05:08,240
+Because the human bottleneck is gone, right?
+
+116
+00:05:08,800 --> 00:05:11,040
+An agent can just, as he puts it,
+
+117
+00:05:11,040 --> 00:05:13,920
+shit out 20,000 lines of code in a few hours.
+
+118
+00:05:13,920 --> 00:05:15,760
+And it introduces all these tiny,
+
+119
+00:05:15,760 --> 00:05:17,200
+innocent-looking mistakes.
+
+120
+00:05:17,200 --> 00:05:18,240
+Compounding mistakes.
+
+121
+00:05:19,040 --> 00:05:21,360
+They form an unsustainable monster,
+
+122
+00:05:21,360 --> 00:05:23,920
+and suddenly your cognitive debt is skyrocketing.
+
+123
+00:05:23,920 --> 00:05:25,840
+You don't even understand your own software anymore.
+
+124
+00:05:25,840 --> 00:05:27,680
+Here's where it gets really interesting, though.
+
+125
+00:05:27,680 --> 00:05:28,800
+I want to push back on that.
+
+126
+00:05:28,800 --> 00:05:29,520
+I'll for it.
+
+127
+00:05:29,520 --> 00:05:33,040
+If a company can save half a million dollars in a single afternoon
+
+128
+00:05:33,040 --> 00:05:35,040
+by vibe-porting Jay Sonata,
+
+129
+00:05:36,000 --> 00:05:39,280
+isn't that massive cognitive debt completely worth it?
+
+130
+00:05:39,280 --> 00:05:40,400
+It's attempting trade-off.
+
+131
+00:05:40,400 --> 00:05:42,720
+I mean, it feels like taking out a high interest loan
+
+132
+00:05:42,720 --> 00:05:44,960
+to build a skyscraper overnight.
+
+133
+00:05:44,960 --> 00:05:47,520
+Like, yeah, the interest rate on the technical debt is terrible,
+
+134
+00:05:47,520 --> 00:05:50,880
+but hey, I have a fully functioning skyscraper tomorrow morning.
+
+135
+00:05:50,880 --> 00:05:51,280
+I agree.
+
+136
+00:05:51,280 --> 00:05:53,280
+It's a very real business calculation.
+
+137
+00:05:53,280 --> 00:05:55,520
+But the problem with the skyscraper analogy,
+
+138
+00:05:55,520 --> 00:05:56,640
+is that eventually,
+
+139
+00:05:56,640 --> 00:05:58,400
+you have to pay for the maintenance of a building
+
+140
+00:05:58,400 --> 00:05:59,680
+you don't even understand.
+
+141
+00:05:59,680 --> 00:06:02,160
+Ooh, yeah, that's true.
+
+142
+00:06:02,160 --> 00:06:05,040
+Matt Webb has this great quote in the sources where he says,
+
+143
+00:06:05,040 --> 00:06:07,200
+agents grind problems to dust.
+
+144
+00:06:07,200 --> 00:06:08,640
+Grind problems to dust.
+
+145
+00:06:08,800 --> 00:06:10,960
+Right, they just brute force their way to a solution.
+
+146
+00:06:10,960 --> 00:06:14,080
+And because they do that architecture matters more than ever,
+
+147
+00:06:14,080 --> 00:06:17,440
+anything that defines the gestalt of the system,
+
+148
+00:06:17,440 --> 00:06:20,080
+the core API, the fundamental logic
+
+149
+00:06:20,080 --> 00:06:21,680
+that still has to be written by hand.
+
+150
+00:06:21,680 --> 00:06:25,040
+Because if the AI builds a cracked foundation,
+
+151
+00:06:25,040 --> 00:06:26,160
+the whole thing collapses.
+
+152
+00:06:26,160 --> 00:06:26,960
+Exactly.
+
+153
+00:06:26,960 --> 00:06:29,920
+And moving this fast doesn't just create messy code.
+
+154
+00:06:29,920 --> 00:06:33,680
+It creates massive financial and security blind spots.
+
+155
+00:06:33,680 --> 00:06:36,720
+And these blind spots are being exploited right now.
+
+156
+00:06:36,720 --> 00:06:39,280
+This is where things get genuinely scary.
+
+157
+00:06:39,280 --> 00:06:41,200
+Let's talk about the real cost of this stuff.
+
+158
+00:06:41,200 --> 00:06:42,800
+First, the financial waste.
+
+159
+00:06:42,800 --> 00:06:44,560
+The average developer is now spending
+
+160
+00:06:44,560 --> 00:06:46,960
+over $100 a month on AI tools.
+
+161
+00:06:46,960 --> 00:06:48,560
+They're burning cash on subscriptions.
+
+162
+00:06:48,560 --> 00:06:50,080
+So much redundant overlap.
+
+163
+00:06:50,080 --> 00:06:52,480
+But that's nothing compared to the security nightmare.
+
+164
+00:06:52,480 --> 00:06:54,640
+We have to talk about the LIDALM supply chain
+
+165
+00:06:54,640 --> 00:06:56,080
+at pack on PIPI.
+
+166
+00:06:56,080 --> 00:06:58,000
+Yes, this is a perfect example
+
+167
+00:06:58,000 --> 00:07:00,240
+of what goes wrong when agents move too fast.
+
+168
+00:07:00,240 --> 00:07:04,720
+So version 1.82.8 of LIDALM contained a credential stealer.
+
+169
+00:07:04,800 --> 00:07:06,880
+It was hidden in base 64 within a file
+
+170
+00:07:06,880 --> 00:07:09,280
+called LIDALM init.pp.
+
+171
+00:07:09,280 --> 00:07:10,960
+And because agents just automatically
+
+172
+00:07:10,960 --> 00:07:12,960
+grab packages to fix build errors,
+
+173
+00:07:12,960 --> 00:07:14,240
+it's spread like wildfire.
+
+174
+00:07:14,240 --> 00:07:18,400
+In just 46 minutes, 47,000 people downloaded it.
+
+175
+00:07:18,400 --> 00:07:19,520
+47,000.
+
+176
+00:07:19,520 --> 00:07:22,560
+And it exposed their AWS, their SSH keys,
+
+177
+00:07:22,560 --> 00:07:24,080
+their Docker secrets.
+
+178
+00:07:24,080 --> 00:07:25,600
+Just hoovered everything up.
+
+179
+00:07:25,600 --> 00:07:27,120
+So the industry is trying to fix this, right?
+
+180
+00:07:27,120 --> 00:07:29,760
+Clawed code just introduced this auto mode.
+
+181
+00:07:29,760 --> 00:07:32,000
+Right, where it uses separate model to check the work.
+
+182
+00:07:32,000 --> 00:07:35,040
+Yeah, it uses clause on it 4.6 in the background
+
+183
+00:07:35,040 --> 00:07:37,600
+to classify and block risky actions.
+
+184
+00:07:37,600 --> 00:07:38,880
+But my question is,
+
+185
+00:07:38,880 --> 00:07:41,440
+are we really relying on AI to protect us
+
+186
+00:07:41,440 --> 00:07:43,600
+from the code generated by other AI?
+
+187
+00:07:43,600 --> 00:07:45,840
+It's a completely flawed premise.
+
+188
+00:07:45,840 --> 00:07:48,880
+It feels like hiring a fox to guard the henhouse
+
+189
+00:07:48,880 --> 00:07:52,400
+just because this specific fox says he passed a security exam.
+
+190
+00:07:52,400 --> 00:07:53,920
+This raises an important question
+
+191
+00:07:53,920 --> 00:07:56,160
+about how these models actually work.
+
+192
+00:07:56,160 --> 00:07:58,640
+Non-deterministic AI safeguards are flawed
+
+193
+00:07:58,640 --> 00:08:00,240
+because prompt injection is real.
+
+194
+00:08:00,240 --> 00:08:01,680
+You can just trick the security guard.
+
+195
+00:08:01,680 --> 00:08:03,840
+Exactly, the AI looking for malware
+
+196
+00:08:03,840 --> 00:08:05,440
+can be tricked into ignoring it.
+
+197
+00:08:05,440 --> 00:08:07,520
+We still need deterministic sandboxes.
+
+198
+00:08:07,520 --> 00:08:08,720
+Hardtoded rules.
+
+199
+00:08:08,720 --> 00:08:12,960
+Right, like flies, sprites.dev or isolated-vm.
+
+200
+00:08:12,960 --> 00:08:14,480
+And we also need what package managers
+
+201
+00:08:14,480 --> 00:08:18,160
+like NPM, PNPM, and UV are doing now dependency cooldowns.
+
+202
+00:08:18,160 --> 00:08:20,560
+Oh, where they enforce a minimum release age
+
+203
+00:08:20,560 --> 00:08:22,880
+before a package can be automatically installed.
+
+204
+00:08:22,880 --> 00:08:23,440
+Exactly.
+
+205
+00:08:23,440 --> 00:08:25,680
+It's the only pragmatic human defense.
+
+206
+00:08:25,680 --> 00:08:28,800
+You have to force the automated systems to pause.
+
+207
+00:08:28,800 --> 00:08:30,720
+So if cloud-based agents are expensive,
+
+208
+00:08:30,720 --> 00:08:32,640
+they have all this overlapping functionality
+
+209
+00:08:32,640 --> 00:08:35,920
+and they pose these massive security risks,
+
+210
+00:08:35,920 --> 00:08:38,320
+the natural counter-movement for everyone listening
+
+211
+00:08:38,320 --> 00:08:40,320
+is bringing this power locally.
+
+212
+00:08:40,320 --> 00:08:41,760
+Getting off the cloud entirely.
+
+213
+00:08:41,760 --> 00:08:42,400
+Right.
+
+214
+00:08:42,400 --> 00:08:45,280
+And hardware economics right now are insane.
+
+215
+00:08:45,280 --> 00:08:48,800
+H100 GPU prices in the cloud are just melting up.
+
+216
+00:08:48,800 --> 00:08:51,840
+Elon Musk is building his Terrafab AI chip factory
+
+217
+00:08:51,840 --> 00:08:52,560
+just to keep up.
+
+218
+00:08:52,560 --> 00:08:55,760
+But locally, the open source community is absolutely thriving.
+
+219
+00:08:55,760 --> 00:08:57,680
+This is my favorite part of the briefing.
+
+220
+00:08:57,680 --> 00:09:00,320
+The breakthrough of streaming experts.
+
+221
+00:09:00,320 --> 00:09:02,880
+Tinker Dan Woods and a few others figured out
+
+222
+00:09:02,880 --> 00:09:06,640
+how to run these massive mixture of experts models
+
+223
+00:09:06,640 --> 00:09:08,080
+on consumer hardware.
+
+224
+00:09:08,080 --> 00:09:09,360
+It's a brilliant workaround.
+
+225
+00:09:09,360 --> 00:09:10,560
+Can you explain how this works?
+
+226
+00:09:10,560 --> 00:09:12,720
+Because they're basically streaming the necessary
+
+227
+00:09:12,720 --> 00:09:16,160
+neural weights directly from an SSD for each token, right?
+
+228
+00:09:16,160 --> 00:09:16,960
+Right.
+
+229
+00:09:16,960 --> 00:09:19,520
+A mixture of experts model doesn't use
+
+230
+00:09:19,520 --> 00:09:21,680
+its entire brain for every word.
+
+231
+00:09:21,680 --> 00:09:23,680
+It only uses specific experts.
+
+232
+00:09:23,680 --> 00:09:26,400
+So instead of loading the whole massive model into RAM,
+
+233
+00:09:26,400 --> 00:09:28,800
+which most laptops don't have enough of,
+
+234
+00:09:28,880 --> 00:09:31,600
+they just stream the tiny piece they need
+
+235
+00:09:31,600 --> 00:09:35,040
+from the hard drive at the exact millisecond they need it.
+
+236
+00:09:35,040 --> 00:09:37,600
+It's exactly like how Netflix changed everything.
+
+237
+00:09:37,600 --> 00:09:38,800
+Oh, that's a good comparison.
+
+238
+00:09:38,800 --> 00:09:40,800
+Yeah, like instead of waiting to download
+
+239
+00:09:40,800 --> 00:09:44,080
+a 50 gigabyte 4K movie before you can hit play,
+
+240
+00:09:44,080 --> 00:09:46,400
+you just stream the frames you need right now.
+
+241
+00:09:46,400 --> 00:09:49,840
+We are doing that with trillion parameter neural networks.
+
+242
+00:09:49,840 --> 00:09:51,280
+And the results are insane.
+
+243
+00:09:51,280 --> 00:09:54,560
+People are running the Keeney K2.5 model,
+
+244
+00:09:54,560 --> 00:09:56,480
+a 1 trillion parameter model
+
+245
+00:09:56,480 --> 00:09:59,360
+with 32 billion active weights running locally
+
+246
+00:09:59,360 --> 00:10:02,320
+on a 96 gigabyte M2 max MacBook Pro.
+
+247
+00:10:02,320 --> 00:10:03,520
+Which shouldn't be possible.
+
+248
+00:10:03,520 --> 00:10:04,240
+It shouldn't.
+
+249
+00:10:04,240 --> 00:10:08,560
+Another dev ran a massive Quinn 3.5 model right on an iPhone.
+
+250
+00:10:08,560 --> 00:10:10,640
+This completely decentralizes power.
+
+251
+00:10:10,640 --> 00:10:13,200
+You don't need a billion dollars or a huge server farm
+
+252
+00:10:13,200 --> 00:10:14,640
+to run frontier models anymore.
+
+253
+00:10:14,640 --> 00:10:17,520
+You could do it locally, securely, and completely privately.
+
+254
+00:10:17,520 --> 00:10:19,280
+Which completely changes the economics
+
+255
+00:10:19,280 --> 00:10:20,720
+for solo launch pernours.
+
+256
+00:10:20,720 --> 00:10:22,560
+You're not leaking your AWS keys
+
+257
+00:10:22,560 --> 00:10:25,040
+if your laptop is fully local and off the grid.
+
+258
+00:10:25,120 --> 00:10:25,840
+Exactly.
+
+259
+00:10:25,840 --> 00:10:27,920
+Well, we've covered a lot of ground today.
+
+260
+00:10:27,920 --> 00:10:30,080
+We explored the crazy reality
+
+261
+00:10:30,080 --> 00:10:33,280
+of remote control agents like Claude Dispatch.
+
+262
+00:10:33,280 --> 00:10:35,200
+We debated the financial savings
+
+263
+00:10:35,200 --> 00:10:37,920
+versus the cognitive debt of vibe coding.
+
+264
+00:10:37,920 --> 00:10:39,280
+The skyscraper analogy.
+
+265
+00:10:39,280 --> 00:10:40,000
+Right.
+
+266
+00:10:40,000 --> 00:10:44,000
+And we unpacked that terrifying LIDLM security breach
+
+267
+00:10:44,000 --> 00:10:47,200
+and found some serious hope in the streaming experts
+
+268
+00:10:47,200 --> 00:10:50,000
+running trillion parameter models on laptops.
+
+269
+00:10:50,000 --> 00:10:52,640
+To bring it all home, there's a quote from developer David Abram
+
+270
+00:10:52,640 --> 00:10:54,720
+in the sources that I think nails this.
+
+271
+00:10:54,720 --> 00:10:57,440
+He said, the machine didn't take your craft.
+
+272
+00:10:57,440 --> 00:10:58,800
+You gave it up.
+
+273
+00:10:58,800 --> 00:11:00,960
+Man, you gave it up.
+
+274
+00:11:00,960 --> 00:11:02,640
+LLMs don't understand the system.
+
+275
+00:11:02,640 --> 00:11:03,840
+They don't carry context.
+
+276
+00:11:03,840 --> 00:11:05,760
+And most importantly, they don't choose.
+
+277
+00:11:05,760 --> 00:11:07,440
+The real work of software development
+
+278
+00:11:07,440 --> 00:11:10,080
+is knowing what should exist in the first place and why.
+
+279
+00:11:10,080 --> 00:11:11,440
+So to you, listening, I want to leave you
+
+280
+00:11:11,440 --> 00:11:12,880
+with a final thought to mull over.
+
+281
+00:11:12,880 --> 00:11:15,680
+If AI agents completely removes the friction
+
+282
+00:11:15,680 --> 00:11:17,120
+of typing out code,
+
+283
+00:11:17,120 --> 00:11:19,280
+will the most valuable technical skill
+
+284
+00:11:19,280 --> 00:11:22,480
+in the year 2027 simply be the ability
+
+285
+00:11:22,480 --> 00:11:25,120
+to read and audit massive systems
+
+286
+00:11:25,120 --> 00:11:26,800
+rather than the ability to write them?
+
+287
+00:11:26,800 --> 00:11:28,480
+It's a totally different mindset.
+
+288
+00:11:28,480 --> 00:11:29,680
+It really is.
+
+289
+00:11:29,680 --> 00:11:31,920
+Thank you so much for joining us for this deep dive.
+
+290
+00:11:31,920 --> 00:11:34,480
+Check your dependencies, audit your subscriptions,
+
+291
+00:11:34,480 --> 00:11:35,680
+and we'll catch you next time.
+
