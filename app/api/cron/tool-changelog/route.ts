@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { callClaude } from '@/lib/utils/anthropic'
 
 const JINA_BASE = 'https://r.jina.ai'
-const XAI_BASE = 'https://api.x.ai/v1'
 
 export const maxDuration = 300
 
@@ -49,22 +49,12 @@ Content:
 ${content.slice(0, 4000)}`
 
   try {
-    const res = await fetch(`${XAI_BASE}/chat/completions`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.XAI_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: 'grok-3-mini-fast',
-        max_tokens: 500,
-        temperature: 0.1,
-        messages: [{ role: 'user', content: prompt }],
-      }),
+    const result = await callClaude({
+      messages: [{ role: 'user', content: prompt }],
+      maxTokens: 500,
+      temperature: 0.1,
     })
-    if (!res.ok) return []
-    const data = await res.json()
-    const text = (data.choices?.[0]?.message?.content ?? '').trim()
+    const text = result.content
     const match = text.match(/\[[\s\S]*\]/)
     if (!match) return []
     return JSON.parse(match[0])
@@ -80,8 +70,8 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  if (!process.env.XAI_API_KEY) {
-    return NextResponse.json({ error: 'XAI_API_KEY not set' }, { status: 500 })
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return NextResponse.json({ error: 'ANTHROPIC_API_KEY not set' }, { status: 500 })
   }
 
   const supabase = createAdminClient()

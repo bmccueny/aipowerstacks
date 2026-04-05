@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { SITE_URL } from '@/lib/constants/site'
-
-const XAI_BASE_URL = 'https://api.x.ai/v1'
+import { callClaude } from '@/lib/utils/anthropic'
 
 /* ── Post type templates ───────────────────────────────────────────────────── */
 
@@ -165,30 +164,14 @@ Respond with ONLY the tweet text, nothing else.`
 }
 
 async function callGrok(prompt: string): Promise<string> {
-  const res = await fetch(`${XAI_BASE_URL}/chat/completions`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${process.env.XAI_API_KEY}`,
-    },
-    body: JSON.stringify({
-      model: 'grok-3-mini-fast',
-      max_tokens: 500,
-      temperature: 0.9,
-      messages: [{ role: 'user', content: prompt }],
-    }),
+  const result = await callClaude({
+    messages: [{ role: 'user', content: prompt }],
+    maxTokens: 500,
+    temperature: 0.9,
   })
 
-  if (!res.ok) {
-    const errText = await res.text()
-    throw new Error(`Grok API error: ${res.status} ${errText.slice(0, 200)}`)
-  }
-
-  const data = await res.json()
-  const text = (data.choices?.[0]?.message?.content ?? '').trim()
-
   // Strip surrounding quotes if present
-  return text.replace(/^["']|["']$/g, '')
+  return result.content.replace(/^["']|["']$/g, '')
 }
 
 /* ── LinkedIn adaptation ──────────────────────────────────────────────────── */
@@ -228,8 +211,8 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  if (!process.env.XAI_API_KEY) {
-    return NextResponse.json({ error: 'XAI_API_KEY not set' }, { status: 500 })
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return NextResponse.json({ error: 'ANTHROPIC_API_KEY not set' }, { status: 500 })
   }
 
   const supabase = createAdminClient()

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { callClaude } from '@/lib/utils/anthropic'
 
 /* ── Editor personas ──────────────────────────────────────────────────────── */
 
@@ -71,7 +72,7 @@ const EDITORS: Record<string, { id: string; voice: string }> = {
 
 /* ── Helpers ───────────────────────────────────────────────────────────────── */
 
-const XAI_BASE_URL = 'https://api.x.ai/v1'
+// Switched from xAI to Anthropic Claude
 
 interface ToolRow {
   id: string
@@ -163,20 +164,11 @@ async function generateReview(
     .filter(Boolean)
     .join('\n')
 
-  const res = await fetch(`${XAI_BASE_URL}/chat/completions`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${process.env.XAI_API_KEY}`,
-    },
-    body: JSON.stringify({
-      model: 'grok-3-mini-fast',
-      max_tokens: 300,
-      temperature: 0.8,
-      messages: [
-        {
-          role: 'user',
-          content: `You are ${editorName}, writing a quick, punchy product review for an AI tools directory.
+  const result = await callClaude({
+    messages: [
+      {
+        role: 'user',
+        content: `You are ${editorName}, writing a quick, punchy product review for an AI tools directory.
 
 YOUR VOICE: ${voice}
 
@@ -206,18 +198,13 @@ OTHER RULES:
 
 Respond in EXACTLY this JSON format (no extra text):
 {"rating": <number>, "body": "<review text>"}`,
-        },
-      ],
-    }),
+      },
+    ],
+    maxTokens: 300,
+    temperature: 0.8,
   })
 
-  if (!res.ok) {
-    const errText = await res.text()
-    throw new Error(`${res.status} ${errText}`)
-  }
-
-  const data = await res.json()
-  const text = (data.choices?.[0]?.message?.content ?? '').trim()
+  const text = result.content
 
   try {
     const parsed = JSON.parse(text)
@@ -245,8 +232,8 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  if (!process.env.XAI_API_KEY) {
-    return NextResponse.json({ error: 'XAI_API_KEY not set' }, { status: 500 })
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return NextResponse.json({ error: 'ANTHROPIC_API_KEY not set' }, { status: 500 })
   }
 
   const supabase = createAdminClient()

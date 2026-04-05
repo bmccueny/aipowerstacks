@@ -1,14 +1,13 @@
 import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { callClaude } from '@/lib/utils/anthropic'
 
 // ── Product Hunt AI Tool Discovery ──────────────────────────────────────────
 // Discovers new AI tools from Product Hunt's GraphQL API daily,
-// enriches them with Grok, and auto-publishes to the directory.
+// enriches them with Claude, and auto-publishes to the directory.
 //
 // Requires PRODUCT_HUNT_ACCESS_TOKEN env var.
 // Get one at: https://www.producthunt.com/v2/oauth/applications
-
-const XAI_BASE_URL = 'https://api.x.ai/v1'
 const JINA_BASE = 'https://r.jina.ai'
 const MAX_TOOLS_PER_RUN = 5
 
@@ -113,8 +112,7 @@ async function enrichWithGrok(
   trains_on_data: boolean
   has_sso: boolean
 } | null> {
-  const apiKey = process.env.XAI_API_KEY
-  if (!apiKey) return null
+  if (!process.env.ANTHROPIC_API_KEY) return null
 
   const prompt = `You are enriching an AI tool listing for a curated directory. Be accurate and concise.
 
@@ -141,25 +139,13 @@ Return ONLY a valid JSON object — no markdown fences, no explanation:
 }`
 
   try {
-    const res = await fetch(`${XAI_BASE_URL}/chat/completions`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: 'grok-3-mini-fast',
-        max_tokens: 500,
-        temperature: 0,
-        messages: [{ role: 'user', content: prompt }],
-      }),
+    const result = await callClaude({
+      messages: [{ role: 'user', content: prompt }],
+      maxTokens: 500,
+      temperature: 0,
     })
 
-    if (!res.ok) return null
-
-    const data = await res.json()
-    const raw = (data.choices?.[0]?.message?.content ?? '')
-      .trim()
+    const raw = result.content
       .replace(/^```json?\s*/i, '')
       .replace(/\s*```$/, '')
 

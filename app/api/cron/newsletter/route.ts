@@ -1,10 +1,9 @@
 import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { callClaude } from '@/lib/utils/anthropic'
 
 /* ── Config ──────────────────────────────────────────────────────────────────── */
-
-const XAI_BASE_URL = 'https://api.x.ai/v1'
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://aipowerstacks.com'
 const PRIMARY_COLOR = '#d03050' // Brand crimson
 
@@ -30,8 +29,7 @@ async function generateNewsSummary(
   news: NewsRow[],
   posts: BlogRow[],
 ): Promise<string> {
-  const apiKey = process.env.XAI_API_KEY
-  if (!apiKey) return 'Here is your weekly roundup of what happened in AI.'
+  if (!process.env.ANTHROPIC_API_KEY) return 'Here is your weekly roundup of what happened in AI.'
 
   const newsItems = news.map((n) => `- ${n.title} (${n.source_name ?? 'unknown'})`).join('\n')
   const postTitles = posts.map((p) => `- ${p.title}`).join('\n')
@@ -55,21 +53,12 @@ Rules:
 - End with a forward-looking sentence about what to watch next week`
 
   try {
-    const res = await fetch(`${XAI_BASE_URL}/chat/completions`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'grok-3-mini',
-        messages: [{ role: 'user', content: prompt }],
-        max_tokens: 500,
-        temperature: 0.8,
-      }),
+    const result = await callClaude({
+      messages: [{ role: 'user', content: prompt }],
+      maxTokens: 500,
+      temperature: 0.8,
     })
-    const data = await res.json()
-    return data.choices?.[0]?.message?.content?.trim() || 'Here is your weekly roundup of what happened in AI.'
+    return result.content || 'Here is your weekly roundup of what happened in AI.'
   } catch {
     return 'Here is your weekly roundup of what happened in AI.'
   }
