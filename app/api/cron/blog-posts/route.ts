@@ -812,15 +812,37 @@ Respond in EXACTLY this JSON format (no extra text before or after):
   const data = await res.json()
   const text = (data.candidates?.[0]?.content?.parts?.[0]?.text ?? '').trim()
 
+  // Sanitize control characters that break JSON.parse
+  // (LLMs sometimes emit raw newlines/tabs/etc. inside JSON string values)
+  function sanitizeJsonString(raw: string): string {
+    return raw.replace(/[\x00-\x1F\x7F]/g, (ch) => {
+      switch (ch) {
+        case '\n': return '\\n'
+        case '\r': return '\\r'
+        case '\t': return '\\t'
+        default: return ''
+      }
+    })
+  }
+
   let parsed: Record<string, unknown>
   try {
     parsed = JSON.parse(text)
   } catch {
-    const match = text.match(/\{[\s\S]*\}/)
-    if (match) {
-      parsed = JSON.parse(match[0])
-    } else {
-      throw new Error(`Failed to parse blog post JSON: ${text.slice(0, 300)}`)
+    // Try sanitizing control characters first
+    try {
+      parsed = JSON.parse(sanitizeJsonString(text))
+    } catch {
+      const match = text.match(/\{[\s\S]*\}/)
+      if (match) {
+        try {
+          parsed = JSON.parse(sanitizeJsonString(match[0]))
+        } catch {
+          parsed = JSON.parse(match[0])
+        }
+      } else {
+        throw new Error(`Failed to parse blog post JSON: ${text.slice(0, 300)}`)
+      }
     }
   }
 
