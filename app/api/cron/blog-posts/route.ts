@@ -267,7 +267,7 @@ async function isTitleTooSimilar(
   supabase: ReturnType<typeof createAdminClient>,
   newTitle: string,
   thresholdDays = 14,
-  similarityThreshold = 0.5,
+  similarityThreshold = 0.6,
 ): Promise<{ similar: boolean; matchedTitle?: string; score?: number }> {
   const since = new Date(Date.now() - thresholdDays * 86400000).toISOString()
   const { data: recentPosts } = await supabase
