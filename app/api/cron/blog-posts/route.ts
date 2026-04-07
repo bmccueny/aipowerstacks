@@ -183,10 +183,15 @@ const TOPIC_CATEGORIES = Object.keys(TOPIC_SOURCES)
 
 const CLUSTER_TOPICS: Record<string, string[]> = {
   'llm-comparison': ['AI Tools & Product Launches', 'AI Research & Breakthroughs'],
-  'ai-costs': ['AI for Business & Productivity', 'AI Tools & Product Launches'],
-  'ai-agents': ['AI for Business & Productivity', 'AI and the Future of Work'],
-  'productivity': ['AI for Business & Productivity', 'AI and the Future of Work', 'AI Tools & Product Launches'],
-  'local-ai': ['Local AI & Open Source Models', 'AI Coding & Developer Tools'],
+  'ai-costs': ['AI for Business & Productivity'],
+  'ai-agents': ['AI and the Future of Work'],
+  'productivity': ['AI for Business & Productivity'],
+  'local-ai': ['Local AI & Open Source Models'],
+  'ai-creative': ['AI Creative Tools (Image, Video, Audio)'],
+  'ai-coding': ['AI Coding & Developer Tools'],
+  'ai-ethics': ['AI Ethics & Regulation'],
+  'ai-research': ['AI Research & Breakthroughs'],
+  'ai-marketing': ['AI for Business & Productivity', 'AI Tools & Product Launches'],
 }
 
 /** Pick the cluster with the fewest posts in the last 14 days (not saturated at 5+) */
@@ -231,6 +236,57 @@ async function pickThinnestCluster(supabase: ReturnType<typeof createAdminClient
   const minCount = eligible[0].count
   const thinnest = eligible.filter((c) => c.count === minCount)
   return thinnest[Math.floor(Math.random() * thinnest.length)].cluster
+}
+
+/* ── Title dedup helpers ───────────────────────────────────────────────────── */
+
+/** Normalize a title into a bag of meaningful words */
+function titleWords(title: string): Set<string> {
+  const stopWords = new Set(['the', 'a', 'an', 'in', 'for', 'to', 'of', 'and', 'or', 'your', 'how', 'with', 'is', 'are', 'on', 'at', 'by', 'its', 'this', 'that'])
+  return new Set(
+    title
+      .toLowerCase()
+      .replace(/[^a-z0-9\s]/g, '')
+      .split(/\s+/)
+      .filter((w) => w.length > 1 && !stopWords.has(w))
+  )
+}
+
+/** Jaccard similarity between two sets */
+function jaccardSimilarity(a: Set<string>, b: Set<string>): number {
+  let intersection = 0
+  for (const word of a) {
+    if (b.has(word)) intersection++
+  }
+  const union = a.size + b.size - intersection
+  return union === 0 ? 0 : intersection / union
+}
+
+/** Check if a title is too similar to any recent post titles */
+async function isTitleTooSimilar(
+  supabase: ReturnType<typeof createAdminClient>,
+  newTitle: string,
+  thresholdDays = 14,
+  similarityThreshold = 0.5,
+): Promise<{ similar: boolean; matchedTitle?: string; score?: number }> {
+  const since = new Date(Date.now() - thresholdDays * 86400000).toISOString()
+  const { data: recentPosts } = await supabase
+    .from('blog_posts')
+    .select('title')
+    .eq('status', 'published')
+    .gte('published_at', since)
+
+  const newWords = titleWords(newTitle)
+
+  for (const post of recentPosts ?? []) {
+    const existingWords = titleWords(post.title)
+    const score = jaccardSimilarity(newWords, existingWords)
+    if (score >= similarityThreshold) {
+      return { similar: true, matchedTitle: post.title, score }
+    }
+  }
+
+  return { similar: false }
 }
 
 /* ── Scraping helpers ──────────────────────────────────────────────────────── */
@@ -675,6 +731,7 @@ async function generateBlogPost(
   scrapedContent: string,
   platformData: string,
   siblingPosts: { title: string; slug: string }[],
+  recentTitles: string[] = [],
 ): Promise<GeneratedPost> {
   const redditContext = redditItems
     .map((r) => `- [r/${r.subreddit}] "${r.title}" (score: ${r.score})${r.snippet ? `\n  ${r.snippet.slice(0, 200)}` : ''}`)
@@ -725,8 +782,13 @@ This post belongs to our ${cluster.label} series. You MUST:
 ${siblingPosts.length > 0 ? siblingPosts.map((p) => `  - <a href="/blog/${p.slug}">${p.title}</a>`).join('\n') : '  (No sibling posts yet — this is one of the first in the cluster)'}
 - Link to the cluster hub page: <a href="/blog/${cluster.slug}">${cluster.label} Guide</a>
 
+DUPLICATE AVOIDANCE (CRITICAL — read this first):
+We have recently published these articles. Your post MUST cover a DIFFERENT angle, topic, and keyword. Do NOT write about the same subject or use similar titles:
+${recentTitles.length > 0 ? recentTitles.map((t) => `- "${t}"`).join('\n') : '(no recent posts)'}
+If the trending sources all point to a topic we already covered, find a FRESH angle: a different tool, a contrarian take, a niche audience, a specific use case we missed, or a completely different subtopic within "${topic}".
+
 SEO REQUIREMENTS (CRITICAL — this post must rank on Google):
-1. TARGET KEYWORD: Pick ONE specific long-tail search query that people are actively Googling related to "${topic}" within the "${cluster.label}" theme. Examples: "best AI tools for [use case] 2026", "[tool] vs [tool] comparison", "how to use AI for [task]", "free AI [category] tools". The title MUST contain this keyword naturally.
+1. TARGET KEYWORD: Pick ONE specific long-tail search query that people are actively Googling related to "${topic}" within the "${cluster.label}" theme. It MUST be different from any keyword implied by the recent titles above. Examples: "best AI tools for [use case] 2026", "[tool] vs [tool] comparison", "how to use AI for [task]", "free AI [category] tools". The title MUST contain this keyword naturally.
 2. Title must be under 60 characters for Google SERPs. Include the year (2026) when relevant. Use power words (best, free, guide, vs, how to).
 3. Write 1500 to 2500 words. This is NON-NEGOTIABLE. Short posts do not rank. Google's top results average 1,800 words. Include enough depth, examples, and analysis to fill this length naturally. Do NOT pad with filler. Add more sections, more comparisons, more practical advice.
 4. Structure with clear H2 headers that include secondary keywords. Google uses H2s for featured snippets.
@@ -923,12 +985,13 @@ export async function GET(request: Request) {
   // 3. Editor rotation: exclude authors of last 3 posts
   const { data: recentPosts } = await supabase
     .from('blog_posts')
-    .select('author_id')
+    .select('author_id, title')
     .eq('status', 'published')
     .order('published_at', { ascending: false })
-    .limit(3)
+    .limit(15)
 
-  const recentAuthorIds = new Set((recentPosts ?? []).map((p) => p.author_id))
+  const recentAuthorIds = new Set((recentPosts ?? []).slice(0, 3).map((p) => p.author_id))
+  const recentTitles = (recentPosts ?? []).map((p) => p.title)
   const allEditors = Object.entries(EDITORS).map(([name, e]) => ({ name, ...e }))
   const eligibleEditors = allEditors.filter((e) => !recentAuthorIds.has(e.id))
   const editor = shuffle(eligibleEditors.length > 0 ? eligibleEditors : allEditors)[0]
@@ -979,6 +1042,7 @@ export async function GET(request: Request) {
       scrapedParts.join('\n\n'),
       platformData,
       siblingPosts,
+      recentTitles,
     )
 
     // 7. Post-process
@@ -1005,7 +1069,24 @@ export async function GET(request: Request) {
     // Catch any tool mentions the AI prompt missed
     const linkedContent = await addInternalLinks(post.content)
 
-    // 8. Quality gate
+    // 8. Dedup gate: reject posts too similar to recent ones
+    const dupCheck = await isTitleTooSimilar(supabase, post.title)
+    if (dupCheck.similar) {
+      return NextResponse.json({
+        ok: true,
+        published: 0,
+        result: {
+          editor: editor.name,
+          title: post.title,
+          topic,
+          cluster: cluster.slug,
+          slot,
+          status: `skipped: too similar to "${dupCheck.matchedTitle}" (score: ${dupCheck.score?.toFixed(2)})`,
+        },
+      })
+    }
+
+    // 9. Quality gate
     const quality = qualityCheck(post, cluster)
     const postStatus = quality.pass ? 'published' : 'draft'
 

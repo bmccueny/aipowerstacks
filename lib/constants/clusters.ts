@@ -30,6 +30,31 @@ export const BLOG_CLUSTERS: BlogCluster[] = [
     label: 'Local AI',
     tags: ['local-ai', 'open-source', 'docker', 'self-hosted'],
   },
+  {
+    slug: 'ai-creative',
+    label: 'AI Creative Tools',
+    tags: ['ai-creative', 'ai-art', 'ai-video', 'ai-music', 'ai-design', 'image-generation'],
+  },
+  {
+    slug: 'ai-coding',
+    label: 'AI Coding',
+    tags: ['ai-coding', 'code-generation', 'developer-tools', 'copilot', 'ide'],
+  },
+  {
+    slug: 'ai-ethics',
+    label: 'AI Ethics & Safety',
+    tags: ['ai-ethics', 'ai-safety', 'ai-regulation', 'ai-bias', 'ai-policy'],
+  },
+  {
+    slug: 'ai-research',
+    label: 'AI Research',
+    tags: ['ai-research', 'ai-breakthroughs', 'machine-learning', 'transformers', 'benchmarks'],
+  },
+  {
+    slug: 'ai-marketing',
+    label: 'AI for Marketing',
+    tags: ['ai-marketing', 'ai-seo', 'content-creation', 'ai-copywriting', 'social-media-ai'],
+  },
 ]
 
 /** Find the best matching cluster for a set of post tags */
