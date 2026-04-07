@@ -858,7 +858,7 @@ Respond in EXACTLY this JSON format (no extra text before or after):
         contents: [{ parts: [{ text: prompt }] }],
         generationConfig: {
           temperature: 0.85,
-          maxOutputTokens: 10000,
+          maxOutputTokens: 16384,
           responseMimeType: 'application/json',
         },
       }),
@@ -911,6 +911,32 @@ Respond in EXACTLY this JSON format (no extra text before or after):
     return result
   }
 
+  /** Try to extract fields from broken JSON using regex as last resort */
+  function extractFieldsFallback(raw: string, fallbackTopic: string): Record<string, unknown> {
+    const titleMatch = raw.match(/"title"\s*:\s*"((?:[^"\\]|\\.)*)"/s)
+    const excerptMatch = raw.match(/"excerpt"\s*:\s*"((?:[^"\\]|\\.)*)"/s)
+    const contentMatch = raw.match(/"content"\s*:\s*"((?:[^"\\]|\\.)*)"/s)
+    const readingTimeMatch = raw.match(/"reading_time_min"\s*:\s*(\d+)/)
+    const tagsMatch = raw.match(/"tags"\s*:\s*\[(.*?)\]/s)
+
+    if (!titleMatch || !contentMatch) {
+      throw new Error(`Failed to extract fields from blog post JSON: ${raw.slice(0, 300)}`)
+    }
+
+    const tags = tagsMatch
+      ? tagsMatch[1].match(/"([^"]+)"/g)?.map((t) => t.replace(/"/g, '')) ?? []
+      : []
+
+    return {
+      title: titleMatch[1],
+      excerpt: excerptMatch?.[1] ?? '',
+      content: contentMatch[1],
+      tags,
+      reading_time_min: readingTimeMatch ? Number(readingTimeMatch[1]) : 7,
+      topic_category: fallbackTopic,
+    }
+  }
+
   let parsed: Record<string, unknown>
   try {
     parsed = JSON.parse(text)
@@ -924,10 +950,16 @@ Respond in EXACTLY this JSON format (no extra text before or after):
         try {
           parsed = JSON.parse(sanitizeJsonString(match[0]))
         } catch {
-          parsed = JSON.parse(match[0])
+          try {
+            parsed = JSON.parse(match[0])
+          } catch {
+            // Last resort: regex field extraction
+            parsed = extractFieldsFallback(text, topic)
+          }
         }
       } else {
-        throw new Error(`Failed to parse blog post JSON: ${text.slice(0, 300)}`)
+        // Last resort: regex field extraction
+        parsed = extractFieldsFallback(text, topic)
       }
     }
   }
