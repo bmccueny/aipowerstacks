@@ -874,24 +874,48 @@ Respond in EXACTLY this JSON format (no extra text before or after):
   const data = await res.json()
   const text = (data.candidates?.[0]?.content?.parts?.[0]?.text ?? '').trim()
 
-  // Sanitize control characters that break JSON.parse
-  // (LLMs sometimes emit raw newlines/tabs/etc. inside JSON string values)
+  /**
+   * Sanitize control characters inside JSON string values.
+   * Walks the raw JSON text and only escapes control chars found
+   * between unescaped double quotes (i.e., inside string literals).
+   */
   function sanitizeJsonString(raw: string): string {
-    return raw.replace(/[\x00-\x1F\x7F]/g, (ch) => {
-      switch (ch) {
-        case '\n': return '\\n'
-        case '\r': return '\\r'
-        case '\t': return '\\t'
-        default: return ''
+    let result = ''
+    let inString = false
+    for (let i = 0; i < raw.length; i++) {
+      const ch = raw[i]
+      if (ch === '\\' && inString) {
+        // Escaped char — pass through both backslash and next char
+        result += ch + (raw[i + 1] ?? '')
+        i++
+        continue
       }
-    })
+      if (ch === '"') {
+        inString = !inString
+        result += ch
+        continue
+      }
+      if (inString) {
+        const code = ch.charCodeAt(0)
+        if (code < 0x20 || code === 0x7F) {
+          // Control char inside a string value — escape it
+          if (ch === '\n') result += '\\n'
+          else if (ch === '\r') result += '\\r'
+          else if (ch === '\t') result += '\\t'
+          // else skip it
+          continue
+        }
+      }
+      result += ch
+    }
+    return result
   }
 
   let parsed: Record<string, unknown>
   try {
     parsed = JSON.parse(text)
   } catch {
-    // Try sanitizing control characters first
+    // Try sanitizing control characters inside string values
     try {
       parsed = JSON.parse(sanitizeJsonString(text))
     } catch {
