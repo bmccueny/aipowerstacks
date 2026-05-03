@@ -43,7 +43,7 @@ export default async function HomePage() {
   return (
     <CompareProvider>
       <Navbar />
-      <main className="min-h-screen pt-20 flex flex-col gap-16 md:gap-24 pb-32">
+      <main className="min-h-[100dvh] pt-20 flex flex-col gap-20 md:gap-28 pb-32">
         <JsonLd data={{
           '@context': 'https://schema.org',
           '@type': 'WebPage',
@@ -104,12 +104,14 @@ export default async function HomePage() {
         </section>
 
         {/* ═══ Calculator Section ═══ */}
-        <section className="px-4 max-w-3xl mx-auto w-full">
-          <div className="text-center mb-6">
-            <h2 className="text-xl sm:text-2xl font-semibold tracking-tight mb-2">See what you&apos;re spending</h2>
-            <p className="text-sm text-muted-foreground">Tap the tools you use to calculate your monthly AI bill</p>
+        <section className="px-4 max-w-4xl mx-auto w-full">
+          <div className="mb-8">
+            <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground mb-2">Calculate your spend</h2>
+            <p className="text-base text-foreground font-medium">Tap the tools you pay for — see your total in seconds.</p>
           </div>
-          <CostCalculator tools={calcTools} />
+          <div className="max-w-xl">
+            <CostCalculator tools={calcTools} />
+          </div>
         </section>
 
         {/* ═══ Social Proof ═══ */}
@@ -156,22 +158,24 @@ export default async function HomePage() {
         {mostTracked.length > 0 && (
           <section className="px-4 max-w-4xl mx-auto w-full">
             <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground mb-6">Most tracked right now</h2>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {mostTracked.map((tool) => (
                 <Link
                   key={tool.id}
                   href={`/tools/${tool.slug}`}
-                  className="rounded-xl border border-black/[0.06] dark:border-white/[0.08] bg-white dark:bg-card p-4 sm:p-4 flex flex-col items-center gap-2.5 text-center hover:border-primary/25 hover:shadow-md transition-all duration-200 group"
+                  className="rounded-xl border border-foreground/[0.06] bg-white dark:bg-card p-4 flex items-center gap-3 hover:border-primary/30 hover:translate-y-[-1px] hover:shadow-sm transition-all duration-200 group"
                 >
                   {tool.logo_url ? (
-                    <img src={tool.logo_url} alt={tool.name} className="w-10 h-10 sm:w-10 sm:h-10 rounded-lg object-contain" />
+                    <img src={tool.logo_url} alt={tool.name} className="w-9 h-9 rounded-lg object-contain shrink-0" />
                   ) : (
-                    <span className="w-10 h-10 sm:w-10 sm:h-10 rounded-lg bg-primary/10 flex items-center justify-center text-sm font-bold text-primary">{tool.name?.[0] || '?'}</span>
+                    <span className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center text-xs font-bold text-primary shrink-0">{tool.name?.[0] || '?'}</span>
                   )}
-                  <p className="text-sm font-bold leading-tight group-hover:text-primary transition-colors line-clamp-1">{tool.name}</p>
-                  <span className="text-xs text-muted-foreground">
-                    {tool.avg_cost > 0 ? `~$${tool.avg_cost}/mo` : tool.pricing_model}
-                  </span>
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold leading-tight group-hover:text-primary transition-colors truncate">{tool.name}</p>
+                    <span className="text-xs text-muted-foreground">
+                      {tool.avg_cost > 0 ? `~$${tool.avg_cost}/mo` : tool.pricing_model}
+                    </span>
+                  </div>
                 </Link>
               ))}
             </div>
@@ -203,25 +207,25 @@ export default async function HomePage() {
 
         {/* ═══ Newsletter + Submit ═══ */}
         <section className="px-4 max-w-4xl mx-auto w-full">
-          <div className="grid grid-cols-1 md:grid-cols-2 border border-foreground/[0.06] rounded-2xl overflow-hidden">
-            <div className="p-5 sm:p-8 flex flex-col gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-[1.2fr_0.8fr] gap-px bg-foreground/[0.06] border border-foreground/[0.06] rounded-2xl overflow-hidden">
+            <div className="p-6 sm:p-10 flex flex-col gap-5 bg-background">
               <div>
-                <p className="text-xs font-medium text-primary mb-2">The AI Stack Report</p>
-                <h2 className="text-lg font-bold mb-1">Weekly AI cost intelligence</h2>
-                <p className="text-sm text-muted-foreground">Price changes, new tools, and where smart teams are cutting spend.</p>
+                <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-primary mb-3">The AI Stack Report</h2>
+                <p className="text-xl font-bold leading-tight mb-2">Weekly AI cost intelligence</p>
+                <p className="text-sm text-muted-foreground max-w-sm">Price changes, new tools, and where smart teams are cutting spend.</p>
               </div>
               <NewsletterBanner source="homepage-mid" tone="light" />
             </div>
-            <div className="p-5 sm:p-8 flex flex-col justify-center gap-4 bg-foreground/[0.015] md:border-l border-t md:border-t-0 border-foreground/[0.06]">
+            <div className="p-6 sm:p-10 flex flex-col justify-center gap-4 bg-foreground/[0.02]">
               <div>
-                <h2 className="text-lg font-bold text-foreground">Built an AI tool?</h2>
-                <p className="text-sm text-muted-foreground mt-1">Get in front of teams actively comparing solutions and tracking spend.</p>
+                <p className="text-base font-bold text-foreground">Built an AI tool?</p>
+                <p className="text-sm text-muted-foreground mt-1">Get in front of teams actively comparing solutions.</p>
               </div>
               <Link
                 href="/submit"
-                className="self-start inline-flex items-center gap-2 h-10 px-5 rounded-lg text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+                className="self-start inline-flex items-center gap-2 h-10 px-5 rounded-lg text-sm font-semibold border border-foreground/15 hover:border-primary/40 hover:text-primary transition-colors"
               >
-                Submit Your Tool Free <ArrowRight className="h-4 w-4" />
+                Submit Your Tool <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>
           </div>
@@ -253,7 +257,7 @@ export default async function HomePage() {
                           alt={news.title}
                           fill
                           sizes="(max-width: 640px) 75vw, 33vw"
-                          className="object-cover transition-transform duration-500 group-hover:scale-105"
+                          className="object-cover"
                         />
                       </div>
                     ) : (
@@ -285,17 +289,15 @@ export default async function HomePage() {
           <p className="text-sm text-muted-foreground mb-3">
             Looking for a specific tool?
           </p>
-          <div className="flex gap-4 flex-wrap">
-            <Link href="/tools" className="text-sm font-semibold text-primary hover:underline">
-              Browse {siteStats.toolCount}+ tools →
+          <div className="flex gap-5 flex-wrap">
+            <Link href="/tools" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+              Browse {siteStats.toolCount}+ tools
             </Link>
-            <span className="text-muted-foreground/30">·</span>
-            <Link href="/categories" className="text-sm font-semibold text-primary hover:underline">
-              Categories →
+            <Link href="/categories" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+              Categories
             </Link>
-            <span className="text-muted-foreground/30">·</span>
-            <Link href="/compare" className="text-sm font-semibold text-primary hover:underline">
-              Compare →
+            <Link href="/compare" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+              Compare tools
             </Link>
           </div>
         </section>
