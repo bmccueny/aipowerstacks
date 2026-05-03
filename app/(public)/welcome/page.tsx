@@ -17,7 +17,7 @@ export default async function WelcomePage() {
   const { siteStats, calcTools } = await getHomepageData()
 
   return (
-    <main className="min-h-[100dvh] pt-24 pb-20 px-4">
+    <div className="pt-4 pb-20 px-4">
       <div className="max-w-4xl mx-auto">
         {/* PH Badge */}
         <div className="flex items-center gap-2 mb-8">
@@ -107,6 +107,6 @@ export default async function WelcomePage() {
           <span><strong className="text-foreground font-black">Daily</strong> price updates</span>
         </div>
       </div>
-    </main>
+    </div>
   )
 }
