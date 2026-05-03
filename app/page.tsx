@@ -192,27 +192,34 @@ export default async function HomePage() {
         {/* ═══ Overlap Teaser ═══ */}
         <OverlapTeaser overlaps={overlaps} />
 
-        {/* ═══ CTA ═══ */}
+        {/* ═══ CTA with demo ═══ */}
         <section className="px-4 max-w-4xl mx-auto w-full">
-          <div className="rounded-3xl bg-foreground dark:bg-white/[0.05] p-10 sm:p-16 relative overflow-hidden">
-            <div className="relative z-10 max-w-lg">
-              <h2 className="text-[clamp(1.75rem,4vw,2.75rem)] font-extrabold tracking-[-0.02em] text-background dark:text-foreground leading-[1.1]">
-                Find out which tools
-                <br />to cancel.
-              </h2>
-              <p className="text-[15px] text-background/60 dark:text-muted-foreground mt-4 max-w-sm leading-relaxed">
-                We&apos;ll flag overlap and show you exactly where to cut — you make the call.
-              </p>
-              <AuthCTALink fallbackHref="/login?redirectTo=/tracker" authHref="/tracker" className="mt-8 inline-block">
-                <Button size="lg" className="bg-background text-foreground hover:bg-background/90 dark:bg-primary dark:text-white dark:hover:bg-primary/90 font-bold gap-2.5 h-[52px] px-8 text-[15px] rounded-xl">
-                  Start Free
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
-              </AuthCTALink>
-            </div>
-            {/* Subtle background element */}
-            <div className="absolute top-0 right-0 w-1/2 h-full opacity-[0.04] pointer-events-none" aria-hidden="true">
-              <div className="absolute inset-0 bg-gradient-to-l from-background/80 to-transparent" />
+          <div className="rounded-3xl bg-foreground dark:bg-white/[0.05] p-8 sm:p-12 overflow-hidden">
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] gap-8 lg:gap-12 items-center">
+              <div>
+                <h2 className="text-[clamp(1.75rem,4vw,2.5rem)] font-extrabold tracking-[-0.02em] text-background dark:text-foreground leading-[1.1]">
+                  Find out which tools to cancel.
+                </h2>
+                <p className="text-[15px] text-background/60 dark:text-muted-foreground mt-4 max-w-sm leading-relaxed">
+                  Add your stack, toggle annual pricing, see exactly where to cut.
+                </p>
+                <AuthCTALink fallbackHref="/login?redirectTo=/tracker" authHref="/tracker" className="mt-8 inline-block">
+                  <Button size="lg" className="bg-background text-foreground hover:bg-background/90 dark:bg-primary dark:text-white dark:hover:bg-primary/90 font-bold gap-2.5 h-[52px] px-8 text-[15px] rounded-xl">
+                    Start Free
+                    <ArrowRight className="h-4 w-4" />
+                  </Button>
+                </AuthCTALink>
+              </div>
+              <div className="hidden lg:block rounded-xl overflow-hidden border border-background/10">
+                <Image
+                  src="/demo.gif"
+                  alt="Demo: adding AI tools and seeing monthly spend with annual savings"
+                  width={640}
+                  height={360}
+                  className="w-full h-auto"
+                  unoptimized
+                />
+              </div>
             </div>
           </div>
         </section>
