@@ -8,6 +8,42 @@ const stripe = process.env.STRIPE_SECRET_KEY
     })
   : null
 
+export async function GET(req: NextRequest) {
+  const plan = req.nextUrl.searchParams.get('plan')
+  if (plan !== 'pro') {
+    return NextResponse.redirect(new URL('/pro', req.url))
+  }
+
+  if (!stripe) {
+    return NextResponse.redirect(new URL('/pro?error=stripe-not-configured', req.url))
+  }
+
+  const proPriceId = process.env.STRIPE_PRO_PRICE_ID
+  if (!proPriceId) {
+    return NextResponse.redirect(new URL('/pro?error=pro-plan-not-configured', req.url))
+  }
+
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) {
+    return NextResponse.redirect(new URL('/login?redirectTo=/pro', req.url))
+  }
+
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
+
+  const session = await stripe.checkout.sessions.create({
+    mode: 'subscription',
+    line_items: [{ price: proPriceId, quantity: 1 }],
+    metadata: { userId: user.id, plan: 'pro' },
+    customer_email: user.email,
+    subscription_data: { trial_period_days: 7 },
+    success_url: `${baseUrl}/dashboard?upgraded=true`,
+    cancel_url: `${baseUrl}/pro`,
+  })
+
+  return NextResponse.redirect(session.url!)
+}
+
 export async function POST(req: NextRequest) {
   if (!stripe || !process.env.STRIPE_PRICE_ID) {
     return NextResponse.json({ error: 'Stripe is not configured' }, { status: 503 })
