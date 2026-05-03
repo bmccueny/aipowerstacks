@@ -114,6 +114,39 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
     return () => { controller.abort(); clearTimeout(timeout) }
   }, [tools])
 
+  // Merge anonymous localStorage data into authenticated account
+  useEffect(() => {
+    if (loading || !clientLoggedIn) return
+    try {
+      const stored = localStorage.getItem(ANON_STORAGE_KEY)
+      if (!stored) return
+      const anonData: Array<{ tool_id: string; monthly_cost: number }> = JSON.parse(stored)
+      if (!anonData.length) return
+      const existingIds = new Set(subs.map(s => s.tool_id))
+      const toMerge = anonData.filter(s => !existingIds.has(s.tool_id))
+      if (toMerge.length === 0) {
+        localStorage.removeItem(ANON_STORAGE_KEY)
+        return
+      }
+      Promise.all(
+        toMerge.map(s =>
+          fetch('/api/tracker', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ tool_id: s.tool_id, monthly_cost: s.monthly_cost }),
+          })
+        )
+      ).then(() => {
+        localStorage.removeItem(ANON_STORAGE_KEY)
+        setAnonSubs([])
+        // Reload subs from server
+        fetch('/api/tracker').then(r => r.json()).then(d => {
+          setSubs(d.subscriptions || [])
+        })
+      }).catch(() => {})
+    } catch { /* corrupted localStorage */ }
+  }, [loading, clientLoggedIn, subs])
+
   // Auto-select tool from ?add= query param after subs load
   useEffect(() => {
     if (autoAddHandledRef.current || loading || !autoAddSlug) return

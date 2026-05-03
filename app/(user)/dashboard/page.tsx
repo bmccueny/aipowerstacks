@@ -3,7 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/server'
 import type { Metadata } from 'next'
-import { Bookmark, Layers, Lock, Trophy } from 'lucide-react'
+import { ArrowRight, Bookmark, Layers, Lock, Trophy } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { AvatarUpload } from '@/components/dashboard/AvatarUpload'
 import { DirectMessagesInbox } from '@/components/dashboard/DirectMessagesInbox'
@@ -185,6 +185,42 @@ export default async function DashboardPage() {
           </div>
         </div>
       </div>
+
+      {/* Onboarding — shown when user has no data */}
+      {bookmarks.length === 0 && myStacks.length === 0 && reviews.length === 0 && (
+        <div className="rounded-2xl border-2 border-dashed border-primary/20 p-8 mb-10 text-center">
+          <h2 className="text-xl font-bold mb-2">Welcome to AIPowerStacks</h2>
+          <p className="text-sm text-muted-foreground max-w-md mx-auto mb-6">
+            Start by tracking your AI subscriptions — we&apos;ll find overlap, flag cheaper alternatives, and show you where to save.
+          </p>
+          <div className="flex flex-col sm:flex-row justify-center gap-3">
+            <Link href="/tracker">
+              <Button className="font-bold gap-2 h-11 px-6">
+                Track My AI Spend <ArrowRight className="h-4 w-4" />
+              </Button>
+            </Link>
+            <Link href="/tools">
+              <Button variant="outline" className="font-bold h-11 px-6">
+                Browse Tools
+              </Button>
+            </Link>
+          </div>
+          <div className="flex justify-center gap-8 mt-8 pt-6 border-t border-foreground/5">
+            <div className="text-center">
+              <p className="text-2xl font-black text-foreground">1</p>
+              <p className="text-[10px] text-muted-foreground uppercase tracking-wider mt-0.5">Add tools</p>
+            </div>
+            <div className="text-center">
+              <p className="text-2xl font-black text-foreground">2</p>
+              <p className="text-[10px] text-muted-foreground uppercase tracking-wider mt-0.5">Find overlap</p>
+            </div>
+            <div className="text-center">
+              <p className="text-2xl font-black text-primary">3</p>
+              <p className="text-[10px] text-muted-foreground uppercase tracking-wider mt-0.5">Save money</p>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
         {/* Main */}
