@@ -30,8 +30,8 @@ function CostInsight({ tools }: { tools: { name: string; pricing_model: string; 
   if (tools.length < 2) return null
   const prices = tools.map(t => {
     const pd = t.pricing_details || ''
-    const match = pd.match(/\$(\d+)/)
-    if (match) return parseInt(match[1])
+    const match = pd.match(/\$(\d+(?:\.\d+)?)/)
+    if (match) return parseFloat(match[1])
     if (t.pricing_model === 'free') return 0
     if (t.pricing_model === 'freemium') return 0
     return null

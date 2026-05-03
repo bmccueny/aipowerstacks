@@ -82,7 +82,7 @@ function buildEmailHtml(
     ? posts.map((p) => `
         <tr>
           <td style="padding: 12px 0; border-bottom: 1px solid #f0f0f0;">
-            <a href="${APP_URL}/blog/${p.slug}" style="color: ${PRIMARY_COLOR}; font-weight: 700; font-size: 15px; text-decoration: none;">${p.title}</a>
+            <a href="${APP_URL}/blog/${p.slug}?utm_source=newsletter&utm_medium=email" style="color: ${PRIMARY_COLOR}; font-weight: 700; font-size: 15px; text-decoration: none;">${p.title}</a>
             ${p.excerpt ? `<div style="color: #666; font-size: 13px; margin-top: 4px; line-height: 1.5;">${p.excerpt.slice(0, 120)}${p.excerpt.length > 120 ? '...' : ''}</div>` : ''}
           </td>
         </tr>`).join('')

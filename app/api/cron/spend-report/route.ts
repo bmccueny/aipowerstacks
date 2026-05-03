@@ -85,7 +85,7 @@ function buildSpendEmailHtml(
               }
             </td>
             <td style="vertical-align: middle;">
-              <a href="${APP_URL}/tools/${s.tool.slug}" style="color: #1a1a1a; font-weight: 600; font-size: 14px; text-decoration: none;">${s.tool.name}</a>
+              <a href="${APP_URL}/tools/${s.tool.slug}?utm_source=spend_report&utm_medium=email" style="color: #1a1a1a; font-weight: 600; font-size: 14px; text-decoration: none;">${s.tool.name}</a>
               ${s.billing_cycle && s.billing_cycle !== 'monthly' ? `<div style="color: #888; font-size: 12px; margin-top: 2px;">${s.billing_cycle}</div>` : ''}
             </td>
             <td style="vertical-align: middle; text-align: right; white-space: nowrap;">
@@ -120,7 +120,7 @@ function buildSpendEmailHtml(
               }
             </td>
             <td style="vertical-align: middle;">
-              <a href="${APP_URL}/tools/${a.slug}" style="color: ${PRIMARY_COLOR}; font-weight: 600; font-size: 14px; text-decoration: none;">${a.name}</a>
+              <a href="${APP_URL}/tools/${a.slug}?utm_source=spend_report&utm_medium=email" style="color: ${PRIMARY_COLOR}; font-weight: 600; font-size: 14px; text-decoration: none;">${a.name}</a>
               ${a.categoryName ? `<div style="color: #888; font-size: 12px; margin-top: 2px;">${a.categoryName}</div>` : ''}
             </td>
             <td style="vertical-align: middle; text-align: right;">
@@ -250,7 +250,8 @@ export async function GET(request: Request) {
     supabase
       .from('tools')
       .select('id, name, slug, logo_url, pricing_model, category_id')
-      .in('id', toolIds),
+      .in('id', toolIds)
+      .eq('status', 'published'),
     supabase.from('categories').select('id, name'),
     // Previous month snapshots for MoM delta
     supabase
