@@ -13,8 +13,10 @@ export function OverlapTeaser({ overlaps }: { overlaps: OverlapCategory[] }) {
 
   return (
     <section className="px-4 max-w-4xl mx-auto w-full">
-      <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground mb-2">Overlap alert</h2>
-      <p className="text-base text-foreground font-medium mb-8">Are you paying twice for the same thing?</p>
+      <div className="text-center mb-8">
+        <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground mb-2">Overlap alert</h2>
+        <p className="text-lg text-foreground font-bold">Are you paying twice for the same thing?</p>
+      </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {overlaps.map((overlap) => (
@@ -46,7 +48,7 @@ export function OverlapTeaser({ overlaps }: { overlaps: OverlapCategory[] }) {
         ))}
       </div>
 
-      <div className="mt-6">
+      <div className="text-center mt-6">
         <Link
           href="/tracker"
           className="inline-flex items-center gap-2 text-sm font-medium text-foreground hover:text-primary transition-colors"

@@ -126,56 +126,37 @@ export default async function HomePage() {
         </section>
 
         {/* ═══ Calculator Section ═══ */}
-        <section className="px-4 max-w-4xl mx-auto w-full">
-          <div className="mb-8">
+        <section className="px-4 max-w-3xl mx-auto w-full">
+          <div className="text-center mb-8">
             <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground mb-2">Calculate your spend</h2>
             <p className="text-base text-foreground font-medium">Tap the tools you pay for — see your total in seconds.</p>
           </div>
-          <div className="max-w-xl">
-            <CostCalculator tools={calcTools} />
-          </div>
+          <CostCalculator tools={calcTools} />
         </section>
 
         {/* ═══ How it works ═══ */}
         <section className="px-4 max-w-4xl mx-auto w-full">
-          <div className="grid grid-cols-1 sm:grid-cols-[auto_1fr] gap-x-10 gap-y-0">
-            <div className="hidden sm:flex flex-col items-center">
-              <span className="shrink-0 w-9 h-9 rounded-full bg-foreground text-background flex items-center justify-center text-xs font-bold">1</span>
-              <div className="w-px flex-1 bg-foreground/10" />
-            </div>
-            <div className="pb-8 sm:pb-9">
-              <span className="sm:hidden text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1 block">Step 1</span>
-              <p className="text-lg font-bold text-foreground mb-1">Add your stack</p>
-              <p className="text-sm text-muted-foreground leading-relaxed max-w-sm">Tap the tools you pay for. Takes 10 seconds — no account needed.</p>
-            </div>
-
-            <div className="hidden sm:flex flex-col items-center">
-              <span className="shrink-0 w-9 h-9 rounded-full bg-foreground text-background flex items-center justify-center text-xs font-bold">2</span>
-              <div className="w-px flex-1 bg-foreground/10" />
-            </div>
-            <div className="pb-8 sm:pb-9">
-              <span className="sm:hidden text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1 block">Step 2</span>
-              <p className="text-lg font-bold text-foreground mb-1">See the overlap</p>
-              <p className="text-sm text-muted-foreground leading-relaxed max-w-sm">We flag tools competing for the same job in your stack.</p>
-            </div>
-
-            <div className="hidden sm:flex flex-col items-center">
-              <span className="shrink-0 w-9 h-9 rounded-full bg-foreground text-background flex items-center justify-center text-xs font-bold">3</span>
-              <div className="w-px flex-1 bg-foreground/10" />
-            </div>
-            <div className="pb-8 sm:pb-9">
-              <span className="sm:hidden text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1 block">Step 3</span>
-              <p className="text-lg font-bold text-foreground mb-1">Cut the waste</p>
-              <p className="text-sm text-muted-foreground leading-relaxed max-w-sm">Compare overlaps side-by-side. You decide what stays.</p>
-            </div>
-
-            <div className="hidden sm:flex flex-col items-center">
-              <span className="shrink-0 w-9 h-9 rounded-full bg-primary text-white flex items-center justify-center text-xs font-bold">4</span>
+          <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground text-center mb-10">How it works</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8 text-center">
+            <div>
+              <span className="inline-flex w-10 h-10 rounded-full bg-foreground text-background items-center justify-center text-sm font-bold mb-3">1</span>
+              <p className="font-bold text-sm mb-1">Add your stack</p>
+              <p className="text-xs text-muted-foreground leading-relaxed">Tap the tools you pay for. Takes 10 seconds.</p>
             </div>
             <div>
-              <span className="sm:hidden text-[11px] font-bold text-primary uppercase tracking-widest mb-1 block">Step 4</span>
-              <p className="text-lg font-bold text-primary mb-1">Save every month</p>
-              <p className="text-sm text-muted-foreground leading-relaxed max-w-sm">Your personalized savings report shows exactly where to cut.</p>
+              <span className="inline-flex w-10 h-10 rounded-full bg-foreground text-background items-center justify-center text-sm font-bold mb-3">2</span>
+              <p className="font-bold text-sm mb-1">See the overlap</p>
+              <p className="text-xs text-muted-foreground leading-relaxed">We flag tools competing for the same job.</p>
+            </div>
+            <div>
+              <span className="inline-flex w-10 h-10 rounded-full bg-foreground text-background items-center justify-center text-sm font-bold mb-3">3</span>
+              <p className="font-bold text-sm mb-1">Cut the waste</p>
+              <p className="text-xs text-muted-foreground leading-relaxed">Compare overlaps side-by-side. You decide.</p>
+            </div>
+            <div>
+              <span className="inline-flex w-10 h-10 rounded-full bg-primary text-white items-center justify-center text-sm font-bold mb-3">4</span>
+              <p className="font-bold text-sm text-primary mb-1">Save monthly</p>
+              <p className="text-xs text-muted-foreground leading-relaxed">Your savings report shows where to cut.</p>
             </div>
           </div>
         </section>
@@ -183,7 +164,7 @@ export default async function HomePage() {
         {/* ═══ Most Tracked ═══ */}
         {mostTracked.length > 0 && (
           <section className="px-4 max-w-4xl mx-auto w-full">
-            <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground mb-6">Most tracked right now</h2>
+            <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground text-center mb-6">Most tracked right now</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {mostTracked.map((tool) => (
                 <Link
@@ -265,17 +246,12 @@ export default async function HomePage() {
         {/* ═══ Blog Posts ═══ */}
         {briefingItems.length > 0 && (
           <section className="px-4 max-w-4xl mx-auto w-full">
-            <div className="flex items-end justify-between mb-8">
-              <div>
-                <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground mb-1">From the blog</h2>
-                <p className="text-base text-foreground font-medium">AI cost intel, updated weekly.</p>
-              </div>
-              <Link href="/blog" className="text-xs font-semibold text-muted-foreground hover:text-primary flex items-center gap-1 transition-colors">
-                All posts <ChevronRight className="h-3 w-3" />
-              </Link>
+            <div className="text-center mb-8">
+              <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground mb-1">From the blog</h2>
+              <p className="text-base text-foreground font-medium">AI cost intel, updated weekly.</p>
             </div>
             <div className="flex sm:grid sm:grid-cols-3 gap-5 overflow-x-auto sm:overflow-visible snap-x snap-mandatory pb-2 sm:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0">
-              {briefingItems.map((news) => (
+              {briefingItems.slice(0, 3).map((news) => (
                 <Link
                   key={news.id}
                   href={news.url}
@@ -303,15 +279,20 @@ export default async function HomePage() {
                 </Link>
               ))}
             </div>
+            <div className="text-center mt-6">
+              <Link href="/blog" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+                View all posts <ChevronRight className="h-3 w-3 inline" />
+              </Link>
+            </div>
           </section>
         )}
 
         {/* ═══ Browse ═══ */}
-        <section className="px-4 max-w-4xl mx-auto w-full">
+        <section className="px-4 max-w-4xl mx-auto w-full text-center">
           <p className="text-sm text-muted-foreground mb-3">
             Looking for a specific tool?
           </p>
-          <div className="flex gap-5 flex-wrap">
+          <div className="flex justify-center gap-5 flex-wrap">
             <Link href="/tools" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
               Browse {siteStats.toolCount}+ tools
             </Link>
