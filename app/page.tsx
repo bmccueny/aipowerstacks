@@ -88,21 +88,38 @@ export default async function HomePage() {
                 Free forever · No credit card · Updated daily
               </p>
             </div>
-            {/* Right — Stats with personality */}
-            <div className="hidden lg:flex flex-col gap-4 pt-6">
-              <div className="grid grid-cols-2 gap-3">
-                <div className="rounded-2xl border border-foreground/[0.05] p-6 bg-white dark:bg-card">
-                  <p className="text-[2.5rem] font-black tabular-nums text-foreground leading-none">{siteStats.toolCount}+</p>
-                  <p className="text-[11px] text-muted-foreground mt-2 tracking-wide">AI tools with real pricing</p>
-                </div>
-                <div className="rounded-2xl border border-foreground/[0.05] p-6 bg-white dark:bg-card">
-                  <p className="text-[2.5rem] font-black tabular-nums text-foreground leading-none">$120</p>
-                  <p className="text-[11px] text-muted-foreground mt-2 tracking-wide">avg. monthly AI spend</p>
-                </div>
+            {/* Right — Stats grid */}
+            <div className="hidden lg:grid grid-cols-2 gap-3 pt-6">
+              <div className="rounded-2xl border border-foreground/[0.05] p-6 bg-white dark:bg-card">
+                <p className="text-[2.25rem] font-black tabular-nums text-foreground leading-none">{siteStats.toolCount}+</p>
+                <p className="text-[11px] text-muted-foreground mt-2 tracking-wide">AI tools tracked</p>
               </div>
-              <div className="rounded-2xl border-2 border-primary/20 bg-primary/[0.03] dark:bg-primary/[0.06] p-6">
-                <p className="text-[2.5rem] font-black tabular-nums text-primary leading-none">2-3x</p>
-                <p className="text-[13px] text-foreground/80 mt-2 font-medium">overlap — most teams pay for tools that do the same thing</p>
+              <div className="rounded-2xl border border-foreground/[0.05] p-6 bg-white dark:bg-card">
+                <p className="text-[2.25rem] font-black tabular-nums text-foreground leading-none">$120</p>
+                <p className="text-[11px] text-muted-foreground mt-2 tracking-wide">avg. monthly spend</p>
+              </div>
+              <div className="rounded-2xl border-2 border-primary/20 bg-primary/[0.03] p-6">
+                <p className="text-[2.25rem] font-black tabular-nums text-primary leading-none">2-3x</p>
+                <p className="text-[11px] text-muted-foreground mt-2 tracking-wide">tools doing same job</p>
+              </div>
+              <div className="rounded-2xl border border-foreground/[0.05] p-6 bg-white dark:bg-card">
+                <p className="text-[2.25rem] font-black tabular-nums text-foreground leading-none">{categories.length}</p>
+                <p className="text-[11px] text-muted-foreground mt-2 tracking-wide">categories compared</p>
+              </div>
+            </div>
+            {/* Mobile stats — condensed row */}
+            <div className="flex lg:hidden gap-6 mt-2">
+              <div>
+                <p className="text-xl font-black tabular-nums">{siteStats.toolCount}+</p>
+                <p className="text-[10px] text-muted-foreground tracking-wide">tools</p>
+              </div>
+              <div>
+                <p className="text-xl font-black tabular-nums text-primary">2-3x</p>
+                <p className="text-[10px] text-muted-foreground tracking-wide">overlap</p>
+              </div>
+              <div>
+                <p className="text-xl font-black tabular-nums">$120</p>
+                <p className="text-[10px] text-muted-foreground tracking-wide">avg. spend</p>
               </div>
             </div>
           </div>
@@ -126,7 +143,7 @@ export default async function HomePage() {
               <span className="shrink-0 w-9 h-9 rounded-full bg-foreground text-background flex items-center justify-center text-xs font-bold">1</span>
               <div className="w-px flex-1 bg-foreground/10" />
             </div>
-            <div className="pb-10 sm:pb-12">
+            <div className="pb-8 sm:pb-9">
               <span className="sm:hidden text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1 block">Step 1</span>
               <p className="text-lg font-bold text-foreground mb-1">Add your stack</p>
               <p className="text-sm text-muted-foreground leading-relaxed max-w-sm">Tap the tools you pay for. Takes 10 seconds — no account needed.</p>
@@ -136,7 +153,7 @@ export default async function HomePage() {
               <span className="shrink-0 w-9 h-9 rounded-full bg-foreground text-background flex items-center justify-center text-xs font-bold">2</span>
               <div className="w-px flex-1 bg-foreground/10" />
             </div>
-            <div className="pb-10 sm:pb-12">
+            <div className="pb-8 sm:pb-9">
               <span className="sm:hidden text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1 block">Step 2</span>
               <p className="text-lg font-bold text-foreground mb-1">See the overlap</p>
               <p className="text-sm text-muted-foreground leading-relaxed max-w-sm">We flag tools competing for the same job in your stack.</p>
@@ -146,7 +163,7 @@ export default async function HomePage() {
               <span className="shrink-0 w-9 h-9 rounded-full bg-foreground text-background flex items-center justify-center text-xs font-bold">3</span>
               <div className="w-px flex-1 bg-foreground/10" />
             </div>
-            <div className="pb-10 sm:pb-12">
+            <div className="pb-8 sm:pb-9">
               <span className="sm:hidden text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1 block">Step 3</span>
               <p className="text-lg font-bold text-foreground mb-1">Cut the waste</p>
               <p className="text-sm text-muted-foreground leading-relaxed max-w-sm">Compare overlaps side-by-side. You decide what stays.</p>
