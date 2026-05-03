@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowRight, ChevronRight, Newspaper } from 'lucide-react'
+import { ArrowRight, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
@@ -11,7 +11,7 @@ import { CompareProvider } from '@/lib/context/CompareContext'
 import { CompareTray } from '@/components/tools/CompareTray'
 import { getHomepageData } from '@/lib/supabase/queries/homepage'
 
-import { SocialProofBar } from '@/components/home/SocialProofBar'
+// Social proof is now integrated into hero stats grid
 import { JsonLd } from '@/components/common/JsonLd'
 import { SITE_URL } from '@/lib/constants/site'
 import { AuthCTALink } from '@/components/home/AuthCTALink'
@@ -53,51 +53,56 @@ export default async function HomePage() {
         }} />
 
         {/* ═══ Hero ═══ */}
-        <section className="relative px-4 max-w-5xl mx-auto w-full pt-12 sm:pt-24">
-          <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-16 items-center">
+        <section className="relative px-4 max-w-5xl mx-auto w-full pt-16 sm:pt-28 pb-4">
+          <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_0.85fr] gap-12 lg:gap-20 items-start">
             {/* Left — Copy */}
-            <div className="max-w-xl">
-              <p className="text-xs font-semibold uppercase tracking-[0.15em] text-primary mb-4">{siteStats.toolCount}+ tools tracked</p>
-              <h1 className="text-[clamp(2.5rem,5.5vw,4rem)] font-extrabold tracking-[-0.03em] text-foreground leading-[1.05] text-wrap-balance">
-                How much is AI costing you?
-              </h1>
-              <p className="mt-5 text-lg text-muted-foreground leading-relaxed max-w-[48ch]">
-                Track your AI subscriptions. See what overlaps. Cut what you don&apos;t need.
+            <div className="max-w-[540px]">
+              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-primary/90 mb-5 flex items-center gap-2">
+                <span className="w-5 h-px bg-primary/60" />
+                {siteStats.toolCount}+ tools tracked
               </p>
-              <div className="mt-8 flex flex-wrap gap-3">
+              <h1 className="text-[clamp(2.75rem,6vw,4.5rem)] font-extrabold tracking-[-0.035em] text-foreground leading-[0.98]">
+                How much is
+                <br />
+                <span className="text-primary">AI</span> costing you?
+              </h1>
+              <p className="mt-6 text-[1.125rem] text-muted-foreground leading-[1.6] max-w-[44ch]">
+                Track your AI subscriptions. See what overlaps.
+                <br className="hidden sm:block" />
+                Cut what you don&apos;t need.
+              </p>
+              <div className="mt-10 flex flex-wrap items-center gap-3">
                 <AuthCTALink fallbackHref="/login?redirectTo=/tracker" authHref="/tracker">
-                  <Button size="lg" className="btn-glow font-bold gap-2 h-12 px-8 text-base">
+                  <Button size="lg" className="btn-glow font-bold gap-2.5 h-[52px] px-8 text-[15px] rounded-xl">
                     Track My AI Spend
                     <ArrowRight className="h-4 w-4" />
                   </Button>
                 </AuthCTALink>
                 <Link href="/compare">
-                  <Button size="lg" variant="outline" className="font-bold border-foreground/10 h-12 px-6 text-muted-foreground hover:text-foreground">
+                  <Button size="lg" variant="ghost" className="font-medium h-[52px] px-5 text-[15px] text-muted-foreground hover:text-foreground">
                     Compare Tools
                   </Button>
                 </Link>
               </div>
-              <p className="mt-4 text-xs text-muted-foreground/70">
-                Free to use · Updated daily · No credit card required
+              <p className="mt-5 text-[11px] text-muted-foreground/60 tracking-wide">
+                Free forever · No credit card · Updated daily
               </p>
             </div>
-            {/* Right — Stats cluster */}
-            <div className="hidden lg:grid grid-cols-2 gap-3">
-              <div className="rounded-xl border border-foreground/[0.06] bg-white dark:bg-card p-5">
-                <p className="text-3xl font-black tabular-nums text-foreground">{siteStats.toolCount}+</p>
-                <p className="text-xs text-muted-foreground mt-1">AI tools with real pricing</p>
+            {/* Right — Stats with personality */}
+            <div className="hidden lg:flex flex-col gap-4 pt-6">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="rounded-2xl border border-foreground/[0.05] p-6 bg-white dark:bg-card">
+                  <p className="text-[2.5rem] font-black tabular-nums text-foreground leading-none">{siteStats.toolCount}+</p>
+                  <p className="text-[11px] text-muted-foreground mt-2 tracking-wide">AI tools with real pricing</p>
+                </div>
+                <div className="rounded-2xl border border-foreground/[0.05] p-6 bg-white dark:bg-card">
+                  <p className="text-[2.5rem] font-black tabular-nums text-foreground leading-none">$120</p>
+                  <p className="text-[11px] text-muted-foreground mt-2 tracking-wide">avg. monthly AI spend</p>
+                </div>
               </div>
-              <div className="rounded-xl border border-foreground/[0.06] bg-white dark:bg-card p-5">
-                <p className="text-3xl font-black tabular-nums text-foreground">$120</p>
-                <p className="text-xs text-muted-foreground mt-1">avg. monthly AI spend per team</p>
-              </div>
-              <div className="rounded-xl border border-foreground/[0.06] bg-white dark:bg-card p-5">
-                <p className="text-3xl font-black tabular-nums text-primary">2-3x</p>
-                <p className="text-xs text-muted-foreground mt-1">tools doing the same job</p>
-              </div>
-              <div className="rounded-xl border border-foreground/[0.06] bg-white dark:bg-card p-5">
-                <p className="text-3xl font-black tabular-nums text-foreground">{categories.length}</p>
-                <p className="text-xs text-muted-foreground mt-1">categories compared</p>
+              <div className="rounded-2xl border-2 border-primary/20 bg-primary/[0.03] dark:bg-primary/[0.06] p-6">
+                <p className="text-[2.5rem] font-black tabular-nums text-primary leading-none">2-3x</p>
+                <p className="text-[13px] text-foreground/80 mt-2 font-medium">overlap — most teams pay for tools that do the same thing</p>
               </div>
             </div>
           </div>
@@ -114,42 +119,46 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* ═══ Social Proof ═══ */}
+        {/* ═══ How it works ═══ */}
         <section className="px-4 max-w-4xl mx-auto w-full">
-          <SocialProofBar toolCount={siteStats.toolCount} categoryCount={categories.length} />
-        </section>
+          <div className="grid grid-cols-1 sm:grid-cols-[auto_1fr] gap-x-10 gap-y-0">
+            <div className="hidden sm:flex flex-col items-center">
+              <span className="shrink-0 w-9 h-9 rounded-full bg-foreground text-background flex items-center justify-center text-xs font-bold">1</span>
+              <div className="w-px flex-1 bg-foreground/10" />
+            </div>
+            <div className="pb-10 sm:pb-12">
+              <span className="sm:hidden text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1 block">Step 1</span>
+              <p className="text-lg font-bold text-foreground mb-1">Add your stack</p>
+              <p className="text-sm text-muted-foreground leading-relaxed max-w-sm">Tap the tools you pay for. Takes 10 seconds — no account needed.</p>
+            </div>
 
-        {/* ═══ How it works — horizontal steps ═══ */}
-        <section className="px-4 max-w-4xl mx-auto w-full">
-          <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground mb-8">How it works</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-4 gap-6 sm:gap-4">
-            <div className="flex sm:flex-col gap-4 sm:gap-3">
-              <span className="shrink-0 w-8 h-8 rounded-full border-2 border-foreground/20 flex items-center justify-center text-xs font-bold text-foreground">1</span>
-              <div>
-                <p className="font-semibold text-sm mb-0.5">Add your stack</p>
-                <p className="text-xs text-muted-foreground leading-relaxed">Tap the tools you pay for. Takes 10 seconds.</p>
-              </div>
+            <div className="hidden sm:flex flex-col items-center">
+              <span className="shrink-0 w-9 h-9 rounded-full bg-foreground text-background flex items-center justify-center text-xs font-bold">2</span>
+              <div className="w-px flex-1 bg-foreground/10" />
             </div>
-            <div className="flex sm:flex-col gap-4 sm:gap-3">
-              <span className="shrink-0 w-8 h-8 rounded-full border-2 border-foreground/20 flex items-center justify-center text-xs font-bold text-foreground">2</span>
-              <div>
-                <p className="font-semibold text-sm mb-0.5">See the overlap</p>
-                <p className="text-xs text-muted-foreground leading-relaxed">We flag tools competing for the same job.</p>
-              </div>
+            <div className="pb-10 sm:pb-12">
+              <span className="sm:hidden text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1 block">Step 2</span>
+              <p className="text-lg font-bold text-foreground mb-1">See the overlap</p>
+              <p className="text-sm text-muted-foreground leading-relaxed max-w-sm">We flag tools competing for the same job in your stack.</p>
             </div>
-            <div className="flex sm:flex-col gap-4 sm:gap-3">
-              <span className="shrink-0 w-8 h-8 rounded-full border-2 border-foreground/20 flex items-center justify-center text-xs font-bold text-foreground">3</span>
-              <div>
-                <p className="font-semibold text-sm mb-0.5">Cut the waste</p>
-                <p className="text-xs text-muted-foreground leading-relaxed">Compare overlaps side-by-side. You decide what stays.</p>
-              </div>
+
+            <div className="hidden sm:flex flex-col items-center">
+              <span className="shrink-0 w-9 h-9 rounded-full bg-foreground text-background flex items-center justify-center text-xs font-bold">3</span>
+              <div className="w-px flex-1 bg-foreground/10" />
             </div>
-            <div className="flex sm:flex-col gap-4 sm:gap-3">
-              <span className="shrink-0 w-8 h-8 rounded-full border-2 border-primary text-primary flex items-center justify-center text-xs font-bold">4</span>
-              <div>
-                <p className="font-semibold text-sm mb-0.5">Save every month</p>
-                <p className="text-xs text-muted-foreground leading-relaxed">Your savings report shows exactly where to cut.</p>
-              </div>
+            <div className="pb-10 sm:pb-12">
+              <span className="sm:hidden text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1 block">Step 3</span>
+              <p className="text-lg font-bold text-foreground mb-1">Cut the waste</p>
+              <p className="text-sm text-muted-foreground leading-relaxed max-w-sm">Compare overlaps side-by-side. You decide what stays.</p>
+            </div>
+
+            <div className="hidden sm:flex flex-col items-center">
+              <span className="shrink-0 w-9 h-9 rounded-full bg-primary text-white flex items-center justify-center text-xs font-bold">4</span>
+            </div>
+            <div>
+              <span className="sm:hidden text-[11px] font-bold text-primary uppercase tracking-widest mb-1 block">Step 4</span>
+              <p className="text-lg font-bold text-primary mb-1">Save every month</p>
+              <p className="text-sm text-muted-foreground leading-relaxed max-w-sm">Your personalized savings report shows exactly where to cut.</p>
             </div>
           </div>
         </section>
@@ -187,21 +196,26 @@ export default async function HomePage() {
 
         {/* ═══ CTA ═══ */}
         <section className="px-4 max-w-4xl mx-auto w-full">
-          <div className="rounded-2xl bg-foreground dark:bg-white/[0.04] p-8 sm:p-12 grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-6 items-center">
-            <div>
-              <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-background dark:text-foreground leading-tight">
-                Find out which tools to cancel.
+          <div className="rounded-3xl bg-foreground dark:bg-white/[0.05] p-10 sm:p-16 relative overflow-hidden">
+            <div className="relative z-10 max-w-lg">
+              <h2 className="text-[clamp(1.75rem,4vw,2.75rem)] font-extrabold tracking-[-0.02em] text-background dark:text-foreground leading-[1.1]">
+                Find out which tools
+                <br />to cancel.
               </h2>
-              <p className="text-sm text-background/70 dark:text-muted-foreground mt-2 max-w-md">
+              <p className="text-[15px] text-background/60 dark:text-muted-foreground mt-4 max-w-sm leading-relaxed">
                 We&apos;ll flag overlap and show you exactly where to cut — you make the call.
               </p>
+              <AuthCTALink fallbackHref="/login?redirectTo=/tracker" authHref="/tracker" className="mt-8 inline-block">
+                <Button size="lg" className="bg-background text-foreground hover:bg-background/90 dark:bg-primary dark:text-white dark:hover:bg-primary/90 font-bold gap-2.5 h-[52px] px-8 text-[15px] rounded-xl">
+                  Start Free
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </AuthCTALink>
             </div>
-            <AuthCTALink fallbackHref="/login?redirectTo=/tracker" authHref="/tracker">
-              <Button size="lg" className="bg-background text-foreground hover:bg-background/90 dark:bg-primary dark:text-white dark:hover:bg-primary/90 font-bold gap-2 h-12 px-8 text-base whitespace-nowrap">
-                Start Free
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-            </AuthCTALink>
+            {/* Subtle background element */}
+            <div className="absolute top-0 right-0 w-1/2 h-full opacity-[0.04] pointer-events-none" aria-hidden="true">
+              <div className="absolute inset-0 bg-gradient-to-l from-background/80 to-transparent" />
+            </div>
           </div>
         </section>
 
@@ -233,53 +247,44 @@ export default async function HomePage() {
 
         {/* ═══ Blog Posts ═══ */}
         {briefingItems.length > 0 && (
-          <section className="border-y border-foreground/[0.06]">
-            <div className="max-w-4xl mx-auto px-4 py-12">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-sm font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
-                  <Newspaper className="h-3.5 w-3.5 text-primary" /> Latest
-                </h2>
-                <Link href="/blog" className="text-xs font-semibold text-primary hover:underline flex items-center gap-1">
-                  All posts <ChevronRight className="h-3 w-3" />
-                </Link>
+          <section className="px-4 max-w-4xl mx-auto w-full">
+            <div className="flex items-end justify-between mb-8">
+              <div>
+                <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground mb-1">From the blog</h2>
+                <p className="text-base text-foreground font-medium">AI cost intel, updated weekly.</p>
               </div>
-              <div className="flex sm:grid sm:grid-cols-3 gap-4 overflow-x-auto sm:overflow-visible snap-x snap-mandatory pb-2 sm:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0">
-                {briefingItems.map((news) => (
-                  <Link
-                    key={news.id}
-                    href={news.url}
-                    className="group rounded-xl overflow-hidden border border-foreground/[0.06] hover:border-primary/20 transition-all min-w-[75vw] sm:min-w-0 snap-start"
-                  >
-                    {news.image_url ? (
-                      <div className="relative h-32 sm:h-36 overflow-hidden">
-                        <Image
-                          src={news.image_url}
-                          alt={news.title}
-                          fill
-                          sizes="(max-width: 640px) 75vw, 33vw"
-                          className="object-cover"
-                        />
-                      </div>
-                    ) : (
-                      <div className="h-32 sm:h-36 bg-muted/30" />
-                    )}
-                    <div className="p-3.5 sm:p-4 flex flex-col gap-1.5">
-                      <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
-                        {news.source_name}
-                      </span>
-                      <h3 className="font-bold text-sm leading-snug line-clamp-2 group-hover:text-primary transition-colors">
-                        {news.title}
-                      </h3>
-                      <span className="text-xs text-muted-foreground">
-                        {new Date(news.published_at).toLocaleDateString('en-US', {
-                          month: 'short',
-                          day: 'numeric',
-                        })}
-                      </span>
+              <Link href="/blog" className="text-xs font-semibold text-muted-foreground hover:text-primary flex items-center gap-1 transition-colors">
+                All posts <ChevronRight className="h-3 w-3" />
+              </Link>
+            </div>
+            <div className="flex sm:grid sm:grid-cols-3 gap-5 overflow-x-auto sm:overflow-visible snap-x snap-mandatory pb-2 sm:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0">
+              {briefingItems.map((news) => (
+                <Link
+                  key={news.id}
+                  href={news.url}
+                  className="group flex flex-col min-w-[72vw] sm:min-w-0 snap-start"
+                >
+                  {news.image_url ? (
+                    <div className="relative aspect-[16/10] rounded-xl overflow-hidden mb-3 bg-muted/20">
+                      <Image
+                        src={news.image_url}
+                        alt={news.title}
+                        fill
+                        sizes="(max-width: 640px) 72vw, 33vw"
+                        className="object-cover"
+                      />
                     </div>
-                  </Link>
-                ))}
-              </div>
+                  ) : (
+                    <div className="aspect-[16/10] rounded-xl bg-muted/20 mb-3" />
+                  )}
+                  <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/70 mb-1.5">
+                    {new Date(news.published_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                  </span>
+                  <h3 className="font-bold text-[15px] leading-snug line-clamp-2 group-hover:text-primary transition-colors">
+                    {news.title}
+                  </h3>
+                </Link>
+              ))}
             </div>
           </section>
         )}
