@@ -1,18 +1,54 @@
 import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { createHmac } from 'crypto'
+
+const SECRET = process.env.NEWSLETTER_UNSUB_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY || 'fallback-secret'
+
+/** Generate a token for unsubscribe links — call this when building email HTML */
+export function generateUnsubToken(email: string): string {
+  return createHmac('sha256', SECRET).update(email).digest('hex').slice(0, 32)
+}
 
 export async function GET(request: Request) {
   const url = new URL(request.url)
+  const token = url.searchParams.get('token')
   const email = url.searchParams.get('email')
 
-  if (!email) {
-    return new NextResponse(html('Missing email parameter.', false), {
-      status: 400,
+  const supabase = createAdminClient()
+
+  // Token-based unsubscribe (preferred — doesn't expose email in URL)
+  if (token && !email) {
+    const { data: subscribers } = await supabase
+      .from('newsletter_subscribers')
+      .select('email')
+      .eq('status', 'active')
+
+    const match = subscribers?.find(s => generateUnsubToken(s.email) === token)
+    if (!match) {
+      return new NextResponse(html('Invalid or expired unsubscribe link.', false), {
+        status: 400,
+        headers: { 'Content-Type': 'text/html' },
+      })
+    }
+
+    await supabase
+      .from('newsletter_subscribers')
+      .update({ status: 'unsubscribed', unsubscribed_at: new Date().toISOString() })
+      .eq('email', match.email)
+
+    return new NextResponse(html('You have been unsubscribed. You will no longer receive emails from AIPowerStacks.', true), {
+      status: 200,
       headers: { 'Content-Type': 'text/html' },
     })
   }
 
-  const supabase = createAdminClient()
+  // Legacy email-based unsubscribe (backward compat for already-sent emails)
+  if (!email) {
+    return new NextResponse(html('Missing unsubscribe parameter.', false), {
+      status: 400,
+      headers: { 'Content-Type': 'text/html' },
+    })
+  }
 
   const { error } = await supabase
     .from('newsletter_subscribers')

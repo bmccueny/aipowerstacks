@@ -14,18 +14,20 @@ export default function LoginPage() {
   const [showPass, setShowPass] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [checkingAuth, setCheckingAuth] = useState(true)
 
   useEffect(() => {
     const value = new URLSearchParams(window.location.search).get('redirectTo')
     if (value) setRedirectTo(value)
 
-    // If already logged in, redirect immediately
     const supabase = createClient()
     supabase.auth.getUser().then(({ data }) => {
       if (data?.user) {
         window.location.href = value || '/dashboard'
+      } else {
+        setCheckingAuth(false)
       }
-    })
+    }).catch(() => setCheckingAuth(false))
   }, [])
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -60,6 +62,14 @@ export default function LoginPage() {
       provider: 'google',
       options: { redirectTo: callback.toString() },
     })
+  }
+
+  if (checkingAuth) {
+    return (
+      <div className="w-full max-w-md mx-auto py-12 px-4 flex items-center justify-center min-h-[60vh]">
+        <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+      </div>
+    )
   }
 
   return (

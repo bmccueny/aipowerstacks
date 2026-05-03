@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { callClaude } from '@/lib/utils/anthropic'
+import { generateUnsubToken } from '@/app/api/newsletter/unsubscribe/route'
 
 /* ── Config ──────────────────────────────────────────────────────────────────── */
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://aipowerstacks.com'
@@ -214,7 +215,7 @@ export async function GET(request: Request) {
 
     const sendResults = await Promise.allSettled(
       batch.map((sub) => {
-        const unsubUrl = `${APP_URL}/api/newsletter/unsubscribe?email=${encodeURIComponent(sub.email)}`
+        const unsubUrl = `${APP_URL}/api/newsletter/unsubscribe?token=${generateUnsubToken(sub.email)}`
         const html = buildEmailHtml(summary, posts, unsubUrl)
         return resend.emails.send({
           from: `AIPowerStacks <${fromEmail}>`,

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { generateUnsubToken } from '@/app/api/newsletter/unsubscribe/route'
 
 /* ── Config ──────────────────────────────────────────────────────────────────── */
 
@@ -367,7 +368,7 @@ export async function GET(request: Request) {
           (a) => userCatIds.has(a.category_id) && !userToolIds.has(a.id),
         )
 
-        const unsubUrl = `${APP_URL}/api/newsletter/unsubscribe?email=${encodeURIComponent(email)}`
+        const unsubUrl = `${APP_URL}/api/newsletter/unsubscribe?token=${generateUnsubToken(email)}`
         const html = buildSpendEmailHtml(
           nameMap.get(userId) ?? null,
           totalMonthly,
