@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowRight, ChevronRight, Newspaper, Scissors, Layers, Eye } from 'lucide-react'
+import { ArrowRight, ChevronRight, Newspaper } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
@@ -52,36 +52,53 @@ export default async function HomePage() {
           url: SITE_URL,
         }} />
 
-        {/* ═══ Hero + Calculator ═══ */}
-        <section className="relative px-4 max-w-3xl mx-auto w-full pt-8 sm:pt-20">
-          {/* Hero gradient background */}
-          <div className="pointer-events-none absolute inset-0 -top-20 overflow-hidden" aria-hidden="true">
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full bg-primary/[0.04] blur-[100px] dark:bg-primary/[0.08]" />
-            <div className="absolute top-20 left-1/4 w-[300px] h-[300px] rounded-full blur-[80px]" style={{ background: 'rgba(212, 64, 43, 0.10)' }} />
-          </div>
-
-          <div className="relative text-center mb-10 sm:mb-12 animate-fade-up">
-            <h1 className="text-[clamp(2.25rem,5vw,3.75rem)] font-extrabold tracking-tight text-foreground mb-6 leading-[1.08] sm:leading-[1.1]">
-              How much is AI{' '}<br className="hidden sm:block" />costing you?
-            </h1>
-            <p className="text-lg sm:text-xl text-muted-foreground max-w-lg mx-auto leading-relaxed">
-              Track your AI subscriptions. See what overlaps. Cut what you don&apos;t need.
-            </p>
-            <p className="mt-3 text-xs sm:text-sm text-muted-foreground font-medium">
-              {siteStats.toolCount}+ tools tracked · Updated daily · Free to use
-            </p>
-            <div className="mt-8 flex flex-col sm:flex-row justify-center gap-3">
-              <AuthCTALink fallbackHref="/login?redirectTo=/tracker" authHref="/tracker">
-                <Button size="lg" className="btn-glow font-bold gap-2 h-12 px-8 text-base">
-                  Track My AI Spend
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
-              </AuthCTALink>
-              <Link href="/compare">
-                <Button size="lg" variant="outline" className="font-bold border-foreground/15 h-12 px-8">
-                  Compare Tools
-                </Button>
-              </Link>
+        {/* ═══ Hero ═══ */}
+        <section className="relative px-4 max-w-5xl mx-auto w-full pt-12 sm:pt-24">
+          <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-16 items-center">
+            {/* Left — Copy */}
+            <div className="max-w-xl">
+              <p className="text-xs font-semibold uppercase tracking-[0.15em] text-primary mb-4">{siteStats.toolCount}+ tools tracked</p>
+              <h1 className="text-[clamp(2.5rem,5.5vw,4rem)] font-extrabold tracking-[-0.03em] text-foreground leading-[1.05] text-wrap-balance">
+                How much is AI costing you?
+              </h1>
+              <p className="mt-5 text-lg text-muted-foreground leading-relaxed max-w-[48ch]">
+                Track your AI subscriptions. See what overlaps. Cut what you don&apos;t need.
+              </p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <AuthCTALink fallbackHref="/login?redirectTo=/tracker" authHref="/tracker">
+                  <Button size="lg" className="btn-glow font-bold gap-2 h-12 px-8 text-base">
+                    Track My AI Spend
+                    <ArrowRight className="h-4 w-4" />
+                  </Button>
+                </AuthCTALink>
+                <Link href="/compare">
+                  <Button size="lg" variant="outline" className="font-bold border-foreground/10 h-12 px-6 text-muted-foreground hover:text-foreground">
+                    Compare Tools
+                  </Button>
+                </Link>
+              </div>
+              <p className="mt-4 text-xs text-muted-foreground/70">
+                Free to use · Updated daily · No credit card required
+              </p>
+            </div>
+            {/* Right — Stats cluster */}
+            <div className="hidden lg:grid grid-cols-2 gap-3">
+              <div className="rounded-xl border border-foreground/[0.06] bg-white dark:bg-card p-5">
+                <p className="text-3xl font-black tabular-nums text-foreground">{siteStats.toolCount}+</p>
+                <p className="text-xs text-muted-foreground mt-1">AI tools with real pricing</p>
+              </div>
+              <div className="rounded-xl border border-foreground/[0.06] bg-white dark:bg-card p-5">
+                <p className="text-3xl font-black tabular-nums text-foreground">$120</p>
+                <p className="text-xs text-muted-foreground mt-1">avg. monthly AI spend per team</p>
+              </div>
+              <div className="rounded-xl border border-foreground/[0.06] bg-white dark:bg-card p-5">
+                <p className="text-3xl font-black tabular-nums text-primary">2-3x</p>
+                <p className="text-xs text-muted-foreground mt-1">tools doing the same job</p>
+              </div>
+              <div className="rounded-xl border border-foreground/[0.06] bg-white dark:bg-card p-5">
+                <p className="text-3xl font-black tabular-nums text-foreground">{categories.length}</p>
+                <p className="text-xs text-muted-foreground mt-1">categories compared</p>
+              </div>
             </div>
           </div>
         </section>
@@ -95,49 +112,42 @@ export default async function HomePage() {
           <CostCalculator tools={calcTools} />
         </section>
 
-        {/* ═══ Social Proof Bar ═══ */}
-        <section className="px-4 max-w-3xl mx-auto w-full">
+        {/* ═══ Social Proof ═══ */}
+        <section className="px-4 max-w-4xl mx-auto w-full">
           <SocialProofBar toolCount={siteStats.toolCount} categoryCount={categories.length} />
         </section>
 
-        {/* ═══ The hook — one punchy stat ═══ */}
-        <section className="px-4 max-w-2xl mx-auto w-full text-center">
-          <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed">
-            The average team spends <strong className="text-foreground">$120/mo</strong> on AI tools.
-            Most are paying for <strong className="text-foreground">2-3 tools that do the same thing</strong>.
-          </p>
-        </section>
-
-        {/* ═══ How it works — Bento Grid ═══ */}
-        <section className="px-4 max-w-3xl mx-auto w-full">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 stagger-in">
-            <div className="bento-card bg-gradient-to-br from-emerald-50/60 to-transparent dark:from-emerald-500/[0.06] dark:to-transparent">
-              <div className="h-11 w-11 sm:h-10 sm:w-10 rounded-xl bg-emerald-100 dark:bg-emerald-500/15 flex items-center justify-center mb-3">
-                <Layers className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+        {/* ═══ How it works — horizontal steps ═══ */}
+        <section className="px-4 max-w-4xl mx-auto w-full">
+          <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground mb-8">How it works</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-6 sm:gap-4">
+            <div className="flex sm:flex-col gap-4 sm:gap-3">
+              <span className="shrink-0 w-8 h-8 rounded-full border-2 border-foreground/20 flex items-center justify-center text-xs font-bold text-foreground">1</span>
+              <div>
+                <p className="font-semibold text-sm mb-0.5">Add your stack</p>
+                <p className="text-xs text-muted-foreground leading-relaxed">Tap the tools you pay for. Takes 10 seconds.</p>
               </div>
-              <p className="font-semibold text-sm sm:text-sm mb-1">Add your stack</p>
-              <p className="text-sm sm:text-xs text-muted-foreground leading-relaxed">Tap the tools you pay for. Takes 10 seconds.</p>
             </div>
-            <div className="bento-card bg-gradient-to-br from-blue-50/60 to-transparent dark:from-blue-500/[0.06] dark:to-transparent">
-              <div className="h-11 w-11 sm:h-10 sm:w-10 rounded-xl bg-blue-100 dark:bg-blue-500/15 flex items-center justify-center mb-3">
-                <Eye className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+            <div className="flex sm:flex-col gap-4 sm:gap-3">
+              <span className="shrink-0 w-8 h-8 rounded-full border-2 border-foreground/20 flex items-center justify-center text-xs font-bold text-foreground">2</span>
+              <div>
+                <p className="font-semibold text-sm mb-0.5">See the overlap</p>
+                <p className="text-xs text-muted-foreground leading-relaxed">We flag tools competing for the same job.</p>
               </div>
-              <p className="font-semibold text-sm sm:text-sm mb-1">See the overlap</p>
-              <p className="text-sm sm:text-xs text-muted-foreground leading-relaxed">We flag tools competing for the same job.</p>
             </div>
-            <div className="bento-card bg-gradient-to-br from-amber-50/60 to-transparent dark:from-amber-500/[0.06] dark:to-transparent">
-              <div className="h-11 w-11 sm:h-10 sm:w-10 rounded-xl bg-amber-100 dark:bg-amber-500/15 flex items-center justify-center mb-3">
-                <Scissors className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+            <div className="flex sm:flex-col gap-4 sm:gap-3">
+              <span className="shrink-0 w-8 h-8 rounded-full border-2 border-foreground/20 flex items-center justify-center text-xs font-bold text-foreground">3</span>
+              <div>
+                <p className="font-semibold text-sm mb-0.5">Cut the waste</p>
+                <p className="text-xs text-muted-foreground leading-relaxed">Compare overlaps side-by-side. You decide what stays.</p>
               </div>
-              <p className="font-semibold text-sm sm:text-sm mb-1">Cut the waste</p>
-              <p className="text-sm sm:text-xs text-muted-foreground leading-relaxed">Compare overlaps side-by-side. You decide what stays.</p>
             </div>
-            <div className="bento-card bg-gradient-to-br from-violet-50/60 to-transparent dark:from-violet-500/[0.06] dark:to-transparent">
-              <div className="h-11 w-11 sm:h-10 sm:w-10 rounded-xl bg-violet-100 dark:bg-violet-500/15 flex items-center justify-center mb-3">
-                <ArrowRight className="h-5 w-5 text-violet-600 dark:text-violet-400" />
+            <div className="flex sm:flex-col gap-4 sm:gap-3">
+              <span className="shrink-0 w-8 h-8 rounded-full border-2 border-primary text-primary flex items-center justify-center text-xs font-bold">4</span>
+              <div>
+                <p className="font-semibold text-sm mb-0.5">Save every month</p>
+                <p className="text-xs text-muted-foreground leading-relaxed">Your savings report shows exactly where to cut.</p>
               </div>
-              <p className="font-semibold text-sm sm:text-sm mb-1">Save every month</p>
-              <p className="text-sm sm:text-xs text-muted-foreground leading-relaxed">Your personalized savings report shows exactly where to cut.</p>
             </div>
           </div>
         </section>
@@ -145,11 +155,8 @@ export default async function HomePage() {
         {/* ═══ Most Tracked ═══ */}
         {mostTracked.length > 0 && (
           <section className="px-4 max-w-4xl mx-auto w-full">
-            <div className="flex items-center justify-center gap-2 mb-6">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-              <h2 className="text-sm font-medium text-muted-foreground">Most tracked right now</h2>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 stagger-in">
+            <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground mb-6">Most tracked right now</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {mostTracked.map((tool) => (
                 <Link
                   key={tool.id}
@@ -175,35 +182,22 @@ export default async function HomePage() {
         <OverlapTeaser overlaps={overlaps} />
 
         {/* ═══ CTA ═══ */}
-        <section className="px-4 max-w-3xl mx-auto w-full">
-          <div className="relative overflow-hidden rounded-2xl border border-foreground/[0.06] p-6 sm:p-12 text-center">
-            {/* Gradient overlay */}
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/[0.03] via-transparent to-primary/[0.02] dark:from-primary/[0.06] dark:to-primary/[0.03]" aria-hidden="true" />
-            <div className="relative">
-              <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight mb-3">
+        <section className="px-4 max-w-4xl mx-auto w-full">
+          <div className="rounded-2xl bg-foreground dark:bg-white/[0.04] p-8 sm:p-12 grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-6 items-center">
+            <div>
+              <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-background dark:text-foreground leading-tight">
                 Find out which tools to cancel.
               </h2>
-              <p className="text-sm text-muted-foreground max-w-md mx-auto mb-6 sm:mb-8">
-                Track your subscriptions. We&apos;ll flag overlap and show you
-                exactly where to cut — you make the call.
-              </p>
-              <div className="flex flex-col sm:flex-row justify-center gap-3">
-                <AuthCTALink fallbackHref="/login?redirectTo=/tracker" authHref="/tracker" className="w-full sm:w-auto">
-                  <Button size="lg" className="btn-glow font-bold gap-2 w-full sm:w-auto h-12 px-8 text-base">
-                    Track My AI Spend
-                    <ArrowRight className="h-4 w-4" />
-                  </Button>
-                </AuthCTALink>
-                <Link href="/compare" className="w-full sm:w-auto">
-                  <Button size="lg" variant="outline" className="font-bold border-foreground/15 w-full sm:w-auto h-12 px-8">
-                    Compare Tools
-                  </Button>
-                </Link>
-              </div>
-              <p className="text-xs text-muted-foreground mt-6">
-                Free to use · {siteStats.toolCount}+ tools · Real pricing data
+              <p className="text-sm text-background/70 dark:text-muted-foreground mt-2 max-w-md">
+                We&apos;ll flag overlap and show you exactly where to cut — you make the call.
               </p>
             </div>
+            <AuthCTALink fallbackHref="/login?redirectTo=/tracker" authHref="/tracker">
+              <Button size="lg" className="bg-background text-foreground hover:bg-background/90 dark:bg-primary dark:text-white dark:hover:bg-primary/90 font-bold gap-2 h-12 px-8 text-base whitespace-nowrap">
+                Start Free
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </AuthCTALink>
           </div>
         </section>
 
@@ -287,11 +281,11 @@ export default async function HomePage() {
         )}
 
         {/* ═══ Browse ═══ */}
-        <section className="px-4 max-w-3xl mx-auto w-full text-center">
+        <section className="px-4 max-w-4xl mx-auto w-full">
           <p className="text-sm text-muted-foreground mb-3">
             Looking for a specific tool?
           </p>
-          <div className="flex justify-center gap-3 flex-wrap">
+          <div className="flex gap-4 flex-wrap">
             <Link href="/tools" className="text-sm font-semibold text-primary hover:underline">
               Browse {siteStats.toolCount}+ tools →
             </Link>
