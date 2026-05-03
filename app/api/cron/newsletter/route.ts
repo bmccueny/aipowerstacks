@@ -71,6 +71,7 @@ function buildEmailHtml(
   summary: string,
   posts: BlogRow[],
   unsubUrl: string,
+  featured: { name: string; slug: string; tagline: string; logo_url: string | null }[] = [],
 ): string {
   // Convert newlines in summary to paragraphs
   const summaryHtml = summary
@@ -120,9 +121,27 @@ function buildEmailHtml(
           <table role="presentation" width="100%">${postsHtml}</table>
         </td></tr>` : ''}
 
+        <!-- Sponsored Tools -->
+        ${featured.length > 0 ? `
+        <tr><td style="padding: 20px 30px 10px; border-top: 1px solid #f0f0f0;">
+          <h2 style="font-size: 11px; font-weight: 800; color: #999; margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 2px;">Featured Tools</h2>
+        </td></tr>
+        <tr><td style="padding: 0 30px 20px;">
+          <table role="presentation" width="100%">
+            ${featured.map(t => `<tr>
+              <td style="padding: 10px 0; border-bottom: 1px solid #f8f8f8;">
+                <a href="${APP_URL}/tools/${t.slug}?utm_source=newsletter&utm_medium=email&utm_campaign=featured" style="text-decoration: none; display: flex; align-items: center;">
+                  <span style="font-size: 15px; font-weight: 700; color: ${PRIMARY_COLOR};">${t.name}</span>
+                  <span style="font-size: 13px; color: #666; margin-left: 8px;">${t.tagline}</span>
+                </a>
+              </td>
+            </tr>`).join('')}
+          </table>
+        </td></tr>` : ''}
+
         <!-- CTA -->
         <tr><td style="padding: 10px 30px 30px; text-align: center;">
-          <a href="${APP_URL}" style="display: inline-block; background: ${PRIMARY_COLOR}; color: #fff; padding: 12px 28px; border-radius: 6px; font-size: 14px; font-weight: 700; text-decoration: none;">Explore AIPowerStacks &rarr;</a>
+          <a href="${APP_URL}/tracker?utm_source=newsletter&utm_medium=email" style="display: inline-block; background: ${PRIMARY_COLOR}; color: #fff; padding: 12px 28px; border-radius: 6px; font-size: 14px; font-weight: 700; text-decoration: none;">Track Your AI Spend &rarr;</a>
         </td></tr>
 
         <!-- Footer -->
@@ -166,7 +185,7 @@ export async function GET(request: Request) {
   const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
 
   // Fetch this week's content in parallel
-  const [newsRes, postsRes, subscribersRes] = await Promise.all([
+  const [newsRes, postsRes, subscribersRes, featuredRes] = await Promise.all([
     // Latest AI news from the past week
     supabase
       .from('ai_news')
@@ -187,11 +206,19 @@ export async function GET(request: Request) {
       .from('newsletter_subscribers')
       .select('email')
       .eq('status', 'active'),
+    // Featured/sponsored tools
+    supabase
+      .from('tools')
+      .select('name, slug, tagline, logo_url')
+      .eq('is_featured', true)
+      .eq('status', 'published')
+      .limit(3),
   ])
 
   const news = (newsRes.data ?? []) as NewsRow[]
   const posts = (postsRes.data ?? []) as BlogRow[]
   const subscribers = subscribersRes.data ?? []
+  const featuredTools = (featuredRes.data ?? []) as { name: string; slug: string; tagline: string; logo_url: string | null }[]
 
   if (subscribers.length === 0) {
     return NextResponse.json({ message: 'No active subscribers', sent: 0 })
@@ -216,7 +243,7 @@ export async function GET(request: Request) {
     const sendResults = await Promise.allSettled(
       batch.map((sub) => {
         const unsubUrl = `${APP_URL}/api/newsletter/unsubscribe?token=${generateUnsubToken(sub.email)}`
-        const html = buildEmailHtml(summary, posts, unsubUrl)
+        const html = buildEmailHtml(summary, posts, unsubUrl, featuredTools)
         return resend.emails.send({
           from: `AIPowerStacks <${fromEmail}>`,
           to: sub.email,

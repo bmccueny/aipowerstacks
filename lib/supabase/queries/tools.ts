@@ -415,6 +415,9 @@ export async function searchTools({
     if (deploymentType) fallback = fallback.eq('deployment_type', deploymentType as 'cloud' | 'self-hosted' | 'both')
     if (source === 'github') fallback = fallback.like('website_url', '%github.com%')
 
+    // Featured tools always appear first regardless of sort
+    fallback = fallback.order('is_featured', { ascending: false })
+
     if (sort === 'rating') {
       fallback = fallback.order('avg_rating', { ascending: false }).order('review_count', { ascending: false })
     } else if (sort === 'newest') {

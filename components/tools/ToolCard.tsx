@@ -270,6 +270,7 @@ function ToolCardList({ tool, pricingColor, pricingLabel, isWellFavored, imageEr
           >
             {tool.name}
           </Link>
+          {tool.is_featured && <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-primary/10 text-primary border border-primary/20 relative z-10">Featured</span>}
           {tool.is_verified && <VerifiedBadge size="sm" className="relative z-10" />}
         </div>
         <p className="text-[14px] leading-[1.45] text-muted-foreground truncate mt-0.5 relative z-10">{tool.tagline}</p>
