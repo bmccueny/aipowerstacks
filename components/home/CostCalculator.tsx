@@ -168,12 +168,12 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
 
   const monthlyTotal = added.reduce((sum, t) => sum + t.price, 0)
   const annualTotal = added.reduce((sum, t) => {
-    if (t.annualPrice != null) return sum + t.annualPrice / 12
-    return sum + t.price * 0.8 // Assume ~20% annual discount when no explicit annual price
+    if (t.annualPrice != null) return sum + Math.round(t.annualPrice / 12 * 100) / 100
+    return sum + Math.round(t.price * 0.8 * 100) / 100
   }, 0)
-  const total = billingCycle === 'monthly' ? monthlyTotal : annualTotal
-  const yearly = total * 12
-  const monthlySavings = monthlyTotal - annualTotal
+  const total = Math.round((billingCycle === 'monthly' ? monthlyTotal : annualTotal) * 100) / 100
+  const yearly = Math.round(total * 12 * 100) / 100
+  const monthlySavings = Math.round((monthlyTotal - annualTotal) * 100) / 100
   const comparison = getComparison(yearly)
 
   return (
