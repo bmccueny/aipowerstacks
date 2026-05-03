@@ -913,11 +913,11 @@ Respond in EXACTLY this JSON format (no extra text before or after):
 
   /** Try to extract fields from broken JSON using regex as last resort */
   function extractFieldsFallback(raw: string, fallbackTopic: string): Record<string, unknown> {
-    const titleMatch = raw.match(/"title"\s*:\s*"((?:[^"\\]|\\.)*)"/s)
-    const excerptMatch = raw.match(/"excerpt"\s*:\s*"((?:[^"\\]|\\.)*)"/s)
-    const contentMatch = raw.match(/"content"\s*:\s*"((?:[^"\\]|\\.)*)"/s)
+    const titleMatch = raw.match(/"title"\s*:\s*"((?:[^"\\]|\\[\s\S])*)"/)
+    const excerptMatch = raw.match(/"excerpt"\s*:\s*"((?:[^"\\]|\\[\s\S])*)"/)
+    const contentMatch = raw.match(/"content"\s*:\s*"((?:[^"\\]|\\[\s\S])*)"/)
     const readingTimeMatch = raw.match(/"reading_time_min"\s*:\s*(\d+)/)
-    const tagsMatch = raw.match(/"tags"\s*:\s*\[(.*?)\]/s)
+    const tagsMatch = raw.match(/"tags"\s*:\s*\[([\s\S]*?)\]/)
 
     if (!titleMatch || !contentMatch) {
       throw new Error(`Failed to extract fields from blog post JSON: ${raw.slice(0, 300)}`)
