@@ -5,6 +5,8 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Plus, ExternalLink } from 'lucide-react'
 
+export const revalidate = 0
+
 export const metadata: Metadata = { title: 'Manage Blog' }
 
 export default async function AdminBlogPage() {

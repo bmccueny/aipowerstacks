@@ -2,6 +2,8 @@ import { getAllCategories } from '@/lib/supabase/queries/categories'
 import { ToolForm } from '@/components/admin/ToolForm'
 import type { Metadata } from 'next'
 
+export const revalidate = 0
+
 export const metadata: Metadata = { title: 'Add Tool' }
 
 export default async function NewToolPage() {

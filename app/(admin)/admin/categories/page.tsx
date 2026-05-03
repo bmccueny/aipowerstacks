@@ -2,6 +2,8 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import type { Metadata } from 'next'
 import { CategoryManager } from '@/components/admin/CategoryManager'
 
+export const revalidate = 0
+
 export const metadata: Metadata = { title: 'Manage Categories' }
 
 export default async function AdminCategoriesPage() {

@@ -9,6 +9,7 @@ import { JsonLd } from '@/components/common/JsonLd'
 import { StarRating } from '@/components/reviews/StarRating'
 import { ReviewForm } from '@/components/reviews/ReviewForm'
 import { ReviewCard } from '@/components/reviews/ReviewCard'
+import { ReviewList } from '@/components/reviews/ReviewList'
 import { BookmarkButton } from '@/components/tools/BookmarkButton'
 import { AddToStackButton } from '@/components/tools/AddToStackButton'
 import { AddToCompareButton } from '@/components/tools/AddToCompareButton'
@@ -434,11 +435,7 @@ export default async function ToolDetailPage({ params }: Props) {
               {reviews.length === 0 ? (
                 <p className="text-muted-foreground text-sm">No published reviews yet. Be the first to submit one.</p>
               ) : (
-                <div>
-                  {reviews.map((review) => (
-                    <ReviewCard key={review.id} review={review} currentUserId={user?.id} />
-                  ))}
-                </div>
+                <ReviewList reviews={reviews} currentUserId={user?.id ?? undefined} />
               )}
               <div className="mt-5 border-t border-foreground/15 pt-5">
                 {user ? (

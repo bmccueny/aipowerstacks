@@ -8,6 +8,8 @@ import { SubmissionActions } from '@/components/admin/SubmissionActions'
 import { UserRoleActions } from '@/components/admin/UserRoleActions'
 import { ExternalLink, Plus } from 'lucide-react'
 
+export const revalidate = 0
+
 export const metadata: Metadata = { title: 'Control Center' }
 
 export default async function AdminControlCenterPage() {

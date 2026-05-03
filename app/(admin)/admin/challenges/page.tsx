@@ -4,6 +4,8 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { Button } from '@/components/ui/button'
 import { Plus, Trophy } from 'lucide-react'
 
+export const revalidate = 0
+
 export const metadata: Metadata = { title: 'Challenges Admin' }
 
 export default async function AdminChallengesPage() {

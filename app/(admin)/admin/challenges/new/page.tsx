@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import { ChallengeForm } from '@/components/admin/ChallengeForm'
 
+export const revalidate = 0
+
 export const metadata: Metadata = { title: 'New Challenge' }
 
 export default function NewChallengePage() {

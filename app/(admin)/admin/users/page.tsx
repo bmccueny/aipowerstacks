@@ -5,6 +5,8 @@ import { UserRoleActions } from '@/components/admin/UserRoleActions'
 import { DeleteUserButton } from '@/components/admin/DeleteUserButton'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 
+export const revalidate = 0
+
 export const metadata: Metadata = { title: 'Manage Users' }
 
 export default async function AdminUsersPage() {

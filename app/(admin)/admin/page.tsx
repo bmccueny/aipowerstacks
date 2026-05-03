@@ -2,6 +2,8 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import type { Metadata } from 'next'
 import { AdminOverviewStats } from '@/components/admin/AdminOverviewStats'
 
+export const revalidate = 0
+
 export const metadata: Metadata = { title: 'Admin Overview' }
 
 export default async function AdminDashboardPage() {

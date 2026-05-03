@@ -3,6 +3,8 @@ import type { Metadata } from 'next'
 import { Badge } from '@/components/ui/badge'
 import { SubmissionActions } from '@/components/admin/SubmissionActions'
 
+export const revalidate = 0
+
 export const metadata: Metadata = { title: 'Tool Submissions' }
 
 export default async function AdminSubmissionsPage() {

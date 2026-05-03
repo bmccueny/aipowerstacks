@@ -5,6 +5,8 @@ import { Badge } from '@/components/ui/badge'
 import { SocialPostActions } from '@/components/admin/SocialPostActions'
 import { ExternalLink, MessageSquare } from 'lucide-react'
 
+export const revalidate = 0
+
 export const metadata: Metadata = { title: 'Social Posts Queue' }
 
 type StatusFilter = 'all' | 'draft' | 'approved' | 'posted' | 'skipped'

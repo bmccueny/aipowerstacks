@@ -4,6 +4,8 @@ import { ToolForm } from '@/components/admin/ToolForm'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 
+export const revalidate = 0
+
 export const metadata: Metadata = { title: 'Edit Tool' }
 
 export default async function EditToolPage({ params }: { params: Promise<{ id: string }> }) {

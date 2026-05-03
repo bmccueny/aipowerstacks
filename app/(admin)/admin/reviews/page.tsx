@@ -7,6 +7,8 @@ import { StarRating } from '@/components/reviews/StarRating'
 import { ReviewModerationActions } from '@/components/admin/ReviewModerationActions'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 
+export const revalidate = 0
+
 export const metadata: Metadata = { title: 'Manage Reviews' }
 
 type ReviewFilter = 'all' | 'simulation' | 'organic'

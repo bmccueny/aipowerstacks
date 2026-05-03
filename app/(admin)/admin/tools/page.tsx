@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button'
 import { Plus, ExternalLink } from 'lucide-react'
 import { DeleteToolButton } from '@/components/admin/DeleteToolButton'
 
+export const revalidate = 0
+
 export const metadata: Metadata = { title: 'Manage Tools' }
 
 export default async function AdminToolsPage({
