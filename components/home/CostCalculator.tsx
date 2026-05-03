@@ -14,20 +14,20 @@ type QuickTool = {
 
 type AddedTool = QuickTool & { price: number; tier: string }
 
-// Curated popular tools shown in the tap grid — slug → default price
+// Curated popular tools shown in the tap grid
 const POPULAR_SLUGS = [
   'chatgpt', 'claude-code', 'gemini', 'cursor-editor', 'midjourney',
-  'perplexity-ai', 'github-copilot', 'grok', 'notion-ai', 'grammarly',
-  'canva', 'jasper-brand-voice', 'windsurf', 'heygen', 'copy-ai',
-  'descript-ai', 'suno', 'zapier', 'replit', 'bolt-new',
+  'perplexity-ai', 'github-copilot', 'notion-ai', 'canva', 'elevenlabs',
+  'figma-ai', 'v0-by-vercel', 'suno', 'zapier', 'grammarly',
+  'runway-gen-4', 'make', 'higgsfield-ai', 'adobe-firefly', 'n8n',
 ]
 
 // Preset stacks
 const PRESETS = [
-  { label: 'Developer', icon: Terminal, color: 'text-emerald-500', slugs: ['chatgpt', 'claude-code', 'cursor-editor', 'github-copilot'] },
-  { label: 'Creator', icon: Pen, color: 'text-violet-500', slugs: ['chatgpt', 'midjourney', 'canva', 'descript-ai'] },
-  { label: 'Marketer', icon: Megaphone, color: 'text-amber-500', slugs: ['chatgpt', 'jasper-brand-voice', 'copy-ai', 'semrush-one'] },
-  { label: 'Researcher', icon: FlaskConical, color: 'text-blue-500', slugs: ['chatgpt', 'perplexity-ai', 'gemini', 'notion-ai'] },
+  { label: 'Developer', icon: Terminal, color: 'text-emerald-500', slugs: ['claude-code', 'cursor-editor', 'github-copilot', 'v0-by-vercel'] },
+  { label: 'Creator', icon: Pen, color: 'text-violet-500', slugs: ['midjourney', 'runway-gen-4', 'canva', 'elevenlabs'] },
+  { label: 'Marketer', icon: Megaphone, color: 'text-amber-500', slugs: ['chatgpt', 'jasper-ai', 'surfer-seo', 'adcreative-ai'] },
+  { label: 'Researcher', icon: FlaskConical, color: 'text-blue-500', slugs: ['perplexity-ai', 'gemini', 'notebooklm', 'elicit'] },
 ]
 
 const SPEND_COMPARISONS = [

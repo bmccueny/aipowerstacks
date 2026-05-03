@@ -61,7 +61,7 @@ export default async function HomePage() {
           </div>
 
           <div className="relative text-center mb-10 sm:mb-12 animate-fade-up">
-            <h1 className="text-[clamp(2.25rem,5vw,3.75rem)] font-extrabold tracking-tight text-foreground mb-4 leading-[1.08] sm:leading-[1.1]">
+            <h1 className="text-[clamp(2.25rem,5vw,3.75rem)] font-extrabold tracking-tight text-foreground mb-6 leading-[1.08] sm:leading-[1.1]">
               How much is AI{' '}<br className="hidden sm:block" />costing you?
             </h1>
             <p className="text-lg sm:text-xl text-muted-foreground max-w-lg mx-auto leading-relaxed">
@@ -70,8 +70,28 @@ export default async function HomePage() {
             <p className="mt-3 text-xs sm:text-sm text-muted-foreground font-medium">
               {siteStats.toolCount}+ tools tracked · Updated daily · Free to use
             </p>
+            <div className="mt-8 flex flex-col sm:flex-row justify-center gap-3">
+              <AuthCTALink fallbackHref="/login?redirectTo=/tracker" authHref="/tracker">
+                <Button size="lg" className="btn-glow font-bold gap-2 h-12 px-8 text-base">
+                  Track My AI Spend
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </AuthCTALink>
+              <Link href="/compare">
+                <Button size="lg" variant="outline" className="font-bold border-foreground/15 h-12 px-8">
+                  Compare Tools
+                </Button>
+              </Link>
+            </div>
           </div>
+        </section>
 
+        {/* ═══ Calculator Section ═══ */}
+        <section className="px-4 max-w-3xl mx-auto w-full">
+          <div className="text-center mb-6">
+            <h2 className="text-xl sm:text-2xl font-semibold tracking-tight mb-2">See what you&apos;re spending</h2>
+            <p className="text-sm text-muted-foreground">Tap the tools you use to calculate your monthly AI bill</p>
+          </div>
           <CostCalculator tools={calcTools} />
         </section>
 
