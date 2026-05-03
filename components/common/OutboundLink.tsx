@@ -21,14 +21,23 @@ export function OutboundLink({
   className,
   children,
 }: OutboundLinkProps) {
+  const isAffiliate = href.includes('?ref=') || href.includes('?fpr=') || href.includes('?via=') || href.includes('?pc=') || href.includes('?r=')
+
   const handleClick = useCallback(() => {
     track('outbound_click', {
       tool: toolName,
       slug: toolSlug ?? '',
       url: href,
       placement: placement ?? 'unknown',
+      is_affiliate: isAffiliate ? 'true' : 'false',
     })
-  }, [href, toolName, toolSlug, placement])
+    if (isAffiliate && toolSlug) {
+      fetch('/api/tracker/affiliate-click', {
+        method: 'POST',
+        body: JSON.stringify({ tool_slug: toolSlug, placement }),
+      }).catch(() => {})
+    }
+  }, [href, toolName, toolSlug, placement, isAffiliate])
 
   return (
     <a

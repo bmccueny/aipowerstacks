@@ -113,6 +113,7 @@ export default async function ToolDetailPage({ params }: Props) {
 
   const bestFor = (tool.use_cases ?? []).slice(0, 4)
 
+  const outboundHref = tool.affiliate_url || tool.website_url
   const claimHref = `/submit?mode=claim&name=${encodeURIComponent(tool.name)}&website_url=${encodeURIComponent(tool.website_url)}`
   const suggestEditHref = `/submit?mode=suggest-edit&name=${encodeURIComponent(tool.name)}&website_url=${encodeURIComponent(tool.website_url)}`
   const categorySubscribeSource = tool.categories?.slug ? `category:${tool.categories.slug}` : 'tool-page'
@@ -222,7 +223,7 @@ export default async function ToolDetailPage({ params }: Props) {
                 </p>
               </div>
               <div className="flex items-center gap-3 flex-wrap">
-                <OutboundLink href={tool.website_url} toolName={tool.name} toolSlug={tool.slug} placement="hero">
+                <OutboundLink href={outboundHref} toolName={tool.name} toolSlug={tool.slug} placement="hero">
                   <Button size="lg" className="gap-2 font-bold h-11 px-6">
                     Visit {tool.name}
                     <ExternalLink className="h-4 w-4" />
@@ -457,7 +458,7 @@ export default async function ToolDetailPage({ params }: Props) {
           <div className="space-y-4 lg:sticky lg:top-24 self-start">
             <div className="glass-card rounded-xl p-5 space-y-3 hidden lg:block">
               <h3 className="text-sm font-semibold">Try This Tool</h3>
-              <OutboundLink href={tool.website_url} toolName={tool.name} toolSlug={tool.slug} placement="sidebar" className="block">
+              <OutboundLink href={outboundHref} toolName={tool.name} toolSlug={tool.slug} placement="sidebar" className="block">
                 <Button className="w-full h-11 gap-2">
                   Visit Website
                   <ExternalLink className="h-4 w-4" />
@@ -688,7 +689,7 @@ export default async function ToolDetailPage({ params }: Props) {
 
       <div className="lg:hidden fixed bottom-0 left-0 right-0 z-[60] border-t border-foreground/10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/85 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
         <div className="flex items-center gap-2">
-          <OutboundLink href={tool.website_url} toolName={tool.name} toolSlug={tool.slug} placement="mobile-bar" className="flex-1">
+          <OutboundLink href={outboundHref} toolName={tool.name} toolSlug={tool.slug} placement="mobile-bar" className="flex-1">
             <Button className="w-full h-11 gap-2">
               Visit
               <ExternalLink className="h-4 w-4" />
