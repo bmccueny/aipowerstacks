@@ -10,7 +10,7 @@ export async function GET(request: Request) {
 
   const { data, error } = await supabase
     .from('tool_pricing_tiers')
-    .select('tier_name, monthly_price, features')
+    .select('tier_name, monthly_price, annual_price, features')
     .eq('tool_id', toolId)
     .order('sort_order', { ascending: true })
 

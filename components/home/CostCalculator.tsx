@@ -12,7 +12,9 @@ type QuickTool = {
   pricing_model: string
 }
 
-type AddedTool = QuickTool & { price: number; tier: string }
+type TierData = { tier_name: string; monthly_price: number; annual_price: number | null; features: string }
+
+type AddedTool = QuickTool & { price: number; annualPrice: number | null; tier: string }
 
 // Curated popular tools shown in the tap grid
 const POPULAR_SLUGS = [
@@ -53,12 +55,13 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
   const [search, setSearch] = useState('')
   const [showDropdown, setShowDropdown] = useState(false)
   const [selectedTool, setSelectedTool] = useState<QuickTool | null>(null)
-  const [tiers, setTiers] = useState<{ tier_name: string; monthly_price: number }[]>([])
+  const [tiers, setTiers] = useState<TierData[]>([])
   const [showSearch, setShowSearch] = useState(false)
   const [editingTierId, setEditingTierId] = useState<string | null>(null)
-  const [editTiers, setEditTiers] = useState<{ tier_name: string; monthly_price: number }[]>([])
+  const [editTiers, setEditTiers] = useState<TierData[]>([])
   const [loadingToolId, setLoadingToolId] = useState<string | null>(null)
   const [tiersLoading, setTiersLoading] = useState(false)
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly')
   const wrapperRef = useRef<HTMLDivElement>(null)
 
   // Build the popular tools grid from props
@@ -104,13 +107,14 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
     fetch(`/api/tracker/tiers?tool_id=${tool.id}`)
       .then(r => r.json())
       .then(d => {
-        const tierList = d.tiers || []
-        const paidTiers = tierList.filter((t: { monthly_price: number }) => t.monthly_price > 0)
+        const tierList: TierData[] = d.tiers || []
+        const paidTiers = tierList.filter(t => t.monthly_price > 0)
         const defaultTier = paidTiers[0] || tierList[0]
         if (defaultTier) {
           setAdded(prev => [...prev, {
             ...tool,
             price: defaultTier.monthly_price,
+            annualPrice: defaultTier.annual_price ?? null,
             tier: defaultTier.tier_name,
           }])
         } else {
@@ -124,9 +128,9 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
       })
   }
 
-  const addWithTier = (price: number, tierName: string) => {
+  const addWithTier = (price: number, tierName: string, annualPrice?: number | null) => {
     if (!selectedTool) return
-    setAdded(prev => [...prev, { ...selectedTool, price, tier: tierName }])
+    setAdded(prev => [...prev, { ...selectedTool, price, annualPrice: annualPrice ?? null, tier: tierName }])
     setSelectedTool(null)
   }
 
@@ -146,8 +150,8 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
       .catch(() => setEditTiers([]))
   }
 
-  const changeTier = (toolId: string, price: number, tierName: string) => {
-    setAdded(prev => prev.map(t => t.id === toolId ? { ...t, price, tier: tierName } : t))
+  const changeTier = (toolId: string, price: number, tierName: string, annualPrice?: number | null) => {
+    setAdded(prev => prev.map(t => t.id === toolId ? { ...t, price, annualPrice: annualPrice ?? null, tier: tierName } : t))
     setEditingTierId(null)
   }
 
@@ -162,8 +166,14 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
     }
   }
 
-  const total = added.reduce((sum, t) => sum + t.price, 0)
+  const monthlyTotal = added.reduce((sum, t) => sum + t.price, 0)
+  const annualTotal = added.reduce((sum, t) => {
+    if (t.annualPrice != null) return sum + t.annualPrice / 12
+    return sum + t.price * 0.8 // Assume ~20% annual discount when no explicit annual price
+  }, 0)
+  const total = billingCycle === 'monthly' ? monthlyTotal : annualTotal
   const yearly = total * 12
+  const monthlySavings = monthlyTotal - annualTotal
   const comparison = getComparison(yearly)
 
   return (
@@ -315,7 +325,7 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
               <button
                 key={tier.tier_name}
                 type="button"
-                onClick={() => addWithTier(tier.monthly_price, tier.tier_name)}
+                onClick={() => addWithTier(tier.monthly_price, tier.tier_name, tier.annual_price)}
                 className="px-3.5 py-2 sm:px-3 sm:py-1.5 rounded-lg border border-border hover:border-primary/40 hover:bg-primary/5 text-sm transition-all cursor-pointer min-h-[44px] sm:min-h-0"
               >
                 <span className="font-bold">{tier.monthly_price === 0 ? 'Free' : `$${tier.monthly_price}`}</span>
@@ -346,7 +356,40 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
       {/* ── Receipt ── */}
       {added.length > 0 && (
         <div className="rounded-2xl border border-foreground/[0.06] divide-y divide-foreground/[0.06] mb-4">
-          {added.map(tool => (
+          {/* Billing toggle */}
+          <div className="flex items-center justify-center gap-1 px-4 py-2.5 bg-foreground/[0.02]">
+            <button
+              type="button"
+              onClick={() => setBillingCycle('monthly')}
+              className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all ${
+                billingCycle === 'monthly'
+                  ? 'bg-primary text-white'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Monthly
+            </button>
+            <button
+              type="button"
+              onClick={() => setBillingCycle('annual')}
+              className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all ${
+                billingCycle === 'annual'
+                  ? 'bg-primary text-white'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Annual
+              {added.some(t => t.price > 0) && (
+                <span className="ml-1 text-[10px] opacity-80">save ~20%</span>
+              )}
+            </button>
+          </div>
+
+          {added.map(tool => {
+            const displayPrice = billingCycle === 'annual'
+              ? (tool.annualPrice != null ? Math.round(tool.annualPrice / 12 * 100) / 100 : Math.round(tool.price * 0.8 * 100) / 100)
+              : tool.price
+            return (
             <div key={tool.id}>
               <div className="flex items-center gap-3 px-4 py-2.5">
                 {tool.logo_url ? (
@@ -360,7 +403,10 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
                   className="flex items-center gap-1.5 hover:bg-muted/80 px-2 py-0.5 rounded-lg transition-colors cursor-pointer"
                 >
                   <span className="text-xs text-muted-foreground">{tool.tier}</span>
-                  <span className="text-sm font-bold">{tool.price === 0 ? 'Free' : `$${tool.price}`}</span>
+                  <span className="text-sm font-bold">{displayPrice === 0 ? 'Free' : `$${displayPrice % 1 === 0 ? displayPrice : displayPrice.toFixed(2)}`}</span>
+                  {billingCycle === 'annual' && tool.price > 0 && (
+                    <span className="text-[10px] text-emerald-600 font-medium line-through decoration-muted-foreground/40">${tool.price}</span>
+                  )}
                   <span className="text-[10px] text-primary">edit</span>
                 </button>
                 <button onClick={() => remove(tool.id)} className="p-0.5 hover:text-destructive transition-colors">
@@ -373,7 +419,7 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
                     <button
                       key={tier.tier_name}
                       type="button"
-                      onClick={() => changeTier(tool.id, tier.monthly_price, tier.tier_name)}
+                      onClick={() => changeTier(tool.id, tier.monthly_price, tier.tier_name, tier.annual_price)}
                       className={`px-2.5 py-1 rounded-lg border text-xs transition-all cursor-pointer ${
                         tool.tier === tier.tier_name
                           ? 'border-primary/40 bg-primary/10 font-bold'
@@ -402,16 +448,23 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
                 </div>
               )}
             </div>
-          ))}
+            )
+          })}
           {/* Total */}
           <div className="flex items-center justify-between px-4 py-3.5 sm:py-3 bg-foreground/[0.02]">
-            <span className="text-sm font-bold">Monthly total</span>
-            <span className="text-xl font-black">${total}<span className="text-sm text-muted-foreground font-normal">/mo</span></span>
+            <span className="text-sm font-bold">{billingCycle === 'monthly' ? 'Monthly total' : 'Monthly (annual billing)'}</span>
+            <span className="text-xl font-black">${total % 1 === 0 ? total : total.toFixed(2)}<span className="text-sm text-muted-foreground font-normal">/mo</span></span>
           </div>
           <div className="flex items-center justify-between px-4 py-2.5 sm:py-2 bg-foreground/[0.02]">
             <span className="text-xs text-muted-foreground">Annual cost</span>
             <span className="text-sm font-bold text-muted-foreground">${yearly % 1 === 0 ? yearly : yearly.toFixed(2)}/year</span>
           </div>
+          {billingCycle === 'annual' && monthlySavings > 0 && (
+            <div className="flex items-center justify-between px-4 py-2 bg-emerald-500/5">
+              <span className="text-xs font-medium text-emerald-700 dark:text-emerald-400">Annual savings</span>
+              <span className="text-sm font-bold text-emerald-700 dark:text-emerald-400">${Math.round(monthlySavings * 12)}/year</span>
+            </div>
+          )}
         </div>
       )}
 
