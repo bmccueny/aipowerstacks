@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import Link from 'next/link'
-import { X, Search, ArrowRight, Check, Loader2, Terminal, Pen, Megaphone, FlaskConical } from 'lucide-react'
+import { X, Search, ArrowRight, Check, Loader2, Terminal, Pen, Megaphone, FlaskConical, AlertTriangle, Users, TrendingDown } from 'lucide-react'
 
 type QuickTool = {
   id: string
@@ -64,6 +64,76 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly')
   const wrapperRef = useRef<HTMLDivElement>(null)
   const tierCache = useRef(new Map<string, TierData[]>())
+
+  // Instant insight state
+  type InsightData = {
+    overlaps: { tools: string[]; reason: string; savings: number }[]
+    percentile: number
+    wastePercent: number
+    totalSavings: number
+  }
+  const [insights, setInsights] = useState<InsightData | null>(null)
+  const [insightsLoading, setInsightsLoading] = useState(false)
+  const insightsFetched = useRef(new Set<string>())
+
+  // Fetch insights when 3+ tools are added
+  const fetchInsights = useCallback(async (toolList: AddedTool[]) => {
+    if (toolList.length < 3) { setInsights(null); return }
+
+    const key = toolList.map(t => t.id).sort().join(',')
+    if (insightsFetched.current.has(key)) return
+    insightsFetched.current.add(key)
+
+    setInsightsLoading(true)
+    try {
+      const ids = toolList.map(t => t.id)
+      const total = toolList.reduce((s, t) => s + t.price, 0)
+
+      const [overlapRes, benchRes] = await Promise.allSettled([
+        fetch('/api/tracker/quick-overlap', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ tool_ids: ids }),
+        }).then(r => r.ok ? r.json() : null),
+        fetch(`/api/tracker/benchmark?tool_ids=${ids.join(',')}&total=${total}`).then(r => r.ok ? r.json() : null),
+      ])
+
+      const overlap = overlapRes.status === 'fulfilled' ? overlapRes.value : null
+      const bench = benchRes.status === 'fulfilled' ? benchRes.value : null
+
+      const overlaps = (overlap?.overlaps || []).map((o: { toolNames: [string, string]; reason: string; confidence: number }) => ({
+        tools: o.toolNames,
+        reason: o.reason,
+        savings: 0,
+      }))
+
+      // Estimate waste: each overlap pair = the cheaper tool's cost is potentially wasted
+      let estimatedWaste = 0
+      for (const o of overlap?.overlaps || []) {
+        const slugs: string[] = o.tools || []
+        const costs = slugs.map((s: string) => toolList.find(t => t.slug === s)?.price || 0).sort((a: number, b: number) => a - b)
+        if (costs.length >= 2) estimatedWaste += costs[0] // cheaper tool is the waste
+      }
+      const wastePercent = total > 0 ? Math.round((estimatedWaste / total) * 100) : 0
+
+      setInsights({
+        overlaps,
+        percentile: bench?.percentile ?? 50,
+        wastePercent,
+        totalSavings: Math.round(estimatedWaste * 12),
+      })
+    } catch {
+      setInsights(null)
+    } finally {
+      setInsightsLoading(false)
+    }
+  }, [])
+
+  // Trigger insight fetch when tools change
+  useEffect(() => {
+    if (added.length >= 3) fetchInsights(added)
+    else setInsights(null)
+  }, [added, fetchInsights])
 
   // Build the popular tools grid from props
   const popularTools = POPULAR_SLUGS
@@ -500,25 +570,96 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
         </div>
       )}
 
-      {/* ── Reveal + CTA ── */}
+      {/* ── Insight Cards + CTA ── */}
       {added.length >= 2 && (
-        <div className="text-center">
-          <p className="text-sm text-muted-foreground mb-1">
+        <div className="space-y-3">
+          {/* Spend context */}
+          <p className="text-sm text-muted-foreground text-center">
             {comparison
               ? <>That&apos;s <strong className="text-foreground">${yearly % 1 === 0 ? yearly : yearly.toFixed(2)}/year</strong> — more than {comparison}.</>
               : <>That&apos;s <strong className="text-foreground">${yearly % 1 === 0 ? yearly : yearly.toFixed(2)}/year</strong> on {added.length} AI tools.</>
             }
           </p>
-          <p className="text-sm text-muted-foreground mb-4">
-            We&apos;ll show you which ones to cut.
-          </p>
-          <Link
-            href={`/tracker?import=${added.map(t => `${t.slug}:${t.price}`).join(',')}`}
-            className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2"
-          >
-            Get My Savings Report
-            <ArrowRight className="h-4 w-4" />
-          </Link>
+
+          {/* Loading state for insights */}
+          {insightsLoading && added.length >= 3 && (
+            <div className="flex items-center justify-center gap-2 py-3">
+              <Loader2 className="h-4 w-4 animate-spin text-primary" />
+              <span className="text-xs text-muted-foreground">Analyzing your stack...</span>
+            </div>
+          )}
+
+          {/* Triple hook insight cards */}
+          {insights && !insightsLoading && (
+            <div className="space-y-2">
+              {/* Overlap detection */}
+              {insights.overlaps.length > 0 && (
+                <div className="rounded-xl border border-amber-400/30 bg-amber-400/[0.05] p-3.5">
+                  <div className="flex items-start gap-2.5">
+                    <AlertTriangle className="h-4 w-4 text-amber-500 mt-0.5 shrink-0" />
+                    <div>
+                      <p className="text-sm font-semibold text-foreground">
+                        {insights.overlaps.length} overlap{insights.overlaps.length > 1 ? 's' : ''} detected
+                      </p>
+                      {insights.overlaps.slice(0, 2).map((o, i) => (
+                        <p key={i} className="text-xs text-muted-foreground mt-1">
+                          <strong className="text-foreground">{o.tools[0]}</strong> and <strong className="text-foreground">{o.tools[1]}</strong> — {o.reason.toLowerCase()}
+                        </p>
+                      ))}
+                      {insights.totalSavings > 0 && (
+                        <p className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 mt-1.5">
+                          Potential savings: ${insights.totalSavings}/year
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Peer comparison */}
+              <div className="flex gap-2">
+                <div className="flex-1 rounded-xl border border-border p-3 text-center">
+                  <div className="flex items-center justify-center gap-1.5 mb-1">
+                    <Users className="h-3.5 w-3.5 text-blue-500" />
+                    <span className="text-xs text-muted-foreground">vs peers</span>
+                  </div>
+                  <p className="text-lg font-bold">
+                    {insights.percentile >= 70 ? (
+                      <span className="text-amber-500">Top {100 - insights.percentile}%</span>
+                    ) : insights.percentile <= 30 ? (
+                      <span className="text-emerald-500">Bottom {insights.percentile}%</span>
+                    ) : (
+                      <span className="text-blue-500">Average</span>
+                    )}
+                  </p>
+                  <p className="text-[10px] text-muted-foreground">of AI spenders</p>
+                </div>
+
+                {insights.wastePercent > 0 && (
+                  <div className="flex-1 rounded-xl border border-red-400/20 bg-red-400/[0.03] p-3 text-center">
+                    <div className="flex items-center justify-center gap-1.5 mb-1">
+                      <TrendingDown className="h-3.5 w-3.5 text-red-500" />
+                      <span className="text-xs text-muted-foreground">waste</span>
+                    </div>
+                    <p className="text-lg font-bold text-red-500">{insights.wastePercent}%</p>
+                    <p className="text-[10px] text-muted-foreground">may be redundant</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* CTA */}
+          <div className="text-center pt-1">
+            <Link
+              href={`/tracker?import=${added.map(t => `${t.slug}:${t.price}`).join(',')}`}
+              className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2"
+            >
+              {insights?.overlaps.length ? 'Get Your Full Stack Analysis' : 'Get My Savings Report'}
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+            <p className="text-[10px] text-muted-foreground mt-2">Free forever. No credit card.</p>
+          </div>
         </div>
       )}
 
