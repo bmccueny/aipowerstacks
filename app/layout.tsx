@@ -120,10 +120,7 @@ export default function RootLayout({
         <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:bg-primary focus:text-white focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-bold">
           Skip to content
         </a>
-        <div className="stars" aria-hidden="true" />
-        <div className="nebula" aria-hidden="true" />
-        <TwinklingStars />
-        <div id="main-content" className="relative z-[1]">
+        <div id="main-content" className="relative">
           {children}
         </div>
         <Toaster
