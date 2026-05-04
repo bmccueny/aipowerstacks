@@ -11,7 +11,7 @@
  *   npx tsx scripts/generate-comparison-verdicts.ts --apply --concurrency=3  # parallel requests
  */
 
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from "fs";
+import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
@@ -63,17 +63,22 @@ if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
   process.exit(1);
 }
 
-// Determine which AI provider to use
-const AI_PROVIDER: "anthropic" | "xai" = ANTHROPIC_API_KEY
-  ? "anthropic"
-  : XAI_API_KEY
-    ? "xai"
-    : (() => {
-        console.error(
-          "[verdict-gen] Missing ANTHROPIC_API_KEY or XAI_API_KEY. Set at least one."
-        );
-        process.exit(1);
-      })();
+const OLLAMA_URL = process.env.OLLAMA_URL || "http://localhost:11434";
+const OLLAMA_MODEL = process.env.OLLAMA_MODEL || "qwen2.5-coder:14b";
+
+// Determine which AI provider to use (prefer Anthropic > xAI > Ollama)
+type AiProvider = "anthropic" | "xai" | "ollama";
+const providerArg = process.argv
+  .find((a) => a.startsWith("--provider="))
+  ?.split("=")[1] as AiProvider | undefined;
+
+const AI_PROVIDER: AiProvider = providerArg
+  ? providerArg
+  : ANTHROPIC_API_KEY
+    ? "anthropic"
+    : XAI_API_KEY
+      ? "xai"
+      : "ollama";
 
 const supabase: SupabaseClient = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
 
@@ -213,7 +218,7 @@ async function fetchExistingPairs(
   const existing = new Set<string>();
 
   if (!useDb) {
-    // Check JSON files
+    // Check JSON files: index + individual verdict files
     if (existsSync(VERDICTS_DIR)) {
       try {
         const indexPath = join(VERDICTS_DIR, "_index.json");
@@ -224,6 +229,25 @@ async function fetchExistingPairs(
           }>;
           for (const entry of index) {
             existing.add(`${entry.tool_a_id}::${entry.tool_b_id}`);
+          }
+        }
+      } catch {
+        // ignore
+      }
+
+      // Also scan individual verdict JSON files
+      try {
+        const files = readdirSync(VERDICTS_DIR).filter(
+          (f) => f.endsWith(".json") && f !== "_index.json"
+        );
+        for (const file of files) {
+          try {
+            const verdict = JSON.parse(
+              readFileSync(join(VERDICTS_DIR, file), "utf8")
+            ) as { tool_a_id: string; tool_b_id: string };
+            existing.add(`${verdict.tool_a_id}::${verdict.tool_b_id}`);
+          } catch {
+            // skip malformed files
           }
         }
       } catch {
@@ -334,7 +358,7 @@ async function callAnthropic(
       "content-type": "application/json",
     },
     body: JSON.stringify({
-      model: "claude-haiku-4-20250414",
+      model: "claude-haiku-4-5-20251001",
       max_tokens: 1024,
       system,
       messages: [{ role: "user", content: user }],
@@ -411,11 +435,45 @@ async function callXai(
   return (json.choices?.[0]?.message?.content || "").trim();
 }
 
+async function callOllama(
+  system: string,
+  user: string
+): Promise<string> {
+  const res = await fetch(`${OLLAMA_URL}/api/chat`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: OLLAMA_MODEL,
+      stream: false,
+      options: { temperature: 0.7, num_predict: 1024 },
+      messages: [
+        { role: "system", content: system },
+        { role: "user", content: user },
+      ],
+    }),
+  });
+
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`Ollama error ${res.status}: ${errText}`);
+  }
+
+  const json = (await res.json()) as {
+    message?: { content?: string };
+    error?: string;
+  };
+  if (json.error) throw new Error(`Ollama error: ${json.error}`);
+  return (json.message?.content || "").trim();
+}
+
 async function callLLM(system: string, user: string): Promise<string> {
   if (AI_PROVIDER === "anthropic") {
     return callAnthropic(system, user);
   }
-  return callXai(system, user);
+  if (AI_PROVIDER === "xai") {
+    return callXai(system, user);
+  }
+  return callOllama(system, user);
 }
 
 // ─── Validate and clean verdict HTML ────────────────────────────────────────
@@ -589,7 +647,12 @@ async function runBatch<T, R>(
 async function main(): Promise<void> {
   console.log("[verdict-gen] Starting comparison verdict generation");
   console.log(`[verdict-gen] Mode: ${APPLY ? "APPLY" : "DRY RUN"}`);
-  console.log(`[verdict-gen] AI Provider: ${AI_PROVIDER === "anthropic" ? "Anthropic Claude Haiku" : "xAI Grok 3 Mini Fast"}`);
+  const providerLabel = AI_PROVIDER === "anthropic"
+    ? "Anthropic Claude Haiku"
+    : AI_PROVIDER === "xai"
+      ? "xAI Grok 3 Mini Fast"
+      : `Ollama ${OLLAMA_MODEL}`;
+  console.log(`[verdict-gen] AI Provider: ${providerLabel}`);
   console.log(`[verdict-gen] Top tools: ${TOP_N_TOOLS}`);
   console.log(`[verdict-gen] Concurrency: ${CONCURRENCY}`);
 
@@ -696,6 +759,11 @@ async function main(): Promise<void> {
           ? ` (winner: ${verdict.winner_slug})`
           : " (no clear winner)";
         console.log(`  OK: ${verdict.verdict_html.length} chars${winnerInfo}`);
+      }
+
+      // Write incremental index update every 10 verdicts (or on last)
+      if (!useDb && allVerdicts.length % 10 === 0) {
+        updateJsonIndex(allVerdicts);
       }
 
       // Brief delay to avoid hammering the API
