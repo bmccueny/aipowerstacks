@@ -21,7 +21,7 @@ const POPULAR_SLUGS = [
   'chatgpt', 'claude-code', 'gemini', 'cursor-editor', 'midjourney',
   'perplexity-ai', 'github-copilot', 'notion-ai', 'canva', 'elevenlabs',
   'figma-ai', 'v0-by-vercel', 'suno', 'zapier', 'grammarly',
-  'runway-gen-4', 'make', 'higgsfield-ai', 'adobe-firefly', 'n8n',
+  'runway-gen-4', 'make', 'higgsfield-ai', 'adobe-firefly', 'n8n', 'deepseek',
 ]
 
 // Preset stacks
