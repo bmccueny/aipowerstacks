@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { DollarSign } from 'lucide-react'
 import { TrackerClient } from '@/components/tracker/TrackerClient'
+import { AlertsBell } from '@/components/tracker/AlertsBell'
 import { SITE_URL } from '@/lib/constants/site'
 
 export const metadata: Metadata = {
@@ -66,7 +67,10 @@ export default async function TrackerPage({
           <DollarSign className="h-3.5 w-3.5" />
           Cost Tracker
         </div>
-        <h1 className="text-3xl sm:text-4xl font-black mb-2">AI Subscription Tracker</h1>
+        <div className="flex items-center justify-center gap-2">
+          <h1 className="text-3xl sm:text-4xl font-black mb-2">AI Subscription Tracker</h1>
+          {user && <AlertsBell />}
+        </div>
         <p className="text-muted-foreground max-w-lg mx-auto">
           Add your tools. We&apos;ll find the overlap, flag cheaper alternatives, and tell you what to cancel.
         </p>

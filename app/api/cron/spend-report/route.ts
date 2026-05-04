@@ -67,6 +67,7 @@ function buildSpendEmailHtml(
   alts: AltTool[],
   unsubUrl: string,
   monthLabel: string,
+  aiInsight: string = '',
 ): string {
   const greeting = displayName ? `Hi ${displayName.split(' ')[0]}` : 'Hi there'
 
@@ -158,6 +159,15 @@ function buildSpendEmailHtml(
             ${momHtml}
           </div>
         </td></tr>
+
+        ${aiInsight ? `
+        <!-- AI Insight -->
+        <tr><td style="padding: 0 30px 20px;">
+          <div style="background: #FFF8F6; border: 1px solid #F5E0DC; border-radius: 10px; padding: 16px 20px;">
+            <div style="font-size: 10px; font-weight: 800; color: ${PRIMARY_COLOR}; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px;">AI Insight</div>
+            <p style="font-size: 14px; color: #333; line-height: 1.6; margin: 0;">${aiInsight}</p>
+          </div>
+        </td></tr>` : ''}
 
         <!-- Tool list -->
         <tr><td style="padding: 0 30px 10px;">
@@ -368,6 +378,23 @@ export async function GET(request: Request) {
           (a) => userCatIds.has(a.category_id) && !userToolIds.has(a.id),
         )
 
+        // Generate AI-powered personalized insight
+        let aiInsight = ''
+        try {
+          const toolSummary = userSubs
+            .filter((s): s is EnrichedSub & { tool: ToolRow } => s.tool != null)
+            .map(s => `${s.tool.name} ($${s.monthly_cost}/mo, ${categoryMap.get(s.tool.category_id) ?? 'General'})`)
+            .join(', ')
+          const { callClaude } = await import('@/lib/utils/anthropic')
+          const aiResult = await callClaude({
+            messages: [{ role: 'user', content: `You are an AI spend advisor. A user has these AI subscriptions: ${toolSummary}. Total: $${totalMonthly}/mo.${momDelta != null ? ` Change from last month: ${momDelta >= 0 ? '+' : ''}$${momDelta}.` : ''} Give ONE specific actionable insight in 1-2 sentences. Be direct, name specific tools. No intro phrases.` }],
+            maxTokens: 100,
+            temperature: 0.5,
+            model: 'claude-haiku-4-5-20251001',
+          })
+          aiInsight = aiResult.content
+        } catch { /* AI insight is optional, skip on failure */ }
+
         const unsubUrl = `${APP_URL}/api/newsletter/unsubscribe?token=${generateUnsubToken(email)}`
         const html = buildSpendEmailHtml(
           nameMap.get(userId) ?? null,
@@ -377,6 +404,7 @@ export async function GET(request: Request) {
           userAlts,
           unsubUrl,
           monthLabel,
+          aiInsight,
         )
 
         return resend.emails.send({

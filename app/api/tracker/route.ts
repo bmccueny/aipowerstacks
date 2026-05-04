@@ -84,7 +84,58 @@ export async function POST(request: Request) {
   if (insertError) {
     return NextResponse.json({ error: insertError.message }, { status: 500 })
   }
+
+  // Check for overlap with existing tools and create alert (fire-and-forget)
+  checkOverlapAlert(supabase, user.id, tool_id).catch(() => {})
+
   return NextResponse.json({ id: insertData?.id })
+}
+
+async function checkOverlapAlert(supabase: Awaited<ReturnType<typeof createClient>>, userId: string, newToolId: string) {
+  // Get the new tool's category and use_case
+  const { data: newTool } = await supabase
+    .from('tools')
+    .select('name, category_id, use_case')
+    .eq('id', newToolId)
+    .single()
+  if (!newTool?.category_id) return
+
+  // Get user's existing subscription tool IDs
+  const { data: existingSubs } = await supabase
+    .from('user_subscriptions')
+    .select('tool_id')
+    .eq('user_id', userId)
+    .neq('tool_id', newToolId)
+
+  if (!existingSubs || existingSubs.length === 0) return
+
+  const existingToolIds = existingSubs.map(s => s.tool_id)
+  const { data: existingTools } = await supabase
+    .from('tools')
+    .select('id, name, category_id, use_case')
+    .in('id', existingToolIds)
+
+  const overlapping = (existingTools ?? []).filter(t =>
+    t.category_id === newTool.category_id ||
+    (newTool.use_case && t.use_case === newTool.use_case)
+  )
+
+  if (overlapping.length > 0) {
+    const names = overlapping
+      .map(t => t.name)
+      .slice(0, 3)
+      .join(', ')
+
+    const { createAlert } = await import('./alerts/route')
+    await createAlert({
+      userId,
+      type: 'overlap',
+      title: `${newTool.name} may overlap with ${names}`,
+      body: `You just added ${newTool.name}, which is in the same category as ${names}. Consider comparing them to avoid paying for duplicate functionality.`,
+      toolId: newToolId,
+      severity: 'warning',
+    })
+  }
 }
 
 export async function DELETE(request: Request) {
