@@ -217,11 +217,13 @@ export async function GET(request: Request) {
     ? Math.round(toolScores.reduce((sum, t) => sum + t.pulse, 0) / toolScores.length)
     : 0
 
-  return NextResponse.json({
+  const res = NextResponse.json({
     tools: toolScores.sort((a, b) => a.pulse - b.pulse), // worst first for attention
     stackPulse,
     stackLabel: pulseLabel(stackPulse),
     stackColor: pulseColor(stackPulse),
     toolCount: toolScores.length,
   })
+  res.headers.set('Cache-Control', 'public, s-maxage=1800, stale-while-revalidate=3600')
+  return res
 }

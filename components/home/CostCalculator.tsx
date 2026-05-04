@@ -63,6 +63,7 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
   const [tiersLoading, setTiersLoading] = useState(false)
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly')
   const wrapperRef = useRef<HTMLDivElement>(null)
+  const tierCache = useRef(new Map<string, TierData[]>())
 
   // Build the popular tools grid from props
   const popularTools = POPULAR_SLUGS
@@ -79,13 +80,20 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
     return () => document.removeEventListener('mousedown', handler)
   }, [])
 
-  // Load tiers when tool selected
+  // Load tiers when tool selected (cache-first)
   useEffect(() => {
     if (!selectedTool) { setTiers([]); return }
+    const cached = tierCache.current.get(selectedTool.id)
+    if (cached) { setTiers(cached); return }
     setTiersLoading(true)
     fetch(`/api/tracker/tiers?tool_id=${selectedTool.id}`)
       .then(r => r.json())
-      .then(d => { setTiers(d.tiers || []); setTiersLoading(false) })
+      .then(d => {
+        const result: TierData[] = d.tiers || []
+        tierCache.current.set(selectedTool.id, result)
+        setTiers(result)
+        setTiersLoading(false)
+      })
       .catch(() => { setTiers([]); setTiersLoading(false) })
   }, [selectedTool])
 
@@ -103,11 +111,29 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
   }
 
   const quickAdd = (tool: QuickTool) => {
+    const cached = tierCache.current.get(tool.id)
+    if (cached) {
+      const paidTiers = cached.filter(t => t.monthly_price > 0)
+      const defaultTier = paidTiers[0] || cached[0]
+      if (defaultTier) {
+        setAdded(prev => [...prev, {
+          ...tool,
+          price: defaultTier.monthly_price,
+          annualPrice: defaultTier.annual_price ?? null,
+          tier: defaultTier.tier_name,
+        }])
+      } else {
+        selectTool(tool)
+      }
+      return
+    }
+
     setLoadingToolId(tool.id)
     fetch(`/api/tracker/tiers?tool_id=${tool.id}`)
       .then(r => r.json())
       .then(d => {
         const tierList: TierData[] = d.tiers || []
+        tierCache.current.set(tool.id, tierList)
         const paidTiers = tierList.filter(t => t.monthly_price > 0)
         const defaultTier = paidTiers[0] || tierList[0]
         if (defaultTier) {
@@ -144,9 +170,15 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
     setEditingTierId(toolId)
     const tool = added.find(t => t.id === toolId)
     if (!tool) return
+    const cached = tierCache.current.get(tool.id)
+    if (cached) { setEditTiers(cached); return }
     fetch(`/api/tracker/tiers?tool_id=${tool.id}`)
       .then(r => r.json())
-      .then(d => setEditTiers(d.tiers || []))
+      .then(d => {
+        const result: TierData[] = d.tiers || []
+        tierCache.current.set(tool.id, result)
+        setEditTiers(result)
+      })
       .catch(() => setEditTiers([]))
   }
 

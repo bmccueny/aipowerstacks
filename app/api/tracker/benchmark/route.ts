@@ -227,7 +227,7 @@ export async function GET(request: Request) {
     }))
   }
 
-  return NextResponse.json({
+  const res = NextResponse.json({
     avgMonthly: agg.avg,
     median: agg.median,
     p25: agg.p25,
@@ -239,4 +239,6 @@ export async function GET(request: Request) {
     isIndustryBenchmark: realUserCount < 50,
     categoryBreakdown,
   })
+  res.headers.set('Cache-Control', 'public, s-maxage=1800, stale-while-revalidate=3600')
+  return res
 }

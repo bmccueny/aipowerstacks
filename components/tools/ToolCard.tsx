@@ -72,6 +72,8 @@ function ToolCardLogo({
       alt={name}
       width={size}
       height={size}
+      loading="lazy"
+      decoding="async"
       className="object-contain"
       onError={onError}
     />

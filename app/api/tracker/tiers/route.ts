@@ -15,5 +15,7 @@ export async function GET(request: Request) {
     .order('sort_order', { ascending: true })
 
   if (error) return NextResponse.json({ tiers: [] })
-  return NextResponse.json({ tiers: data || [] })
+  const res = NextResponse.json({ tiers: data || [] })
+  res.headers.set('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400')
+  return res
 }

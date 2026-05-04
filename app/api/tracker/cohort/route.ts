@@ -127,11 +127,13 @@ export async function GET(request: Request) {
     })
     .filter(r => r.cohortPercentage >= 20) // Only show if 20%+ of cohort uses it
 
-  return NextResponse.json({
+  const res = NextResponse.json({
     cohortSize: cohortUsers.length,
     recommendations,
     message: cohortUsers.length > 0
       ? `Found ${cohortUsers.length} users with similar stacks`
       : 'Not enough similar users yet — check back as more people join',
   })
+  res.headers.set('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400')
+  return res
 }
