@@ -20,7 +20,7 @@ import { InsightsPanel } from './InsightsPanel'
 import { BenchmarkCard } from './BenchmarkCard'
 import { CohortInsights } from './CohortInsights'
 import { AnnualSavingsCalc } from './AnnualSavingsCalc'
-import { FreeTierDetector } from './FreeTierDetector'
+// FreeTierDetector removed — redundant with initial tier selection
 import { ModelOverlap } from './ModelOverlap'
 
 type Subscription = {
@@ -492,7 +492,6 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
         <div className="space-y-4">
           <h2 className="text-lg font-bold">Cost Optimization</h2>
           <AnnualSavingsCalc key={`asc-${stackKey}`} anonTools={!clientLoggedIn ? anonToolData : undefined} />
-          <FreeTierDetector key={`ftd-${stackKey}`} anonTools={!clientLoggedIn ? anonToolData : undefined} />
         </div>
       )}
 
