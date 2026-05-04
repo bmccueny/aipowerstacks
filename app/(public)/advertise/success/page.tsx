@@ -16,7 +16,7 @@ export default function AdvertiseSuccessPage() {
         <div className="h-16 w-16 rounded-full border-2 border-black bg-primary/15 flex items-center justify-center mx-auto mb-6">
           <BadgeCheck className="h-8 w-8 text-primary" />
         </div>
-        <h1 className="text-3xl font-black mb-3">You&apos;re featured!</h1>
+        <h1 className="text-3xl font-bold mb-3">You&apos;re featured!</h1>
         <p className="text-muted-foreground mb-8">
           Payment confirmed. Your tool now has a Featured badge and top placement in its category.
           It may take up to 5 minutes to appear across the site.

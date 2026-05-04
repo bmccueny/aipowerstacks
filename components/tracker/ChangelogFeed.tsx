@@ -63,7 +63,7 @@ export function ChangelogFeed({ anonTools }: { anonTools?: { tool_id: string }[]
               href={entry.source_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-start gap-3 p-2.5 rounded-lg hover:bg-foreground/[0.02] transition-colors group"
+              className="flex items-start gap-3 p-2.5 rounded-lg hover:bg-muted/30 transition-colors group"
             >
               <div className={`h-7 w-7 rounded-md flex items-center justify-center shrink-0 ${color}`}>
                 <Icon className="h-3.5 w-3.5" />

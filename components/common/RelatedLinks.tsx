@@ -76,7 +76,7 @@ export async function RelatedLinks({ toolSlug, toolName, categorySlug, categoryN
           <Link
             key={link.href}
             href={link.href}
-            className="group flex items-center gap-3 rounded-xl border border-foreground/[0.06] p-3 hover:border-primary/30 transition-all"
+            className="group flex items-center gap-3 rounded-xl border border-border p-3 hover:border-primary/30 transition-all"
           >
             {link.logo ? (
               <div className="h-9 w-9 shrink-0 rounded-lg bg-muted overflow-hidden flex items-center justify-center">

@@ -57,7 +57,7 @@ export function SwitchPrompt({ removedToolId, removedToolName, recentlyAdded, on
             className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg border text-left text-sm transition-all ${
               selectedTo === tool.tool_id
                 ? 'border-primary/40 bg-primary/5 font-bold'
-                : 'border-foreground/[0.06] hover:border-foreground/10'
+                : 'border-border hover:border-border'
             }`}
           >
             <ArrowRight className="h-3 w-3 text-primary shrink-0" />
@@ -87,7 +87,7 @@ export function SwitchPrompt({ removedToolId, removedToolName, recentlyAdded, on
             placeholder="Why did you switch? (optional)"
             value={reason}
             onChange={e => setReason(e.target.value)}
-            className="w-full px-3 py-2 text-sm rounded-lg border border-foreground/[0.06] bg-background"
+            className="w-full px-3 py-2 text-sm rounded-lg border border-border bg-background"
           />
           <button
             onClick={submit}

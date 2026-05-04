@@ -28,7 +28,7 @@ export function TrackerPopularTools({ popularTools, alreadyTracked, onQuickAdd }
           <button
             key={t.id}
             onClick={() => onQuickAdd(t)}
-            className="inline-flex items-center gap-1.5 h-8 px-3 rounded-full border border-foreground/10 hover:border-primary/40 hover:bg-primary/5 transition-all text-xs font-semibold"
+            className="inline-flex items-center gap-1.5 h-8 px-3 rounded-full border border-border hover:border-primary/40 hover:bg-primary/5 transition-all text-xs font-semibold"
           >
             {t.logo_url ? (
               <Image src={t.logo_url} alt={t.name} width={16} height={16} className="w-4 h-4 rounded object-contain" unoptimized />

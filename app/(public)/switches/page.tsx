@@ -38,14 +38,14 @@ export default async function SwitchesPage() {
           <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-primary mb-3 flex items-center gap-2">
             <span className="w-5 h-px bg-primary/60" /> Community
           </p>
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-[-0.02em]">Switch Stories</h1>
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-[-0.02em]">Switch Stories</h1>
           <p className="mt-3 text-base text-muted-foreground max-w-md">
             Real decisions from real users — what they switched from, what they switched to, and why.
           </p>
         </div>
 
         {switches.length === 0 ? (
-          <div className="rounded-2xl border-2 border-dashed border-foreground/10 p-12 text-center">
+          <div className="rounded-2xl border-2 border-dashed border-border p-12 text-center">
             <TrendingDown className="h-8 w-8 text-muted-foreground/30 mx-auto mb-4" />
             <p className="font-bold text-lg mb-2">No switch stories yet</p>
             <p className="text-sm text-muted-foreground mb-6 max-w-sm mx-auto">
@@ -58,7 +58,7 @@ export default async function SwitchesPage() {
         ) : (
           <div className="space-y-4">
             {switches.map(story => (
-              <div key={story.id} className="rounded-xl border border-foreground/[0.06] p-5">
+              <div key={story.id} className="rounded-xl border border-border p-5">
                 <div className="flex items-center gap-3 mb-3">
                   {/* From tool */}
                   <Link href={`/tools/${story.from_tool?.slug ?? ''}`} className="flex items-center gap-2 hover:text-primary transition-colors">

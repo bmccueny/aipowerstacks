@@ -73,11 +73,11 @@ export function CompareToolSearch({ currentSlugs }: CompareToolSearchProps) {
           onChange={(e) => onInput(e.target.value)}
           onFocus={() => { if (query.length >= 2) setOpen(true) }}
           placeholder="Search..."
-          className="w-full h-8 pl-7 pr-2 text-[11px] font-bold bg-background border border-foreground/15 rounded-md focus:outline-none focus-visible:border-primary/50 transition-all"
+          className="w-full h-8 pl-7 pr-2 text-[11px] font-bold bg-background border border-border rounded-md focus:outline-none focus-visible:border-primary/50 transition-all"
         />
       </div>
       {open && query.length >= 2 && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-background border border-foreground/10 rounded-lg shadow-xl z-[60] max-h-48 overflow-y-auto">
+        <div className="absolute top-full left-0 right-0 mt-1 bg-background border border-border rounded-lg shadow-xl z-[60] max-h-48 overflow-y-auto">
           {loading ? (
             <div className="p-3 text-center"><Loader2 className="h-3.5 w-3.5 animate-spin mx-auto text-primary" /></div>
           ) : results.length > 0 ? (
@@ -88,7 +88,7 @@ export function CompareToolSearch({ currentSlugs }: CompareToolSearchProps) {
                   onClick={() => addTool(tool.slug)}
                   className="w-full flex items-center gap-2 p-2 hover:bg-primary/5 rounded text-left transition-colors"
                 >
-                  <div className="relative h-6 w-6 rounded bg-white border border-foreground/5 overflow-hidden flex items-center justify-center shrink-0">
+                  <div className="relative h-6 w-6 rounded bg-white border border-border overflow-hidden flex items-center justify-center shrink-0">
                     {tool.logo_url ? (
                       <Image src={tool.logo_url} alt={tool.name} fill className="object-contain p-0.5" />
                     ) : (

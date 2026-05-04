@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Users, Sparkles, ExternalLink } from 'lucide-react'
+import { Users, Sparkles, ExternalLink, Star } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -10,6 +10,8 @@ type Recommendation = {
   toolName: string
   toolSlug: string
   logoUrl: string | null
+  avgRating: number
+  reviewCount: number
   usedByCount: number
   cohortPercentage: number
 }
@@ -41,7 +43,7 @@ export function CohortInsights({ anonTools }: { anonTools?: { tool_id: string }[
 
   if (loading) {
     return (
-      <div className="glass-card rounded-xl p-5 space-y-4">
+      <div className="bg-card border border-border rounded-xl p-5 space-y-4">
         <div className="h-4 w-36 bg-muted animate-pulse rounded" />
         <div className="space-y-2">
           {[1, 2, 3].map(i => (
@@ -57,7 +59,7 @@ export function CohortInsights({ anonTools }: { anonTools?: { tool_id: string }[
   }
 
   return (
-    <div className="glass-card rounded-xl p-5 space-y-4">
+    <div className="bg-card border border-border rounded-xl p-5 space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Users className="h-4 w-4 text-purple-500" />
@@ -80,7 +82,7 @@ export function CohortInsights({ anonTools }: { anonTools?: { tool_id: string }[
             <Link
               key={rec.toolId}
               href={`/tools/${rec.toolSlug}`}
-              className="flex items-center gap-3 p-2.5 rounded-lg border border-foreground/[0.06] hover:bg-muted/50 transition-colors group"
+              className="flex items-center gap-3 p-2.5 rounded-lg border border-border hover:bg-muted/50 transition-colors group"
             >
               <div className="h-8 w-8 rounded-lg bg-muted flex items-center justify-center shrink-0 overflow-hidden">
                 {rec.logoUrl ? (
@@ -92,17 +94,31 @@ export function CohortInsights({ anonTools }: { anonTools?: { tool_id: string }[
                 )}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium truncate group-hover:text-blue-500 transition-colors">
-                  {rec.toolName}
-                </p>
+                <div className="flex items-center gap-1.5">
+                  <p className="text-sm font-medium truncate group-hover:text-primary transition-colors">
+                    {rec.toolName}
+                  </p>
+                  {rec.avgRating > 0 && (
+                    <span className="flex items-center gap-0.5 shrink-0">
+                      <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
+                      <span className="text-[10px] font-bold text-muted-foreground">{rec.avgRating}</span>
+                    </span>
+                  )}
+                </div>
                 <p className="text-[10px] text-muted-foreground">
                   Used by {rec.cohortPercentage}% of similar stacks
+                  {rec.reviewCount > 0 && <> · {rec.reviewCount} review{rec.reviewCount !== 1 ? 's' : ''}</>}
                 </p>
               </div>
               <div className="flex items-center gap-1.5">
                 <div className="h-1.5 w-12 rounded-full bg-muted overflow-hidden">
                   <div
-                    className="h-full rounded-full bg-purple-500 transition-all duration-500"
+                    className={`h-full rounded-full transition-all duration-500 ${
+                      rec.cohortPercentage >= 80 ? 'bg-emerald-500' :
+                      rec.cohortPercentage >= 60 ? 'bg-blue-500' :
+                      rec.cohortPercentage >= 40 ? 'bg-purple-500' :
+                      'bg-amber-500'
+                    }`}
                     style={{ width: `${rec.cohortPercentage}%` }}
                   />
                 </div>

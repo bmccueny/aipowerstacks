@@ -47,7 +47,7 @@ export default async function LocalAIClusterPage() {
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-widest mb-4">
             Content Cluster
           </div>
-          <h1 className="text-4xl sm:text-5xl font-black tracking-tight mb-4">Local AI Guide</h1>
+          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mb-4">Local AI Guide</h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Complete guide to running AI models locally. Free and open source alternatives to cloud AI.
           </p>
@@ -60,7 +60,7 @@ export default async function LocalAIClusterPage() {
         </div>
 
         <div className="glass-card rounded-2xl p-8 mb-12">
-          <h2 className="text-xl font-black mb-4">Explore Related Clusters</h2>
+          <h2 className="text-xl font-bold mb-4">Explore Related Clusters</h2>
           <div className="flex flex-wrap gap-3">
             {relatedTopics.map((topic) => (
               <Link
@@ -78,7 +78,7 @@ export default async function LocalAIClusterPage() {
           <div className="h-1 bg-gradient-to-r from-primary/40 via-primary to-primary/40" />
           <div className="p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center gap-5">
             <div className="flex-1 min-w-0">
-              <h3 className="text-lg font-black leading-tight mb-1">Track your AI spending</h3>
+              <h3 className="text-lg font-bold leading-tight mb-1">Track your AI spending</h3>
               <p className="text-xs text-muted-foreground">See what you&apos;re paying for and cut the waste.</p>
             </div>
             <div className="sm:w-72 shrink-0">

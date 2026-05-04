@@ -12,7 +12,7 @@ export default function StackAdvisorPage() {
       <div className="max-w-2xl mx-auto">
         <div className="mb-10">
           <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-primary mb-3">AI-Powered</p>
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-[-0.02em] leading-tight">
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-[-0.02em] leading-tight">
             Stack Advisor
           </h1>
           <p className="mt-3 text-base text-muted-foreground leading-relaxed max-w-md">

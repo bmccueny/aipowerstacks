@@ -156,7 +156,7 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
       {collection.is_public && !isOwner && <StackViewIncrement collectionId={collection.id} />}
 
       {/* Hero — identity only */}
-      <div className="relative overflow-hidden border-b border-foreground/10">
+      <div className="relative overflow-hidden border-b border-border">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/8 via-transparent to-primary/4 pointer-events-none" />
         <div className="max-w-7xl mx-auto px-6 pt-8 pb-10">
           <Link
@@ -173,7 +173,7 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-3 flex-wrap mb-1">
-                <h1 className="text-2xl md:text-3xl font-black tracking-tight leading-tight">
+                <h1 className="text-2xl md:text-3xl font-bold tracking-tight leading-tight">
                   {collection.name}
                 </h1>
                 {collection.is_public ? (
@@ -215,7 +215,7 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
                     <Link
                       key={cat.slug}
                       href={`/categories/${cat.slug}`}
-                      className="text-xs font-medium text-muted-foreground bg-muted/60 border border-foreground/10 px-2.5 py-1 rounded-full hover:border-primary/30 hover:text-primary transition-colors"
+                      className="text-xs font-medium text-muted-foreground bg-muted/60 border border-border px-2.5 py-1 rounded-full hover:border-primary/30 hover:text-primary transition-colors"
                     >
                       {cat.icon} {cat.name}
                     </Link>
@@ -320,7 +320,7 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
 
                           {/* Curator note */}
                           {tool._note && (
-                            <div className="mt-3 flex items-start gap-2 bg-muted/60 border border-foreground/10 rounded-lg px-3 py-2.5">
+                            <div className="mt-3 flex items-start gap-2 bg-muted/60 border border-border rounded-lg px-3 py-2.5">
                               <MessageSquareQuote className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
                               <p className="text-sm text-foreground/75 italic leading-relaxed">{tool._note}</p>
                             </div>
@@ -340,7 +340,7 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
             {/* Creator */}
             {creator && (
               <div className="glass-card rounded-xl p-5">
-                <p className="text-[10px] uppercase font-black tracking-widest text-muted-foreground mb-3">
+                <p className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground mb-3">
                   Curator
                 </p>
                 <div className="flex items-center gap-3 mb-4">
@@ -425,7 +425,7 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
 
             {/* Stats */}
             <div className="glass-card rounded-xl p-5">
-              <p className="text-[10px] uppercase font-black tracking-widest text-muted-foreground mb-4">
+              <p className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground mb-4">
                 Stats
               </p>
               <div className="space-y-3">
@@ -461,7 +461,7 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
             {/* Pricing breakdown */}
             {Object.keys(pricingCounts).length > 0 && (
               <div className="glass-card rounded-xl p-5">
-                <p className="text-[10px] uppercase font-black tracking-widest text-muted-foreground mb-3">
+                <p className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground mb-3">
                   Pricing Mix
                 </p>
                 <div className="space-y-2">

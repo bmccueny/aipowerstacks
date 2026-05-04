@@ -46,7 +46,7 @@ export default async function ChallengesPage() {
           <div className="p-2.5 rounded-md bg-primary/15 border border-primary/20">
             <Trophy className="h-6 w-6 text-primary" />
           </div>
-          <h1 className="text-3xl md:text-4xl font-black tracking-tight">Stack Challenges</h1>
+          <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Stack Challenges</h1>
         </div>
         <p className="text-muted-foreground text-lg max-w-xl">
           Build the best AI workflow for the prompt. The community votes for their favourite.
@@ -56,7 +56,7 @@ export default async function ChallengesPage() {
       {/* Active challenge */}
       {active.length > 0 && (
         <section className="mb-12">
-          <h2 className="text-xs uppercase font-black tracking-widest text-primary mb-4">Live Now</h2>
+          <h2 className="text-xs uppercase font-bold tracking-widest text-primary mb-4">Live Now</h2>
           <div className="space-y-4">
             {active.map((challenge) => (
               <Link key={challenge.id} href={`/stacks/challenges/${challenge.id}`}>
@@ -107,7 +107,7 @@ export default async function ChallengesPage() {
       {/* Past challenges */}
       {past.length > 0 && (
         <section>
-          <h2 className="text-xs uppercase font-black tracking-widest text-muted-foreground mb-4">Past Challenges</h2>
+          <h2 className="text-xs uppercase font-bold tracking-widest text-muted-foreground mb-4">Past Challenges</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {past.map((challenge) => (
               <Link key={challenge.id} href={`/stacks/challenges/${challenge.id}`}>

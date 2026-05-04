@@ -19,12 +19,12 @@ interface CompareHeaderProps {
 export function CompareHeader({ tools, slugs, emptySlots, highestRatingIdx, onRemoveTool }: CompareHeaderProps) {
   return (
     <thead>
-      <tr className="border-b-2 border-foreground/[0.08]">
+      <tr className="border-b-2 border-border">
         {/* Label column header */}
         <th className={cn(
           'w-[110px] min-w-[110px] sm:w-[170px] sm:min-w-[170px]',
           'p-2 sm:p-3 text-left align-bottom',
-          'border-r border-foreground/[0.06]',
+          'border-r border-border',
           'sticky left-0 z-30 bg-background'
         )}>
           <span className="text-[8px] sm:text-[10px] font-black uppercase tracking-[0.12em] text-muted-foreground/30">Specs</span>
@@ -37,7 +37,7 @@ export function CompareHeader({ tools, slugs, emptySlots, highestRatingIdx, onRe
             <th key={tool.id} className={cn(
               'min-w-[140px] sm:min-w-[180px]',
               'p-2.5 sm:p-4 text-center align-top relative group',
-              'border-r border-foreground/[0.06] last:border-r-0',
+              'border-r border-border last:border-r-0',
               isWinner && 'bg-primary/[0.03]'
             )}>
               {/* Remove X */}
@@ -61,7 +61,7 @@ export function CompareHeader({ tools, slugs, emptySlots, highestRatingIdx, onRe
               {/* Product image */}
               <Link href={`/tools/${tool.slug}`} className="block mb-2 mx-auto">
                 <div className={cn(
-                  'relative h-12 w-12 sm:h-16 sm:w-16 mx-auto rounded-lg sm:rounded-xl bg-white shadow-sm overflow-hidden flex items-center justify-center p-1.5 sm:p-2 border border-foreground/5 transition-transform hover:scale-105',
+                  'relative h-12 w-12 sm:h-16 sm:w-16 mx-auto rounded-lg sm:rounded-xl bg-white shadow-sm overflow-hidden flex items-center justify-center p-1.5 sm:p-2 border border-border transition-transform hover:scale-105',
                   isWinner && 'ring-2 ring-primary/30'
                 )}>
                   {tool.logo_url ? (
@@ -110,10 +110,10 @@ export function CompareHeader({ tools, slugs, emptySlots, highestRatingIdx, onRe
           <th key={`add-${i}`} className={cn(
             'min-w-[140px] sm:min-w-[180px]',
             'p-2.5 sm:p-4 text-center align-middle',
-            'border-r border-foreground/[0.06] last:border-r-0'
+            'border-r border-border last:border-r-0'
           )}>
             <div className="flex flex-col items-center gap-2 py-2 sm:py-3">
-              <div className="h-12 w-12 sm:h-16 sm:w-16 rounded-lg sm:rounded-xl border-2 border-dashed border-foreground/10 flex items-center justify-center">
+              <div className="h-12 w-12 sm:h-16 sm:w-16 rounded-lg sm:rounded-xl border-2 border-dashed border-border flex items-center justify-center">
                 <Plus className="h-4 w-4 sm:h-5 sm:w-5 text-foreground/15" />
               </div>
               <p className="text-[8px] sm:text-[10px] font-bold text-muted-foreground/30 uppercase tracking-wider">Add Tool</p>

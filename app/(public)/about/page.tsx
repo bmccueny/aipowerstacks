@@ -24,7 +24,7 @@ export default function AboutPage() {
   return (
     <div className="page-shell max-w-4xl mx-auto">
       <div className="page-hero text-center mb-12">
-        <h1 className="text-4xl font-black mb-4">Our Mission</h1>
+        <h1 className="text-4xl font-bold mb-4">Our Mission</h1>
         <p className="text-lg text-muted-foreground">
           Helping you cut through the noise and find the right AI tools for your workflow in under 60 seconds.
         </p>

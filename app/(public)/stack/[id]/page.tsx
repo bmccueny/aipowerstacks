@@ -126,7 +126,7 @@ export default async function SharedStackPage({ params }: PageProps) {
         {tools.map((tool, i) => {
           const badge = getPricingBadge(tool.pricing_model)
           return (
-            <div key={i} className="flex items-center gap-4 rounded-xl border border-foreground/[0.06] p-4 hover:bg-muted/30 transition-colors">
+            <div key={i} className="flex items-center gap-4 rounded-xl border border-border p-4 hover:bg-muted/30 transition-colors">
               {/* Logo */}
               <div className="h-10 w-10 rounded-lg bg-muted/50 flex items-center justify-center overflow-hidden shrink-0">
                 {tool.logo_url ? (
@@ -174,7 +174,7 @@ export default async function SharedStackPage({ params }: PageProps) {
       )}
 
       {/* CTA */}
-      <div className="text-center pt-4 border-t border-foreground/[0.06]">
+      <div className="text-center pt-4 border-t border-border">
         <p className="text-sm text-muted-foreground mb-3">
           Track your own AI spending and get a stack score
         </p>

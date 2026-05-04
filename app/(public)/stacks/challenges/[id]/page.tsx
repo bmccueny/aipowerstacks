@@ -119,7 +119,7 @@ export default async function ChallengePage({
         <div className="h-1 bg-gradient-to-r from-primary/40 via-primary to-primary/40" />
         <div className="p-6 sm:p-8">
           <div className="flex items-start justify-between gap-4 mb-4">
-            <h1 className="text-2xl sm:text-3xl font-black tracking-tight">{challenge.title}</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">{challenge.title}</h1>
             {isLive ? (
               <span className="text-xs font-semibold text-emerald-500 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full shrink-0">
                 Live

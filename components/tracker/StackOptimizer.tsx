@@ -143,7 +143,7 @@ export function StackOptimizer({ currentTools }: { currentTools: CurrentTool[] }
               ? 'border-emerald-400/20 bg-emerald-400/[0.04]'
               : optimized.savings_monthly < 0
                 ? 'border-violet-400/20 bg-violet-400/[0.04]'
-                : 'border-foreground/[0.06] bg-foreground/[0.02]'
+                : 'border-border bg-muted/30'
           }`}>
             <p className="text-sm text-muted-foreground">{optimized.summary}</p>
             {optimized.savings_monthly > 0 && (
@@ -172,7 +172,7 @@ export function StackOptimizer({ currentTools }: { currentTools: CurrentTool[] }
                   const isDropped = droppedSlugs.has(tool.slug)
                   return (
                     <div key={i} className={`rounded-lg border px-3 py-2 flex items-center gap-2 ${
-                      isDropped ? 'border-destructive/20 bg-destructive/[0.03] opacity-60' : 'border-foreground/[0.06]'
+                      isDropped ? 'border-destructive/20 bg-destructive/[0.03] opacity-60' : 'border-border'
                     }`}>
                       <div className="h-6 w-6 rounded-md overflow-hidden flex items-center justify-center shrink-0">
                         {tool.logo_url ? (
@@ -210,7 +210,7 @@ export function StackOptimizer({ currentTools }: { currentTools: CurrentTool[] }
                       ? mode === 'performance'
                         ? 'border-violet-400/20 bg-violet-400/[0.04]'
                         : 'border-emerald-400/20 bg-emerald-400/[0.04]'
-                      : 'border-foreground/[0.06]'
+                      : 'border-border'
                   }`
                   const inner = (
                     <>
@@ -264,7 +264,7 @@ export function StackOptimizer({ currentTools }: { currentTools: CurrentTool[] }
 
           {/* Tool reasons */}
           {optimized.tools.filter(t => t.action === 'replace').length > 0 && (
-            <div className="rounded-xl border border-foreground/[0.06] p-4 space-y-2">
+            <div className="rounded-xl border border-border p-4 space-y-2">
               <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Why these swaps</p>
               {optimized.tools.filter(t => t.action === 'replace').map((tool, i) => (
                 <div key={i} className="flex items-start gap-2">
@@ -294,7 +294,7 @@ export function StackOptimizer({ currentTools }: { currentTools: CurrentTool[] }
 
           {/* Dropped tools reasoning */}
           {optimized.tools.filter(t => t.action === 'drop').length > 0 && (
-            <div className="rounded-xl border border-foreground/[0.06] p-4 space-y-2">
+            <div className="rounded-xl border border-border p-4 space-y-2">
               <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Duplicates to drop</p>
               {optimized.tools.filter(t => t.action === 'drop').map((tool, i) => (
                 <div key={i} className="flex items-start gap-2">
@@ -311,7 +311,7 @@ export function StackOptimizer({ currentTools }: { currentTools: CurrentTool[] }
           <div className="flex gap-2">
             <button
               onClick={() => generate(mode === 'savings' ? 'performance' : 'savings')}
-              className="flex-1 h-9 rounded-lg border border-foreground/10 text-xs font-semibold hover:bg-muted/50 transition-colors"
+              className="flex-1 h-9 rounded-lg border border-border text-xs font-semibold hover:bg-muted/50 transition-colors"
             >
               Try {mode === 'savings' ? 'Best Performance' : 'Save Money'}
             </button>

@@ -127,7 +127,7 @@ export function AvatarUpload({ userId, displayName, username, initialAvatarUrl, 
             variant="outline" 
             size="sm" 
             onClick={() => setIsEditing(true)}
-            className="font-bold border-foreground/20"
+            className="font-bold border-border"
           >
             Edit Profile
           </Button>

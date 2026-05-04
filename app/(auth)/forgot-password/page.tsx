@@ -36,7 +36,7 @@ export default function ForgotPasswordPage() {
         <Link href="/" className="inline-block">
           <BrandMark className="h-10 w-auto mx-auto" />
         </Link>
-        <h1 className="text-2xl font-black tracking-tight">Reset your password</h1>
+        <h1 className="text-[22px] font-bold tracking-tight">Reset your password</h1>
         <p className="text-sm text-muted-foreground">
           {sent
             ? "Check your email for a reset link."
@@ -45,7 +45,7 @@ export default function ForgotPasswordPage() {
       </div>
 
       {sent ? (
-        <div className="glass-card rounded-2xl p-8 text-center space-y-4">
+        <div className="bg-card border border-border rounded-2xl p-8 text-center space-y-4">
           <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
             <Mail className="h-6 w-6 text-primary" />
           </div>
@@ -61,7 +61,7 @@ export default function ForgotPasswordPage() {
           </Link>
         </div>
       ) : (
-        <form onSubmit={handleReset} className="glass-card rounded-2xl p-8 space-y-5">
+        <form onSubmit={handleReset} className="bg-card border border-border rounded-2xl p-8 space-y-5">
           {error && (
             <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-sm text-destructive">
               {error}
@@ -78,7 +78,7 @@ export default function ForgotPasswordPage() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
               required
-              className="relative w-full h-12 px-5 glass-card border border-white/10 rounded-xl font-medium text-base focus:outline-none focus-visible:border-primary/50 placeholder:text-muted-foreground/40 transition-all duration-200"
+              className="w-full h-12 px-4 bg-background border border-border rounded-xl text-[15px] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 placeholder:text-muted-foreground transition-all"
             />
           </div>
 

@@ -40,7 +40,7 @@ export function AddToCompareButton({
         variant="outline"
         size="icon"
         className={cn(
-          'h-9 w-9 shrink-0 border-foreground/10',
+          'h-9 w-9 shrink-0 border-border',
           isAdded ? 'text-primary border-primary/40 bg-primary/5' : '',
           className
         )}
@@ -59,7 +59,7 @@ export function AddToCompareButton({
         variant="outline"
         size="sm"
         className={cn(
-          'border-foreground/10 gap-1.5 whitespace-nowrap',
+          'border-border gap-1.5 whitespace-nowrap',
           isAdded ? 'text-primary border-primary/40 bg-primary/5' : '',
           fullWidth ? 'w-full' : '',
           className
@@ -77,7 +77,7 @@ export function AddToCompareButton({
       type="button"
       variant="outline"
       className={cn(
-        'border-foreground/10 gap-2',
+        'border-border gap-2',
         isAdded ? 'text-primary border-primary/40 bg-primary/5' : '',
         fullWidth ? 'w-full' : '',
         className

@@ -177,9 +177,9 @@ export default async function ToolDetailPage({ params }: Props) {
           <span className="text-foreground">{tool.name}</span>
         </nav>
 
-        <div className="rounded-2xl border border-foreground/[0.08] bg-foreground/[0.03] p-8 mb-6">
+        <div className="rounded-2xl border border-border bg-muted/30 p-8 mb-6">
           <div className="flex flex-col sm:flex-row gap-6">
-            <div className="h-24 w-24 shrink-0 rounded-xl border border-foreground/10 bg-background shadow-sm overflow-hidden flex items-center justify-center">
+            <div className="h-24 w-24 shrink-0 rounded-xl border border-border bg-background shadow-sm overflow-hidden flex items-center justify-center">
               {tool.logo_url ? (
                 <Image src={tool.logo_url} alt={tool.name} width={96} height={96} className="object-cover" />
               ) : (
@@ -188,7 +188,7 @@ export default async function ToolDetailPage({ params }: Props) {
             </div>
             <div className="flex-1">
               <div className="flex flex-wrap items-start gap-2 mb-2">
-                <h1 className="text-3xl font-black">{tool.name}</h1>
+                <h1 className="text-3xl font-bold">{tool.name}</h1>
                 {tool.verified_by_admin && (
                   <VerifiedBadge size="sm" showLabel label="Expert Verified" />
                 )}
@@ -211,12 +211,12 @@ export default async function ToolDetailPage({ params }: Props) {
                 </div>
                 {tool.categories && (
                   <Link href={`/categories/${tool.categories.slug}`}>
-                    <Badge variant="outline" className="border-foreground/10 hover:border-foreground/20 transition-colors">
+                    <Badge variant="outline" className="border-border hover:border-foreground/20 transition-colors">
                       {tool.categories.icon} {tool.categories.name}
                     </Badge>
                   </Link>
                 )}
-                <Badge variant="outline" className={isStale ? 'border-amber-400/30 text-amber-600 dark:text-amber-400' : 'border-foreground/10 text-muted-foreground'}>{freshnessLabel}</Badge>
+                <Badge variant="outline" className={isStale ? 'border-amber-400/30 text-amber-600 dark:text-amber-400' : 'border-border text-muted-foreground'}>{freshnessLabel}</Badge>
               </div>
               <div className="mb-4 text-xs text-muted-foreground">
                 <p>
@@ -322,7 +322,7 @@ export default async function ToolDetailPage({ params }: Props) {
                 <h2 className="text-lg font-semibold mb-3">Alternatives</h2>
                 <div className="space-y-3">
                   {alternatives.map((alt) => (
-                    <div key={alt.id} className="border border-foreground/10 rounded-xl p-3 flex items-center justify-between gap-4">
+                    <div key={alt.id} className="border border-border rounded-xl p-3 flex items-center justify-between gap-4">
                       <div className="min-w-0 flex items-center gap-3">
                         <div className="h-9 w-9 shrink-0 rounded-lg bg-muted overflow-hidden flex items-center justify-center">
                           {alt.logo_url ? (
@@ -340,7 +340,7 @@ export default async function ToolDetailPage({ params }: Props) {
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
                         <Link href={`/compare?tools=${encodeURIComponent([tool.slug, alt.slug].join(','))}`}>
-                          <Button variant="outline" size="sm" className="border-foreground/25">Compare</Button>
+                          <Button variant="outline" size="sm" className="border-border">Compare</Button>
                         </Link>
                         <Link href={`/tools/${alt.slug}`}>
                           <Button variant="ghost" size="sm">Open</Button>
@@ -381,7 +381,7 @@ export default async function ToolDetailPage({ params }: Props) {
                     <Link
                       key={rec.id}
                       href={`/tools/${rec.slug}`}
-                      className="border border-foreground/[0.06] rounded-xl p-3 flex items-center gap-3 hover:border-primary/30 transition-all group"
+                      className="border border-border rounded-xl p-3 flex items-center gap-3 hover:border-primary/30 transition-all group"
                     >
                       <div className="h-9 w-9 shrink-0 rounded-lg bg-muted overflow-hidden flex items-center justify-center">
                         {rec.logo_url ? (
@@ -437,7 +437,7 @@ export default async function ToolDetailPage({ params }: Props) {
               ) : (
                 <ReviewList reviews={reviews} currentUserId={user?.id ?? undefined} />
               )}
-              <div className="mt-5 border-t border-foreground/15 pt-5">
+              <div className="mt-5 border-t border-border pt-5">
                 {user ? (
                   <>
                     <p className="text-sm text-muted-foreground mb-3">Share your experience with this tool.</p>
@@ -479,7 +479,7 @@ export default async function ToolDetailPage({ params }: Props) {
                 </h3>
                 <div className="space-y-2">
                   {pricingTiers.map((tier) => (
-                    <div key={tier.tier_name} className="flex items-center justify-between py-2 border-b border-foreground/[0.06] last:border-0">
+                    <div key={tier.tier_name} className="flex items-center justify-between py-2 border-b border-border last:border-0">
                       <div className="min-w-0">
                         <p className="text-sm font-semibold">{tier.tier_name}</p>
                         {tier.features && <p className="text-[10px] text-muted-foreground truncate max-w-[160px]">{tier.features}</p>}
@@ -551,7 +551,7 @@ export default async function ToolDetailPage({ params }: Props) {
                 )}
                 {tool.has_api && (
                   <>
-                    <div className="flex justify-between gap-3 pt-2 border-t border-foreground/5">
+                    <div className="flex justify-between gap-3 pt-2 border-t border-border">
                       <dt className="text-muted-foreground flex items-center gap-1.5">
                         API Latency
                         <span className="flex h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" title="Live data" />
@@ -660,14 +660,14 @@ export default async function ToolDetailPage({ params }: Props) {
                   <dd className="text-xs">{tool.is_verified ? 'Editor-verified' : 'Community-submitted'}</dd>
                 </div>
               </dl>
-              <div className="mt-4 pt-4 border-t border-foreground/10 flex flex-col gap-2">
+              <div className="mt-4 pt-4 border-t border-border flex flex-col gap-2">
                 <p className="text-xs text-muted-foreground">Own this tool? Keep details accurate.</p>
                 <div className="grid grid-cols-2 gap-2">
                   <Link href={claimHref}>
-                    <Button variant="outline" size="sm" className="w-full border-foreground/25 text-xs">Claim listing</Button>
+                    <Button variant="outline" size="sm" className="w-full border-border text-xs">Claim listing</Button>
                   </Link>
                   <Link href={suggestEditHref}>
-                    <Button variant="outline" size="sm" className="w-full border-foreground/25 text-xs">Suggest edit</Button>
+                    <Button variant="outline" size="sm" className="w-full border-border text-xs">Suggest edit</Button>
                   </Link>
                 </div>
                 <Link href={`/tools/${tool.slug}/badge`} className="text-xs text-muted-foreground hover:text-primary transition-colors">
@@ -684,7 +684,7 @@ export default async function ToolDetailPage({ params }: Props) {
       {/* Related Pages — internal links for SEO */}
       <RelatedPages toolSlug={tool.slug} categorySlug={tool.categories?.slug ?? null} alternatives={alternatives} />
 
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-[60] border-t border-foreground/10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/85 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-[60] border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/85 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
         <div className="flex items-center gap-2">
           <OutboundLink href={outboundHref} toolName={tool.name} toolSlug={tool.slug} placement="mobile-bar" className="flex-1">
             <Button className="w-full h-11 gap-2">

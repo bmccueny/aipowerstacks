@@ -139,7 +139,7 @@ export function CompareTable({ tools }: CompareTableProps) {
   }
 
   const e = emptySlots
-  const scrollBtnCn = 'h-7 w-7 rounded-md border border-foreground/10 flex items-center justify-center transition-opacity'
+  const scrollBtnCn = 'h-7 w-7 rounded-md border border-border flex items-center justify-center transition-opacity'
 
   return (
     <div className="w-full relative">
@@ -179,7 +179,7 @@ export function CompareTable({ tools }: CompareTableProps) {
       {canScrollLeft && <div className="absolute left-[110px] sm:hidden top-0 bottom-0 w-4 bg-gradient-to-r from-background/80 to-transparent z-20 pointer-events-none" />}
       {canScrollRight && <div className="absolute right-0 sm:hidden top-0 bottom-0 w-4 bg-gradient-to-l from-background/80 to-transparent z-20 pointer-events-none" />}
 
-      <div className="border border-foreground/10 rounded-lg sm:rounded-xl overflow-hidden bg-background">
+      <div className="border border-border rounded-lg sm:rounded-xl overflow-hidden bg-background">
         <div ref={scrollRef} className="overflow-x-auto overscroll-x-contain scroll-smooth" style={{ WebkitOverflowScrolling: 'touch' }}>
           <table className="w-full border-collapse">
             <CompareHeader tools={tools} slugs={slugs} emptySlots={e} highestRatingIdx={highestRatingIdx} onRemoveTool={removeTool} />
@@ -395,10 +395,10 @@ export function CompareTable({ tools }: CompareTableProps) {
                 ))}
               </CompareRow>
 
-              <tr className="border-t-2 border-foreground/[0.08]">
+              <tr className="border-t-2 border-border">
                 <td className={cn(
                   'w-[110px] min-w-[110px] sm:w-[170px] sm:min-w-[170px]',
-                  'p-2.5 sm:p-4 border-r border-foreground/[0.06]',
+                  'p-2.5 sm:p-4 border-r border-border',
                   'sticky left-0 z-10 bg-background'
                 )} />
                 {tools.map((tool) => (

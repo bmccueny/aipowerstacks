@@ -65,7 +65,7 @@ export function ShareStackButton() {
       {showModal && shareUrl && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setShowModal(false)}>
           <div
-            className="bg-background border border-foreground/[0.06] rounded-2xl p-6 max-w-md w-full mx-4 shadow-xl space-y-4"
+            className="bg-background border border-border rounded-2xl p-6 max-w-md w-full mx-4 shadow-xl space-y-4"
             onClick={e => e.stopPropagation()}
           >
             <div className="flex items-center justify-between">
@@ -80,7 +80,7 @@ export function ShareStackButton() {
             </p>
 
             {/* URL display */}
-            <div className="flex items-center gap-2 rounded-lg border border-foreground/[0.06] bg-muted/30 p-3">
+            <div className="flex items-center gap-2 rounded-lg border border-border bg-muted/30 p-3">
               <span className="flex-1 text-sm truncate">{shareUrl}</span>
               <button onClick={copyUrl} className="shrink-0 text-muted-foreground hover:text-foreground transition-colors">
                 {copied ? <Check className="h-4 w-4 text-emerald-500" /> : <Copy className="h-4 w-4" />}
@@ -100,17 +100,17 @@ export function ShareStackButton() {
             </div>
 
             {/* Social share */}
-            <div className="flex items-center gap-2 pt-2 border-t border-foreground/[0.06]">
+            <div className="flex items-center gap-2 pt-2 border-t border-border">
               <span className="text-xs text-muted-foreground">Share on:</span>
               <button
                 onClick={shareToTwitter}
-                className="rounded-lg border border-foreground/[0.06] px-3 py-1.5 text-xs hover:bg-muted/50 transition-colors"
+                className="rounded-lg border border-border px-3 py-1.5 text-xs hover:bg-muted/50 transition-colors"
               >
                 𝕏 Twitter
               </button>
               <button
                 onClick={shareToLinkedIn}
-                className="rounded-lg border border-foreground/[0.06] px-3 py-1.5 text-xs hover:bg-muted/50 transition-colors"
+                className="rounded-lg border border-border px-3 py-1.5 text-xs hover:bg-muted/50 transition-colors"
               >
                 LinkedIn
               </button>

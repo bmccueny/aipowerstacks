@@ -156,7 +156,7 @@ export function TrackerToolSearch({
               aria-controls="tool-search-listbox"
               aria-autocomplete="list"
               aria-activedescendant={highlightIdx >= 0 ? `tool-option-${highlightIdx}` : undefined}
-              className="w-full pl-10 pr-4 py-3 text-base sm:text-sm rounded-xl border border-foreground/[0.12] bg-background focus:outline-none focus:border-primary/40 focus:ring-2 focus:ring-primary/20 transition-all"
+              className="w-full pl-10 pr-4 py-3 text-base sm:text-sm rounded-xl border border-border bg-background focus:outline-none focus:border-primary/40 focus:ring-2 focus:ring-primary/20 transition-all"
             />
           </div>
           {showDropdown && filteredTools.length > 0 && (

@@ -381,7 +381,7 @@ function ToolCardHome({ tool, compact, pricingColor, pricingLabel, isWellFavored
       )}
 
       <div className={cn(
-        'mt-auto pt-2.5 border-t border-foreground/10 flex items-center justify-between gap-3 relative z-10 w-full',
+        'mt-auto pt-2.5 border-t border-border flex items-center justify-between gap-3 relative z-10 w-full',
         compact && 'pt-3 mt-4'
       )}>
         {compact ? (
@@ -405,7 +405,7 @@ function ToolCardHome({ tool, compact, pricingColor, pricingLabel, isWellFavored
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={(e) => e.stopPropagation()}
-                className="h-9 w-9 flex items-center justify-center rounded-sm border border-foreground/10 text-primary hover:bg-primary/5 transition-colors"
+                className="h-9 w-9 flex items-center justify-center rounded-sm border border-border text-primary hover:bg-primary/5 transition-colors"
                 title="Visit Website"
               >
                 <ExternalLink className="h-4 w-4" />
@@ -446,7 +446,7 @@ function ToolCardGrid({ tool, pricingColor, pricingLabel, screenshotUrl, isWellF
       <div className="px-5 pb-5 flex flex-col gap-3 flex-1">
         {/* Logo + name + rating */}
         <div className="flex items-start gap-4">
-          <div className="h-14 w-14 shrink-0 rounded-md bg-foreground/[0.03] overflow-hidden flex items-center justify-center relative z-10">
+          <div className="h-14 w-14 shrink-0 rounded-md bg-muted/30 overflow-hidden flex items-center justify-center relative z-10">
             <ToolCardLogo logoUrl={tool.logo_url} name={tool.name} size={56} compact={compact} imageError={imageError} onError={() => setImageError(true)} />
           </div>
           <div className="flex-1 min-w-0 pt-0.5">
@@ -491,10 +491,10 @@ function ToolCardGrid({ tool, pricingColor, pricingLabel, screenshotUrl, isWellF
         </div>
 
         {/* Footer: Track + Compare */}
-        <div className="flex items-center gap-2 mt-auto pt-3 border-t border-foreground/10 relative z-10" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center gap-2 mt-auto pt-3 border-t border-border relative z-10" onClick={(e) => e.stopPropagation()}>
           <Link
             href={`/tracker?add=${tool.slug}`}
-            className="flex-1 h-9 flex items-center justify-center gap-1.5 text-xs font-semibold rounded-lg border border-foreground/[0.12] bg-background hover:bg-primary hover:text-white hover:border-primary transition-all duration-150"
+            className="flex-1 h-9 flex items-center justify-center gap-1.5 text-xs font-semibold rounded-lg border border-border bg-background hover:bg-primary hover:text-white hover:border-primary transition-all duration-150"
           >
             <DollarSign className="h-3.5 w-3.5" />
             Track This

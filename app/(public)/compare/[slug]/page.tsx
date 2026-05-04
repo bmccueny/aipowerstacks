@@ -559,6 +559,130 @@ export default async function VsComparisonPage({
         ))}
       </div>
 
+      {/* ═══ SEO Verdict Section — unique written analysis ═══ */}
+      <div className="mb-12 space-y-6">
+        <h2 className="text-xl font-bold">
+          {toolA.name} vs {toolB.name}: Which Should You Choose?
+        </h2>
+
+        {/* Quick verdict */}
+        {(() => {
+          const aScore = toolA.avg_rating * Math.log2(toolA.review_count + 1)
+          const bScore = toolB.avg_rating * Math.log2(toolB.review_count + 1)
+          const winner = aScore > bScore ? toolA : aScore < bScore ? toolB : null
+          const loser = winner === toolA ? toolB : toolA
+
+          const aIsFree = toolA.pricing_model === 'free'
+          const bIsFree = toolB.pricing_model === 'free'
+          const bothFree = aIsFree && bIsFree
+
+          return (
+            <div className="space-y-4 text-[15px] text-foreground/85 leading-relaxed">
+              <p>
+                {winner ? (
+                  <>
+                    Based on community ratings, <strong>{winner.name}</strong> ({winner.avg_rating.toFixed(1)}/5 from {winner.review_count} reviews) has the edge over <strong>{loser.name}</strong> ({loser.avg_rating.toFixed(1)}/5 from {loser.review_count} reviews).
+                    {winner.avg_rating - loser.avg_rating < 0.3 && ' That said, the difference is slim and both tools are well regarded.'}
+                  </>
+                ) : (
+                  <>Both <strong>{toolA.name}</strong> and <strong>{toolB.name}</strong> are neck and neck in community ratings. The decision comes down to your specific use case and budget.</>
+                )}
+              </p>
+
+              <p>
+                <strong>Pricing:</strong>{' '}
+                {bothFree ? (
+                  <>Both tools offer free plans, making this an easy decision to try both.</>
+                ) : aIsFree && !bIsFree ? (
+                  <>{toolA.name} offers a free tier, while {toolB.name} is {PRICING_LABELS[toolB.pricing_model]?.toLowerCase() || 'paid'}. If budget is a concern, start with {toolA.name}.</>
+                ) : !aIsFree && bIsFree ? (
+                  <>{toolB.name} offers a free tier, while {toolA.name} is {PRICING_LABELS[toolA.pricing_model]?.toLowerCase() || 'paid'}. If budget is a concern, start with {toolB.name}.</>
+                ) : (
+                  <>Both tools are {PRICING_LABELS[toolA.pricing_model]?.toLowerCase() || 'paid'} options. Check the pricing tiers above to find the best value for your needs.</>
+                )}
+              </p>
+
+              {(toolA.pros?.length || toolB.pros?.length) ? (
+                <p>
+                  <strong>Key differences:</strong>{' '}
+                  {toolA.pros?.[0] && <>{toolA.name} stands out for {toolA.pros[0].toLowerCase()}. </>}
+                  {toolB.pros?.[0] && <>{toolB.name} excels at {toolB.pros[0].toLowerCase()}. </>}
+                  {toolA.cons?.[0] && toolB.cons?.[0] && (
+                    <>On the flip side, {toolA.name} users note {toolA.cons[0].toLowerCase()}, while {toolB.name} users mention {toolB.cons[0].toLowerCase()}.</>
+                  )}
+                </p>
+              ) : null}
+
+              <p>
+                <strong>Bottom line:</strong>{' '}
+                {toolA.use_case === toolB.use_case ? (
+                  <>Both tools serve the {USE_CASE_LABELS[toolA.use_case || ''] || toolA.categories?.name || 'same'} use case. {winner ? `${winner.name} is the safer pick based on community data, but ${loser.name} may suit your workflow better.` : 'Try both and see which fits your workflow.'}</>
+                ) : (
+                  <>{toolA.name} is built for {USE_CASE_LABELS[toolA.use_case || ''] || toolA.categories?.name || 'general use'}, while {toolB.name} targets {USE_CASE_LABELS[toolB.use_case || ''] || toolB.categories?.name || 'general use'}. {winner ? `If you need both, ${winner.name} has the stronger community signal.` : 'Your choice depends on which use case matters more.'}</>
+                )}
+              </p>
+            </div>
+          )
+        })()}
+
+        {/* FAQ section for SEO snippets */}
+        <div className="space-y-4 pt-4 border-t border-border">
+          <h3 className="text-base font-bold">Is {toolA.name} better than {toolB.name}?</h3>
+          <p className="text-sm text-muted-foreground">
+            {toolA.avg_rating > toolB.avg_rating
+              ? `${toolA.name} has a higher community rating (${toolA.avg_rating.toFixed(1)} vs ${toolB.avg_rating.toFixed(1)}) based on ${toolA.review_count + toolB.review_count} total reviews on AIPowerStacks. However, "better" depends on your specific use case, budget, and team size.`
+              : toolB.avg_rating > toolA.avg_rating
+                ? `${toolB.name} has a higher community rating (${toolB.avg_rating.toFixed(1)} vs ${toolA.avg_rating.toFixed(1)}) based on ${toolA.review_count + toolB.review_count} total reviews on AIPowerStacks. However, "better" depends on your specific use case, budget, and team size.`
+                : `Both tools are rated equally by the community. The best choice depends on your specific needs, budget, and workflow preferences.`
+            }
+          </p>
+
+          <h3 className="text-base font-bold">Can I use {toolA.name} and {toolB.name} together?</h3>
+          <p className="text-sm text-muted-foreground">
+            {toolA.use_case !== toolB.use_case
+              ? `Yes. Since ${toolA.name} focuses on ${USE_CASE_LABELS[toolA.use_case || ''] || 'one area'} and ${toolB.name} on ${USE_CASE_LABELS[toolB.use_case || ''] || 'another'}, they can complement each other in your workflow.`
+              : `While both tools serve similar purposes, many users run both during a trial period before committing. If budget allows, using both gives you redundancy and lets you pick the right tool for each task.`
+            }
+          </p>
+
+          <h3 className="text-base font-bold">Which is cheaper, {toolA.name} or {toolB.name}?</h3>
+          <p className="text-sm text-muted-foreground">
+            {toolA.pricing_model === 'free' && toolB.pricing_model !== 'free'
+              ? `${toolA.name} offers a free plan, while ${toolB.name} is ${PRICING_LABELS[toolB.pricing_model]?.toLowerCase() || 'paid'}. Check the pricing comparison above for detailed tier breakdowns.`
+              : toolB.pricing_model === 'free' && toolA.pricing_model !== 'free'
+                ? `${toolB.name} offers a free plan, while ${toolA.name} is ${PRICING_LABELS[toolA.pricing_model]?.toLowerCase() || 'paid'}. Check the pricing comparison above for detailed tier breakdowns.`
+                : `Both tools have ${toolA.pricing_model === toolB.pricing_model ? 'similar pricing models' : 'different pricing structures'}. Use our pricing comparison above to see exact tier-by-tier costs.`
+            }
+          </p>
+        </div>
+
+        {/* FAQ JSON-LD for Google snippets */}
+        <JsonLd data={{
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: [
+            {
+              '@type': 'Question',
+              name: `Is ${toolA.name} better than ${toolB.name}?`,
+              acceptedAnswer: {
+                '@type': 'Answer',
+                text: toolA.avg_rating > toolB.avg_rating
+                  ? `${toolA.name} has a higher community rating (${toolA.avg_rating.toFixed(1)} vs ${toolB.avg_rating.toFixed(1)}).`
+                  : `Both tools are closely rated by the community. The best choice depends on your needs.`,
+              },
+            },
+            {
+              '@type': 'Question',
+              name: `Which is cheaper, ${toolA.name} or ${toolB.name}?`,
+              acceptedAnswer: {
+                '@type': 'Answer',
+                text: `Compare pricing tiers for ${toolA.name} and ${toolB.name} on AIPowerStacks.com.`,
+              },
+            },
+          ],
+        }} />
+      </div>
+
       {/* Similar Tools */}
       {similar.length > 0 && (
         <div className="mb-12">

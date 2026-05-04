@@ -265,7 +265,7 @@ export function AiMatchmaker({ initialQuery }: { initialQuery?: string } = {}) {
 
           {step === 'goal' && mode === 'chat' && (
             <div className="animate-in-stagger text-center max-w-xl mx-auto py-4">
-              <h2 className="text-3xl font-black mb-3 uppercase tracking-tight">How can I help you build?</h2>
+              <h2 className="text-3xl font-bold mb-3 uppercase tracking-tight">How can I help you build?</h2>
               <p className="text-muted-foreground mb-10 text-sm sm:text-base leading-relaxed">
                 Describe your project in plain English (e.g. &quot;I want to build a mobile app for dentists&quot;) and I&quot;ll find the perfect stack for you.
               </p>
@@ -304,7 +304,7 @@ export function AiMatchmaker({ initialQuery }: { initialQuery?: string } = {}) {
                     variant="ghost"
                     size="xs"
                     onClick={() => setChatMessage(suggestion)}
-                    className="text-[11px] font-bold px-3 py-1.5 rounded-full border border-foreground/10 hover:border-primary/30 hover:bg-primary/5 transition-all"
+                    className="text-[11px] font-bold px-3 py-1.5 rounded-full border border-border hover:border-primary/30 hover:bg-primary/5 transition-all"
                   >
                     {suggestion}
                   </Button>
@@ -436,7 +436,7 @@ export function AiMatchmaker({ initialQuery }: { initialQuery?: string } = {}) {
               <div className="flex items-center justify-between mb-10 flex-wrap gap-4">
                 <div className="max-w-3xl">
                   <div className="flex items-center gap-3 flex-wrap mb-6">
-                    <h2 className="text-2xl sm:text-3xl font-black uppercase tracking-tight flex items-center gap-3">
+                    <h2 className="text-2xl sm:text-3xl font-bold uppercase tracking-tight flex items-center gap-3">
                       <Sparkles className="h-6 w-6 text-primary" />
                       Strategic Product Stack
                     </h2>
@@ -466,7 +466,7 @@ export function AiMatchmaker({ initialQuery }: { initialQuery?: string } = {}) {
                             )
                           }
                           return (
-                            <p key={idx} className="text-base sm:text-lg font-bold text-foreground leading-snug border-b border-foreground/10 pb-4 mb-6 italic">
+                            <p key={idx} className="text-base sm:text-lg font-bold text-foreground leading-snug border-b border-border pb-4 mb-6 italic">
                               &quot;{paragraph.replace(/\*\*/g, '')}&quot;
                             </p>
                           )

@@ -49,7 +49,7 @@ export function AdminReviewPanel({ toolId, initialVerified, initialVideoUrl, ini
     <div className="glass-card rounded-md border-primary/30 bg-primary/5 p-6 mt-8">
       <div className="flex items-center gap-2 mb-6">
         <ShieldCheck className="h-5 w-5 text-primary" />
-        <h2 className="text-lg font-black uppercase tracking-tight">Admin Review Panel</h2>
+        <h2 className="text-lg font-bold uppercase tracking-tight">Admin Review Panel</h2>
       </div>
 
       <div className="space-y-5">
@@ -73,7 +73,7 @@ export function AdminReviewPanel({ toolId, initialVerified, initialVideoUrl, ini
             value={videoUrl}
             onChange={(e) => setVideoUrl(e.target.value)}
             placeholder="https://youtube.com/watch?v=..."
-            className="bg-background border-foreground/10"
+            className="bg-background border-border"
           />
         </div>
 
@@ -85,7 +85,7 @@ export function AdminReviewPanel({ toolId, initialVerified, initialVideoUrl, ini
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             placeholder="Notes about the tool performance, quirks, etc..."
-            className="w-full bg-background border border-foreground/10 rounded-md px-3 py-2 text-sm min-h-[100px] focus:outline-none focus-visible:border-primary/30"
+            className="w-full bg-background border border-border rounded-md px-3 py-2 text-sm min-h-[100px] focus:outline-none focus-visible:border-primary/30"
           />
         </div>
 

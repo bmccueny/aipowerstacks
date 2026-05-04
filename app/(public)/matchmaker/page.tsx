@@ -33,7 +33,7 @@ export default async function MatchmakerPage({ searchParams }: MatchmakerPagePro
           <Sparkles className="h-3.5 w-3.5" />
           AI Matchmaker
         </div>
-        <h1 className="text-3xl sm:text-4xl font-black mb-2">
+        <h1 className="text-3xl sm:text-4xl font-bold mb-2">
           {q ? 'Finding your tools...' : 'Tell us what you need'}
         </h1>
         <p className="text-muted-foreground max-w-xl mx-auto">

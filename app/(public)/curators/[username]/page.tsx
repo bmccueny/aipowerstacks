@@ -239,7 +239,7 @@ export default async function CuratorPage({
               <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                 <div>
                   <div className="flex items-center gap-3 flex-wrap">
-                    <h1 className="text-2xl font-black tracking-tight">
+                    <h1 className="text-2xl font-bold tracking-tight">
                       {profile.display_name || `@${profile.username}`}
                     </h1>
                   </div>
@@ -252,7 +252,7 @@ export default async function CuratorPage({
                 </div>
               </div>
 
-              <div className="flex items-center gap-6 mt-5 pt-5 border-t border-foreground/10">
+              <div className="flex items-center gap-6 mt-5 pt-5 border-t border-border">
                 <div className="flex items-center gap-2 text-sm">
                   <Layers className="h-4 w-4 text-primary" />
                   <span className="font-bold">{stacks.length}</span>
@@ -404,9 +404,9 @@ export default async function CuratorPage({
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between gap-3 pt-4 border-t border-foreground/5 mt-auto">
+                    <div className="flex items-center justify-between gap-3 pt-4 border-t border-border mt-auto">
                       <div className="flex items-center gap-3 min-w-0">
-                        <div className="h-10 w-10 rounded-xl bg-muted border border-foreground/10 overflow-hidden flex items-center justify-center shadow-sm shrink-0">
+                        <div className="h-10 w-10 rounded-xl bg-muted border border-border overflow-hidden flex items-center justify-center shadow-sm shrink-0">
                           {review.tools?.logo_url ? (
                             <Image src={review.tools.logo_url} alt={review.tools.name} width={40} height={40} className="object-contain" />
                           ) : (
@@ -414,7 +414,7 @@ export default async function CuratorPage({
                           )}
                         </div>
                         <div className="min-w-0">
-                          <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest leading-none mb-1">Review for</p>
+                          <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest leading-none mb-1">Review for</p>
                           <Link href={`/tools/${review.tools?.slug}`} className="text-sm font-bold text-foreground hover:text-primary transition-colors truncate block">
                             {review.tools?.name}
                           </Link>
@@ -462,7 +462,7 @@ export default async function CuratorPage({
                 </>
               )}
               {Array.isArray(profile.social_links) && profile.social_links.length > 0 && (
-                <div className={`flex flex-wrap gap-2${!isOwner ? ' pt-3 border-t border-foreground/10' : ''}`}>
+                <div className={`flex flex-wrap gap-2${!isOwner ? ' pt-3 border-t border-border' : ''}`}>
                   {(profile.social_links as { platform: string; url: string }[]).map((link, i) => {
                     const p = SOCIAL_PLATFORMS[link.platform]
                     if (!p || !link.url) return null
@@ -489,7 +489,7 @@ export default async function CuratorPage({
         {/* Followers / Following — owner only */}
         {isOwner && (followerList.length > 0 || followingList.length > 0) && (
           <div className="glass-card rounded-md p-6">
-            <div className="grid grid-cols-2 divide-x divide-foreground/10">
+            <div className="grid grid-cols-2 divide-x divide-border">
               <div className="pr-4">
                 <p className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-3">
                   Followers <span className="text-foreground">({followerCount})</span>
@@ -608,12 +608,12 @@ export default async function CuratorPage({
             </div>
 
             {/* Reputation + Progress */}
-            <div className="pt-4 border-t border-foreground/10 space-y-2">
+            <div className="pt-4 border-t border-border space-y-2">
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground font-medium">Reputation Score</span>
                 <span className="font-black text-primary">{repScore}</span>
               </div>
-              <div className="w-full h-1.5 rounded-full bg-foreground/10 overflow-hidden">
+              <div className="w-full h-1.5 rounded-full bg-muted overflow-hidden">
                 <div
                   className="h-full rounded-full bg-primary transition-all duration-500"
                   style={{ width: `${tierProgress}%` }}
@@ -629,12 +629,12 @@ export default async function CuratorPage({
             </div>
 
             {/* Stats */}
-            <div className="pt-3 border-t border-foreground/10 grid grid-cols-3 text-center">
+            <div className="pt-3 border-t border-border grid grid-cols-3 text-center">
               <div>
                 <p className="text-sm font-black">{reviewsCount}</p>
                 <p className="text-[9px] text-muted-foreground uppercase tracking-wider mt-0.5">Reviews</p>
               </div>
-              <div className="border-x border-foreground/10">
+              <div className="border-x border-border">
                 <p className="text-sm font-black">{totalHelpfulClicks}</p>
                 <p className="text-[9px] text-muted-foreground uppercase tracking-wider mt-0.5">Helpful</p>
               </div>

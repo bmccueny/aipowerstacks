@@ -29,7 +29,7 @@ export default async function WelcomePage() {
 
         {/* Hero — straight to the point */}
         <div className="max-w-xl mb-12">
-          <h1 className="text-[clamp(2.25rem,5vw,3.5rem)] font-extrabold tracking-[-0.03em] leading-[1.05]">
+          <h1 className="text-[clamp(2.25rem,5vw,3.5rem)] font-bold tracking-[-0.03em] leading-[1.05]">
             How much is AI
             <br /><span className="text-primary">costing</span> you?
           </h1>
@@ -71,7 +71,7 @@ export default async function WelcomePage() {
 
         {/* Calculator — the interactive hook */}
         <div className="mb-12">
-          <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground mb-2">Try it now</h2>
+          <h2 className="text-[13px] font-semibold uppercase tracking-[0.06em] text-muted-foreground mb-2">Try it now</h2>
           <p className="text-base font-medium text-foreground mb-6">Tap the tools you pay for — see your total instantly.</p>
           <div className="max-w-xl">
             <CostCalculator tools={calcTools} />
@@ -79,16 +79,16 @@ export default async function WelcomePage() {
         </div>
 
         {/* CTA */}
-        <div className="rounded-2xl bg-foreground dark:bg-white/[0.05] p-10 max-w-xl">
-          <h2 className="text-2xl font-extrabold text-background dark:text-foreground tracking-tight mb-2">
+        <div className="rounded-2xl bg-[#1C1C1E] dark:bg-card dark:border dark:border-border p-10 max-w-xl">
+          <h2 className="text-2xl font-bold text-white dark:text-foreground tracking-tight mb-2">
             Ready to stop overpaying?
           </h2>
-          <p className="text-sm text-background/60 dark:text-muted-foreground mb-6">
+          <p className="text-sm text-white/60 dark:text-muted-foreground mb-6">
             Sign up free. Track your subscriptions. We&apos;ll show you exactly where to cut.
           </p>
           <div className="flex flex-wrap gap-3">
             <AuthCTALink fallbackHref="/register?ref=producthunt" authHref="/tracker">
-              <Button size="lg" className="bg-background text-foreground hover:bg-background/90 dark:bg-primary dark:text-white font-bold gap-2 h-12 px-8 text-[15px] rounded-xl">
+              <Button size="lg" className="bg-white text-[#1C1C1E] hover:bg-white/90 dark:bg-primary dark:text-white font-bold gap-2 h-12 px-8 text-[15px] rounded-xl">
                 Start Free <ArrowRight className="h-4 w-4" />
               </Button>
             </AuthCTALink>

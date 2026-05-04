@@ -68,7 +68,7 @@ export default async function TrackerPage({
           Cost Tracker
         </div>
         <div className="flex items-center justify-center gap-2">
-          <h1 className="text-3xl sm:text-4xl font-black mb-2">AI Subscription Tracker</h1>
+          <h1 className="text-3xl sm:text-4xl font-bold mb-2">AI Subscription Tracker</h1>
           {user && <AlertsBell />}
         </div>
         <p className="text-muted-foreground max-w-lg mx-auto">

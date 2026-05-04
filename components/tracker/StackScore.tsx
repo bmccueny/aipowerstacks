@@ -136,7 +136,7 @@ export function StackScore({ anonTools }: { anonTools?: AnonTool[] } = {}) {
                 </span>
                 <span className="font-medium">{data.breakdown[key]}</span>
               </div>
-              <div className="h-1.5 rounded-full bg-foreground/[0.06] overflow-hidden">
+              <div className="h-1.5 rounded-full bg-muted/50 overflow-hidden">
                 <div
                   className={`h-full rounded-full ${color} transition-all duration-1000 ease-out`}
                   style={{ width: barsAnimated ? `${data.breakdown[key]}%` : '0%' }}
@@ -149,7 +149,7 @@ export function StackScore({ anonTools }: { anonTools?: AnonTool[] } = {}) {
 
       {/* Tips — only shown when actionable */}
       {data.tips.length > 0 && (
-        <div className="space-y-2 pt-2 border-t border-foreground/[0.06]">
+        <div className="space-y-2 pt-2 border-t border-border">
           {data.tips.map((tip, i) => (
             <div key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
               <Lightbulb className="h-4 w-4 shrink-0 text-yellow-500 mt-0.5" />

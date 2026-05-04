@@ -20,7 +20,7 @@ function severityColor(severity: string, type: string): string {
   if (type === 'price_increase') return 'border-red-500/30 bg-red-500/5 text-red-700 dark:text-red-400'
   if (type === 'price_decrease') return 'border-emerald-500/30 bg-emerald-500/5 text-emerald-700 dark:text-emerald-400'
   if (type === 'new_alternative') return 'border-blue-500/30 bg-blue-500/5 text-blue-700 dark:text-blue-400'
-  return 'border-foreground/10 bg-muted/50'
+  return 'border-border bg-muted/50'
 }
 
 function InsightIcon({ type }: { type: string }) {

@@ -140,7 +140,7 @@ export function ROIScorecard() {
             className={`p-3 rounded-lg border transition-colors ${
               tool.roi === 'low'
                 ? 'border-red-500/10 bg-red-500/[0.02]'
-                : 'border-foreground/[0.06]'
+                : 'border-border'
             }`}
           >
             <div className="flex items-start gap-3">

@@ -63,13 +63,13 @@ export const metadata: Metadata = {
     locale: 'en_US',
     siteName: 'AIPowerStacks',
     title: 'AIPowerStacks | Track Your AI Spend & Stop Overpaying',
-    description: 'Track your AI subscriptions. See what overlaps. Cut what you don\'t need. 422+ tools tracked.',
+    description: 'Track your AI subscriptions. See what overlaps. Cut what you don\'t need. 600+ tools with real pricing data, side-by-side comparisons, and daily updates.',
   },
   twitter: {
     card: 'summary_large_image',
     site: '@aipowerstacks',
     title: 'AIPowerStacks | Track Your AI Spend & Stop Overpaying',
-    description: 'Track your AI subscriptions. See what overlaps. Cut what you don\'t need. 422+ tools tracked.',
+    description: 'Track your AI subscriptions. See what overlaps. Cut what you don\'t need. 600+ tools with real pricing data, side-by-side comparisons, and daily updates.',
   },
   robots: {
     index: true,
@@ -127,7 +127,7 @@ export default function RootLayout({
           richColors
           position="top-center"
           toastOptions={{
-            className: '!rounded-2xl !border-foreground/10 !backdrop-blur-xl !bg-background/80 !shadow-xl',
+            className: '!rounded-2xl !border-border !backdrop-blur-xl !bg-background/80 !shadow-xl',
           }}
         />
         <Analytics />

@@ -100,7 +100,7 @@ export function ReviewCard({ review, currentUserId }: ReviewCardProps) {
 
   if (isEditing) {
     return (
-      <div className="py-6 border-t border-foreground/20 first:border-0 first:pt-0 animate-in fade-in duration-300">
+      <div className="py-6 border-t border-border first:border-0 first:pt-0 animate-in fade-in duration-300">
         <div className="space-y-4 bg-primary/5 p-4 rounded-md border border-primary/10">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold">Edit Your Review</h3>
@@ -170,7 +170,7 @@ export function ReviewCard({ review, currentUserId }: ReviewCardProps) {
   }
 
   return (
-    <div className="py-4 border-t border-foreground/20 first:border-0 first:pt-0 group">
+    <div className="py-4 border-t border-border first:border-0 first:pt-0 group">
       <div className="flex items-start justify-between gap-3 mb-2">
         <div className="flex items-center gap-2">
           <StarRating rating={review.rating} size="sm" />

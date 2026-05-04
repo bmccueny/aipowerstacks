@@ -12,7 +12,7 @@ export default function Loading() {
       <div className="h-4 w-5/6 bg-muted/40 rounded mb-8" />
       <div className="space-y-3">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="rounded-xl border border-foreground/[0.06] px-5 py-4 flex items-center gap-4">
+          <div key={i} className="rounded-xl border border-border px-5 py-4 flex items-center gap-4">
             <div className="h-10 w-10 bg-muted rounded-lg shrink-0" />
             <div className="flex-1 space-y-2">
               <div className="h-4 w-36 bg-muted rounded" />

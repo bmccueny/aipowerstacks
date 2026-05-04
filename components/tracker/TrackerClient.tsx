@@ -490,7 +490,7 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
       {/* Cost Optimization — shown for anyone with 2+ tools */}
       {effectiveCount >= 2 && (
         <div className="space-y-4">
-          <h2 className="text-lg font-black">Cost Optimization</h2>
+          <h2 className="text-lg font-bold">Cost Optimization</h2>
           <AnnualSavingsCalc key={`asc-${stackKey}`} anonTools={!clientLoggedIn ? anonToolData : undefined} />
           <FreeTierDetector key={`ftd-${stackKey}`} anonTools={!clientLoggedIn ? anonToolData : undefined} />
         </div>
@@ -545,20 +545,20 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
         <SavingsReport data={dashboardData} />
       )}
       {subsCount >= 2 && !dashboardData && !dashboardLoading && clientLoggedIn && (
-        <div className="rounded-xl border border-foreground/[0.06] p-5 text-center">
+        <div className="rounded-xl border border-border p-5 text-center">
           <p className="text-sm text-muted-foreground">Analysis could not be loaded. Try refreshing the page.</p>
         </div>
       )}
       {subsCount >= 2 && dashboardLoading && (
         <div className="space-y-4">
-          <div className="rounded-xl border border-foreground/[0.06] p-4 flex items-center gap-3">
+          <div className="rounded-xl border border-border p-4 flex items-center gap-3">
             <div className="h-10 w-10 rounded-full bg-muted animate-pulse shrink-0" />
             <div className="flex-1 space-y-2">
               <div className="h-3 w-32 bg-muted animate-pulse rounded" />
               <div className="h-2 w-48 bg-muted/60 animate-pulse rounded" />
             </div>
           </div>
-          <div className="rounded-xl border border-foreground/[0.06] p-4 space-y-2">
+          <div className="rounded-xl border border-border p-4 space-y-2">
             <div className="h-3 w-24 bg-muted animate-pulse rounded" />
             <div className="h-2 w-full bg-muted/40 animate-pulse rounded" />
           </div>

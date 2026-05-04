@@ -126,7 +126,7 @@ export function BudgetBar({ totalSpend, isLoggedIn = true }: BudgetBarProps) {
   // No budget set — show prompt
   if (budget === null && !editing) {
     return (
-      <div className="rounded-xl border border-foreground/[0.06] p-4 flex items-center justify-between gap-3">
+      <div className="rounded-xl border border-border p-4 flex items-center justify-between gap-3">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Target className="h-4 w-4" />
           <span>Set a monthly budget to track your AI spending</span>
@@ -146,7 +146,7 @@ export function BudgetBar({ totalSpend, isLoggedIn = true }: BudgetBarProps) {
   // Editing mode
   if (editing) {
     return (
-      <div className="rounded-xl border border-foreground/[0.06] p-4">
+      <div className="rounded-xl border border-border p-4">
         <div className="flex items-center gap-2">
           <DollarSign className="h-4 w-4 text-muted-foreground" />
           <span className="text-sm font-medium">Monthly Budget</span>
@@ -212,7 +212,7 @@ export function BudgetBar({ totalSpend, isLoggedIn = true }: BudgetBarProps) {
       : 'bg-emerald-500/10'
 
   return (
-    <div className="rounded-xl border border-foreground/[0.06] p-4 space-y-3">
+    <div className="rounded-xl border border-border p-4 space-y-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <DollarSign className="h-4 w-4 text-muted-foreground" />

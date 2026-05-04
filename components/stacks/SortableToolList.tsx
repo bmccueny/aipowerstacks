@@ -74,7 +74,7 @@ function SortableToolRow({ tool, index, collectionId, onRemove }: {
           {index + 1}
         </span>
 
-        <div className="h-12 w-12 shrink-0 rounded-xl bg-muted border border-foreground/10 overflow-hidden flex items-center justify-center">
+        <div className="h-12 w-12 shrink-0 rounded-xl bg-muted border border-border overflow-hidden flex items-center justify-center">
           {tool.logo_url ? (
             <Image src={tool.logo_url} alt={tool.name} width={48} height={48} className="object-contain" />
           ) : (
@@ -111,7 +111,7 @@ function SortableToolRow({ tool, index, collectionId, onRemove }: {
               />
             </div>
           </div>
-          <div className="mt-3 pt-3 border-t border-foreground/5">
+          <div className="mt-3 pt-3 border-t border-border">
             <Badge variant="outline" className={`text-[11px] ${pricingColor}`}>{pricingLabel}</Badge>
           </div>
         </div>

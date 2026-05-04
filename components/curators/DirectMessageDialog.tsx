@@ -162,9 +162,9 @@ export function DirectMessageDialog({
         <DialogPrimitive.Content 
           onPointerDownOutside={(e) => e.preventDefault()}
           onInteractOutside={(e) => e.preventDefault()}
-          className="fixed bottom-0 right-0 sm:bottom-4 sm:right-4 z-50 w-full sm:max-w-[400px] bg-background border border-foreground/10 shadow-2xl flex flex-col h-[500px] sm:h-[600px] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:slide-in-from-bottom-full data-[state=closed]:slide-out-to-bottom-full duration-300 rounded-t-2xl sm:rounded-2xl outline-none"
+          className="fixed bottom-0 right-0 sm:bottom-4 sm:right-4 z-50 w-full sm:max-w-[400px] bg-background border border-border shadow-2xl flex flex-col h-[500px] sm:h-[600px] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:slide-in-from-bottom-full data-[state=closed]:slide-out-to-bottom-full duration-300 rounded-t-2xl sm:rounded-2xl outline-none"
         >
-          <div className="p-4 border-b border-foreground/10 bg-muted/30 flex items-center justify-between">
+          <div className="p-4 border-b border-border bg-muted/30 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Avatar className="h-10 w-10 border border-primary/20">
                 <AvatarImage src={receiverAvatar ?? undefined} />
@@ -174,7 +174,7 @@ export function DirectMessageDialog({
               </Avatar>
               <div className="text-left">
                 <DialogPrimitive.Title asChild>
-                  <h2 className="text-base font-black leading-none">{receiverName}</h2>
+                  <h2 className="text-base font-bold leading-none">{receiverName}</h2>
                 </DialogPrimitive.Title>
                 <p className="text-xs text-muted-foreground mt-1">@{receiverUsername}</p>
               </div>
@@ -218,7 +218,7 @@ export function DirectMessageDialog({
                         "px-4 py-2 rounded-2xl text-sm",
                         isMine 
                           ? "bg-primary text-primary-foreground rounded-tr-none shadow-sm" 
-                          : "bg-muted text-foreground rounded-tl-none border border-foreground/5"
+                          : "bg-muted text-foreground rounded-tl-none border border-border"
                       )}
                     >
                       {msg.content}
@@ -234,7 +234,7 @@ export function DirectMessageDialog({
 
           <form 
             onSubmit={handleSend}
-            className="p-4 border-t border-foreground/10 bg-background flex items-center gap-2"
+            className="p-4 border-t border-border bg-background flex items-center gap-2"
           >
             <input
               placeholder="Type a message..."

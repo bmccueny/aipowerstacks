@@ -33,7 +33,7 @@ export function ReviewList({ reviews, currentUserId }: { reviews: ReviewItem[]; 
         <select
           value={sort}
           onChange={(e) => setSort(e.target.value as SortOption)}
-          className="text-xs font-medium bg-muted/50 border border-foreground/10 rounded-lg px-2.5 py-1.5 text-foreground"
+          className="text-xs font-medium bg-muted/50 border border-border rounded-lg px-2.5 py-1.5 text-foreground"
         >
           <option value="helpful">Most Helpful</option>
           <option value="newest">Newest</option>

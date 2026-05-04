@@ -43,7 +43,7 @@ export default async function HomePage() {
   return (
     <CompareProvider>
       <Navbar />
-      <main className="min-h-[100dvh] pt-20 flex flex-col gap-20 md:gap-28 pb-32">
+      <main className="min-h-[100dvh] pt-20 flex flex-col gap-20 md:gap-28 pb-32 md:pb-32" style={{ paddingBottom: 'calc(8rem + env(safe-area-inset-bottom, 0px))' }}>
         <JsonLd data={{
           '@context': 'https://schema.org',
           '@type': 'WebPage',
@@ -61,7 +61,7 @@ export default async function HomePage() {
                 <span className="w-5 h-px bg-primary/60" />
                 {siteStats.toolCount}+ tools tracked
               </p>
-              <h1 className="text-[clamp(2.75rem,6vw,4.5rem)] font-extrabold tracking-[-0.035em] text-foreground leading-[0.98]">
+              <h1 className="text-[clamp(2.75rem,6vw,4.5rem)] font-bold tracking-[-0.035em] text-foreground leading-[0.98]">
                 How much is
                 <br />
                 <span className="text-primary">AI</span> costing you?
@@ -90,11 +90,11 @@ export default async function HomePage() {
             </div>
             {/* Right — Stats grid */}
             <div className="hidden lg:grid grid-cols-2 gap-3 pt-6">
-              <div className="rounded-2xl border border-foreground/[0.05] p-6 bg-white dark:bg-card">
+              <div className="rounded-2xl border border-border p-6 bg-white dark:bg-card">
                 <p className="text-[2.25rem] font-black tabular-nums text-foreground leading-none">{siteStats.toolCount}+</p>
                 <p className="text-[11px] text-muted-foreground mt-2 tracking-wide">AI tools tracked</p>
               </div>
-              <div className="rounded-2xl border border-foreground/[0.05] p-6 bg-white dark:bg-card">
+              <div className="rounded-2xl border border-border p-6 bg-white dark:bg-card">
                 <p className="text-[2.25rem] font-black tabular-nums text-foreground leading-none">$120</p>
                 <p className="text-[11px] text-muted-foreground mt-2 tracking-wide">avg. monthly spend</p>
               </div>
@@ -102,7 +102,7 @@ export default async function HomePage() {
                 <p className="text-[2.25rem] font-black tabular-nums text-primary leading-none">2-3x</p>
                 <p className="text-[11px] text-muted-foreground mt-2 tracking-wide">tools doing same job</p>
               </div>
-              <div className="rounded-2xl border border-foreground/[0.05] p-6 bg-white dark:bg-card">
+              <div className="rounded-2xl border border-border p-6 bg-white dark:bg-card">
                 <p className="text-[2.25rem] font-black tabular-nums text-foreground leading-none">{categories.length}</p>
                 <p className="text-[11px] text-muted-foreground mt-2 tracking-wide">categories compared</p>
               </div>
@@ -128,7 +128,7 @@ export default async function HomePage() {
         {/* ═══ Calculator Section ═══ */}
         <section className="px-4 max-w-3xl mx-auto w-full">
           <div className="text-center mb-8">
-            <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground mb-2">Calculate your spend</h2>
+            <h2 className="text-[13px] font-semibold uppercase tracking-[0.06em] text-muted-foreground mb-2">Calculate your spend</h2>
             <p className="text-base text-foreground font-medium">Tap the tools you pay for — see your total in seconds.</p>
           </div>
           <CostCalculator tools={calcTools} />
@@ -136,20 +136,20 @@ export default async function HomePage() {
 
         {/* ═══ How it works ═══ */}
         <section className="px-4 max-w-4xl mx-auto w-full">
-          <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground text-center mb-10">How it works</h2>
+          <h2 className="text-[13px] font-semibold uppercase tracking-[0.06em] text-muted-foreground text-center mb-10">How it works</h2>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8 text-center">
             <div>
-              <span className="inline-flex w-10 h-10 rounded-full bg-foreground text-background items-center justify-center text-sm font-bold mb-3">1</span>
+              <span className="inline-flex w-10 h-10 rounded-full bg-[#1C1C1E] text-white items-center justify-center text-sm font-bold mb-3">1</span>
               <p className="font-bold text-sm mb-1">Add your stack</p>
               <p className="text-xs text-muted-foreground leading-relaxed">Tap the tools you pay for. Takes 10 seconds.</p>
             </div>
             <div>
-              <span className="inline-flex w-10 h-10 rounded-full bg-foreground text-background items-center justify-center text-sm font-bold mb-3">2</span>
+              <span className="inline-flex w-10 h-10 rounded-full bg-[#1C1C1E] text-white items-center justify-center text-sm font-bold mb-3">2</span>
               <p className="font-bold text-sm mb-1">See the overlap</p>
               <p className="text-xs text-muted-foreground leading-relaxed">We flag tools competing for the same job.</p>
             </div>
             <div>
-              <span className="inline-flex w-10 h-10 rounded-full bg-foreground text-background items-center justify-center text-sm font-bold mb-3">3</span>
+              <span className="inline-flex w-10 h-10 rounded-full bg-[#1C1C1E] text-white items-center justify-center text-sm font-bold mb-3">3</span>
               <p className="font-bold text-sm mb-1">Cut the waste</p>
               <p className="text-xs text-muted-foreground leading-relaxed">Compare overlaps side-by-side. You decide.</p>
             </div>
@@ -164,13 +164,13 @@ export default async function HomePage() {
         {/* ═══ Most Tracked ═══ */}
         {mostTracked.length > 0 && (
           <section className="px-4 max-w-4xl mx-auto w-full">
-            <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground text-center mb-6">Most tracked right now</h2>
+            <h2 className="text-[13px] font-semibold uppercase tracking-[0.06em] text-muted-foreground text-center mb-6">Most tracked right now</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {mostTracked.map((tool) => (
                 <Link
                   key={tool.id}
                   href={`/tools/${tool.slug}`}
-                  className="rounded-xl border border-foreground/[0.06] bg-white dark:bg-card p-4 flex items-center gap-3 hover:border-primary/30 hover:translate-y-[-1px] hover:shadow-sm transition-all duration-200 group"
+                  className="rounded-xl border border-border bg-white dark:bg-card p-4 flex items-center gap-3 hover:border-primary/30 hover:translate-y-[-1px] hover:shadow-sm transition-all duration-200 group"
                 >
                   {tool.logo_url ? (
                     <img src={tool.logo_url} alt={tool.name} className="w-9 h-9 rounded-lg object-contain shrink-0" />
@@ -194,23 +194,23 @@ export default async function HomePage() {
 
         {/* ═══ CTA with demo ═══ */}
         <section className="px-4 max-w-4xl mx-auto w-full">
-          <div className="rounded-3xl bg-foreground dark:bg-white/[0.05] p-8 sm:p-12 overflow-hidden">
+          <div className="rounded-3xl bg-[#1C1C1E] dark:bg-card dark:border dark:border-border p-8 sm:p-12 overflow-hidden">
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] gap-8 lg:gap-12 items-center">
               <div>
-                <h2 className="text-[clamp(1.75rem,4vw,2.5rem)] font-extrabold tracking-[-0.02em] text-background dark:text-foreground leading-[1.1]">
+                <h2 className="text-[clamp(1.75rem,4vw,2.5rem)] font-bold tracking-[-0.02em] text-white dark:text-foreground leading-[1.1]">
                   Find out which tools to cancel.
                 </h2>
-                <p className="text-[15px] text-background/60 dark:text-muted-foreground mt-4 max-w-sm leading-relaxed">
+                <p className="text-[15px] text-white/60 dark:text-muted-foreground mt-4 max-w-sm leading-relaxed">
                   Add your stack, toggle annual pricing, see exactly where to cut.
                 </p>
                 <AuthCTALink fallbackHref="/login?redirectTo=/tracker" authHref="/tracker" className="mt-8 inline-block">
-                  <Button size="lg" className="bg-background text-foreground hover:bg-background/90 dark:bg-primary dark:text-white dark:hover:bg-primary/90 font-bold gap-2.5 h-[52px] px-8 text-[15px] rounded-xl">
+                  <Button size="lg" className="bg-white text-[#1C1C1E] hover:bg-white/90 dark:bg-primary dark:text-white dark:hover:bg-primary/90 font-bold gap-2.5 h-[52px] px-8 text-[15px] rounded-xl">
                     Start Free
                     <ArrowRight className="h-4 w-4" />
                   </Button>
                 </AuthCTALink>
               </div>
-              <div className="hidden lg:block rounded-xl overflow-hidden border border-background/10">
+              <div className="hidden lg:block rounded-xl overflow-hidden border border-white/10">
                 <Image
                   src="/demo.gif"
                   alt="Demo: adding AI tools and seeing monthly spend with annual savings"
@@ -226,7 +226,7 @@ export default async function HomePage() {
 
         {/* ═══ Newsletter + Submit ═══ */}
         <section className="px-4 max-w-4xl mx-auto w-full">
-          <div className="grid grid-cols-1 md:grid-cols-[1.2fr_0.8fr] gap-px bg-foreground/[0.06] border border-foreground/[0.06] rounded-2xl overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-[1.2fr_0.8fr] border border-border rounded-2xl overflow-hidden divide-y md:divide-y-0 md:divide-x divide-border">
             <div className="p-6 sm:p-10 flex flex-col gap-5 bg-background">
               <div>
                 <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-primary mb-3">The AI Stack Report</h2>
@@ -235,14 +235,14 @@ export default async function HomePage() {
               </div>
               <NewsletterBanner source="homepage-mid" tone="light" />
             </div>
-            <div className="p-6 sm:p-10 flex flex-col justify-center gap-4 bg-foreground/[0.02]">
+            <div className="p-6 sm:p-10 flex flex-col justify-center gap-4 bg-muted/30">
               <div>
                 <p className="text-base font-bold text-foreground">Built an AI tool?</p>
                 <p className="text-sm text-muted-foreground mt-1">Get in front of teams actively comparing solutions.</p>
               </div>
               <Link
                 href="/submit"
-                className="self-start inline-flex items-center gap-2 h-10 px-5 rounded-lg text-sm font-semibold border border-foreground/15 hover:border-primary/40 hover:text-primary transition-colors"
+                className="self-start inline-flex items-center gap-2 h-10 px-5 rounded-lg text-sm font-semibold border border-border hover:border-primary/40 hover:text-primary transition-colors"
               >
                 Submit Your Tool <ArrowRight className="h-3.5 w-3.5" />
               </Link>
@@ -254,7 +254,7 @@ export default async function HomePage() {
         {briefingItems.length > 0 && (
           <section className="px-4 max-w-4xl mx-auto w-full">
             <div className="text-center mb-8">
-              <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground mb-1">From the blog</h2>
+              <h2 className="text-[13px] font-semibold uppercase tracking-[0.06em] text-muted-foreground mb-1">From the blog</h2>
               <p className="text-base text-foreground font-medium">AI cost intel, updated weekly.</p>
             </div>
             <div className="flex sm:grid sm:grid-cols-3 gap-5 overflow-x-auto sm:overflow-visible snap-x snap-mandatory pb-2 sm:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0">

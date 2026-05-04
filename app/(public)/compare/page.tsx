@@ -199,7 +199,7 @@ export default async function ComparePage({
             <Sparkles className="h-3 w-3" />
             AI Comparison Engine
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
             {tools.length >= 2
               ? tools.map(t => t.name).join(' vs ')
               : 'Compare AI Tools'}
@@ -210,7 +210,7 @@ export default async function ComparePage({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="sm" className={cn(
-              "h-9 gap-2 border-foreground/10 text-xs font-bold shrink-0",
+              "h-9 gap-2 border-border text-xs font-bold shrink-0",
               activePreset && "border-primary/30 bg-primary/5 text-primary"
             )}>
               <LayoutGrid className="h-3.5 w-3.5" />
@@ -263,8 +263,8 @@ export default async function ComparePage({
               href={`/compare?tools=${[...slugs, rec.slug].join(',')}`}
               className="group"
             >
-              <Badge variant="outline" className="h-7 sm:h-8 border-foreground/10 hover:border-primary/40 hover:bg-primary/5 transition-all bg-background cursor-pointer gap-1.5 sm:gap-2 pr-2.5 sm:pr-3 text-[9px] sm:text-[10px]">
-                <div className="relative h-3.5 w-3.5 sm:h-4 sm:w-4 rounded bg-white overflow-hidden border border-foreground/5 shrink-0 flex items-center justify-center">
+              <Badge variant="outline" className="h-7 sm:h-8 border-border hover:border-primary/40 hover:bg-primary/5 transition-all bg-background cursor-pointer gap-1.5 sm:gap-2 pr-2.5 sm:pr-3 text-[9px] sm:text-[10px]">
+                <div className="relative h-3.5 w-3.5 sm:h-4 sm:w-4 rounded bg-white overflow-hidden border border-border shrink-0 flex items-center justify-center">
                   {rec.logo_url ? (
                     <Image src={rec.logo_url} alt={`${rec.name} logo`} fill className="object-contain" />
                   ) : (
@@ -282,7 +282,7 @@ export default async function ComparePage({
       {/* ─── Matrix ─── */}
       <div id="comparison-matrix">
         {tools.length === 0 ? (
-          <div className="border border-dashed border-foreground/10 rounded-xl p-8 sm:p-12 text-center flex flex-col items-center justify-center min-h-[300px]">
+          <div className="border border-dashed border-border rounded-xl p-8 sm:p-12 text-center flex flex-col items-center justify-center min-h-[300px]">
             <div className="h-14 w-14 rounded-full bg-muted flex items-center justify-center mb-5">
               <LayoutGrid className="h-7 w-7 text-muted-foreground/30" />
             </div>
@@ -293,7 +293,7 @@ export default async function ComparePage({
             <div className="flex flex-wrap justify-center gap-2">
               {recommendations.map((tool) => (
                 <Link key={tool.id} href={`/compare?tools=${tool.slug}`}>
-                  <Badge variant="outline" className="h-8 sm:h-9 px-3 sm:px-4 border-foreground/15 hover:border-primary/40 transition-colors bg-background font-bold text-[10px] sm:text-xs cursor-pointer">
+                  <Badge variant="outline" className="h-8 sm:h-9 px-3 sm:px-4 border-border hover:border-primary/40 transition-colors bg-background font-bold text-[10px] sm:text-xs cursor-pointer">
                     + {tool.name}
                   </Badge>
                 </Link>

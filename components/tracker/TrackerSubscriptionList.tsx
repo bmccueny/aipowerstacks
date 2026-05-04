@@ -3,8 +3,9 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Trash2, TrendingDown, TrendingUp, Loader2, DollarSign } from 'lucide-react'
+import { Trash2, TrendingDown, TrendingUp, Loader2, DollarSign, Check, ChevronDown, ChevronUp } from 'lucide-react'
 import { TrendSparkline } from './TrendSparklines'
+import { cn } from '@/lib/utils'
 
 type Subscription = {
   id: string
@@ -34,6 +35,7 @@ type AnonSub = {
 type PricingTier = {
   tier_name: string
   monthly_price: number
+  annual_price: number | null
   features: string | null
 }
 
@@ -46,6 +48,90 @@ type TrackerSubscriptionListProps = {
   loading: boolean
   onRemoveSub: (id: string) => void
   onUpdateSubCost: (subId: string, newCost: number) => Promise<void>
+}
+
+function parseFeatures(raw: string | null): string[] {
+  if (!raw) return []
+  try {
+    const parsed = JSON.parse(raw)
+    if (Array.isArray(parsed)) return parsed
+  } catch { /* not JSON */ }
+  return raw.split(',').map(s => s.trim()).filter(Boolean)
+}
+
+function TierCard({
+  tier,
+  isCurrentTier,
+  currentCost,
+  onSelect,
+}: {
+  tier: PricingTier
+  isCurrentTier: boolean
+  currentCost: number
+  onSelect: () => void
+}) {
+  const features = parseFeatures(tier.features)
+  const monthlySavings = currentCost - tier.monthly_price
+  const annualEquiv = tier.annual_price != null ? Math.round(tier.annual_price / 12 * 100) / 100 : null
+  const hasAnnualSavings = annualEquiv != null && annualEquiv < tier.monthly_price
+
+  return (
+    <button
+      type="button"
+      onClick={onSelect}
+      className={cn(
+        'relative flex flex-col p-3 rounded-xl border text-left transition-all cursor-pointer w-full',
+        isCurrentTier
+          ? 'border-primary bg-primary/5 ring-1 ring-primary/20'
+          : 'border-border hover:border-primary/30 hover:bg-muted/30'
+      )}
+    >
+      {isCurrentTier && (
+        <span className="absolute -top-2 right-3 text-[9px] font-bold uppercase tracking-wider bg-primary text-white px-2 py-0.5 rounded-full">
+          Current
+        </span>
+      )}
+
+      <div className="flex items-baseline justify-between gap-2 mb-1">
+        <span className="text-sm font-bold">{tier.tier_name}</span>
+        <div className="text-right">
+          <span className="text-lg font-bold">
+            {tier.monthly_price === 0 ? 'Free' : `$${tier.monthly_price}`}
+          </span>
+          {tier.monthly_price > 0 && <span className="text-[10px] text-muted-foreground">/mo</span>}
+        </div>
+      </div>
+
+      {hasAnnualSavings && (
+        <p className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium mb-1">
+          ${annualEquiv}/mo billed annually (save ${Math.round((tier.monthly_price - annualEquiv!) * 12)}/yr)
+        </p>
+      )}
+
+      {!isCurrentTier && monthlySavings !== 0 && currentCost > 0 && (
+        <p className={cn(
+          'text-[10px] font-medium mb-1',
+          monthlySavings > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'
+        )}>
+          {monthlySavings > 0 ? `Save $${monthlySavings}/mo` : `+$${Math.abs(monthlySavings)}/mo`}
+        </p>
+      )}
+
+      {features.length > 0 && (
+        <ul className="mt-1.5 space-y-0.5">
+          {features.slice(0, 4).map((f, i) => (
+            <li key={i} className="text-[11px] text-muted-foreground flex items-start gap-1.5">
+              <Check className="h-3 w-3 text-emerald-500 shrink-0 mt-px" />
+              <span>{f}</span>
+            </li>
+          ))}
+          {features.length > 4 && (
+            <li className="text-[10px] text-muted-foreground pl-4.5">+{features.length - 4} more</li>
+          )}
+        </ul>
+      )}
+    </button>
+  )
 }
 
 export function TrackerSubscriptionList({
@@ -81,7 +167,7 @@ export function TrackerSubscriptionList({
     return (
       <div className="space-y-2">
         {[1, 2, 3].map(i => (
-          <div key={i} className="glass-card rounded-xl p-4 flex items-center gap-3 animate-pulse">
+          <div key={i} className="bg-card border border-border rounded-xl p-4 flex items-center gap-3 animate-pulse">
             <div className="h-10 w-10 rounded-lg bg-muted shrink-0" />
             <div className="flex-1 space-y-2">
               <div className="h-3 w-28 bg-muted rounded" />
@@ -96,7 +182,7 @@ export function TrackerSubscriptionList({
 
   if (effectiveCount === 0) {
     return (
-      <div className="glass-card rounded-xl p-8 sm:p-12 text-center">
+      <div className="bg-card border border-border rounded-xl p-8 sm:p-12 text-center">
         <DollarSign className="h-10 w-10 text-muted-foreground/20 mx-auto mb-3" />
         <p className="text-lg font-bold mb-1">No subscriptions tracked yet</p>
         <p className="text-sm text-muted-foreground">Search for a tool above to get started</p>
@@ -112,8 +198,8 @@ export function TrackerSubscriptionList({
           const trend = priceTrends[sub.tool_id]
           const isEditing = editingSubId === sub.id
           return (
-            <div key={sub.id}>
-              <div className="glass-card rounded-xl px-5 py-4 flex items-center gap-4">
+            <div key={sub.id} className="bg-card border border-border rounded-xl overflow-hidden">
+              <div className="px-5 py-4 flex items-center gap-4">
                 <div className="h-10 w-10 rounded-lg bg-muted overflow-hidden flex items-center justify-center shrink-0">
                   {sub.tools?.logo_url ? (
                     <Image src={sub.tools.logo_url} alt={sub.tools.name} width={40} height={40} className="w-10 h-10 object-contain" unoptimized />
@@ -144,52 +230,66 @@ export function TrackerSubscriptionList({
                   onClick={() => startEditTier(sub.id, sub.tool_id)}
                   className="flex items-center gap-1.5 hover:bg-muted/80 px-2 py-1 rounded-lg transition-colors cursor-pointer shrink-0"
                 >
-                  <span className="text-lg font-black">
+                  <span className="text-lg font-bold">
                     {Number(sub.monthly_cost) === 0 ? 'Free' : `$${Number(sub.monthly_cost).toFixed(2)}`}
                   </span>
                   {Number(sub.monthly_cost) > 0 && <span className="text-xs text-muted-foreground font-normal">/mo</span>}
-                  <span className="text-[10px] text-primary">edit</span>
+                  {isEditing
+                    ? <ChevronUp className="h-3.5 w-3.5 text-primary" />
+                    : <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
+                  }
                 </button>
                 <button onClick={() => onRemoveSub(sub.id)} className="text-muted-foreground hover:text-destructive transition-colors shrink-0 p-1">
                   <Trash2 className="h-4 w-4" />
                 </button>
               </div>
+
+              {/* Expanded tier comparison */}
               {isEditing && (
-                <div className="px-5 pb-3 pt-1 flex flex-wrap gap-1.5">
+                <div className="px-5 pb-4 pt-1 border-t border-border">
                   {editTiersLoading ? (
-                    <div className="flex items-center gap-2 py-2">
-                      <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
+                    <div className="flex items-center gap-2 py-4 justify-center">
+                      <Loader2 className="h-4 w-4 animate-spin text-primary" />
                       <span className="text-xs text-muted-foreground">Loading plans...</span>
                     </div>
-                  ) : editTiers.length > 0 ? editTiers.map(tier => (
-                    <button
-                      key={tier.tier_name}
-                      type="button"
-                      onClick={() => handleUpdateCost(sub.id, tier.monthly_price)}
-                      className={`px-2.5 py-1 rounded-lg border text-xs transition-all cursor-pointer ${
-                        Number(sub.monthly_cost) === tier.monthly_price
-                          ? 'border-primary/40 bg-primary/10 font-bold'
-                          : 'border-foreground/[0.06] hover:border-primary/30 hover:bg-primary/5'
-                      }`}
-                    >
-                      <span className="font-bold">{tier.monthly_price === 0 ? 'Free' : `$${tier.monthly_price}`}</span>
-                      <span className="text-muted-foreground ml-1">{tier.tier_name}</span>
-                    </button>
-                  )) : (
-                    [0, 10, 20, 50, 100, 200].map(p => (
-                      <button
-                        key={p}
-                        type="button"
-                        onClick={() => handleUpdateCost(sub.id, p)}
-                        className={`px-2.5 py-1 rounded-lg border text-xs font-bold transition-all cursor-pointer ${
-                          Number(sub.monthly_cost) === p
-                            ? 'border-primary/40 bg-primary/10'
-                            : 'border-foreground/[0.06] hover:border-primary/30 hover:bg-primary/5'
-                        }`}
-                      >
-                        {p === 0 ? 'Free' : `$${p}`}
-                      </button>
-                    ))
+                  ) : editTiers.length > 0 ? (
+                    <div className="pt-2">
+                      <p className="text-[11px] text-muted-foreground mb-2.5">
+                        Switch plan for <strong className="text-foreground">{sub.tools?.name}</strong>
+                      </p>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                        {editTiers.map(tier => (
+                          <TierCard
+                            key={tier.tier_name}
+                            tier={tier}
+                            isCurrentTier={Number(sub.monthly_cost) === tier.monthly_price}
+                            currentCost={Number(sub.monthly_cost)}
+                            onSelect={() => handleUpdateCost(sub.id, tier.monthly_price)}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="pt-2">
+                      <p className="text-[11px] text-muted-foreground mb-2.5">Set your monthly cost</p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {[0, 10, 20, 50, 100, 200].map(p => (
+                          <button
+                            key={p}
+                            type="button"
+                            onClick={() => handleUpdateCost(sub.id, p)}
+                            className={cn(
+                              'px-3 py-1.5 rounded-lg border text-xs font-bold transition-all cursor-pointer',
+                              Number(sub.monthly_cost) === p
+                                ? 'border-primary/40 bg-primary/10'
+                                : 'border-border hover:border-primary/30 hover:bg-primary/5'
+                            )}
+                          >
+                            {p === 0 ? 'Free' : `$${p}`}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                   )}
                 </div>
               )}
@@ -199,7 +299,7 @@ export function TrackerSubscriptionList({
 
         {/* Anonymous subs */}
         {anonSubs.map(sub => (
-          <div key={sub.tool_id} className="glass-card rounded-xl px-5 py-4 flex items-center gap-4">
+          <div key={sub.tool_id} className="bg-card border border-border rounded-xl px-5 py-4 flex items-center gap-4">
             <div className="h-10 w-10 rounded-lg bg-muted overflow-hidden flex items-center justify-center shrink-0">
               {sub.tool.logo_url ? (
                 <Image src={sub.tool.logo_url} alt={sub.tool.name} width={40} height={40} className="w-10 h-10 object-contain" unoptimized />
@@ -213,7 +313,7 @@ export function TrackerSubscriptionList({
               </Link>
               <p className="text-xs text-muted-foreground">{sub.tool.pricing_model}</p>
             </div>
-            <p className="text-lg font-black shrink-0">
+            <p className="text-lg font-bold shrink-0">
               {sub.monthly_cost === 0 ? 'Free' : `$${sub.monthly_cost.toFixed(2)}`}
               {sub.monthly_cost > 0 && <span className="text-xs text-muted-foreground font-normal">/mo</span>}
             </p>

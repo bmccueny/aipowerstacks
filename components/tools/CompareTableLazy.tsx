@@ -8,8 +8,8 @@ const CompareTable = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="rounded-xl border border-foreground/10 overflow-hidden">
-        <div className="grid grid-cols-4 gap-px bg-foreground/5">
+      <div className="rounded-xl border border-border overflow-hidden">
+        <div className="grid grid-cols-4 gap-px bg-muted/50">
           {Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className="bg-background p-6">
               <div className="h-12 w-12 rounded-xl bg-muted/50 animate-pulse mx-auto mb-3" />
@@ -19,7 +19,7 @@ const CompareTable = dynamic(
           ))}
         </div>
         {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="h-14 border-t border-foreground/5 bg-background animate-pulse" />
+          <div key={i} className="h-14 border-t border-border bg-background animate-pulse" />
         ))}
       </div>
     ),

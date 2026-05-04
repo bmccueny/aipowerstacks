@@ -89,7 +89,7 @@ export function AiAgentLoading() {
         "max-w-md w-full glass-card rounded-xl p-6 border transition-all duration-500 pointer-events-none",
         isFinishing ? "border-emerald-500/30 bg-emerald-500/5" : "border-primary/20 bg-primary/5"
       )}>
-        <div className="flex items-center justify-between mb-4 border-b border-foreground/5 pb-3">
+        <div className="flex items-center justify-between mb-4 border-b border-border pb-3">
           <div className="flex items-center gap-2">
             <div className="flex gap-1.5">
               <div className="h-2 w-2 rounded-full bg-red-500/50" />
@@ -119,7 +119,7 @@ export function AiAgentLoading() {
         </div>
 
         {/* Progress Bar that finishes with a snap */}
-        <div className="mt-6 h-1.5 w-full bg-foreground/5 rounded-full overflow-hidden">
+        <div className="mt-6 h-1.5 w-full bg-muted/50 rounded-full overflow-hidden">
           <div className={cn(
             "h-full transition-all ease-in-out",
             isFinishing ? "bg-emerald-500 w-full duration-300" : "bg-primary w-[85%] animate-pulse"

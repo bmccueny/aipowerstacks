@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { MobileTabBar } from './MobileTabBar'
 
 const navLinks = [
   { href: '/tools', label: 'Browse' },
@@ -274,15 +275,15 @@ export function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu — clean slide-down sheet */}
       <div className={cn(
         'fixed inset-0 z-40 md:hidden transition-all duration-300',
         mobileOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
       )}>
-        <div className="absolute inset-0 bg-black/25 backdrop-blur-md" onClick={() => setMobileOpen(false)} onKeyDown={(e) => { if (e.key === 'Escape') setMobileOpen(false) }} role="button" tabIndex={0} aria-label="Close menu" />
+        <div className="absolute inset-0 bg-black/25" onClick={() => setMobileOpen(false)} onKeyDown={(e) => { if (e.key === 'Escape') setMobileOpen(false) }} role="button" tabIndex={0} aria-label="Close menu" />
 
         <div className={cn(
-          'liquid-glass-sheet absolute top-14 left-0 right-0 border-b border-foreground/[0.06] transform transition-transform duration-300 ease-out max-h-[calc(100vh-3.5rem)] overflow-y-auto',
+          'absolute top-14 left-0 right-0 bg-background border-b border-border shadow-lg transform transition-transform duration-300 ease-out max-h-[calc(100vh-3.5rem)] overflow-y-auto',
           mobileOpen ? 'translate-y-0' : '-translate-y-full'
         )}>
           <div className="px-4 py-6" style={{ paddingBottom: 'calc(1.5rem + env(safe-area-inset-bottom, 0px))' }}>
@@ -296,10 +297,10 @@ export function Navbar() {
                     href={link.href}
                     onClick={() => setMobileOpen(false)}
                     className={cn(
-                      'flex items-center gap-3 px-4 py-3 min-h-[48px] text-base font-medium rounded-lg transition-colors duration-200',
+                      'flex items-center gap-3 px-4 py-3 min-h-[48px] text-[15px] font-medium rounded-xl transition-colors duration-200',
                       isActive
                         ? 'text-primary bg-primary/10'
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-muted/60 dark:hover:bg-muted/40'
+                        : 'text-foreground hover:bg-muted/60'
                     )}
                   >
                     {isActive && <span className="w-1 h-5 rounded-full bg-primary shrink-0" />}
@@ -315,14 +316,14 @@ export function Navbar() {
                 <Link
                   href="/login"
                   onClick={() => setMobileOpen(false)}
-                  className="block w-full px-6 py-3 min-h-[48px] text-center font-semibold text-gray-700 dark:text-gray-300 border border-border rounded-full hover:bg-muted/40 dark:hover:bg-muted/40 transition-all duration-200 hover:opacity-90"
+                  className="block w-full px-6 py-3 min-h-[48px] text-center font-semibold text-foreground border border-border rounded-xl hover:bg-muted/40 transition-all duration-200"
                 >
                   Log in
                 </Link>
                 <Link
                   href="/register"
                   onClick={() => setMobileOpen(false)}
-                  className="block w-full px-6 py-3 min-h-[48px] text-center font-semibold bg-primary text-white rounded-full hover:bg-primary/90 hover:shadow-md transition-all duration-200 hover:opacity-90"
+                  className="block w-full px-6 py-3 min-h-[48px] text-center font-semibold bg-primary text-white rounded-xl hover:bg-primary/90 transition-all duration-200"
                 >
                   Sign up
                 </Link>
@@ -331,6 +332,9 @@ export function Navbar() {
           </div>
         </div>
       </div>
+
+      {/* iOS-style bottom tab bar */}
+      <MobileTabBar />
     </>
   )
 }

@@ -86,6 +86,83 @@ export const BEST_PAGE_CONFIGS: Record<string, BestPageConfig> = {
       { q: 'How much do AI chatbots cost?', a: 'Pricing varies widely. Many offer free tiers with usage limits. Business plans typically range from $20-500/month depending on features and volume.' },
     ],
   },
+  'ai-productivity-tools': {
+    title: 'Best AI Productivity Tools',
+    description: 'Find the best AI productivity tools to automate tasks, manage projects, and save hours every week. Compare features and pricing across top tools.',
+    heading: 'Best AI Productivity Tools',
+    categorySlug: 'ai-productivity',
+    faq: [
+      { q: 'Which AI productivity tool saves the most time?', a: 'Tools like Notion AI and Zapier AI automate repetitive tasks. Most users report saving 5-10 hours per week on administrative work with the right AI productivity stack.' },
+      { q: 'Are AI productivity tools worth the subscription cost?', a: 'If you value your time at $30+/hour, even a $20/month AI tool that saves 2 hours/week delivers 12x ROI. The key is picking tools that automate YOUR specific bottlenecks.' },
+      { q: 'Can AI productivity tools integrate with existing workflows?', a: 'Most modern AI productivity tools offer integrations with popular platforms like Slack, Google Workspace, Microsoft 365, and Notion. Check each tool\'s integration list before committing.' },
+    ],
+  },
+  'ai-research-tools': {
+    title: 'Best AI Research Tools',
+    description: 'Compare the top AI research tools for academic research, market analysis, and data synthesis. Find AI assistants that help you research faster.',
+    heading: 'Best AI Research Tools',
+    categorySlug: 'ai-research',
+    faq: [
+      { q: 'Which AI research tool is best for academic papers?', a: 'Perplexity AI and Elicit are popular for academic research. They can find papers, summarize findings, and help with literature reviews. Always verify AI-found citations independently.' },
+      { q: 'Can AI research tools replace Google Scholar?', a: 'AI research tools complement rather than replace traditional search. They excel at synthesizing information across sources and finding connections, while Google Scholar remains better for comprehensive citation tracking.' },
+      { q: 'Are AI research tools accurate?', a: 'AI research tools can occasionally produce inaccurate or fabricated information. Always cross-reference key findings with primary sources. The best tools like Perplexity show their sources inline.' },
+    ],
+  },
+  'ai-marketing-tools': {
+    title: 'Best AI Marketing Tools',
+    description: 'Discover the best AI marketing tools for content creation, SEO, social media, and ad optimization. Compare top AI marketing assistants side by side.',
+    heading: 'Best AI Marketing Tools',
+    categorySlug: 'ai-marketing',
+    faq: [
+      { q: 'Which AI marketing tool is best for small businesses?', a: 'Jasper AI and Copy.ai are popular choices for small businesses needing AI copywriting. For social media, tools like Buffer AI and Hootsuite AI offer affordable automation.' },
+      { q: 'Can AI replace a marketing team?', a: 'AI marketing tools augment rather than replace human marketers. They excel at generating drafts, analyzing data, and automating repetitive tasks, but strategy and brand voice still require human judgment.' },
+      { q: 'How much do AI marketing tools cost?', a: 'Most AI marketing tools range from $20-200/month for individual plans. Enterprise plans with team features and higher limits typically cost $200-1000/month.' },
+    ],
+  },
+  'ai-audio-tools': {
+    title: 'Best AI Audio & Voice Tools',
+    description: 'Compare top AI audio tools for voice cloning, text to speech, podcast editing, and music generation. Find the best AI voice tools for your needs.',
+    heading: 'Best AI Audio & Voice Tools',
+    categorySlug: 'ai-audio',
+    faq: [
+      { q: 'Which AI voice tool sounds the most natural?', a: 'ElevenLabs is widely considered the leader in natural-sounding AI voices, with support for multiple languages and voice cloning. Google and Amazon also offer strong text-to-speech APIs.' },
+      { q: 'Can I clone my own voice with AI?', a: 'Yes, several tools like ElevenLabs and Resemble AI offer voice cloning from short audio samples. Most require consent verification and have usage policies for cloned voices.' },
+      { q: 'Are AI-generated voices legal to use commercially?', a: 'AI-generated voices from licensed platforms are generally legal for commercial use. However, cloning real people\'s voices without consent may violate laws in some jurisdictions.' },
+    ],
+  },
+  'ai-design-tools': {
+    title: 'Best AI Design Tools',
+    description: 'Find the best AI design tools for graphic design, UI/UX, logo creation, and visual content. Compare Canva AI, Figma AI, and other top design assistants.',
+    heading: 'Best AI Design Tools',
+    categorySlug: 'ai-design',
+    faq: [
+      { q: 'Can AI design tools replace graphic designers?', a: 'AI design tools are excellent for quick iterations, concept generation, and template-based design. Professional graphic design for branding and complex layouts still benefits from human expertise.' },
+      { q: 'Which AI design tool is best for non-designers?', a: 'Canva AI is the most beginner-friendly option with AI-powered templates and design suggestions. It requires no design experience and produces professional results quickly.' },
+      { q: 'Do AI design tools support brand guidelines?', a: 'Most enterprise AI design tools support brand kits with custom colors, fonts, and logo placement. Canva, Figma, and Adobe all offer brand management features in their paid plans.' },
+    ],
+  },
+  'ai-customer-support-tools': {
+    title: 'Best AI Customer Support Tools',
+    description: 'Compare top AI customer support tools for chatbots, ticket routing, and automated responses. Find the best AI help desk solution for your business.',
+    heading: 'Best AI Customer Support Tools',
+    categorySlug: 'ai-customer-support',
+    faq: [
+      { q: 'Can AI handle customer support without human agents?', a: 'AI can resolve 60-80% of common support queries autonomously. Complex, emotional, or edge-case issues still require human agents. The best approach is AI-first triage with human escalation.' },
+      { q: 'How quickly can I deploy an AI customer support bot?', a: 'Most modern AI support tools can be set up in hours, not weeks. They learn from your existing knowledge base and FAQ documents. Fine-tuning for accuracy typically takes 1-2 weeks of monitoring.' },
+      { q: 'What ROI can I expect from AI customer support?', a: 'Companies typically see 30-50% reduction in support ticket volume and faster response times. At scale, AI support can reduce support costs by $5-15 per resolved ticket.' },
+    ],
+  },
+  'ai-tools-under-20': {
+    title: 'Best AI Tools Under $20/Month',
+    description: 'Find powerful AI tools that cost less than $20 per month. Budget-friendly AI for coding, writing, image generation, and productivity.',
+    heading: 'Best AI Tools Under $20/Month',
+    pricingFilter: 'budget',
+    faq: [
+      { q: 'What can I get for under $20/month in AI tools?', a: 'Surprisingly a lot. ChatGPT Plus ($20), GitHub Copilot ($10), and Perplexity Pro ($20) are all under this threshold. Many image generators and writing tools also have plans in this range.' },
+      { q: 'Are cheap AI tools less capable?', a: 'Not necessarily. Many budget AI tools use the same underlying models as expensive enterprise solutions. The difference is usually in usage limits, team features, and support — not core AI capability.' },
+      { q: 'How many AI subscriptions should I have?', a: 'Most individuals need 2-3 AI tools. Use our AI Subscription Tracker to find overlaps in your current stack and identify which tools you can consolidate.' },
+    ],
+  },
 }
 
 export function getAllBestPageSlugs(): string[] {

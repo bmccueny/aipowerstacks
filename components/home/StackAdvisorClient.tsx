@@ -106,7 +106,7 @@ export function StackAdvisorClient() {
         {/* Stack */}
         <div className="space-y-3 mb-6">
           {result.stack.map((item, i) => (
-            <div key={item.id || i} className="rounded-xl border border-foreground/[0.06] bg-white dark:bg-card p-4 flex items-start gap-4">
+            <div key={item.id || i} className="rounded-xl border border-border bg-white dark:bg-card p-4 flex items-start gap-4">
               <div className="shrink-0">
                 {item.tool?.logo_url ? (
                   <img src={item.tool.logo_url} alt={item.tool.name} className="w-10 h-10 rounded-lg object-contain" />
@@ -166,7 +166,7 @@ export function StackAdvisorClient() {
               className={`px-3.5 py-2 rounded-lg text-sm font-medium transition-all border ${
                 role === r
                   ? 'border-primary bg-primary/10 text-primary'
-                  : 'border-foreground/10 text-muted-foreground hover:border-foreground/20 hover:text-foreground'
+                  : 'border-border text-muted-foreground hover:border-foreground/20 hover:text-foreground'
               }`}
             >
               {r}
@@ -178,7 +178,7 @@ export function StackAdvisorClient() {
             className={`px-3.5 py-2 rounded-lg text-sm font-medium transition-all border ${
               role === 'custom'
                 ? 'border-primary bg-primary/10 text-primary'
-                : 'border-foreground/10 text-muted-foreground hover:border-foreground/20 hover:text-foreground'
+                : 'border-border text-muted-foreground hover:border-foreground/20 hover:text-foreground'
             }`}
           >
             Other...
@@ -190,7 +190,7 @@ export function StackAdvisorClient() {
             placeholder="Describe your role..."
             value={customRole}
             onChange={e => setCustomRole(e.target.value)}
-            className="mt-3 w-full px-4 py-2.5 rounded-lg border border-foreground/10 bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+            className="mt-3 w-full px-4 py-2.5 rounded-lg border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
           />
         )}
       </div>
@@ -207,7 +207,7 @@ export function StackAdvisorClient() {
           step={10}
           value={budget}
           onChange={e => setBudget(Number(e.target.value))}
-          className="w-full h-2 bg-foreground/10 rounded-full appearance-none cursor-pointer accent-primary"
+          className="w-full h-2 bg-muted rounded-full appearance-none cursor-pointer accent-primary"
         />
         <div className="flex justify-between text-[10px] text-muted-foreground mt-1">
           <span>$0 (free only)</span>
@@ -228,7 +228,7 @@ export function StackAdvisorClient() {
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all border ${
                 selectedPriorities.includes(p)
                   ? 'border-primary bg-primary/10 text-primary'
-                  : 'border-foreground/10 text-muted-foreground hover:border-foreground/20'
+                  : 'border-border text-muted-foreground hover:border-foreground/20'
               }`}
             >
               {p}

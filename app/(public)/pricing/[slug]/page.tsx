@@ -300,7 +300,7 @@ export default async function PricingSlugPage({ params }: Props) {
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap mb-1">
-              <h1 className="text-2xl font-black tracking-tight">{tool.name} Pricing</h1>
+              <h1 className="text-2xl font-bold tracking-tight">{tool.name} Pricing</h1>
               <Badge
                 variant="outline"
                 className={cn('text-xs font-bold', PRICING_BADGE_COLORS[tool.pricing_model] ?? '')}
@@ -346,7 +346,7 @@ export default async function PricingSlugPage({ params }: Props) {
 
       {/* Pricing tiers */}
       <section className="mb-12">
-        <h2 className="text-xl font-black tracking-tight mb-4">
+        <h2 className="text-xl font-bold tracking-tight mb-4">
           {tool.name} Plans &amp; Pricing
         </h2>
 
@@ -450,7 +450,7 @@ export default async function PricingSlugPage({ params }: Props) {
       {/* Alternatives */}
       {alts.length > 0 && (
         <section className="mb-12">
-          <h2 className="text-xl font-black tracking-tight mb-4">
+          <h2 className="text-xl font-bold tracking-tight mb-4">
             Compare Alternatives to {tool.name}
           </h2>
           <div className="space-y-3">
@@ -519,7 +519,7 @@ export default async function PricingSlugPage({ params }: Props) {
 
       {/* FAQ */}
       <section className="mb-12">
-        <h2 className="text-xl font-black tracking-tight mb-4">
+        <h2 className="text-xl font-bold tracking-tight mb-4">
           Frequently Asked Questions
         </h2>
         <div className="space-y-4">

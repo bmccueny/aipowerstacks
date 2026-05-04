@@ -74,7 +74,7 @@ export function ToolFilters({ categories }: ToolFiltersProps) {
       {/* Primary filters */}
       <div className="flex flex-wrap gap-2">
         <Select value={category || 'all'} onValueChange={(v) => updateParam('category', v)}>
-          <SelectTrigger className="w-44 border-foreground/[0.08]">
+          <SelectTrigger className="w-44 border-border">
             <SelectValue placeholder="All Categories" />
           </SelectTrigger>
           <SelectContent>
@@ -88,7 +88,7 @@ export function ToolFilters({ categories }: ToolFiltersProps) {
         </Select>
 
         <Select value={pricing || 'all'} onValueChange={(v) => updateParam('pricing', v)}>
-          <SelectTrigger className="w-32 sm:w-36 border-foreground/[0.08]">
+          <SelectTrigger className="w-32 sm:w-36 border-border">
             <SelectValue placeholder="All Pricing" />
           </SelectTrigger>
           <SelectContent>
@@ -100,7 +100,7 @@ export function ToolFilters({ categories }: ToolFiltersProps) {
         </Select>
 
         <Select value={sort} onValueChange={(v) => updateParam('sort', v)}>
-          <SelectTrigger className="w-32 sm:w-36 border-foreground/[0.08]">
+          <SelectTrigger className="w-32 sm:w-36 border-border">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
           <SelectContent>
@@ -113,7 +113,7 @@ export function ToolFilters({ categories }: ToolFiltersProps) {
         <button
           type="button"
           onClick={() => setShowMore((v) => !v)}
-          className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-xl border border-foreground/[0.12] bg-background/60 backdrop-blur-sm hover:bg-background/80 hover:border-foreground/20 transition-all"
+          className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-xl border border-border bg-background/60 backdrop-blur-sm hover:bg-background/80 hover:border-foreground/20 transition-all"
         >
           {showMore ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
           More filters
@@ -134,7 +134,7 @@ export function ToolFilters({ categories }: ToolFiltersProps) {
                 'px-3 py-1.5 text-xs font-bold uppercase tracking-wider rounded-full border transition-all',
                 active
                   ? 'bg-primary/15 text-primary border-primary/30'
-                  : 'bg-background/60 backdrop-blur-sm text-muted-foreground border-foreground/[0.08] hover:border-foreground/20 hover:text-foreground'
+                  : 'bg-background/60 backdrop-blur-sm text-muted-foreground border-border hover:border-foreground/20 hover:text-foreground'
               )}
             >
               {f.label}
@@ -147,7 +147,7 @@ export function ToolFilters({ categories }: ToolFiltersProps) {
       {showMore && (
         <div className="flex flex-wrap gap-2">
           <Select value={useCase || 'all'} onValueChange={(v) => updateParam('use_case', v)}>
-            <SelectTrigger className="w-40 border-foreground/[0.08]">
+            <SelectTrigger className="w-40 border-border">
               <SelectValue placeholder="Use Case" />
             </SelectTrigger>
             <SelectContent>
@@ -159,7 +159,7 @@ export function ToolFilters({ categories }: ToolFiltersProps) {
           </Select>
 
           <Select value={teamSize || 'all'} onValueChange={(v) => updateParam('team_size', v)}>
-            <SelectTrigger className="w-36 sm:w-44 border-foreground/[0.08]">
+            <SelectTrigger className="w-36 sm:w-44 border-border">
               <SelectValue placeholder="Team Size" />
             </SelectTrigger>
             <SelectContent>
@@ -171,7 +171,7 @@ export function ToolFilters({ categories }: ToolFiltersProps) {
           </Select>
 
           <Select value={integration || 'all'} onValueChange={(v) => updateParam('integration', v)}>
-            <SelectTrigger className="w-40 border-foreground/[0.08]">
+            <SelectTrigger className="w-40 border-border">
               <SelectValue placeholder="Integration" />
             </SelectTrigger>
             <SelectContent>
@@ -183,7 +183,7 @@ export function ToolFilters({ categories }: ToolFiltersProps) {
           </Select>
 
           <Select value={modelProvider || 'all'} onValueChange={(v) => updateParam('model_provider', v)}>
-            <SelectTrigger className="w-40 border-foreground/[0.08]">
+            <SelectTrigger className="w-40 border-border">
               <SelectValue placeholder="AI Provider" />
             </SelectTrigger>
             <SelectContent>
@@ -195,7 +195,7 @@ export function ToolFilters({ categories }: ToolFiltersProps) {
           </Select>
 
           <Select value={deploymentType || 'all'} onValueChange={(v) => updateParam('deployment_type', v)}>
-            <SelectTrigger className="w-36 border-foreground/[0.08]">
+            <SelectTrigger className="w-36 border-border">
               <SelectValue placeholder="Deployment" />
             </SelectTrigger>
             <SelectContent>

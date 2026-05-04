@@ -75,7 +75,7 @@ export function AnnualSavingsCalc({ anonTools }: { anonTools?: AnonTool[] } = {}
               className={`rounded-lg border px-4 py-3 flex items-center gap-3 ${
                 isBiggest
                   ? 'border-emerald-500/30 bg-emerald-500/[0.04]'
-                  : 'border-foreground/[0.06]'
+                  : 'border-border'
               }`}
             >
               <div className="h-8 w-8 rounded-md bg-muted overflow-hidden flex items-center justify-center shrink-0">

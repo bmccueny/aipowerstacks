@@ -84,7 +84,7 @@ export function StackCompareSearch({ paramA, paramB }: { paramA: string | null; 
           onChange={(e) => { setQuery(e.target.value); setOpen(true) }}
           onFocus={() => setOpen(true)}
           placeholder={placeholder}
-          className="w-full bg-background border-[1.5px] border-foreground/20 rounded-md h-11 pl-10 pr-10 focus:outline-none focus-visible:border-primary/50 focus-visible:ring-4 focus-visible:ring-primary/5 transition-all text-sm font-medium"
+          className="w-full bg-background border-[1.5px] border-border rounded-md h-11 pl-10 pr-10 focus:outline-none focus-visible:border-primary/50 focus-visible:ring-4 focus-visible:ring-primary/5 transition-all text-sm font-medium"
         />
         {query && (
           <button
@@ -104,7 +104,7 @@ export function StackCompareSearch({ paramA, paramB }: { paramA: string | null; 
               <p className="text-xs">Searching stacks...</p>
             </div>
           ) : results.length > 0 ? (
-            <div className="divide-y divide-foreground/5">
+            <div className="divide-y divide-border">
               {results.map((stack) => (
                 <button
                   key={stack.id}

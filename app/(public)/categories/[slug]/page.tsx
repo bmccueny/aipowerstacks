@@ -74,7 +74,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
       <div className="page-hero flex flex-col items-start sm:flex-row sm:items-center gap-4">
         <span className="text-5xl">{category.icon ?? '🤖'}</span>
         <div>
-          <h1 className="text-3xl sm:text-4xl font-black">{category.name}</h1>
+          <h1 className="text-3xl sm:text-4xl font-bold">{category.name}</h1>
           {category.description && (
             <p className="text-muted-foreground mt-1">{category.description}</p>
           )}

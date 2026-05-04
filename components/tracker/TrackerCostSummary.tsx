@@ -41,7 +41,7 @@ export function TrackerCostSummary({
 
       {/* Cost summary — hero layout */}
       {effectiveCount > 0 && (
-        <div className="rounded-xl bg-foreground/[0.02] border border-foreground/[0.06] px-6 py-5 flex flex-col sm:flex-row items-center gap-4">
+        <div className="rounded-xl bg-muted/30 border border-border px-6 py-5 flex flex-col sm:flex-row items-center gap-4">
           <div className="flex-1 text-center sm:text-left">
             <p className="text-4xl sm:text-5xl font-black">${total.toFixed(0)}<span className="text-lg text-muted-foreground font-normal">/mo</span></p>
             <p className="text-sm text-muted-foreground">${yearly.toFixed(0)}/yr · {effectiveCount} tool{effectiveCount !== 1 ? 's' : ''}{overlaps.length > 0 ? ` · ${overlaps.length} overlap${overlaps.length > 1 ? 's' : ''}` : ''}</p>

@@ -157,17 +157,17 @@
     letter-spacing: -0.02em;
   }
 
-  /* ─── Brand Typography Scale (brand-kit/guidelines/typography.svg) ─── */
-  h1 { font-size: 2.25rem; font-weight: 800; line-height: 1.15; }   /* 36px */
-  h2 { font-size: 1.75rem; font-weight: 700; line-height: 1.2; }    /* 28px */
-  h3 { font-size: 1.375rem; font-weight: 600; line-height: 1.3; }   /* 22px */
-  h4 { font-size: 1.0625rem; font-weight: 600; line-height: 1.4; }  /* 17px */
+  /* ─── iOS-inspired Typography Scale ─── */
+  h1 { font-size: 2.125rem; font-weight: 700; line-height: 1.12; letter-spacing: -0.02em; }   /* 34px — iOS Large Title */
+  h2 { font-size: 1.375rem; font-weight: 700; line-height: 1.2; letter-spacing: -0.01em; }    /* 22px — iOS Title 1 */
+  h3 { font-size: 1.0625rem; font-weight: 700; line-height: 1.3; letter-spacing: 0; }         /* 17px — iOS Headline */
+  h4 { font-size: 0.9375rem; font-weight: 600; line-height: 1.4; letter-spacing: 0; }         /* 15px — iOS Body bold */
 
-  .text-body-sm { font-size: 0.875rem; font-weight: 400; line-height: 1.5; }   /* 14px */
-  .text-caption { font-size: 0.75rem; font-weight: 400; line-height: 1.5; }    /* 12px */
+  .text-body-sm { font-size: 0.9375rem; font-weight: 400; line-height: 1.5; }   /* 15px — iOS Body */
+  .text-caption { font-size: 0.8125rem; font-weight: 400; line-height: 1.5; }   /* 13px — iOS Caption */
   .text-label {
-    font-size: 0.6875rem; font-weight: 600; line-height: 1.3;                  /* 11px */
-    text-transform: uppercase; letter-spacing: 0.08em;
+    font-size: 0.8125rem; font-weight: 600; line-height: 1.3;                   /* 13px — iOS Section Header */
+    color: var(--muted-foreground);
   }
 
   /* Accessible focus states for all interactive elements */
@@ -247,13 +247,13 @@ h1, h2, h3 { text-wrap: balance; }
   }
 }
 .dark .bento-card {
-  background: oklch(0.18 0.005 40 / 0.6);
-  border-color: oklch(1 0 0 / 0.08);
+  background: #1C1C1E;
+  border-color: #38383A;
 }
 @media (hover: hover) {
   .dark .bento-card:hover {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
-    border-color: oklch(1 0 0 / 0.12);
+    border-color: #48484A;
   }
 }
 
@@ -1073,29 +1073,21 @@ h1, h2, h3 { text-wrap: balance; }
 }
 
 .dark .brutalist-card-effect {
-  border-color: oklch(1 0 0 / 0.12);
-  background: rgba(var(--lg-tint-color), var(--lg-tint-opacity));
-  backdrop-filter: blur(20px) saturate(200%);
-  -webkit-backdrop-filter: blur(20px) saturate(200%);
-  color: oklch(0.96 0 0);
-  box-shadow:
-    0px 4px var(--lg-outer-shadow-blur) rgba(0, 0, 0, 0.3),
-    inset 0 0 var(--lg-inner-shadow-blur) var(--lg-inner-shadow-spread) var(--lg-inner-shadow-color);
+  border-color: #38383A;
+  background: #1C1C1E;
+  color: #F2F2F7;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 @media (hover: hover) {
   .dark .brutalist-card-effect:hover:not(:disabled) {
-    border-color: oklch(1 0 0 / 0.25);
-    box-shadow:
-      0px 8px calc(var(--lg-outer-shadow-blur) * 2) rgba(0, 0, 0, 0.35),
-      inset 0 0 var(--lg-inner-shadow-blur) var(--lg-inner-shadow-spread) var(--lg-inner-shadow-color);
+    border-color: #48484A;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
   }
 }
 
 .dark .brutalist-card-effect:active:not(:disabled) {
-  box-shadow:
-    0px 2px 12px rgba(0, 0, 0, 0.2),
-    inset 0 0 var(--lg-inner-shadow-blur) var(--lg-inner-shadow-spread) var(--lg-inner-shadow-color);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
 }
 
 /* ── Burning crimson glow: shared tokens ── */
@@ -1316,8 +1308,8 @@ h1, h2, h3 { text-wrap: balance; }
 .dark .glass,
 .dark .glass-card,
 .dark .gum-card {
-  background: oklch(0.17 0.005 40 / 0.9);
-  border: 1px solid oklch(1 0 0 / 0.07);
+  background: #1C1C1E;
+  border: 1px solid #38383A;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
@@ -1325,13 +1317,11 @@ h1, h2, h3 { text-wrap: balance; }
 .dark .category-card,
 .dark .category-pill,
 .dark .search-bar {
-  background: rgba(var(--lg-tint-color), var(--lg-tint-opacity));
+  background: #1C1C1E;
   backdrop-filter: blur(20px) saturate(200%);
   -webkit-backdrop-filter: blur(20px) saturate(200%);
-  border: 1px solid oklch(1 0 0 / 0.15);
-  box-shadow:
-    0px 4px var(--lg-outer-shadow-blur) rgba(0, 0, 0, 0.3),
-    inset 0 0 var(--lg-inner-shadow-blur) var(--lg-inner-shadow-spread) var(--lg-inner-shadow-color);
+  border: 1px solid #38383A;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .dark .gum-pill {
@@ -1385,15 +1375,15 @@ h1, h2, h3 { text-wrap: balance; }
 }
 
 .dark .card-directory {
-  background: oklch(0.18 0.005 40 / 0.9);
-  border-color: oklch(1 0 0 / 0.08);
+  background: #1C1C1E;
+  border-color: #38383A;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.15);
 }
 
 @media (hover: hover) {
   .dark .card-directory:hover {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25), 0 2px 6px rgba(0, 0, 0, 0.15);
-    border-color: oklch(1 0 0 / 0.12);
+    border-color: #48484A;
   }
 }
 
@@ -1416,17 +1406,15 @@ h1, h2, h3 { text-wrap: balance; }
 }
 
 .dark .card-content {
-  background: oklch(0.16 0.005 40 / 0.85);
-  border-color: oklch(1 0 0 / 0.06);
+  background: #1C1C1E;
+  border-color: #38383A;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 @media (hover: hover) {
   .dark .card-content:hover {
-    border-color: oklch(1 0 0 / 0.25);
-    box-shadow:
-      0px 8px 24px rgba(0, 0, 0, 0.3),
-      inset 0 0 var(--lg-inner-shadow-blur) var(--lg-inner-shadow-spread) var(--lg-inner-shadow-color);
+    border-color: #48484A;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   }
 }
 
@@ -1579,6 +1567,47 @@ h1, h2, h3 { text-wrap: balance; }
       0px 4px 16px rgba(0, 0, 0, 0.25),
       inset 0 0 12px -4px var(--lg-inner-shadow-color);
   }
+}
+
+/* ═══════════════════════════════════════════════
+   iOS GROUPED TABLE — inset rounded list sections
+   ═══════════════════════════════════════════════ */
+
+.ios-grouped {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.ios-grouped > * + * {
+  border-top: 1px solid var(--border);
+}
+
+.ios-grouped-row {
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 15px;
+  transition: background 0.15s ease;
+}
+
+.ios-grouped-row:hover {
+  background: var(--muted);
+}
+
+.dark .ios-grouped {
+  background: #1C1C1E;
+  border-color: #38383A;
+}
+
+.dark .ios-grouped > * + * {
+  border-top-color: #38383A;
+}
+
+.dark .ios-grouped-row:hover {
+  background: #2C2C2E;
 }
 
 /* ═══════════════════════════════════════════════

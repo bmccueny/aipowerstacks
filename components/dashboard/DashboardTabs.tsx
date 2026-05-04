@@ -100,7 +100,7 @@ export function DashboardTabs({
       {active === 'stacks' && (
         <section>
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-black tracking-tight">My Power Stacks</h2>
+            <h2 className="text-xl font-bold tracking-tight">My Power Stacks</h2>
             <CreateStackDialog />
           </div>
           {myStacks.length === 0 ? (
@@ -141,7 +141,7 @@ export function DashboardTabs({
                           </span>
                         </div>
                       </div>
-                      <div className="flex items-center justify-between gap-3 pt-1 border-t border-foreground/5 mt-auto">
+                      <div className="flex items-center justify-between gap-3 pt-1 border-t border-border mt-auto">
                         {tools.length > 0 ? (
                           <div className="flex -space-x-2">
                             {tools.slice(0, 4).map((tool, i) => (
@@ -177,7 +177,7 @@ export function DashboardTabs({
       {/* Saved Stacks */}
       {active === 'saved' && (
         <section>
-          <h2 className="text-xl font-black tracking-tight mb-6">Saved Stacks</h2>
+          <h2 className="text-xl font-bold tracking-tight mb-6">Saved Stacks</h2>
           {savedStacks.length === 0 ? (
             <div className="glass-card rounded-md p-12 text-center border-dashed">
               <p className="text-muted-foreground text-sm">You haven't saved any stacks yet.</p>
@@ -217,7 +217,7 @@ export function DashboardTabs({
                           <span className="font-bold text-foreground">@{stack.profiles?.username || 'curator'}</span>
                         </p>
                       </div>
-                      <div className="flex items-center justify-between gap-3 pt-1 border-t border-foreground/5 mt-auto">
+                      <div className="flex items-center justify-between gap-3 pt-1 border-t border-border mt-auto">
                         <div className="flex -space-x-2">
                           {tools.slice(0, 4).map((tool, i) => (
                             <div key={i} className="h-7 w-7 rounded-full bg-muted border-2 border-background overflow-hidden flex items-center justify-center shrink-0">
@@ -244,7 +244,7 @@ export function DashboardTabs({
       {/* Reviews */}
       {active === 'reviews' && (
         <section>
-          <h2 className="text-xl font-black tracking-tight mb-6">My Reviews</h2>
+          <h2 className="text-xl font-bold tracking-tight mb-6">My Reviews</h2>
           <div className="space-y-3">
             {reviews.length === 0 ? (
               <div className="glass-card p-6 rounded-md text-center">
@@ -275,7 +275,7 @@ export function DashboardTabs({
       {/* Submissions */}
       {active === 'submissions' && (
         <section>
-          <h2 className="text-xl font-black tracking-tight mb-6">Submissions</h2>
+          <h2 className="text-xl font-bold tracking-tight mb-6">Submissions</h2>
           <div className="space-y-3">
             {submissions.length === 0 ? (
               <div className="glass-card p-6 rounded-md text-center">

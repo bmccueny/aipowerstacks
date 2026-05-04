@@ -150,16 +150,16 @@ export default async function DashboardPage() {
             initialAvatarUrl={profile?.avatar_url}
           />
           <div className="flex-1">
-            <h1 className="text-4xl font-black tracking-tight">My Dashboard</h1>
+            <h1 className="text-4xl font-bold tracking-tight">My Dashboard</h1>
             {profile?.username && (
               <p className="text-muted-foreground font-bold text-lg mt-0.5">@{profile.username}</p>
             )}
-            <div className="flex flex-wrap items-center gap-5 mt-6 pt-6 border-t border-foreground/5">
+            <div className="flex flex-wrap items-center gap-5 mt-6 pt-6 border-t border-border">
               <div className="text-sm">
                 <span className="font-bold text-lg">{followerCount}</span>{' '}
                 <span className="text-muted-foreground font-medium uppercase tracking-wider text-[10px]">followers</span>
               </div>
-              <div className="text-sm border-l border-foreground/10 pl-5">
+              <div className="text-sm border-l border-border pl-5">
                 <span className="font-bold text-lg">{followingCount}</span>{' '}
                 <span className="text-muted-foreground font-medium uppercase tracking-wider text-[10px]">following</span>
               </div>
@@ -205,7 +205,7 @@ export default async function DashboardPage() {
               </Button>
             </Link>
           </div>
-          <div className="flex justify-center gap-8 mt-8 pt-6 border-t border-foreground/5">
+          <div className="flex justify-center gap-8 mt-8 pt-6 border-t border-border">
             <div className="text-center">
               <p className="text-2xl font-black text-foreground">1</p>
               <p className="text-[10px] text-muted-foreground uppercase tracking-wider mt-0.5">Add tools</p>
@@ -233,11 +233,11 @@ export default async function DashboardPage() {
                   <div className="flex items-center gap-2 px-2 py-0.5 rounded bg-primary text-primary-foreground text-[10px] font-black uppercase tracking-widest">
                     Active Challenge
                   </div>
-                  <div className="text-[10px] font-bold text-muted-foreground flex items-center gap-1.5 bg-background/50 px-2 py-1 rounded-full border border-foreground/5">
+                  <div className="text-[10px] font-bold text-muted-foreground flex items-center gap-1.5 bg-background/50 px-2 py-1 rounded-full border border-border">
                     Ends {new Date(activeChallenge.ends_at).toLocaleDateString()}
                   </div>
                 </div>
-                <h3 className="text-xl font-black mb-2">{activeChallenge.title}</h3>
+                <h3 className="text-xl font-bold mb-2">{activeChallenge.title}</h3>
                 <p className="text-muted-foreground text-sm leading-relaxed mb-6">{activeChallenge.prompt}</p>
                 {userChallengeSubmission ? (
                   <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-4 flex items-center justify-between">
@@ -273,7 +273,7 @@ export default async function DashboardPage() {
         {/* Sidebar */}
         <aside className="lg:col-span-4">
           <section>
-            <h3 className="text-lg font-black tracking-tight flex items-center gap-2 mb-4">
+            <h3 className="text-lg font-bold tracking-tight flex items-center gap-2 mb-4">
               <Bookmark className="h-5 w-5 text-primary" /> Saved Tools
             </h3>
             <div className="space-y-2">

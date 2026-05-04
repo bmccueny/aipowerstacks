@@ -771,7 +771,7 @@ ${twitterContext || 'No Twitter data available today.'}
 == SCRAPED SOURCE CONTENT (for deeper context) ==
 ${scrapedContent || 'No additional scraped content available.'}
 
-== YOUR PLATFORM'S REAL DATA (MUST use in at least one comparison table) ==
+== YOUR PLATFORM'S REAL DATA (reference when relevant, comparison table optional) ==
 ${platformData || 'No platform data available.'}
 
 == THIS POST IS PART OF THE "${cluster.label}" CONTENT CLUSTER ==
@@ -788,20 +788,53 @@ ${recentTitles.length > 0 ? recentTitles.map((t) => `- "${t}"`).join('\n') : '(n
 If the trending sources all point to a topic we already covered, find a FRESH angle: a different tool, a contrarian take, a niche audience, a specific use case we missed, or a completely different subtopic within "${topic}".
 
 SEO REQUIREMENTS (CRITICAL — this post must rank on Google):
-1. TARGET KEYWORD: Pick ONE specific long-tail search query that people are actively Googling related to "${topic}" within the "${cluster.label}" theme. It MUST be different from any keyword implied by the recent titles above. Examples: "best AI tools for [use case] 2026", "[tool] vs [tool] comparison", "how to use AI for [task]", "free AI [category] tools". The title MUST contain this keyword naturally.
-2. Title must be under 60 characters for Google SERPs. Include the year (2026) when relevant. Use power words (best, free, guide, vs, how to).
-3. Write 1500 to 2500 words. This is NON-NEGOTIABLE. Short posts do not rank. Google's top results average 1,800 words. Include enough depth, examples, and analysis to fill this length naturally. Do NOT pad with filler. Add more sections, more comparisons, more practical advice.
-4. Structure with clear H2 headers that include secondary keywords. Google uses H2s for featured snippets.
-5. Include at least ONE comparison table using REAL DATA from the platform data above. Do NOT make up numbers. Use the actual pricing, tracking counts, and tool names from our database. This is original data no other site has.
-6. The excerpt/meta description must be 150-160 characters, include the target keyword, and compel clicks.
-7. Include a FAQ-style section at the end with 2-3 questions people actually search for (use "People Also Ask" style questions as H3s with direct answers).
-8. Write in HTML format (use <h2>, <h3>, <p>, <ul>/<li>, <blockquote>, <strong>, <em>, <table> tags)
-9. Do NOT include <h1> (the title is rendered separately)
-10. Reference specific tools, projects, or discussions from the source material when relevant
-11. Include 3 to 5 relevant tags. At least ONE tag MUST be from this cluster's tag list: ${cluster.tags.join(', ')}
-12. Estimate reading time in minutes (typically 6 to 10 for 1500-2500 word posts)
-13. INTERNAL LINKING: When you mention a tool that exists on our site, link the FIRST mention using <a href="/tools/SLUG">Tool Name</a>. Include 4-6 tool links per article. Also include 1-2 links to related blog posts listed above. Link to our compare page (/compare) or browse page (/tools) where natural. Only link tools from the list below.
-14. Add a "Related in this series" section at the very end (after FAQs) with links to 2-3 sibling posts from the cluster.
+
+1. TARGET KEYWORD: Pick ONE hyper-specific long-tail search query (4-8 words) that someone would type into Google RIGHT NOW. The more specific, the better. AVOID broad terms like "AI tools" or "best AI". Instead target queries like:
+   - "claude code vs cursor for python 2026"
+   - "free AI video generators no watermark"
+   - "how to cut AI subscription costs"
+   - "chatgpt plus worth it or use free"
+   - "best AI tools for small business under $50"
+   - "midjourney vs dall e 4 realistic photos"
+   - "ai tools that replace photoshop 2026"
+   - "how much does an AI tech stack cost"
+   The title MUST contain this keyword naturally. The keyword MUST be different from any implied by recent titles above.
+
+2. TITLE FORMULA: Under 60 characters. Must include the target keyword. Use one of these proven formats:
+   - "[Tool A] vs [Tool B]: Which Is Better in 2026?"
+   - "Best [Category] AI Tools (Free + Paid) 2026"
+   - "I Tested [N] [Category] Tools: Here's What Won"
+   - "[Number] [Category] AI Tools Under $[Price]/Month"
+   - "How to [Specific Task] with AI in 2026"
+   - "Is [Tool] Worth $[Price]/Month? Honest Review"
+   - "[Tool] Alternatives That Cost Less in 2026"
+   Do NOT use generic titles like "AI News Roundup" or "Weekly AI Update". Every title must target a searchable query.
+
+3. Write 1500 to 2500 words. This is NON-NEGOTIABLE. Short posts do not rank.
+
+4. H2 HEADERS must include secondary keywords and match "People Also Ask" queries. Google uses H2s for featured snippets. Example H2s: "How much does ChatGPT Plus cost?", "Is Cursor better than Copilot for Python?", "Free alternatives to Midjourney".
+
+5. You MAY include a comparison table using REAL DATA from the platform data above ONLY if the article is specifically about comparing tools, pricing, or alternatives. Most articles should NOT have a comparison table. If you do include one, use actual pricing and tool names from our database.
+
+6. META DESCRIPTION: 150-160 characters, includes the target keyword, written as a compelling reason to click. Format: "[Specific claim or question]. [What the reader gets]. [Credibility signal]." Example: "Claude Code vs Cursor: I tested both for a week. One saves 2 hours daily. Real pricing and performance data from 600+ tracked tools."
+
+7. FAQ SECTION: Include 3-5 questions at the end as H3s with direct, concise answers. These MUST be real questions people search for (Google "People Also Ask" style). Start answers with a direct statement, then elaborate. Google pulls these for featured snippets.
+
+8. Write in HTML format (use <h2>, <h3>, <p>, <ul>/<li>, <blockquote>, <strong>, <em>, <table> tags). Do NOT include <h1>.
+
+9. INTERNAL LINKING (CRITICAL FOR SEO):
+   - Link 6-10 tools mentioned in the article using <a href="/tools/SLUG">Tool Name</a>
+   - Link to 2-3 related blog posts from the cluster
+   - Link to comparison pages: <a href="/compare?tools=SLUG1,SLUG2">Compare Tool A vs Tool B</a>
+   - Link to the browse page: <a href="/tools">browse 600+ AI tools</a>
+   - Link to the tracker: <a href="/tracker">track your AI spend</a>
+   - These internal links are how Google discovers and ranks our other pages. More links = more indexed pages = more traffic.
+
+10. Add a "Related in this series" section at the very end with links to 2-3 sibling posts from the cluster.
+
+11. Include 3-5 relevant tags. At least ONE tag MUST be from: ${cluster.tags.join(', ')}
+
+12. Estimate reading time (typically 6-10 minutes for 1500-2500 words).
 
 == TOOLS ON OUR SITE (name -> URL path) ==
 ${toolList}
@@ -838,9 +871,10 @@ STRICT FORMATTING RULES:
 
 Respond in EXACTLY this JSON format (no extra text before or after):
 {
-  "title": "<SEO-optimized headline, max 60 chars, includes target keyword and year>",
-  "excerpt": "<meta description, 150-160 chars, includes target keyword, compels clicks>",
-  "content": "<full HTML blog post body with H2s, comparison tables, FAQ section, internal links>",
+  "title": "<60 chars max, includes exact long-tail keyword, uses proven title formula from SEO REQUIREMENTS>",
+  "target_keyword": "<the exact 4-8 word long-tail query this post targets>",
+  "excerpt": "<150-160 chars, includes target keyword, specific claim + what reader gets>",
+  "content": "<full HTML blog post body with keyword-rich H2s, 3-5 FAQ H3s, 6-10 internal tool links, comparison page links, tracker link>",
   "tags": ["tag1", "tag2", "tag3"],
   "reading_time_min": <number>,
   "topic_category": "${topic}"
@@ -1003,9 +1037,10 @@ function qualityCheck(post: GeneratedPost, cluster: BlogCluster): { pass: boolea
   if (!post.content.includes('<h3')) reasons.push('Missing FAQ section (no H3 headers)')
   if (/[\u2014\u2013]|(\s-\s)|(--)/g.test(post.content)) reasons.push('Contains dashes after sanitization')
   if (post.tags.length < 3) reasons.push(`Fewer than 3 tags: ${post.tags.length}`)
-  if (!post.content.includes('<table')) reasons.push('Missing data table with real numbers')
   if (!post.tags.some((t) => cluster.tags.includes(t))) reasons.push(`No cluster tag from: ${cluster.tags.join(', ')}`)
   if (!post.content.includes('href="/blog/')) reasons.push('No cross-links to other blog posts')
+  const toolLinkCount = (post.content.match(/href="\/tools\//g) || []).length
+  if (toolLinkCount < 4) reasons.push(`Only ${toolLinkCount} tool links (need 4+)`)
 
   return { pass: reasons.length === 0, reasons }
 }

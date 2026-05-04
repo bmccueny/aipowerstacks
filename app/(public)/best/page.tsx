@@ -53,7 +53,7 @@ export default function BestIndexPage() {
           <Link
             key={slug}
             href={`/best/${slug}`}
-            className="glass-card rounded-xl p-5 flex flex-col hover:border-primary/25 hover:shadow-md transition-all group"
+            className="bg-card border border-border rounded-xl p-5 flex flex-col hover:border-primary/25 hover:shadow-md transition-all group"
           >
             <div className="flex items-center gap-2 mb-2">
               <Sparkles className="h-4 w-4 text-primary" />

@@ -38,7 +38,7 @@ export default async function BlogPage({
     <div className="page-shell">
       <JsonLd data={blogJsonLd} />
       <div className="text-center pt-4 pb-8">
-        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-2">AI news and briefings</h1>
+        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-2">AI news and briefings</h1>
         <p className="text-muted-foreground">What changed, why it matters, and what to do next.</p>
       </div>
 
@@ -108,7 +108,7 @@ export default async function BlogPage({
             <Sparkles className="h-4 w-4 text-primary" />
             <span className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">Newsletter</span>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-black mb-2">The AI briefing your feed algorithm won't show you</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold mb-2">The AI briefing your feed algorithm won't show you</h2>
           <p className="text-sm text-muted-foreground mb-5 max-w-2xl">
             Weekly updates on cutting-edge models, breakthrough tools, and what matters for builders and buyers.
           </p>

@@ -322,7 +322,7 @@ export default function SettingsPage() {
             <div className="bg-primary/5 border border-primary/20 rounded-md p-4">
               <p className="text-xs font-bold text-primary mb-1">Request Verification</p>
               <p className="text-[11px] text-muted-foreground mb-3">Once your profiles are linked, our team will review your identity.</p>
-              <Button variant="outline" size="sm" className="h-8 text-[10px] uppercase font-black tracking-wider border-primary/30 text-primary hover:bg-primary/10">
+              <Button variant="outline" size="sm" className="h-8 text-[10px] uppercase font-bold tracking-wider border-primary/30 text-primary hover:bg-primary/10">
                 Apply for Verified Badge
               </Button>
             </div>

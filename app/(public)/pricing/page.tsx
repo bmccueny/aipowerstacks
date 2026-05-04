@@ -140,7 +140,7 @@ export default async function PricingIndexPage() {
           <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
             <DollarSign className="h-5 w-5 text-primary" />
           </div>
-          <h1 className="text-3xl md:text-4xl font-black tracking-tight">
+          <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
             AI Tool Pricing Guide 2026
           </h1>
         </div>
@@ -160,7 +160,7 @@ export default async function PricingIndexPage() {
         {categories.map((category) => (
           <section key={category.slug}>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-black tracking-tight">{category.name}</h2>
+              <h2 className="text-lg font-bold tracking-tight">{category.name}</h2>
               <span className="text-xs text-muted-foreground">{category.tools.length} tools</span>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">

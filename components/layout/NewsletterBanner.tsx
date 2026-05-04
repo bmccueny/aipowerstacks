@@ -63,27 +63,29 @@ export function NewsletterBanner({
 
   return (
     <div className={cn(
-      'glass-card rounded-2xl p-5',
-      isDark ? 'bg-zinc-900/80' : 'bg-white/80'
+      'rounded-xl border p-4',
+      isDark
+        ? 'border-border bg-card'
+        : 'border-border bg-muted/30'
     )}>
       <form onSubmit={handleSubmit} className="flex gap-2">
         <Input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="Enter your email"
+          placeholder="you@email.com"
           required
           className={cn(
-            'flex-1 focus-visible:ring-2 focus-visible:ring-primary focus-visible:border-primary h-11',
+            'flex-1 focus-visible:ring-2 focus-visible:ring-primary focus-visible:border-primary h-10 rounded-lg text-[15px]',
             isDark
-              ? 'bg-gray-800 border-gray-600 text-white placeholder:text-gray-400'
-              : 'bg-gray-100 border-gray-300 text-gray-900 placeholder:text-gray-500'
+              ? 'bg-[#2C2C2E] border-[#38383A] text-white placeholder:text-[#8E8E93]'
+              : 'bg-white border-border text-foreground placeholder:text-muted-foreground'
           )}
         />
         <Button
           type="submit"
           disabled={loading}
-          className="bg-primary hover:bg-primary/90 text-white px-5 h-11 rounded-lg font-semibold transition-colors disabled:opacity-50"
+          className="bg-primary hover:bg-primary/90 text-white px-5 h-10 rounded-lg font-semibold text-[15px] transition-colors disabled:opacity-50"
         >
           {loading ? '...' : 'Subscribe'}
         </Button>

@@ -102,7 +102,7 @@ export default async function StackComparePage({
       </Link>
 
       <div className="mb-8">
-        <h1 className="text-3xl font-black tracking-tight mb-2">Compare Stacks</h1>
+        <h1 className="text-3xl font-bold tracking-tight mb-2">Compare Stacks</h1>
         <p className="text-muted-foreground">
           See how two Power Stacks overlap and differ.
         </p>
@@ -199,7 +199,7 @@ export default async function StackComparePage({
             </div>
           ) : (
             <div className="glass-card rounded-md overflow-hidden">
-              <div className="grid grid-cols-[1fr_72px_72px] border-b border-foreground/10 px-4 py-2.5 bg-muted/30">
+              <div className="grid grid-cols-[1fr_72px_72px] border-b border-border px-4 py-2.5 bg-muted/30">
                 <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Tool</span>
                 <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground text-center truncate">
                   {stackA.name.length > 6 ? stackA.name.slice(0, 6) + '…' : stackA.name}
@@ -208,11 +208,11 @@ export default async function StackComparePage({
                   {stackB.name.length > 6 ? stackB.name.slice(0, 6) + '…' : stackB.name}
                 </span>
               </div>
-              <div className="divide-y divide-foreground/5">
+              <div className="divide-y divide-border">
                 {sortedTools.map(({ tool, inA, inB }) => (
                   <div key={tool.id} className="grid grid-cols-[1fr_72px_72px] items-center px-4 py-3">
                     <div className="flex items-center gap-3 min-w-0">
-                      <div className="h-8 w-8 rounded shrink-0 bg-muted border border-foreground/10 overflow-hidden flex items-center justify-center">
+                      <div className="h-8 w-8 rounded shrink-0 bg-muted border border-border overflow-hidden flex items-center justify-center">
                         {tool.logo_url ? (
                           <Image
                             src={tool.logo_url}

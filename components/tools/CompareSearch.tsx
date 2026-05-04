@@ -76,7 +76,7 @@ export function CompareSearch({ currentSlugs }: { currentSlugs: string[] }) {
           onChange={(e) => { setQuery(e.target.value); setOpen(true) }}
           onFocus={() => setOpen(true)}
           placeholder="Search tools to add..."
-          className="w-full bg-background border-[1.5px] border-foreground/10 rounded-xl h-12 pl-11 pr-10 focus:outline-none focus-visible:border-primary/50 focus-visible:ring-4 focus-visible:ring-primary/5 transition-all text-sm font-bold shadow-sm"
+          className="w-full bg-background border-[1.5px] border-border rounded-xl h-12 pl-11 pr-10 focus:outline-none focus-visible:border-primary/50 focus-visible:ring-4 focus-visible:ring-primary/5 transition-all text-sm font-bold shadow-sm"
         />
         {query && (
           <button 
@@ -89,15 +89,15 @@ export function CompareSearch({ currentSlugs }: { currentSlugs: string[] }) {
       </div>
 
       {open && (query.length >= 2 || results.length > 0) && (
-        <div className="absolute top-full left-0 right-0 z-40 mt-3 bg-background border border-foreground/10 rounded-2xl shadow-[0_25px_70px_rgba(0,0,0,0.3)] overflow-visible animate-in fade-in slide-in-from-top-4 duration-300 backdrop-blur-2xl lg:min-w-[500px]">
-          <div className="overflow-hidden rounded-2xl border border-foreground/5 bg-background/95">
+        <div className="absolute top-full left-0 right-0 z-40 mt-3 bg-background border border-border rounded-2xl shadow-[0_25px_70px_rgba(0,0,0,0.3)] overflow-visible animate-in fade-in slide-in-from-top-4 duration-300 backdrop-blur-2xl lg:min-w-[500px]">
+          <div className="overflow-hidden rounded-2xl border border-border bg-background/95">
             {loading ? (
               <div className="p-8 text-center text-muted-foreground">
                 <Loader2 className="h-6 w-6 animate-spin mx-auto mb-3 text-primary" />
                 <p className="text-xs font-black uppercase tracking-widest opacity-50">Scanning Database</p>
               </div>
             ) : results.length > 0 ? (
-              <div className="divide-y divide-foreground/5 p-2">
+              <div className="divide-y divide-border p-2">
                 {results.map((tool) => (
                   <button
                     key={tool.id}

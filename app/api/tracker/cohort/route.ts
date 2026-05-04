@@ -9,7 +9,7 @@ const MIN_OVERLAP = 3
 type CohortCache = {
   ts: number
   userTools: Map<string, Set<string>> // userId -> Set<toolId>
-  toolNames: Map<string, { name: string; slug: string; logoUrl: string | null }>
+  toolNames: Map<string, { name: string; slug: string; logoUrl: string | null; avgRating: number; reviewCount: number }>
 }
 
 let cohortCache: CohortCache | null = null
@@ -23,11 +23,11 @@ async function loadCohortData(): Promise<CohortCache> {
 
   const { data: allSubs } = await admin
     .from('user_subscriptions')
-    .select('user_id, tool_id, tools!inner(name, slug, logo_url, status)')
+    .select('user_id, tool_id, tools!inner(name, slug, logo_url, avg_rating, review_count, status)')
     .eq('tools.status', 'published')
 
   const userTools = new Map<string, Set<string>>()
-  const toolNames = new Map<string, { name: string; slug: string; logoUrl: string | null }>()
+  const toolNames = new Map<string, { name: string; slug: string; logoUrl: string | null; avgRating: number; reviewCount: number }>()
 
   if (allSubs) {
     for (const sub of allSubs) {
@@ -36,9 +36,9 @@ async function loadCohortData(): Promise<CohortCache> {
       }
       userTools.get(sub.user_id)!.add(sub.tool_id)
 
-      const tool = sub.tools as unknown as { name: string; slug: string; logo_url: string | null }
+      const tool = sub.tools as unknown as { name: string; slug: string; logo_url: string | null; avg_rating: number; review_count: number }
       if (!toolNames.has(sub.tool_id)) {
-        toolNames.set(sub.tool_id, { name: tool.name, slug: tool.slug, logoUrl: tool.logo_url })
+        toolNames.set(sub.tool_id, { name: tool.name, slug: tool.slug, logoUrl: tool.logo_url, avgRating: tool.avg_rating ?? 0, reviewCount: tool.review_count ?? 0 })
       }
     }
   }
@@ -117,6 +117,8 @@ export async function GET(request: Request) {
         toolName: info?.name || 'Unknown',
         toolSlug: info?.slug || '',
         logoUrl: info?.logoUrl || null,
+        avgRating: Math.round((info?.avgRating ?? 0) * 10) / 10,
+        reviewCount: info?.reviewCount ?? 0,
         usedByCount: count,
         cohortPercentage: cohortUsers.length > 0
           ? Math.round((count / cohortUsers.length) * 100)

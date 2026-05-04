@@ -44,7 +44,7 @@ export default async function CategoriesPage() {
           <Sparkles className="h-3.5 w-3.5" />
           Browse By Workflow
         </div>
-        <h1 className="text-3xl sm:text-4xl font-black mb-2">AI Tool Categories</h1>
+        <h1 className="text-3xl sm:text-4xl font-bold mb-2">AI Tool Categories</h1>
         <p className="text-muted-foreground">Explore {categories.length} categories to shortlist tools faster by job-to-be-done.</p>
       </div>
 

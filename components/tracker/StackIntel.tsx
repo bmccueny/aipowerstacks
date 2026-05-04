@@ -85,7 +85,7 @@ export function StackIntel({ data }: { data: StackIntelData | null }) {
         <div className="space-y-5">
 
           {/* ═══ Stack Health Score ═══ */}
-          <div className="rounded-2xl border border-foreground/[0.06] p-5">
+          <div className="rounded-2xl border border-border p-5">
             <div className="flex items-center gap-5 mb-4">
               {(() => {
                 const C = 2 * Math.PI * 15.5
@@ -120,12 +120,12 @@ export function StackIntel({ data }: { data: StackIntelData | null }) {
                 { key: 'coverage', title: 'Coverage', ...score.coverage },
                 { key: 'value', title: 'Value', ...score.value },
               ].map(dim => (
-                <div key={dim.key} className="rounded-lg bg-foreground/[0.02] p-2.5">
+                <div key={dim.key} className="rounded-lg bg-muted/30 p-2.5">
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-[10px] font-semibold text-muted-foreground">{dim.title}</span>
                     <span className="text-[10px] font-bold">{dim.score}/{dim.max}</span>
                   </div>
-                  <div className="h-1.5 rounded-full bg-foreground/[0.06] overflow-hidden">
+                  <div className="h-1.5 rounded-full bg-muted/50 overflow-hidden">
                     <div
                       className={`h-full rounded-full transition-all ${dim.score >= dim.max * 0.75 ? 'bg-emerald-500' : dim.score >= dim.max * 0.5 ? 'bg-amber-500' : 'bg-red-500'}`}
                       style={{ width: `${(dim.score / dim.max) * 100}%` }}
@@ -139,7 +139,7 @@ export function StackIntel({ data }: { data: StackIntelData | null }) {
 
           {/* ═══ Category Spend Breakdown ═══ */}
           {categorySpend.length > 0 && (
-            <div className="rounded-xl border border-foreground/[0.06] p-4">
+            <div className="rounded-xl border border-border p-4">
               <div className="flex items-center gap-2 mb-3">
                 <BarChart3 className="h-3.5 w-3.5 text-primary" />
                 <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Where your money goes</span>
@@ -197,7 +197,7 @@ export function StackIntel({ data }: { data: StackIntelData | null }) {
 
           {/* ═══ People Also Use ═══ */}
           {alsoUse.length > 0 && (
-            <div className="rounded-xl border border-foreground/[0.06] p-4">
+            <div className="rounded-xl border border-border p-4">
               <div className="flex items-center gap-2 mb-3">
                 <Users className="h-3.5 w-3.5 text-blue-500" />
                 <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Users like you also use</span>

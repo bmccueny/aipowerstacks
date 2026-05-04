@@ -37,7 +37,7 @@ export default function AdvertisePage() {
           <TrendingUp className="h-3.5 w-3.5" />
           Go Featured
         </div>
-        <h1 className="text-4xl sm:text-5xl font-black mb-4 leading-tight">
+        <h1 className="text-4xl sm:text-5xl font-bold mb-4 leading-tight">
           Reach buyers who are already<br />comparing AI tools
         </h1>
         <p className="text-lg text-muted-foreground max-w-xl mx-auto">
@@ -49,7 +49,7 @@ export default function AdvertisePage() {
       <div className="grid sm:grid-cols-2 gap-4 mb-10">
         {perks.map(({ icon: Icon, title, desc }) => (
           <div key={title} className="gum-card rounded-[10px] p-5 flex gap-4 items-start">
-            <div className="h-9 w-9 shrink-0 rounded-xl border border-foreground/10 bg-primary/10 flex items-center justify-center">
+            <div className="h-9 w-9 shrink-0 rounded-xl border border-border bg-primary/10 flex items-center justify-center">
               <Icon className="h-4 w-4" />
             </div>
             <div>
@@ -61,7 +61,7 @@ export default function AdvertisePage() {
       </div>
 
       <div className="gum-card rounded-3xl p-8 sm:p-10 bg-primary/10 text-center mb-8">
-        <p className="text-4xl font-black mb-1">$99 <span className="text-xl font-semibold text-muted-foreground">/ month</span></p>
+        <p className="text-4xl font-bold mb-1">$99 <span className="text-xl font-semibold text-muted-foreground">/ month</span></p>
         <p className="text-sm text-muted-foreground mb-8">Month-to-month. Cancel anytime. Live in minutes, not days.</p>
 
         <p className="text-sm font-semibold mb-3">Paste your AIPowerStacks tool URL or slug</p>

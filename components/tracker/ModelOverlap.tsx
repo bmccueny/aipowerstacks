@@ -45,7 +45,7 @@ export function ModelOverlap({ anonTools }: { anonTools?: AnonTool[] } = {}) {
 
   if (loading) {
     return (
-      <div className="glass-card rounded-xl p-5 flex items-center gap-3">
+      <div className="bg-card border border-border rounded-xl p-5 flex items-center gap-3">
         <Loader2 className="h-4 w-4 animate-spin text-muted-foreground shrink-0" />
         <span className="text-sm text-muted-foreground">Loading model intelligence…</span>
       </div>
@@ -62,8 +62,8 @@ export function ModelOverlap({ anonTools }: { anonTools?: AnonTool[] } = {}) {
   }
 
   return (
-    <div className="glass-card rounded-xl p-5 space-y-4">
-      <h2 className="text-base font-black tracking-tight">Model Intelligence</h2>
+    <div className="bg-card border border-border rounded-xl p-5 space-y-4">
+      <h2 className="text-base font-bold tracking-tight">Model Intelligence</h2>
 
       {/* Use-case coverage bar */}
       <div className="space-y-2">
@@ -77,7 +77,7 @@ export function ModelOverlap({ anonTools }: { anonTools?: AnonTool[] } = {}) {
                 className={`text-xs px-2 py-0.5 rounded-full border font-medium ${
                   covered
                     ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-400'
-                    : 'bg-foreground/5 border-foreground/10 text-muted-foreground'
+                    : 'bg-muted/50 border-border text-muted-foreground'
                 }`}
               >
                 {USE_CASE_LABELS[uc]}
@@ -143,7 +143,7 @@ export function ModelOverlap({ anonTools }: { anonTools?: AnonTool[] } = {}) {
                           return (
                             <div
                               key={i}
-                              className={`h-1.5 w-1 rounded-sm ${i < strength ? 'bg-emerald-500' : 'bg-foreground/10'}`}
+                              className={`h-1.5 w-1 rounded-sm ${i < strength ? 'bg-emerald-500' : 'bg-muted'}`}
                             />
                           )
                         })}

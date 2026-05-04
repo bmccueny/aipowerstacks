@@ -14,7 +14,7 @@ export function OverlapTeaser({ overlaps }: { overlaps: OverlapCategory[] }) {
   return (
     <section className="px-4 max-w-4xl mx-auto w-full">
       <div className="text-center mb-8">
-        <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground mb-2">Overlap alert</h2>
+        <h2 className="text-[13px] font-semibold uppercase tracking-[0.06em] text-muted-foreground mb-2">Overlap alert</h2>
         <p className="text-lg text-foreground font-bold">Are you paying twice for the same thing?</p>
       </div>
 
@@ -23,13 +23,13 @@ export function OverlapTeaser({ overlaps }: { overlaps: OverlapCategory[] }) {
           <Link
             key={overlap.useCase}
             href={`/tools?use_case=${overlap.useCase}`}
-            className="rounded-xl border border-foreground/[0.06] p-5 hover:border-primary/20 transition-all group"
+            className="rounded-xl border border-border p-5 hover:border-primary/20 transition-all group"
           >
             <div className="flex gap-[-4px] mb-3">
               {overlap.examples.slice(0, 4).map((tool, i) => (
                 <div
                   key={tool.slug}
-                  className="h-8 w-8 rounded-lg bg-background border border-foreground/10 overflow-hidden flex items-center justify-center"
+                  className="h-8 w-8 rounded-lg bg-background border border-border overflow-hidden flex items-center justify-center"
                   style={{ marginLeft: i > 0 ? '-6px' : 0, zIndex: 4 - i }}
                 >
                   {tool.logo_url ? (

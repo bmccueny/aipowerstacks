@@ -244,7 +244,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                   )}
                 </div>
 
-                <h1 className="text-3xl sm:text-5xl lg:text-6xl xl:text-7xl font-black mb-6 leading-[1.1] tracking-tight font-display">
+                <h1 className="text-3xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-[1.1] tracking-tight font-display">
                   {post.title}
                 </h1>
 
@@ -315,7 +315,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                 {/* Article body — serif body, sans headings via prose-editorial */}
                 <div
                   className="prose prose-lg max-w-none prose-editorial
-                    prose-headings:font-black prose-headings:tracking-tight prose-headings:text-foreground
+                    prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-foreground
                     prose-h2:text-2xl sm:prose-h2:text-3xl prose-h2:mt-14 prose-h2:mb-5 prose-h2:pb-3 prose-h2:border-b prose-h2:border-border/30
                     prose-h3:text-xl prose-h3:mt-10 prose-h3:mb-4
                     prose-p:text-[1.125rem] prose-p:leading-[1.75] prose-p:break-words
@@ -372,7 +372,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
               <div className="h-1 bg-gradient-to-r from-primary/40 via-primary to-primary/40" />
               <div className="p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center gap-5">
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-lg font-black leading-tight mb-1">
+                  <h3 className="text-lg font-bold leading-tight mb-1">
                     Stay ahead of the AI curve
                   </h3>
                   <p className="text-xs text-muted-foreground leading-relaxed">
@@ -388,7 +388,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             {/* Related posts */}
             {relatedPosts.length > 0 && (
               <section className="mb-16">
-                <h2 className="text-xl font-black mb-6 tracking-tight">More from AI Briefing</h2>
+                <h2 className="text-xl font-bold mb-6 tracking-tight">More from AI Briefing</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
                   {relatedPosts.map((related) => (
                     <BlogCard key={related.id} post={related} />

@@ -126,7 +126,7 @@ export function DirectMessagesInbox({ currentUserId }: { currentUserId: string }
           </Button>
         </SheetTrigger>
         <SheetContent side="right" className="w-full sm:max-w-md p-0 flex flex-col gap-0">
-          <SheetHeader className="p-6 border-b border-foreground/10 bg-muted/30">
+          <SheetHeader className="p-6 border-b border-border bg-muted/30">
             <SheetTitle className="text-xl font-black flex items-center gap-2">
               <MessageSquare className="h-5 w-5 text-primary" /> Direct Messages
             </SheetTitle>
@@ -139,14 +139,14 @@ export function DirectMessagesInbox({ currentUserId }: { currentUserId: string }
               </div>
             ) : conversations.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-64 text-center p-8">
-                <div className="h-16 w-12 rounded-2xl border-2 border-dashed border-foreground/10 flex items-center justify-center mb-4">
+                <div className="h-16 w-12 rounded-2xl border-2 border-dashed border-border flex items-center justify-center mb-4">
                   <MessageSquare className="h-6 w-6 text-muted-foreground/40" />
                 </div>
                 <p className="text-base font-bold text-foreground/60">Your inbox is empty</p>
                 <p className="text-sm text-muted-foreground mt-1">Messages from curators you connect with will appear here.</p>
               </div>
             ) : (
-              <div className="divide-y divide-foreground/5">
+              <div className="divide-y divide-border">
                 {conversations.map((conv) => (
                   <button
                     key={conv.user.id}

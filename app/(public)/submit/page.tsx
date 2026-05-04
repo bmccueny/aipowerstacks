@@ -64,7 +64,7 @@ export default async function SubmitPage({
             <Sparkles className="h-3.5 w-3.5" />
             Creator Onboarding
           </div>
-          <h1 className="text-3xl sm:text-4xl font-black mb-2">Sign In to List Your AI Tool</h1>
+          <h1 className="text-3xl sm:text-4xl font-bold mb-2">Sign In to List Your AI Tool</h1>
           <p className="text-muted-foreground">
             A free account keeps listings spam-free and lets you manage, claim, or edit your tool anytime.
           </p>
@@ -93,7 +93,7 @@ export default async function SubmitPage({
           <Sparkles className="h-3.5 w-3.5" />
           Creator Onboarding
         </div>
-        <h1 className="text-3xl sm:text-4xl font-black mb-2">Submit an AI Tool for Free</h1>
+        <h1 className="text-3xl sm:text-4xl font-bold mb-2">Submit an AI Tool for Free</h1>
         <p className="text-muted-foreground">
           {intro}
         </p>

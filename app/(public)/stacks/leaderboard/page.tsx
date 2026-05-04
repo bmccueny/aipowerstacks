@@ -50,7 +50,7 @@ export default async function LeaderboardPage() {
           <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-primary mb-3 flex items-center gap-2">
             <span className="w-5 h-px bg-primary/60" /> Community
           </p>
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-[-0.02em]">Stack Leaderboard</h1>
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-[-0.02em]">Stack Leaderboard</h1>
           <p className="mt-3 text-base text-muted-foreground max-w-md">
             The most popular AI tool stacks built by the community. Get inspired, save what works.
           </p>
@@ -80,7 +80,7 @@ export default async function LeaderboardPage() {
               <Link
                 key={stack.id}
                 href={`/stacks/${stack.share_slug}`}
-                className="flex items-center gap-4 p-4 rounded-xl border border-foreground/[0.06] hover:border-primary/20 hover:translate-y-[-1px] transition-all group"
+                className="flex items-center gap-4 p-4 rounded-xl border border-border hover:border-primary/20 hover:translate-y-[-1px] transition-all group"
               >
                 <span className="text-lg font-black tabular-nums text-muted-foreground/50 w-6 text-right shrink-0">
                   {i + 1}
@@ -117,7 +117,7 @@ export default async function LeaderboardPage() {
         </section>
 
         {/* CTA */}
-        <div className="mt-12 rounded-2xl bg-foreground/[0.03] border border-foreground/[0.06] p-8 text-center">
+        <div className="mt-12 rounded-2xl bg-muted/30 border border-border p-8 text-center">
           <p className="font-bold text-lg mb-2">Build your own stack</p>
           <p className="text-sm text-muted-foreground mb-5">Share your AI tool setup and see how it compares.</p>
           <Link href="/tracker" className="inline-flex items-center gap-2 h-10 px-6 rounded-lg bg-primary text-white text-sm font-bold hover:bg-primary/90 transition-colors">
@@ -133,7 +133,7 @@ function StackCard({ stack }: { stack: StackEntry }) {
   return (
     <Link
       href={`/stacks/${stack.share_slug}`}
-      className="rounded-xl border border-foreground/[0.06] p-4 hover:border-primary/20 transition-all group"
+      className="rounded-xl border border-border p-4 hover:border-primary/20 transition-all group"
     >
       <div className="flex items-center gap-2 mb-3">
         <div className="flex -space-x-1.5">

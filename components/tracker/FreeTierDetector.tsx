@@ -71,7 +71,7 @@ export function FreeTierDetector({ anonTools }: { anonTools?: AnonTool[] } = {})
         {comparisons.map(comp => {
           const isExpanded = expanded === comp.tool_id
           return (
-            <div key={comp.tool_id} className="rounded-lg border border-foreground/[0.06] overflow-hidden">
+            <div key={comp.tool_id} className="rounded-lg border border-border overflow-hidden">
               <button
                 onClick={() => setExpanded(isExpanded ? null : comp.tool_id)}
                 className="w-full px-4 py-3 flex items-center gap-3 hover:bg-muted/30 transition-colors cursor-pointer"
@@ -95,14 +95,14 @@ export function FreeTierDetector({ anonTools }: { anonTools?: AnonTool[] } = {})
               </button>
 
               {isExpanded && (
-                <div className="px-4 pb-4 border-t border-foreground/[0.06]">
+                <div className="px-4 pb-4 border-t border-border">
                   <div className="mt-3 space-y-2">
                     {comp.all_tiers.map(tier => {
                       const isCurrent = comp.current_tier && Math.abs(tier.price - comp.current_tier.price) < 0.5
                       return (
                         <div
                           key={tier.name}
-                          className={`rounded-lg px-3 py-2.5 ${isCurrent ? 'border-2 border-primary/30 bg-primary/5' : 'border border-foreground/[0.06]'}`}
+                          className={`rounded-lg px-3 py-2.5 ${isCurrent ? 'border-2 border-primary/30 bg-primary/5' : 'border border-border'}`}
                         >
                           <div className="flex items-center justify-between mb-1.5">
                             <span className="text-xs font-bold flex items-center gap-1.5">

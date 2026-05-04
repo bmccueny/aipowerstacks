@@ -272,7 +272,7 @@ export function BlogPostForm({ post }: BlogPostFormProps) {
                 onClick={() => setField('is_featured', !form.is_featured)}
                 className={`h-6 w-10 rounded-full border-2 border-border/50 transition-all duration-300 relative cursor-pointer ${form.is_featured ? 'bg-primary border-primary' : 'glass-card'}`}
               >
-                <span className={`absolute top-0.5 h-3 w-3 rounded-full transition-all ${form.is_featured ? 'bg-background left-[18px]' : 'bg-foreground/30 left-0.5'}`} />
+                <span className={`absolute top-0.5 h-3 w-3 rounded-full transition-all ${form.is_featured ? 'bg-background left-[18px]' : 'bg-muted-foreground/30 left-0.5'}`} />
               </div>
               <span className="text-sm font-medium">Featured post</span>
             </label>

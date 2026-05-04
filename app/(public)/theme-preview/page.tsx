@@ -118,7 +118,7 @@ export default function ThemePreviewPage() {
       <div className="max-w-5xl mx-auto">
         <div className="mb-10">
           <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Internal Preview</p>
-          <h1 className="text-3xl font-black tracking-tight text-gray-900">Color Theme Options</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-gray-900">Color Theme Options</h1>
           <p className="text-gray-500 mt-2 text-sm">Pick your favorite — tell Claude which one and it'll update the theme globally.</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">

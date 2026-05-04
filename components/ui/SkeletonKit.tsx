@@ -54,7 +54,7 @@ export function SkeletonCard({ index = 0 }: { index?: number }) {
         </div>
 
         {/* Footer */}
-        <div className="mt-auto pt-3 border-t border-foreground/5 flex gap-2">
+        <div className="mt-auto pt-3 border-t border-border flex gap-2">
           <div className="h-9 flex-1 shimmer rounded-lg" style={{ animationDelay: `${delay + 0.3}s` }} />
           <div className="h-9 w-9 shimmer rounded-lg" style={{ animationDelay: `${delay + 0.35}s` }} />
         </div>

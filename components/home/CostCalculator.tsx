@@ -21,7 +21,7 @@ const POPULAR_SLUGS = [
   'chatgpt', 'claude-code', 'gemini', 'cursor-editor', 'midjourney',
   'perplexity-ai', 'github-copilot', 'notion-ai', 'canva', 'elevenlabs',
   'figma-ai', 'v0-by-vercel', 'suno', 'zapier', 'grammarly',
-  'runway-gen-4', 'make', 'higgsfield-ai', 'adobe-firefly', 'n8n', 'deepseek',
+  'runway-gen-4', 'make', 'higgsfield-ai', 'adobe-firefly', 'n8n',
 ]
 
 // Preset stacks
@@ -189,7 +189,7 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
                 key={preset.label}
                 type="button"
                 onClick={() => applyPreset(preset)}
-                className="px-3.5 py-2 rounded-full border border-foreground/10 hover:border-primary/40 hover:bg-primary/5 text-sm transition-all cursor-pointer flex items-center gap-2 group"
+                className="px-3.5 py-2 rounded-full border border-border hover:border-primary/40 hover:bg-primary/5 text-sm transition-all cursor-pointer flex items-center gap-2 group"
               >
                 <Icon className={`h-3.5 w-3.5 ${preset.color} group-hover:scale-110 transition-transform`} />
                 <span className="font-semibold">{preset.label}</span>
@@ -217,7 +217,7 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
                       ? 'border-primary/30 bg-primary/[0.03] animate-pulse'
                       : isAdded
                         ? 'border-primary/40 bg-primary/5'
-                        : 'border-foreground/[0.06] hover:border-primary/30 hover:bg-primary/[0.02]'
+                        : 'border-border hover:border-primary/30 hover:bg-primary/[0.02]'
                   }`}
                 >
                   {isLoading && (
@@ -266,7 +266,7 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
               onChange={e => { setSearch(e.target.value); setShowDropdown(true) }}
               onFocus={() => { if (search.length > 1) setShowDropdown(true) }}
               autoFocus
-              className="w-full pl-10 pr-10 py-3.5 text-base sm:text-sm rounded-2xl border border-foreground/[0.1] bg-background focus:outline-none focus:border-primary/40 focus:ring-2 focus:ring-primary/20 transition-all min-h-[48px]"
+              className="w-full pl-10 pr-10 py-3.5 text-base sm:text-sm rounded-2xl border border-border bg-background focus:outline-none focus:border-primary/40 focus:ring-2 focus:ring-primary/20 transition-all min-h-[48px]"
             />
             <button
               onClick={() => { setShowSearch(false); setSearch('') }}
@@ -355,9 +355,9 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
 
       {/* ── Receipt ── */}
       {added.length > 0 && (
-        <div className="rounded-2xl border border-foreground/[0.06] divide-y divide-foreground/[0.06] mb-4">
+        <div className="rounded-2xl border border-border divide-y divide-border mb-4">
           {/* Billing toggle */}
-          <div className="flex items-center justify-center gap-1 px-4 py-2.5 bg-foreground/[0.02]">
+          <div className="flex items-center justify-center gap-1 px-4 py-2.5 bg-muted/30">
             <button
               type="button"
               onClick={() => setBillingCycle('monthly')}
@@ -451,11 +451,11 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
             )
           })}
           {/* Total */}
-          <div className="flex items-center justify-between px-4 py-3.5 sm:py-3 bg-foreground/[0.02]">
+          <div className="flex items-center justify-between px-4 py-3.5 sm:py-3 bg-muted/30">
             <span className="text-sm font-bold">{billingCycle === 'monthly' ? 'Monthly total' : 'Monthly (annual billing)'}</span>
             <span className="text-xl font-black">${total % 1 === 0 ? total : total.toFixed(2)}<span className="text-sm text-muted-foreground font-normal">/mo</span></span>
           </div>
-          <div className="flex items-center justify-between px-4 py-2.5 sm:py-2 bg-foreground/[0.02]">
+          <div className="flex items-center justify-between px-4 py-2.5 sm:py-2 bg-muted/30">
             <span className="text-xs text-muted-foreground">Annual cost</span>
             <span className="text-sm font-bold text-muted-foreground">${yearly % 1 === 0 ? yearly : yearly.toFixed(2)}/year</span>
           </div>

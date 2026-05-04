@@ -99,7 +99,7 @@ export function CreateStackDialog() {
                     key={tpl.id}
                     type="button"
                     onClick={() => selectTemplate(tpl.id)}
-                    className="w-full text-left flex items-start gap-3 p-3.5 rounded-lg border border-foreground/15 hover:border-primary/50 hover:bg-primary/5 transition-colors"
+                    className="w-full text-left flex items-start gap-3 p-3.5 rounded-lg border border-border hover:border-primary/50 hover:bg-primary/5 transition-colors"
                   >
                     <span className="text-2xl shrink-0 mt-0.5">{tpl.icon}</span>
                     <div className="min-w-0">
@@ -111,7 +111,7 @@ export function CreateStackDialog() {
                 <button
                   type="button"
                   onClick={() => selectTemplate(null)}
-                  className="w-full text-left flex items-center gap-3 p-3.5 rounded-lg border border-dashed border-foreground/20 hover:border-primary/40 hover:bg-muted/40 transition-colors text-muted-foreground"
+                  className="w-full text-left flex items-center gap-3 p-3.5 rounded-lg border border-dashed border-border hover:border-primary/40 hover:bg-muted/40 transition-colors text-muted-foreground"
                 >
                   <span className="text-2xl shrink-0">➕</span>
                   <div>

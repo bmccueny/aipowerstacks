@@ -395,7 +395,7 @@ export function AddToStackButton({
       <Sheet open={isMobile && pickerOpen} onOpenChange={setPickerOpen}>
         <SheetContent
           side="bottom"
-          className="liquid-glass-sheet rounded-t-[20px] px-4 pb-8 max-h-[80vh]"
+          className="bg-background border-t border-border rounded-t-[20px] px-4 pb-8 max-h-[80vh]"
           showCloseButton
         >
           <SheetHeader className="pb-2">
@@ -430,7 +430,7 @@ export function AddToStackButton({
             <p className="px-3 py-2 text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
               Add {toolName} to a stack
             </p>
-            <div className="h-px bg-foreground/[0.06] my-1" />
+            <div className="h-px bg-muted/50 my-1" />
             {stackListContent}
           </div>
         </>,

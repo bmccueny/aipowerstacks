@@ -16,7 +16,7 @@ type Alert = {
 const SEVERITY_COLORS = {
   critical: 'text-red-600 bg-red-50 border-red-200 dark:bg-red-500/10 dark:border-red-500/20',
   warning: 'text-amber-700 bg-amber-50 border-amber-200 dark:bg-amber-500/10 dark:border-amber-500/20',
-  info: 'text-foreground bg-muted/50 border-foreground/10',
+  info: 'text-foreground bg-muted/50 border-border',
 }
 
 export function AlertsBell() {
@@ -69,11 +69,11 @@ export function AlertsBell() {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-80 max-h-96 overflow-y-auto rounded-xl border border-foreground/10 bg-background shadow-lg z-50">
-          <div className="p-3 border-b border-foreground/[0.06]">
+        <div className="absolute right-0 top-full mt-2 w-80 max-h-96 overflow-y-auto rounded-xl border border-border bg-background shadow-lg z-50">
+          <div className="p-3 border-b border-border">
             <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Alerts</p>
           </div>
-          <div className="divide-y divide-foreground/[0.04]">
+          <div className="divide-y divide-border">
             {alerts.map(alert => (
               <button
                 key={alert.id}

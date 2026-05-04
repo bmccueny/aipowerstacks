@@ -36,7 +36,7 @@ export default function StacksLoading() {
                 </div>
                 <div className="h-3 w-16 shimmer rounded-md" />
               </div>
-              <div className="flex items-center gap-3 pt-3 border-t border-foreground/5">
+              <div className="flex items-center gap-3 pt-3 border-t border-border">
                 <div className="h-8 w-8 shimmer rounded-full" />
                 <div className="space-y-1">
                   <div className="h-2.5 w-16 shimmer rounded-md" />
