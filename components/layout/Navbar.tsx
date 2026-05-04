@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
-import { User, Settings, LogOut, Menu, X, Search, Bookmark } from 'lucide-react'
+import { User, Settings, LogOut, Menu, X, Search, Bookmark, Moon, Sun } from 'lucide-react'
 import { BrandMark } from '@/components/common/BrandMark'
 import { CommandPalette } from '@/components/common/CommandPalette'
 import { createClient } from '@/lib/supabase/client'
@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { useTheme } from '@/hooks/useTheme'
 import { MobileTabBar } from './MobileTabBar'
 
 const navLinks = [
@@ -40,6 +41,7 @@ export function Navbar() {
   const [user, setUser] = useState<{ id: string; email?: string; user_metadata?: Record<string, string> } | null>(null)
   const [profile, setProfile] = useState<{ avatar_url: string | null; display_name: string | null } | null>(null)
   const [bookmarkCount, setBookmarkCount] = useState(0)
+  const { resolvedTheme, setTheme } = useTheme()
 
   useEffect(() => {
     const fetchProfile = async (userId: string) => {
@@ -190,6 +192,20 @@ export function Navbar() {
                   </span>
                 )}
               </Link>
+
+              {/* Dark mode toggle */}
+              <button
+                type="button"
+                onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
+                aria-label={resolvedTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+                className="hidden sm:flex items-center justify-center h-9 w-9 rounded-lg hover:bg-muted/60 dark:hover:bg-muted/40 transition-all duration-200"
+              >
+                {resolvedTheme === 'dark' ? (
+                  <Sun className="h-4 w-4 transition-transform duration-300 rotate-0" />
+                ) : (
+                  <Moon className="h-4 w-4 transition-transform duration-300 rotate-0" />
+                )}
+              </button>
 
               {/* User Menu */}
               {user ? (

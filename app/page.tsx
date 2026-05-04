@@ -43,7 +43,7 @@ export default async function HomePage() {
   return (
     <CompareProvider>
       <Navbar />
-      <main className="min-h-[100dvh] pt-20 flex flex-col gap-20 md:gap-28 pb-32 md:pb-32" style={{ paddingBottom: 'calc(8rem + env(safe-area-inset-bottom, 0px))' }}>
+      <main className="min-h-[100dvh] pt-20 flex flex-col gap-12 md:gap-28 pb-32 md:pb-32" style={{ paddingBottom: 'calc(8rem + env(safe-area-inset-bottom, 0px))' }}>
         <JsonLd data={{
           '@context': 'https://schema.org',
           '@type': 'WebPage',
@@ -134,8 +134,8 @@ export default async function HomePage() {
           <CostCalculator tools={calcTools} />
         </section>
 
-        {/* ═══ How it works ═══ */}
-        <section className="px-4 max-w-4xl mx-auto w-full">
+        {/* ═══ How it works — hidden on mobile (redundant for users who found the site) ═══ */}
+        <section className="hidden sm:block px-4 max-w-4xl mx-auto w-full">
           <h2 className="text-[13px] font-semibold uppercase tracking-[0.06em] text-muted-foreground text-center mb-10">How it works</h2>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8 text-center">
             <div>
@@ -166,7 +166,7 @@ export default async function HomePage() {
           <section className="px-4 max-w-4xl mx-auto w-full">
             <h2 className="text-[13px] font-semibold uppercase tracking-[0.06em] text-muted-foreground text-center mb-6">Most tracked right now</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-              {mostTracked.map((tool) => (
+              {mostTracked.slice(0, 4).map((tool) => (
                 <Link
                   key={tool.id}
                   href={`/tools/${tool.slug}`}
@@ -194,7 +194,7 @@ export default async function HomePage() {
 
         {/* ═══ CTA with demo ═══ */}
         <section className="px-4 max-w-4xl mx-auto w-full">
-          <div className="rounded-3xl bg-[#1C1C1E] dark:bg-card dark:border dark:border-border p-8 sm:p-12 overflow-hidden">
+          <div className="rounded-3xl bg-[#1C1C1E] dark:bg-card dark:border dark:border-border p-6 sm:p-12 overflow-hidden">
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] gap-8 lg:gap-12 items-center">
               <div>
                 <h2 className="text-[clamp(1.75rem,4vw,2.5rem)] font-bold tracking-[-0.02em] text-white dark:text-foreground leading-[1.1]">
@@ -295,7 +295,8 @@ export default async function HomePage() {
         )}
 
         {/* ═══ Browse ═══ */}
-        <section className="px-4 max-w-4xl mx-auto w-full text-center">
+        {/* Browse links — hidden on mobile (bottom tab bar covers this) */}
+        <section className="hidden md:block px-4 max-w-4xl mx-auto w-full text-center">
           <p className="text-sm text-muted-foreground mb-3">
             Looking for a specific tool?
           </p>

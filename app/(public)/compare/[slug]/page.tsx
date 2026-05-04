@@ -161,6 +161,29 @@ export async function generateMetadata({
   }
 }
 
+export const revalidate = 3600
+
+export async function generateStaticParams() {
+  const supabase = createAdminClient()
+  const { data: tools } = await supabase
+    .from('tools')
+    .select('slug')
+    .eq('status', 'published')
+    .gte('review_count', 2)
+    .order('review_count', { ascending: false })
+    .limit(30)
+
+  if (!tools || tools.length < 2) return []
+
+  const pairs: { slug: string }[] = []
+  for (let i = 0; i < tools.length && pairs.length < 200; i++) {
+    for (let j = i + 1; j < Math.min(i + 5, tools.length) && pairs.length < 200; j++) {
+      pairs.push({ slug: `${tools[i].slug}-vs-${tools[j].slug}` })
+    }
+  }
+  return pairs
+}
+
 export default async function VsComparisonPage({
   params,
 }: {
