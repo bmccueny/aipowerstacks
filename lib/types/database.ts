@@ -149,6 +149,12 @@ export type Database = {
           needs_review_reason: string | null
           affiliate_url: string | null
           affiliate_commission_pct: number | null
+          free_tier_quality: number | null
+          platforms: string[] | null
+          privacy_certifications: string[] | null
+          pricing_last_verified_at: string | null
+          gdpr_compliant: boolean | null
+          hipaa_compliant: boolean | null
           created_at: string
           updated_at: string
         }
