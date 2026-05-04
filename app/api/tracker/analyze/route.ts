@@ -120,7 +120,7 @@ export async function GET(request: Request) {
       } else {
         const wasteCost = rest.filter(r => r.cost > 0).reduce((s, r) => s + r.cost, 0)
         overlapLines.push(
-          `${catName}: You're paying for ${names.join(', ')} ($${totalCatCost}/mo total). ${best.name} is the highest-rated (${best.rating.toFixed(1)} stars, ${best.reviews} reviews). Dropping the rest saves $${wasteCost * 12}/yr.`
+          `${catName}: You're paying for ${names.join(', ')} ($${Math.round(totalCatCost * 100) / 100}/mo total). ${best.name} is the highest-rated (${best.rating.toFixed(1)} stars, ${best.reviews} reviews). Dropping the rest saves $${Math.round(wasteCost * 12)}/yr.`
         )
       }
     }
@@ -137,7 +137,7 @@ export async function GET(request: Request) {
       return cheapest && Number(s.monthly_cost) > cheapest.price * 1.3
     })
     if (premiumItems.length >= 2) {
-      const names = premiumItems.map(s => `${s.tools.name} ($${Number(s.monthly_cost)}/mo)`)
+      const names = premiumItems.map(s => `${s.tools.name} ($${Math.round(Number(s.monthly_cost) * 100) / 100}/mo)`)
       tierLines.push(`You're on premium tiers for both ${names.join(' and ')}. If their features overlap, consolidating to one could save you money.`)
     }
   }
