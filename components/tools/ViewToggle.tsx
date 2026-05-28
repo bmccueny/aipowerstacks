@@ -1,39 +1,49 @@
-'use client'
+"use client";
 
-import { LayoutGrid, List } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { useRouter, useSearchParams, usePathname } from 'next/navigation'
+import { LayoutGrid, List } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 
 export function ViewToggle() {
-  const router = useRouter()
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
-  const view = searchParams.get('view') ?? 'grid'
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const view = searchParams.get("view") ?? "grid";
 
-  const setView = (v: 'grid' | 'list') => {
-    const params = new URLSearchParams(searchParams.toString())
-    params.set('view', v)
-    router.push(`${pathname}?${params.toString()}`)
-  }
+  const setView = (v: "grid" | "list") => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("view", v);
+    router.push(`${pathname}?${params.toString()}`);
+  };
 
   return (
-    <div className="flex items-center gap-1 glass-card border border-border/50 rounded-2xl p-1">
+    <div
+      className="flex items-center gap-1 glass-card border border-border/50 rounded-2xl p-1"
+      role="group"
+      aria-label="Toggle view"
+    >
       <Button
-        variant={view === 'grid' ? 'secondary' : 'ghost'}
+        variant={view === "grid" ? "secondary" : "ghost"}
         size="icon"
         className="h-7 w-7"
-        onClick={() => setView('grid')}
+        onClick={() => setView("grid")}
+        aria-label="Grid view"
+        title="Grid view"
+        aria-pressed={view === "grid"}
       >
         <LayoutGrid className="h-3.5 w-3.5" />
       </Button>
       <Button
-        variant={view === 'list' ? 'secondary' : 'ghost'}
+        variant={view === "list" ? "secondary" : "ghost"}
         size="icon"
         className="h-7 w-7"
-        onClick={() => setView('list')}
+        onClick={() => setView("list")}
+        aria-label="List view"
+        title="List view"
+        aria-pressed={view === "list"}
       >
         <List className="h-3.5 w-3.5" />
       </Button>
     </div>
-  )
+  );
 }
