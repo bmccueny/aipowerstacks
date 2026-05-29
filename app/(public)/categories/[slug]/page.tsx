@@ -9,6 +9,7 @@ import { Pagination } from '@/components/common/Pagination'
 import { JsonLd } from '@/components/common/JsonLd'
 import { generateItemListJsonLd, generateBreadcrumbJsonLd } from '@/lib/utils/seo'
 import { PAGE_SIZE } from '@/lib/constants'
+import { Breadcrumbs } from '@/components/common/Breadcrumbs'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -71,6 +72,10 @@ export default async function CategoryPage({ params, searchParams }: Props) {
     <div className="page-shell">
       <JsonLd data={categoryToolsJsonLd} />
       <JsonLd data={breadcrumbJsonLd} />
+      <Breadcrumbs items={[
+        { label: 'Categories', href: '/categories' },
+        { label: category.name },
+      ]} />
       <div className="page-hero flex flex-col items-start sm:flex-row sm:items-center gap-4">
         <span className="text-5xl">{category.icon ?? '🤖'}</span>
         <div>

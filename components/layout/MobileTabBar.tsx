@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, LayoutGrid, DollarSign, ArrowLeftRight, MoreHorizontal } from 'lucide-react'
+import { Home, LayoutGrid, DollarSign, ArrowLeftRight, BookOpen } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const tabs = [
@@ -10,7 +10,7 @@ const tabs = [
   { href: '/tools', label: 'Browse', icon: LayoutGrid },
   { href: '/tracker', label: 'Tracker', icon: DollarSign },
   { href: '/compare', label: 'Compare', icon: ArrowLeftRight },
-  { href: '/blog', label: 'More', icon: MoreHorizontal },
+  { href: '/blog', label: 'Blog', icon: BookOpen },
 ]
 
 export function MobileTabBar() {

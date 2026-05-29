@@ -134,10 +134,10 @@ export default async function HomePage() {
           <CostCalculator tools={calcTools} />
         </section>
 
-        {/* ═══ How it works — hidden on mobile (redundant for users who found the site) ═══ */}
-        <section className="hidden sm:block px-4 max-w-4xl mx-auto w-full">
-          <h2 className="text-[13px] font-semibold uppercase tracking-[0.06em] text-muted-foreground text-center mb-10">How it works</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8 text-center">
+        {/* ═══ How it works ═══ */}
+        <section className="px-4 max-w-4xl mx-auto w-full">
+          <h2 className="text-[13px] font-semibold uppercase tracking-[0.06em] text-muted-foreground text-center mb-6 sm:mb-10">How it works</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-8 text-center">
             <div>
               <span className="inline-flex w-10 h-10 rounded-full bg-[#1C1C1E] text-white items-center justify-center text-sm font-bold mb-3">1</span>
               <p className="font-bold text-sm mb-1">Add your stack</p>

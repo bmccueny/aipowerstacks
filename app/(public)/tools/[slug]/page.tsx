@@ -14,7 +14,6 @@ import { BookmarkButton } from '@/components/tools/BookmarkButton'
 import { AddToStackButton } from '@/components/tools/AddToStackButton'
 import { AddToCompareButton } from '@/components/tools/AddToCompareButton'
 import { NewsletterBanner } from '@/components/layout/NewsletterBanner'
-import { RelatedLinks } from '@/components/common/RelatedLinks'
 import { OutboundLink } from '@/components/common/OutboundLink'
 import { AdminReviewPanel } from '@/components/admin/AdminReviewPanel'
 import { createClient } from '@/lib/supabase/server'
@@ -23,6 +22,7 @@ import { getReviewsByTool } from '@/lib/supabase/queries/reviews'
 import { generateFaqJsonLd, generateJsonLd, generateToolMetadata, generateBreadcrumbJsonLd, generateReviewsJsonLd } from '@/lib/utils/seo'
 import { PRICING_BADGE_COLORS, PRICING_LABELS, MODEL_PROVIDER_LABELS } from '@/lib/constants'
 import { RelatedPages } from '@/components/seo/RelatedPages'
+import { Breadcrumbs } from '@/components/common/Breadcrumbs'
 
 export const revalidate = 3600 // ISR: revalidate every hour
 
@@ -163,6 +163,11 @@ export default async function ToolDetailPage({ params }: Props) {
       })()}
 
       <div className="page-shell">
+        <Breadcrumbs items={[
+          { label: 'Tools', href: '/tools' },
+          ...(tool.categories ? [{ label: tool.categories.name, href: `/categories/${tool.categories.slug}` }] : []),
+          { label: tool.name },
+        ]} />
         <nav className="flex items-center gap-1.5 text-sm text-muted-foreground mb-6">
           <Link href="/" className="hover:text-foreground transition-colors">Home</Link>
           <ChevronRight className="h-3.5 w-3.5" />
@@ -400,13 +405,6 @@ export default async function ToolDetailPage({ params }: Props) {
               </div>
             )}
 
-            <RelatedLinks
-              toolSlug={tool.slug}
-              toolName={tool.name}
-              categorySlug={tool.categories?.slug ?? null}
-              categoryName={tool.categories?.name ?? null}
-              categoryId={tool.category_id}
-            />
 
             {screenshots.length > 0 && (
               <div className="glass-card rounded-xl p-6">
