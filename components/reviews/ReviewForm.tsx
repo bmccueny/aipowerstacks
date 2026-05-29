@@ -62,6 +62,8 @@ export function ReviewForm({ toolId, onSuccess }: ReviewFormProps) {
             <button
               key={star}
               type="button"
+              aria-label={`Rate ${star} out of 5 stars`}
+              aria-pressed={rating === star}
               onMouseEnter={() => setHovered(star)}
               onMouseLeave={() => setHovered(0)}
               onClick={() => setRating(star)}

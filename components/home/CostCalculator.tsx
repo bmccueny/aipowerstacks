@@ -314,6 +314,8 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
                   type="button"
                   disabled={isLoading}
                   onClick={() => isAdded ? remove(tool.id) : quickAdd(tool)}
+                  aria-label={isAdded ? `Remove ${tool.name} from stack` : `Add ${tool.name} to stack`}
+                  aria-pressed={isAdded}
                   className={`relative p-3 sm:p-3 rounded-xl border transition-all text-center cursor-pointer group min-h-[72px] ${
                     isLoading
                       ? 'border-primary/30 bg-primary/[0.03] animate-pulse'
@@ -372,6 +374,7 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
             />
             <button
               onClick={() => { setShowSearch(false); setSearch('') }}
+              aria-label="Close search"
               className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-muted rounded-lg"
             >
               <X className="h-4 w-4 text-muted-foreground" />
@@ -382,10 +385,13 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
               {filtered.map(t => (
                 <div
                   key={t.id}
-                  role="button"
+                  role="option"
+                  aria-selected={false}
+                  aria-label={`Select ${t.name}`}
                   tabIndex={0}
                   onMouseDown={e => { e.preventDefault(); selectTool(t) }}
                   onTouchEnd={e => { e.preventDefault(); selectTool(t) }}
+                  onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectTool(t) } }}
                   className="px-4 py-3 flex items-center gap-3 hover:bg-muted/80 active:bg-muted cursor-pointer border-b border-border/20 last:border-0 min-h-[48px]"
                 >
                   {t.logo_url ? (
@@ -411,7 +417,7 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
               <span className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-sm font-bold text-primary">{selectedTool.name[0]}</span>
             )}
             <span className="font-bold text-sm flex-1">{selectedTool.name}</span>
-            <button onClick={() => setSelectedTool(null)} className="p-1 hover:bg-muted rounded-lg">
+            <button onClick={() => setSelectedTool(null)} aria-label={`Deselect ${selectedTool.name}`} className="p-1 hover:bg-muted rounded-lg">
               <X className="h-4 w-4 text-muted-foreground" />
             </button>
           </div>
@@ -459,9 +465,11 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
       {added.length > 0 && (
         <div className="rounded-2xl border border-border divide-y divide-border mb-4">
           {/* Billing toggle */}
-          <div className="flex items-center justify-center gap-1 px-4 py-2.5 bg-muted/30">
+          <div className="flex items-center justify-center gap-1 px-4 py-2.5 bg-muted/30" role="tablist" aria-label="Billing cycle">
             <button
               type="button"
+              role="tab"
+              aria-selected={billingCycle === 'monthly'}
               onClick={() => setBillingCycle('monthly')}
               className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all ${
                 billingCycle === 'monthly'
@@ -473,6 +481,8 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
             </button>
             <button
               type="button"
+              role="tab"
+              aria-selected={billingCycle === 'annual'}
               onClick={() => setBillingCycle('annual')}
               className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all ${
                 billingCycle === 'annual'
@@ -511,7 +521,7 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
                   )}
                   <span className="text-[10px] text-primary">edit</span>
                 </button>
-                <button onClick={() => remove(tool.id)} className="p-0.5 hover:text-destructive transition-colors">
+                <button onClick={() => remove(tool.id)} aria-label={`Remove ${tool.name}`} className="p-0.5 hover:text-destructive transition-colors">
                   <X className="h-3.5 w-3.5 text-muted-foreground" />
                 </button>
               </div>

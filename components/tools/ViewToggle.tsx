@@ -23,6 +23,8 @@ export function ViewToggle() {
         size="icon"
         className="h-7 w-7"
         onClick={() => setView('grid')}
+        aria-label="Grid view"
+        aria-pressed={view === 'grid'}
       >
         <LayoutGrid className="h-3.5 w-3.5" />
       </Button>
@@ -31,6 +33,8 @@ export function ViewToggle() {
         size="icon"
         className="h-7 w-7"
         onClick={() => setView('list')}
+        aria-label="List view"
+        aria-pressed={view === 'list'}
       >
         <List className="h-3.5 w-3.5" />
       </Button>

@@ -228,7 +228,7 @@ export default function RegisterPage() {
             </div>
             {/* Password strength */}
             {password.length > 0 && (
-              <div className="flex items-center gap-3 mt-1">
+              <div className="flex items-center gap-3 mt-1" role="status" aria-live="polite" aria-label={`Password strength: ${strengthLabels[strength]}`}>
                 <div className="flex-1 flex gap-1">
                   {[1, 2, 3].map((level) => (
                     <div

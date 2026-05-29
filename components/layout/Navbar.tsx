@@ -211,7 +211,7 @@ export function Navbar() {
               {user ? (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon-lg" className="rounded-full hover:bg-muted/60 dark:hover:bg-muted/40 transition-all duration-200 hover:opacity-90 focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 flex-shrink-0 relative z-10">
+                      <Button variant="ghost" size="icon-lg" aria-label="User menu" className="rounded-full hover:bg-muted/60 dark:hover:bg-muted/40 transition-all duration-200 hover:opacity-90 focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 flex-shrink-0 relative z-10">
                       <Avatar className="h-9 w-9 ring-2 ring-border ring-offset-1 transition-transform duration-200 hover:scale-110">
                         <AvatarImage
                           src={profile?.avatar_url || undefined}
@@ -292,11 +292,17 @@ export function Navbar() {
       </nav>
 
       {/* Mobile Menu — clean slide-down sheet */}
-      <div className={cn(
-        'fixed inset-0 z-40 md:hidden transition-all duration-300',
-        mobileOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
-      )}>
-        <div className="absolute inset-0 bg-black/25" onClick={() => setMobileOpen(false)} onKeyDown={(e) => { if (e.key === 'Escape') setMobileOpen(false) }} role="button" tabIndex={0} aria-label="Close menu" />
+      <div
+        role="dialog"
+        aria-label="Navigation menu"
+        aria-modal="true"
+        onKeyDown={(e) => { if (e.key === 'Escape') setMobileOpen(false) }}
+        className={cn(
+          'fixed inset-0 z-40 md:hidden transition-all duration-300',
+          mobileOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
+        )}
+      >
+        <div className="absolute inset-0 bg-black/25" onClick={() => setMobileOpen(false)} aria-hidden="true" />
 
         <div className={cn(
           'absolute top-14 left-0 right-0 bg-background border-b border-border shadow-lg transform transition-transform duration-300 ease-out max-h-[calc(100vh-3.5rem)] overflow-y-auto',

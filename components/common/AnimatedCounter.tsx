@@ -70,7 +70,7 @@ export function AnimatedCounter({
   }, [hasAnimated, target, duration])
 
   return (
-    <span ref={ref} className={className}>
+    <span ref={ref} className={className} aria-live="polite" aria-atomic="true">
       {prefix}{count.toLocaleString()}{suffix}
     </span>
   )
