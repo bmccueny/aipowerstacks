@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { z } from 'zod'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import type { Database } from '@/lib/types/database'
 
 const updateSchema = z.object({
   title: z.string().min(1).max(200).optional(),
@@ -35,7 +36,10 @@ export async function PUT(
   const parsed = updateSchema.safeParse(body)
   if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 })
 
-  const updates: Record<string, unknown> = { ...parsed.data, updated_at: new Date().toISOString() }
+  const updates: Database['public']['Tables']['blog_posts']['Update'] = {
+    ...parsed.data,
+    updated_at: new Date().toISOString(),
+  }
   if (parsed.data.status === 'published') {
     const { data: existing } = await createAdminClient().from('blog_posts').select('published_at').eq('id', id).single()
     const existingData = existing as { published_at: string | null } | null

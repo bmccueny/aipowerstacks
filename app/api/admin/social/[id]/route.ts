@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import type { Database } from '@/lib/types/database'
 
 export async function PATCH(
   request: Request,
@@ -26,10 +27,11 @@ export async function PATCH(
   const body = await request.json()
   const admin = createAdminClient()
 
-  const updates: Record<string, any> = { updated_at: new Date().toISOString() }
+  type SocialPostUpdate = Database['public']['Tables']['social_posts']['Update']
+  const updates: SocialPostUpdate = { updated_at: new Date().toISOString() }
 
   if (typeof body.content === 'string') updates.content = body.content
-  if (typeof body.status === 'string') updates.status = body.status
+  if (typeof body.status === 'string') updates.status = body.status as SocialPostUpdate['status']
   if (typeof body.notes === 'string') updates.notes = body.notes
   if (body.status === 'posted') updates.posted_at = new Date().toISOString()
 

@@ -20,9 +20,9 @@ export async function GET(request: Request) {
   const [toolsCount, newTools, reviewsCount, newReviews, subscribersCount] = await Promise.all([
     supabase.from('tools').select('id', { count: 'exact', head: true }).eq('status', 'published'),
     supabase.from('tools').select('id', { count: 'exact', head: true }).gte('created_at', today).eq('status', 'published'),
-    supabase.from('reviews').select('id', { count: 'exact', head: true }).eq('is_approved', true),
-    supabase.from('reviews').select('id', { count: 'exact', head: true }).gte('created_at', today).eq('is_approved', true),
-    supabase.from('newsletter_subscribers').select('id', { count: 'exact', head: true }).eq('subscribed', true),
+    supabase.from('reviews').select('id', { count: 'exact', head: true }).eq('status', 'published'),
+    supabase.from('reviews').select('id', { count: 'exact', head: true }).gte('created_at', today).eq('status', 'published'),
+    supabase.from('newsletter_subscribers').select('id', { count: 'exact', head: true }).eq('status', 'active'),
   ])
 
   const stats = {

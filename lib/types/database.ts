@@ -11,6 +11,10 @@ export type Database = {
           avatar_url: string | null
           bio: string | null
           website: string | null
+          linkedin_url: string | null
+          github_url: string | null
+          social_links: { platform: string; url: string }[] | null
+          is_identity_verified: boolean
           role: 'user' | 'editor' | 'admin'
           monthly_budget: number | null
           created_at: string
@@ -23,6 +27,10 @@ export type Database = {
           avatar_url?: string | null
           bio?: string | null
           website?: string | null
+          linkedin_url?: string | null
+          github_url?: string | null
+          social_links?: { platform: string; url: string }[] | null
+          is_identity_verified?: boolean
           role?: 'user' | 'editor' | 'admin'
           monthly_budget?: number | null
           created_at?: string
@@ -34,6 +42,10 @@ export type Database = {
           avatar_url?: string | null
           bio?: string | null
           website?: string | null
+          linkedin_url?: string | null
+          github_url?: string | null
+          social_links?: { platform: string; url: string }[] | null
+          is_identity_verified?: boolean
           role?: 'user' | 'editor' | 'admin'
           monthly_budget?: number | null
           updated_at?: string

@@ -71,9 +71,9 @@ export async function GET(request: Request) {
         .update({
           needs_review: true,
           needs_review_reason: 'Not updated in 90+ days',
-        } as Record<string, unknown>)
+        })
         .in('id', staleTools.map(t => t.id))
-        .eq('needs_review' as string, false)
+        .eq('needs_review', false)
     } catch {
       // needs_review column may not exist yet — that's ok
     }
