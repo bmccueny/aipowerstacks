@@ -14,7 +14,7 @@ export default async function EditToolPage({ params }: { params: Promise<{ id: s
 
   const { data } = await supabase
     .from('tools')
-    .select('id, name, slug, tagline, description, website_url, logo_url, category_id, pricing_model, pricing_details, use_case, team_size, integrations, status, is_verified, is_featured, is_supertools, is_editors_pick, model_provider, is_api_wrapper, wrapper_details, time_to_value, not_for')
+    .select('id, name, slug, tagline, description, website_url, logo_url, category_id, pricing_model, pricing_details, use_case, team_size, integrations, status, is_verified, is_featured, is_supertools, is_editors_pick, model_provider, is_api_wrapper, wrapper_details, time_to_value, not_for, affiliate_url, affiliate_commission_pct')
     .eq('id', id)
     .single()
 
@@ -28,6 +28,7 @@ export default async function EditToolPage({ params }: { params: Promise<{ id: s
     is_verified: boolean; is_featured: boolean; is_supertools: boolean; is_editors_pick: boolean
     model_provider: string | null; is_api_wrapper: boolean; wrapper_details: string | null
     time_to_value: string | null; not_for: string | null
+    affiliate_url: string | null; affiliate_commission_pct: number | null
   }
 
   const categories = await getAllCategories()

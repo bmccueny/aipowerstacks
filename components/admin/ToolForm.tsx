@@ -35,6 +35,8 @@ interface ToolFormProps {
     wrapper_details: string | null
     time_to_value: string | null
     not_for: string | null
+    affiliate_url: string | null
+    affiliate_commission_pct: number | null
   }
 }
 
@@ -66,6 +68,8 @@ export function ToolForm({ categories, tool }: ToolFormProps) {
     wrapper_details: tool?.wrapper_details ?? '',
     time_to_value: tool?.time_to_value ?? '',
     not_for: tool?.not_for ?? '',
+    affiliate_url: tool?.affiliate_url ?? '',
+    affiliate_commission_pct: tool?.affiliate_commission_pct?.toString() ?? '',
   })
 
   const set = (k: keyof typeof form) =>
@@ -106,6 +110,8 @@ export function ToolForm({ categories, tool }: ToolFormProps) {
         wrapper_details: form.wrapper_details || null,
         time_to_value: form.time_to_value || null,
         not_for: form.not_for || null,
+        affiliate_url: form.affiliate_url || null,
+        affiliate_commission_pct: form.affiliate_commission_pct ? Number(form.affiliate_commission_pct) : null,
       }),
     })
 
@@ -242,6 +248,21 @@ export function ToolForm({ categories, tool }: ToolFormProps) {
         <div>
           <label className="text-sm font-medium mb-1.5 block">Not For (who should avoid this tool?)</label>
           <Input value={form.not_for} onChange={set('not_for')} placeholder="e.g. Not for non-technical users" className={inputCls} />
+        </div>
+      </div>
+
+      {/* Monetization */}
+      <div className="pt-4 border-t border-border/50">
+        <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-3">Monetization</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="text-sm font-medium mb-1.5 block">Affiliate URL</label>
+            <Input value={form.affiliate_url} onChange={set('affiliate_url')} placeholder="https://tool.com/?ref=aipowerstacks" type="url" className={inputCls} />
+          </div>
+          <div>
+            <label className="text-sm font-medium mb-1.5 block">Commission %</label>
+            <Input value={form.affiliate_commission_pct} onChange={set('affiliate_commission_pct')} placeholder="e.g. 20" type="number" min={0} max={100} className={inputCls} />
+          </div>
         </div>
       </div>
 

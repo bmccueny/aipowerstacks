@@ -674,6 +674,19 @@ export default async function ToolDetailPage({ params }: Props) {
               </div>
             </div>
 
+            {/* Featured listing upsell */}
+            {!tool.is_featured && (
+              <div className="glass-card rounded-xl p-5 border border-primary/15 text-center">
+                <p className="text-sm font-bold mb-1">Get more visibility</p>
+                <p className="text-xs text-muted-foreground mb-3">
+                  Featured tools get top placement, homepage rotation, and weekly newsletter inclusion.
+                </p>
+                <Link href={`/advertise?tool=${tool.slug}`}>
+                  <Button size="sm" className="w-full font-bold">Get Featured — $99/mo</Button>
+                </Link>
+              </div>
+            )}
+
             <NewsletterBanner source={categorySubscribeSource} />
           </div>
         </div>

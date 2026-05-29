@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
   Menu, X, Sparkles, LayoutDashboard, Wrench, InboxIcon,
-  FolderOpen, FileText, Users, Star, Trophy, MessageSquare,
+  FolderOpen, FileText, Users, Star, Trophy, MessageSquare, DollarSign,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
@@ -20,6 +20,7 @@ const ICON_MAP: Record<string, LucideIcon> = {
   '/admin/challenges': Trophy,
   '/admin/social': MessageSquare,
   '/admin/users': Users,
+  '/admin/revenue': DollarSign,
 }
 
 const NAV_ITEMS = [
@@ -33,6 +34,7 @@ const NAV_ITEMS = [
   { href: '/admin/challenges', label: 'Challenges' },
   { href: '/admin/social', label: 'Social' },
   { href: '/admin/users', label: 'Users' },
+  { href: '/admin/revenue', label: 'Revenue' },
 ]
 
 export function AdminSidebar() {
