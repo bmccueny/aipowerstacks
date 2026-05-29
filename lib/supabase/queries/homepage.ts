@@ -44,11 +44,12 @@ export async function getHomepageData() {
 }
 
 async function fetchSiteStats() {
-  const [toolsResult, reviewsResult, pricingResult, spendResult] = await Promise.allSettled([
+  const [toolsResult, reviewsResult, pricingResult, spendResult, usersResult] = await Promise.allSettled([
     supabase.from('tools').select('*', { count: 'exact', head: true }).eq('status', 'published'),
     supabase.from('reviews').select('*', { count: 'exact', head: true }).eq('status', 'published'),
     supabase.from('tool_pricing_tiers').select('tool_id', { count: 'exact', head: true }),
     supabase.from('user_subscriptions').select('monthly_cost'),
+    supabase.from('profiles').select('*', { count: 'exact', head: true }),
   ])
 
   const toolCount = toolsResult.status === 'fulfilled' ? toolsResult.value.count ?? 0 : 0
@@ -63,7 +64,9 @@ async function fetchSiteStats() {
     )
   }
 
-  return { toolCount, reviewCount, toolsWithPricing, trackedSpend }
+  const userCount = usersResult.status === 'fulfilled' ? usersResult.value.count ?? 0 : 0
+
+  return { toolCount, reviewCount, toolsWithPricing, trackedSpend, userCount }
 }
 
 async function fetchMostTrackedTools(limit: number) {

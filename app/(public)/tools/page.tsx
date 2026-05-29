@@ -104,7 +104,7 @@ export default async function ToolsPage({ searchParams }: ToolsPageProps) {
   const page = Number.isFinite(parsedPage) && parsedPage > 0 ? parsedPage : 1
   const view = (params.view === 'list' ? 'list' : 'grid') as 'grid' | 'list'
 
-  const [{ tools }, categories] = await Promise.all([
+  const [{ tools, total }, categories] = await Promise.all([
     searchTools({
       query: params.q,
       category: params.category,
@@ -156,7 +156,7 @@ export default async function ToolsPage({ searchParams }: ToolsPageProps) {
       <p className="text-sm text-muted-foreground">
         {tools.length === 0
           ? 'No tools found — try adjusting your filters.'
-          : `Showing ${tools.length}${hasMore ? '+' : ''} tool${tools.length === 1 ? '' : 's'}${page > 1 ? ` · Page ${page}` : ''}`}
+          : `Showing ${total > 0 ? `${total} tool${total === 1 ? '' : 's'}` : `${tools.length}${hasMore ? '+' : ''} tool${tools.length === 1 ? '' : 's'}`}${page > 1 ? ` · Page ${page}${total > 0 ? ` of ${Math.ceil(total / PAGE_SIZE)}` : ''}` : ''}`}
       </p>
 
       <Suspense fallback={<ToolGrid tools={tools} view={view} cardStyle="default" />}>
@@ -180,7 +180,7 @@ export default async function ToolsPage({ searchParams }: ToolsPageProps) {
       </noscript>
 
       <Suspense>
-        <Pagination page={page} hasMore={hasMore} />
+        <Pagination page={page} hasMore={hasMore} totalPages={total > 0 ? Math.ceil(total / PAGE_SIZE) : undefined} />
       </Suspense>
     </div>
   )

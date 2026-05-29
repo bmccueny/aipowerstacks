@@ -7,7 +7,7 @@ import { AlertsBell } from '@/components/tracker/AlertsBell'
 import { SITE_URL } from '@/lib/constants/site'
 
 export const metadata: Metadata = {
-  title: 'AI Subscription Tracker | AIPowerStacks',
+  title: 'AI Subscription Tracker',
   description: 'Track your AI tool subscriptions in one place. See your total monthly spend, find duplicates, and cut costs.',
   alternates: { canonical: '/tracker' },
   openGraph: {

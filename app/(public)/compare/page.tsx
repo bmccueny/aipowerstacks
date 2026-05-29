@@ -16,7 +16,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { createClient } from '@/lib/supabase/server'
-import { getSuperTools, getSimilarTools } from '@/lib/supabase/queries/tools'
+import { getSimilarTools } from '@/lib/supabase/queries/tools'
 import type { Tool } from '@/lib/types'
 import { CompareSearch } from '@/components/tools/CompareSearch'
 import { MatrixAutoFocus } from '@/components/tools/MatrixAutoFocus'
@@ -25,6 +25,18 @@ import { cn } from '@/lib/utils'
 import { CompareTableLazy } from '@/components/tools/CompareTableLazy'
 
 const MAX_TOOLS = 4
+
+// High-recognition tools visitors actually want to compare
+const POPULAR_COMPARE_SLUGS = ['chatgpt', 'claude', 'cursor', 'midjourney']
+
+async function getPopularCompareTools(supabase: Awaited<ReturnType<typeof createClient>>): Promise<Tool[]> {
+  const { data } = await supabase
+    .from('tools')
+    .select('id, name, slug, tagline, website_url, logo_url, pricing_model, pricing_details, has_api, has_mobile_app, is_open_source, avg_rating, review_count, use_case, team_size, integrations, is_supertools, model_provider, trains_on_data, has_sso, security_certifications')
+    .in('slug', POPULAR_COMPARE_SLUGS)
+    .eq('status', 'published')
+  return (data ?? []) as Tool[]
+}
 
 function CostInsight({ tools }: { tools: { name: string; pricing_model: string; pricing_details: string | null }[] }) {
   if (tools.length < 2) return null
@@ -134,7 +146,7 @@ export default async function ComparePage({
           .in('slug', slugs)
           .eq('status', 'published')
       : Promise.resolve({ data: [] as Tool[] }),
-    slugs.length > 0 ? getSimilarTools(slugs, 4) : getSuperTools(4),
+    slugs.length > 0 ? getSimilarTools(slugs, 4) : getPopularCompareTools(supabase),
   ])
 
   const rows = (data ?? []) as Tool[]
@@ -282,18 +294,16 @@ export default async function ComparePage({
       {/* ─── Matrix ─── */}
       <div id="comparison-matrix">
         {tools.length === 0 ? (
-          <div className="border border-dashed border-border rounded-xl p-8 sm:p-12 text-center flex flex-col items-center justify-center min-h-[300px]">
-            <div className="h-14 w-14 rounded-full bg-muted flex items-center justify-center mb-5">
-              <LayoutGrid className="h-7 w-7 text-muted-foreground/30" />
-            </div>
-            <h3 className="text-lg font-bold mb-2">Start Your Comparison</h3>
-            <p className="text-sm text-muted-foreground max-w-sm mx-auto mb-6">
-              Search for a tool above, pick a preset, or start with a suggestion.
+          <div className="rounded-xl border border-border bg-card p-6 sm:p-8 text-center">
+            <LayoutGrid className="h-8 w-8 text-muted-foreground/20 mx-auto mb-3" />
+            <p className="text-sm font-bold mb-1">No tools selected yet</p>
+            <p className="text-xs text-muted-foreground mb-4">
+              Search above, pick a preset, or tap a suggestion to start.
             </p>
             <div className="flex flex-wrap justify-center gap-2">
               {recommendations.map((tool) => (
                 <Link key={tool.id} href={`/compare?tools=${tool.slug}`}>
-                  <Badge variant="outline" className="h-8 sm:h-9 px-3 sm:px-4 border-border hover:border-primary/40 transition-colors bg-background font-bold text-[10px] sm:text-xs cursor-pointer">
+                  <Badge variant="outline" className="h-7 sm:h-8 px-3 border-border hover:border-primary/40 transition-colors bg-background font-bold text-[10px] sm:text-xs cursor-pointer">
                     + {tool.name}
                   </Badge>
                 </Link>

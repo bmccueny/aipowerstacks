@@ -87,6 +87,11 @@ export default async function HomePage() {
               <p className="mt-5 text-[11px] text-muted-foreground/60 tracking-wide">
                 Free forever · No credit card · Updated daily
               </p>
+              {siteStats.userCount > 0 && (
+                <p className="mt-2 text-[11px] text-muted-foreground/40 tracking-wide">
+                  Joined by {siteStats.userCount}+ users tracking ${Math.round(siteStats.trackedSpend).toLocaleString()}/mo in AI spend
+                </p>
+              )}
             </div>
             {/* Right — Stats grid */}
             <div className="hidden lg:grid grid-cols-2 gap-3 pt-6">
@@ -195,8 +200,8 @@ export default async function HomePage() {
         {/* ═══ CTA with demo ═══ */}
         <section className="px-4 max-w-4xl mx-auto w-full">
           <div className="rounded-3xl bg-[#1C1C1E] dark:bg-card dark:border dark:border-border p-6 sm:p-12 overflow-hidden">
-            <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] gap-8 lg:gap-12 items-center">
-              <div>
+            <div className="flex flex-col lg:flex-row lg:items-center gap-8 lg:gap-12">
+              <div className="lg:flex-1">
                 <h2 className="text-[clamp(1.75rem,4vw,2.5rem)] font-bold tracking-[-0.02em] text-white dark:text-foreground leading-[1.1]">
                   Find out which tools to cancel.
                 </h2>
@@ -210,7 +215,7 @@ export default async function HomePage() {
                   </Button>
                 </AuthCTALink>
               </div>
-              <div className="hidden lg:block rounded-xl overflow-hidden border border-white/10">
+              <div className="hidden lg:block lg:flex-[1.1] rounded-xl overflow-hidden border border-white/10">
                 <Image
                   src="/demo.gif"
                   alt="Demo: adding AI tools and seeing monthly spend with annual savings"
