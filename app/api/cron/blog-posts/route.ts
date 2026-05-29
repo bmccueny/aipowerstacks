@@ -1158,7 +1158,22 @@ export async function GET(request: Request) {
     }
 
     // Catch any tool mentions the AI prompt missed
-    const linkedContent = await addInternalLinks(post.content)
+    let linkedContent = await addInternalLinks(post.content)
+
+    // Sanitize AI-generated /blog/ links: fix spaces, strip hallucinated targets
+    const validBlogSlugs = new Set(siblingPosts.map((p) => p.slug))
+    const validClusterSlugs = new Set(BLOG_CLUSTERS.map((c) => c.slug))
+    linkedContent = linkedContent.replace(
+      /href="\/blog\/([^"#?]+)"/g,
+      (_match: string, rawSlug: string) => {
+        const slug = rawSlug.replace(/ /g, '-')
+        if (validBlogSlugs.has(slug) || validClusterSlugs.has(slug)) {
+          return `href="/blog/${slug}"`
+        }
+        // Link target doesn't exist — redirect to cluster hub instead of 404
+        return `href="/blog/${cluster.slug}"`
+      }
+    )
 
     // 8. Dedup gate: reject posts too similar to recent ones
     const dupCheck = await isTitleTooSimilar(supabase, post.title)
