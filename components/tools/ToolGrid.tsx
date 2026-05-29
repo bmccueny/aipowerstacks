@@ -30,8 +30,9 @@ export function ToolGrid({ tools, view = 'grid', loading = false, cardStyle = 'd
       <EmptyState
         icon={SearchX}
         title="No tools found"
-        description="Try adjusting your search or filters."
-        action={{ label: 'Submit a tool', href: '/submit' }}
+        description="Try adjusting your search or filters, or browse all tools."
+        action={{ label: 'Browse all tools', href: '/tools' }}
+        secondaryAction={{ label: 'Submit a tool', href: '/submit' }}
       />
     )
   }

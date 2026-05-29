@@ -456,6 +456,16 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
         <BudgetBar totalSpend={total} isLoggedIn={clientLoggedIn} />
       )}
 
+      {/* Onboarding hint for first-time users */}
+      {effectiveCount === 0 && !selectedTool && (
+        <div className="rounded-2xl border-2 border-dashed border-primary/20 p-6 text-center">
+          <p className="text-sm font-bold mb-1">Start by adding your first AI tool</p>
+          <p className="text-xs text-muted-foreground max-w-sm mx-auto">
+            Search below or tap a popular tool. We&apos;ll find overlaps, flag cheaper alternatives, and show your total spend.
+          </p>
+        </div>
+      )}
+
       {/* Add subscription */}
       <TrackerToolSearch
         tools={tools}

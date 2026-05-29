@@ -81,6 +81,9 @@ export default async function MatchmakerResultsPage({ searchParams }: Props) {
     .map(s => (tools ?? []).find(t => t.slug === s))
     .filter(Boolean) as NonNullable<typeof tools>[number][]
 
+  const freeCount = orderedTools.filter(t => t.pricing_model === 'free').length
+  const paidCount = orderedTools.length - freeCount
+
   return (
     <>
       <Navbar />
@@ -101,9 +104,28 @@ export default async function MatchmakerResultsPage({ searchParams }: Props) {
               </h1>
             )}
             <p className="text-muted-foreground">
-              Matched by the AIPowerStacks AI Matchmaker. Try it yourself.
+              Matched by the AIPowerStacks AI Matchmaker based on compatibility and coverage.
             </p>
           </div>
+
+          {q && (
+            <div className="glass-card rounded-xl p-5 mb-6 border border-primary/10">
+              <p className="text-xs font-bold uppercase tracking-widest text-primary mb-2">Why these tools?</p>
+              <p className="text-sm text-muted-foreground leading-relaxed mb-3">
+                We analyzed your goal &mdash; &ldquo;{q}&rdquo; &mdash; and selected {orderedTools.length} tools
+                that cover different parts of the workflow without overlapping.
+                {freeCount > 0 && paidCount > 0 && ` ${freeCount} free + ${paidCount} paid.`}
+                {freeCount === orderedTools.length && ' All free tools.'}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {orderedTools.map(t => (
+                  <span key={t.id} className="text-xs font-semibold px-2 py-0.5 rounded-md bg-muted">
+                    {t.name} &middot; {PRICING_LABELS[t.pricing_model ?? ''] ?? 'Unknown'}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="space-y-3 mb-10">
             {orderedTools.map((tool, i) => (
@@ -137,9 +159,15 @@ export default async function MatchmakerResultsPage({ searchParams }: Props) {
                 <Sparkles className="h-4 w-4" /> Track These in My Budget
               </Button>
             </Link>
-            <p className="text-xs text-muted-foreground">
-              Powered by AIPowerStacks AI Matchmaker
-            </p>
+            <div className="flex items-center justify-center gap-4">
+              <Link href="/matchmaker" className="text-sm font-semibold text-primary hover:text-primary/80 transition-colors">
+                Try another search
+              </Link>
+              <span className="text-muted-foreground/30">|</span>
+              <p className="text-xs text-muted-foreground">
+                Powered by AIPowerStacks AI Matchmaker
+              </p>
+            </div>
           </div>
 
           {/* ═══ Newsletter opt-in ═══ */}

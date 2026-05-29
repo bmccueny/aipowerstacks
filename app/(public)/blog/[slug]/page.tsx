@@ -351,22 +351,6 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
               </div>
             </div>
 
-            {/* Share bar */}
-            <div className="glass-card rounded-2xl p-5 mb-8 flex items-center justify-between gap-4">
-              <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Share this article</span>
-              <div className="flex items-center gap-2">
-                <a href={shareLinks.x} target="_blank" rel="noopener noreferrer" className="h-9 w-9 flex items-center justify-center rounded-full glass-card border border-border/30 text-muted-foreground hover:text-foreground hover:border-border transition-all hover:-translate-y-0.5">
-                  <XIcon className="h-3.5 w-3.5" />
-                </a>
-                <a href={shareLinks.linkedin} target="_blank" rel="noopener noreferrer" className="h-9 w-9 flex items-center justify-center rounded-full glass-card border border-border/30 text-muted-foreground hover:text-foreground hover:border-border transition-all hover:-translate-y-0.5">
-                  <LinkedInIcon className="h-3.5 w-3.5" />
-                </a>
-                <a href={shareLinks.facebook} target="_blank" rel="noopener noreferrer" className="h-9 w-9 flex items-center justify-center rounded-full glass-card border border-border/30 text-muted-foreground hover:text-foreground hover:border-border transition-all hover:-translate-y-0.5">
-                  <FacebookIcon className="h-3.5 w-3.5" />
-                </a>
-              </div>
-            </div>
-
             {/* Newsletter CTA */}
             <div className="glass-card rounded-2xl overflow-hidden mb-12 border border-primary/15">
               <div className="h-1 bg-gradient-to-r from-primary/40 via-primary to-primary/40" />
