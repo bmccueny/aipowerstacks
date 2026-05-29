@@ -87,7 +87,10 @@ export function ReviewForm({ toolId, onSuccess }: ReviewFormProps) {
         />
       </div>
       <div>
-        <label className="text-sm font-medium mb-1.5 block">Review (optional)</label>
+        <div className="flex items-center justify-between mb-1.5">
+          <label className="text-sm font-medium">Review (optional)</label>
+          <span className="text-xs text-muted-foreground tabular-nums">{body.length}/1000</span>
+        </div>
         <textarea
           value={body}
           onChange={(e) => setBody(e.target.value)}

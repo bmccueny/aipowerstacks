@@ -140,6 +140,7 @@ export default function SettingsPage() {
       setMessage('Settings saved.')
       window.dispatchEvent(new Event('profile-updated'))
       router.refresh()
+      setTimeout(() => setMessage(''), 3000)
     }
     setSaving(false)
   }

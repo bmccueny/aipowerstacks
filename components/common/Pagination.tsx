@@ -9,9 +9,10 @@ interface PaginationProps {
   page: number
   hasMore: boolean
   paramName?: string
+  totalPages?: number
 }
 
-export function Pagination({ page, hasMore, paramName = 'page' }: PaginationProps) {
+export function Pagination({ page, hasMore, paramName = 'page', totalPages }: PaginationProps) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
@@ -56,7 +57,9 @@ export function Pagination({ page, hasMore, paramName = 'page' }: PaginationProp
           </Link>
         </Button>
       )}
-      <span className="text-sm text-muted-foreground px-2">Page {page}</span>
+      <span className="text-sm text-muted-foreground px-2">
+        Page {page}{totalPages ? ` of ${totalPages}` : ''}
+      </span>
       {!hasMore ? (
         <Button
           variant="outline"

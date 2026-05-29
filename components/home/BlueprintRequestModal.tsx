@@ -40,8 +40,7 @@ export function BlueprintRequestModal({ children }: { children: React.ReactNode 
         setEmail('')
         setGoal('')
       }, 3000)
-    } catch (err) {
-      console.error(err)
+    } catch {
       alert('Something went wrong. Please try again.')
     } finally {
       setLoading(false)

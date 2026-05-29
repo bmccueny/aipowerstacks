@@ -98,8 +98,7 @@ export function AvatarUpload({ userId, displayName, username, initialAvatarUrl, 
       .eq('id', userId)
 
     if (error) throw error
-    // Refresh the page to show changes globally
-    window.location.reload()
+    window.dispatchEvent(new Event('profile-updated'))
   }
 
   const initials = (displayName || username || 'U')[0].toUpperCase()

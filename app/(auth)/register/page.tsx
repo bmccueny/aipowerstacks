@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { Loader2, Eye, EyeOff, ArrowRight } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
@@ -62,17 +62,38 @@ export default function RegisterPage() {
     })
   }
 
+  const [resending, setResending] = useState(false)
+  const [resent, setResent] = useState(false)
+
+  const handleResend = useCallback(async () => {
+    setResending(true)
+    const supabase = createClient()
+    await supabase.auth.resend({ type: 'signup', email })
+    setResending(false)
+    setResent(true)
+  }, [email])
+
   if (success) {
     return (
       <div className="w-full max-w-md mx-auto py-12 px-4 space-y-8 text-center">
         <div className="mx-auto h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
           <span className="text-2xl">✉️</span>
         </div>
-        <div className="bg-card border border-border rounded-2xl p-8">
-          <h2 className="text-[22px] font-bold tracking-tight mb-4">Check your email</h2>
+        <div className="bg-card border border-border rounded-2xl p-8 space-y-4">
+          <h2 className="text-[22px] font-bold tracking-tight">Check your email</h2>
           <p className="text-[15px] text-muted-foreground max-w-sm mx-auto">
             We sent a confirmation link to <strong className="text-foreground">{email}</strong>. Click it to activate your account.
           </p>
+          <p className="text-[13px] text-muted-foreground">
+            Check your spam folder if you don&apos;t see it within a few minutes.
+          </p>
+          <button
+            onClick={handleResend}
+            disabled={resending || resent}
+            className="text-[13px] font-semibold text-primary hover:text-primary/80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            {resent ? 'Email resent!' : resending ? 'Resending...' : 'Didn\u2019t receive it? Resend email'}
+          </button>
         </div>
         <Link
           href="/login"
@@ -144,7 +165,7 @@ export default function RegisterPage() {
               required
               aria-label="Full name"
               autoComplete="name"
-              className="w-full h-12 px-4 bg-background border border-border rounded-xl text-[15px] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 placeholder:text-muted-foreground transition-all"
+              className="w-full h-12 px-4 bg-background border border-border dark:border-foreground/20 rounded-xl text-[15px] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 placeholder:text-muted-foreground transition-all"
             />
           </div>
 
@@ -161,7 +182,7 @@ export default function RegisterPage() {
                 required
                 aria-label="Username"
                 autoComplete="username"
-                className="w-full h-12 pl-9 pr-4 bg-background border border-border rounded-xl text-[15px] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 placeholder:text-muted-foreground transition-all"
+                className="w-full h-12 pl-9 pr-4 bg-background border border-border dark:border-foreground/20 rounded-xl text-[15px] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 placeholder:text-muted-foreground transition-all"
               />
             </div>
           </div>
@@ -177,7 +198,7 @@ export default function RegisterPage() {
               required
               aria-label="Email address"
               autoComplete="email"
-              className="w-full h-12 px-4 bg-background border border-border rounded-xl text-[15px] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 placeholder:text-muted-foreground transition-all"
+              className="w-full h-12 px-4 bg-background border border-border dark:border-foreground/20 rounded-xl text-[15px] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 placeholder:text-muted-foreground transition-all"
             />
           </div>
 
@@ -194,7 +215,7 @@ export default function RegisterPage() {
                 minLength={8}
                 aria-label="Password"
                 autoComplete="new-password"
-                className="w-full h-12 px-4 pr-12 bg-background border border-border rounded-xl text-[15px] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 placeholder:text-muted-foreground transition-all"
+                className="w-full h-12 px-4 pr-12 bg-background border border-border dark:border-foreground/20 rounded-xl text-[15px] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 placeholder:text-muted-foreground transition-all"
               />
               <button
                 type="button"
