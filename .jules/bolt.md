@@ -1,0 +1,3 @@
+## 2024-06-02 - O(N*M) array mapping in frequently rendering components
+**Learning:** In components with frequent state updates (like `CostCalculator` which has a text search input rendering on every keystroke), running array operations that depend on large props (like `.map` and `.find` over a list of 490+ tools) causes severe main-thread blocking. A simple calculation over a 20-item array cross-referencing a 500-item array performs 10,000 checks *per keystroke*.
+**Action:** Always watch out for any `O(N*M)` array manipulations running unconditionally in the component body. Wrap derivations of large props or complex array manipulation in `useMemo` specifically when the component mounts inputs that trigger fast re-renders.
