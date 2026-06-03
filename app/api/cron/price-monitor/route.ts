@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { fromTable } from '@/lib/supabase/untyped'
-import { Resend } from 'resend'
 import { SITE_URL } from '@/lib/constants/site'
 import { callClaude } from '@/lib/utils/anthropic'
 
@@ -268,68 +267,17 @@ export async function GET(request: Request) {
     await new Promise(r => setTimeout(r, 2000))
   }
 
-  // 5. Send alerts if changes found
-  let emailsSent = 0
-  if (allChanges.length > 0 && process.env.RESEND_API_KEY) {
-    const resend = new Resend(process.env.RESEND_API_KEY)
+  // 5. User email alerts disabled — price data is collected but no emails sent
+  // Re-enable when user notification preferences are implemented
+  const emailsSent = 0
 
-    // Find users who track tools with price changes
-    const changedToolIds = [...new Set(allChanges.map(c => c.tool_id))]
-    const { data: affectedSubs } = await supabase
-      .from('user_subscriptions')
-      .select('user_id, tool_id')
-      .in('tool_id', changedToolIds)
-
-    // Group changes by user
-    const changesByUser = new Map<string, PriceChange[]>()
-    for (const sub of affectedSubs ?? []) {
-      const userChanges = allChanges.filter(c => c.tool_id === sub.tool_id)
-      if (userChanges.length === 0) continue
-      const existing = changesByUser.get(sub.user_id) || []
-      existing.push(...userChanges)
-      changesByUser.set(sub.user_id, existing)
-    }
-
-    // Deduplicate changes per user (same tool+tier)
-    for (const [userId, changes] of changesByUser) {
-      const seen = new Set<string>()
-      const deduped = changes.filter(c => {
-        const key = `${c.tool_id}:${c.tier_name}`
-        if (seen.has(key)) return false
-        seen.add(key)
-        return true
+  // 6. Log changes to price history
+  for (const change of allChanges) {
+    await fromTable(supabase, 'tool_price_history')
+      .insert({
+        tool_id: change.tool_id,
+        price: change.new_price,
       })
-      changesByUser.set(userId, deduped)
-    }
-
-    // Send emails
-    for (const [userId, userChanges] of changesByUser) {
-      const { data: { user } } = await supabase.auth.admin.getUserById(userId)
-      if (!user?.email) continue
-
-      const { subject, html } = buildAlertEmail(userChanges)
-
-      try {
-        await resend.emails.send({
-          from: 'AIPowerStacks <alerts@aipowerstacks.com>',
-          to: user.email,
-          subject,
-          html,
-        })
-        emailsSent++
-      } catch {
-        // Email send failed, continue
-      }
-    }
-
-    // 6. Log changes to price history
-    for (const change of allChanges) {
-      await fromTable(supabase, 'tool_price_history')
-        .insert({
-          tool_id: change.tool_id,
-          price: change.new_price,
-        })
-    }
   }
 
   return NextResponse.json({

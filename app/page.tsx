@@ -70,9 +70,9 @@ export default async function HomePage() {
                 <br />
                 <span className="text-primary">AI</span> costing you?
               </h1>
-              <p className="mt-6 text-[1.125rem] text-muted-foreground leading-[1.6] max-w-[44ch]">
+              <p className="mt-6 sm:mt-6 text-[1.125rem] text-muted-foreground leading-[1.7] max-w-[44ch]">
                 Track your AI subscriptions. See what overlaps.
-                <br className="hidden sm:block" />
+                <br />
                 Cut what you don&apos;t need.
               </p>
               <div className="mt-8">
