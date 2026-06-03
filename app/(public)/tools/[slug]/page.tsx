@@ -261,7 +261,7 @@ export default async function ToolDetailPage({ params }: Props) {
                   </Badge>
                 )}
               </div>
-              <p className="text-muted-foreground leading-relaxed">{tool.description}</p>
+              <p className="text-muted-foreground leading-relaxed break-words">{tool.description}</p>
             </div>
 
             {showProsConsSection && (
@@ -682,7 +682,7 @@ export default async function ToolDetailPage({ params }: Props) {
       {/* Related Pages — internal links for SEO */}
       <RelatedPages toolSlug={tool.slug} categorySlug={tool.categories?.slug ?? null} alternatives={alternatives} />
 
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-[60] border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/85 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
+      <div className="lg:hidden fixed bottom-[calc(49px+env(safe-area-inset-bottom,0px))] left-0 right-0 z-40 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/85 p-3">
         <div className="flex items-center gap-2">
           <OutboundLink href={outboundHref} toolName={tool.name} toolSlug={tool.slug} placement="mobile-bar" className="flex-1">
             <Button className="w-full h-11 gap-2">

@@ -164,7 +164,7 @@ export function CommandPalette() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent
         showCloseButton={false}
-        className="!p-0 gap-0 max-w-xl sm:max-w-xl top-[30%] sm:top-[35%] bg-background/95 backdrop-blur-xl border-border/50"
+        className="!p-0 gap-0 max-w-xl sm:max-w-xl top-4 sm:top-[35%] bg-background/95 backdrop-blur-xl border-border/50"
       >
         <DialogTitle className="sr-only">Search tools</DialogTitle>
 
@@ -178,7 +178,7 @@ export function CommandPalette() {
             onChange={(e) => handleQueryChange(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Search tools..."
-            className="flex-1 h-12 bg-transparent text-sm outline-none placeholder:text-muted-foreground/60"
+            className="flex-1 h-12 bg-transparent text-base sm:text-sm outline-none placeholder:text-muted-foreground/60"
             autoComplete="off"
             spellCheck={false}
           />

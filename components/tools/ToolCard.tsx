@@ -264,7 +264,7 @@ function ToolCardList({ tool, pricingColor, pricingLabel, isWellFavored, imageEr
       <div className="h-12 w-12 shrink-0 rounded-md bg-muted overflow-hidden flex items-center justify-center">
         <ToolCardLogo logoUrl={tool.logo_url} name={tool.name} size={48} compact={compact} imageError={imageError} onError={() => setImageError(true)} />
       </div>
-      <div className="flex-1 min-w-[180px]">
+      <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
           <Link
             href={`/tools/${tool.slug}`}

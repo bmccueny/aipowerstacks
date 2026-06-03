@@ -43,7 +43,7 @@ export function CompareHeader({ tools, slugs, emptySlots, highestRatingIdx, onRe
               {/* Remove X */}
               <button
                 onClick={() => onRemoveTool(tool.slug)}
-                className="absolute top-1.5 right-1.5 h-5 w-5 sm:h-6 sm:w-6 rounded flex items-center justify-center text-muted-foreground/30 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-all sm:opacity-0 sm:group-hover:opacity-100 z-10"
+                className="absolute top-1.5 right-1.5 h-6 w-6 rounded flex items-center justify-center text-muted-foreground/50 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-all [@media(pointer:fine)]:opacity-0 [@media(pointer:fine)]:group-hover:opacity-100 z-10"
                 title={`Remove ${tool.name}`}
               >
                 <X className="h-2.5 w-2.5 sm:h-3 sm:w-3" />

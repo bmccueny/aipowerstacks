@@ -298,7 +298,7 @@ export function Navbar() {
         aria-modal="true"
         onKeyDown={(e) => { if (e.key === 'Escape') setMobileOpen(false) }}
         className={cn(
-          'fixed inset-0 z-40 md:hidden transition-all duration-300',
+          'fixed inset-0 z-[55] md:hidden transition-all duration-300',
           mobileOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
         )}
       >

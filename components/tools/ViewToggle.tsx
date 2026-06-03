@@ -21,7 +21,7 @@ export function ViewToggle() {
       <Button
         variant={view === 'grid' ? 'secondary' : 'ghost'}
         size="icon"
-        className="h-7 w-7"
+        className="h-9 w-9"
         onClick={() => setView('grid')}
         aria-label="Grid view"
         aria-pressed={view === 'grid'}
@@ -31,7 +31,7 @@ export function ViewToggle() {
       <Button
         variant={view === 'list' ? 'secondary' : 'ghost'}
         size="icon"
-        className="h-7 w-7"
+        className="h-9 w-9"
         onClick={() => setView('list')}
         aria-label="List view"
         aria-pressed={view === 'list'}

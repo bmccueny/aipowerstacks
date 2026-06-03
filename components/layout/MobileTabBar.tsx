@@ -36,7 +36,7 @@ export function MobileTabBar() {
               key={tab.href}
               href={tab.href}
               className={cn(
-                'flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition-colors',
+                'flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition-colors active:opacity-70',
                 active ? 'text-primary' : 'text-[#8E8E93]'
               )}
             >
