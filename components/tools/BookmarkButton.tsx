@@ -87,21 +87,31 @@ export function BookmarkButton({ toolId }: { toolId: string }) {
     }
 
     // Authed: use API
-    if (bookmarked) {
-      await fetch(`/api/bookmarks?toolId=${toolId}`, { method: 'DELETE' })
-      setBookmarked(false)
-    } else {
-      const res = await fetch('/api/bookmarks', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ toolId }),
-      })
-      if (res.ok) {
-        setBookmarked(true)
-        setJustBookmarked(true)
-        if (popTimeoutRef.current) clearTimeout(popTimeoutRef.current)
-        popTimeoutRef.current = setTimeout(() => setJustBookmarked(false), 350)
+    try {
+      if (bookmarked) {
+        const res = await fetch(`/api/bookmarks?toolId=${toolId}`, { method: 'DELETE' })
+        if (res.ok) {
+          setBookmarked(false)
+        } else {
+          toast.error('Failed to remove bookmark')
+        }
+      } else {
+        const res = await fetch('/api/bookmarks', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ toolId }),
+        })
+        if (res.ok) {
+          setBookmarked(true)
+          setJustBookmarked(true)
+          if (popTimeoutRef.current) clearTimeout(popTimeoutRef.current)
+          popTimeoutRef.current = setTimeout(() => setJustBookmarked(false), 350)
+        } else {
+          toast.error('Failed to save bookmark')
+        }
       }
+    } catch {
+      toast.error('Something went wrong')
     }
     setLoading(false)
   }

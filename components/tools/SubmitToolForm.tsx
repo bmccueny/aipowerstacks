@@ -57,23 +57,29 @@ export function SubmitToolForm({
     setLoading(true)
     setError('')
 
-    const res = await fetch('/api/submit', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
-    })
+    try {
+      const res = await fetch('/api/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      })
 
-    const data = await res.json()
-    if (!res.ok) {
-      if (res.status === 401 && typeof window !== 'undefined') {
-        const redirectTo = `${window.location.pathname}${window.location.search}`
-        window.location.href = `/login?redirectTo=${encodeURIComponent(redirectTo)}`
-        return
-      }
-      setError(typeof data.error === 'string' ? data.error : 'Validation failed. Check all required fields.')
-      setLoading(false)
+      const data = await res.json()
+      if (!res.ok) {
+        if (res.status === 401 && typeof window !== 'undefined') {
+          const redirectTo = `${window.location.pathname}${window.location.search}`
+          window.location.href = `/login?redirectTo=${encodeURIComponent(redirectTo)}`
+          return
+        }
+        setError(typeof data.error === 'string' ? data.error : 'Validation failed. Check all required fields.')
+        setLoading(false)
     } else {
       setSubmitted(true)
+    }
+    } catch {
+      setError('Network error — please try again.')
+    } finally {
+      setLoading(false)
     }
   }
 

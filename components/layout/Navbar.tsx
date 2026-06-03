@@ -118,7 +118,7 @@ export function Navbar() {
                 <div className="relative">
                   <BrandMark className="h-8 w-8 transition-transform duration-200 group-hover:scale-110" />
                 </div>
-                <span className="text-lg tracking-tight text-gray-900 dark:text-white hover:text-gray-700 dark:hover:text-gray-200 transition-colors duration-200">
+                <span className="text-lg tracking-tight text-foreground hover:text-foreground/80 transition-colors duration-200">
                   <span className="text-primary font-extrabold">AI</span><span className="font-normal">PowerStacks</span>
                 </span>
               </Link>

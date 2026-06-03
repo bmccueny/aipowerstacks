@@ -158,6 +158,11 @@ export function AiAgentLoading() {
           0%, 100% { opacity: 0.2; transform: scale(1); }
           50% { opacity: 0.5; transform: scale(1.1); }
         }
+        @media (prefers-reduced-motion: reduce) {
+          .node-flash, .line-flow, .floating, .pulse-slow {
+            animation: none !important;
+          }
+        }
       `}</style>
     </div>
   )

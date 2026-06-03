@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { callClaude } from '@/lib/utils/anthropic'
+import { rateLimit, getClientIp } from '@/lib/rate-limit'
 
 export const maxDuration = 30
 
@@ -11,6 +12,10 @@ interface AdvisorRequest {
 }
 
 export async function POST(request: Request) {
+  const ip = getClientIp(request)
+  const { success } = rateLimit(`stack-advisor:${ip}`, 10, 60_000)
+  if (!success) return NextResponse.json({ error: 'Rate limited' }, { status: 429 })
+
   const body = await request.json() as AdvisorRequest
   const { role, budget, priorities = [] } = body
 

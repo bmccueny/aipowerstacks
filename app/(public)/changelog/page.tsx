@@ -69,8 +69,8 @@ export default async function ChangelogPage() {
   ])
 
   // Fetch tool names for reviews
-  const reviewToolIds = [...new Set((reviews ?? []).map(r => r.tool_id).filter(Boolean))]
-  const reviewUserIds = [...new Set((reviews ?? []).map(r => r.user_id).filter(Boolean))]
+  const reviewToolIds = [...new Set((reviews ?? []).map(r => r.tool_id).filter((id): id is string => id != null))]
+  const reviewUserIds = [...new Set((reviews ?? []).map(r => r.user_id).filter((id): id is string => id != null))]
 
   type ReviewTool = { id: string; name: string; slug: string }
   type ReviewProfile = { id: string; display_name: string | null }

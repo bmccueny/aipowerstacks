@@ -27,7 +27,6 @@ type VsTool = {
   has_sso: boolean
   trains_on_data: boolean
   model_provider: string | null
-  is_api_wrapper: boolean
   use_cases: string[] | null
   use_case: string | null
   target_audience: string | null
@@ -43,7 +42,7 @@ type VsTool = {
 }
 
 const TOOL_SELECT =
-  'id, name, slug, tagline, logo_url, website_url, pricing_model, avg_rating, review_count, is_verified, is_open_source, has_api, has_mobile_app, has_sso, trains_on_data, model_provider, is_api_wrapper, use_cases, use_case, target_audience, team_size, integrations, deployment_type, time_to_value, pros, cons, pricing_tags, pricing_details, categories:category_id(name, slug)'
+  'id, name, slug, tagline, logo_url, website_url, pricing_model, avg_rating, review_count, is_verified, is_open_source, has_api, has_mobile_app, has_sso, trains_on_data, model_provider, use_cases, use_case, target_audience, team_size, integrations, deployment_type, time_to_value, pros, cons, pricing_tags, pricing_details, categories:category_id(name, slug)'
 
 const USE_CASE_LABELS: Record<string, string> = {
   coding: 'Coding',

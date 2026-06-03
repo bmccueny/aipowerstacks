@@ -353,7 +353,7 @@ export default async function StacksPage({
         <Zap className="h-8 w-8 text-primary mx-auto mb-3" />
         <h2 className="text-xl font-bold mb-2">Build your own Power Stack</h2>
         <p className="text-muted-foreground text-sm mb-5 max-w-sm mx-auto">
-          Curate your favourite AI tools into a shareable stack. Share it with the world.
+          Curate your favorite AI tools into a shareable stack. Share it with the world.
         </p>
         <Link
           href="/dashboard"

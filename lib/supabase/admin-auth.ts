@@ -18,7 +18,9 @@ export async function requireRole(role: UserRole = 'admin') {
     .from('profiles')
     .select('role')
     .eq('id', user.id)
-    .single()
+    .maybeSingle()
+
+  if (!data) return { user: null, error: NextResponse.json({ error: 'Profile not found' }, { status: 403 }) }
 
   const userRole = (data as { role: string } | null)?.role
   const allowed = role === 'admin' ? userRole === 'admin'

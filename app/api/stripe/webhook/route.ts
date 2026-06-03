@@ -37,6 +37,10 @@ export async function POST(req: NextRequest) {
         console.error('Stripe webhook: failed to feature tool', toolSlug, error.message)
         return NextResponse.json({ error: 'Database update failed' }, { status: 500 })
       }
+    } else if (session.metadata?.plan === 'pro' && session.metadata?.userId) {
+      // TODO: Add a `plan` column to `profiles` table, then uncomment:
+      // await supabase.from('profiles').update({ plan: 'pro' }).eq('id', session.metadata.userId)
+      console.log('Stripe webhook: pro plan checkout completed for user', session.metadata.userId)
     }
   }
 

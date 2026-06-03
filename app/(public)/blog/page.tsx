@@ -5,6 +5,7 @@ import { BLOG_PAGE_SIZE } from '@/lib/constants'
 import { BlogCard } from '@/components/blog/BlogCard'
 import { NewsletterBanner } from '@/components/layout/NewsletterBanner'
 import { Pagination } from '@/components/common/Pagination'
+import { Suspense } from 'react'
 import type { Metadata } from 'next'
 import { Sparkles } from 'lucide-react'
 import { JsonLd } from '@/components/common/JsonLd'
@@ -98,7 +99,9 @@ export default async function BlogPage({
 
       {totalPages > 1 && (
         <div className="mt-10">
-          <Pagination page={page} hasMore={page < totalPages} />
+          <Suspense fallback={<div className="h-10 w-64 animate-pulse rounded-lg bg-muted/40 mx-auto" />}>
+            <Pagination page={page} hasMore={page < totalPages} />
+          </Suspense>
         </div>
       )}
 

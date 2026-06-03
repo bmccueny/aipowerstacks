@@ -3,6 +3,7 @@ import Anthropic from '@anthropic-ai/sdk'
 import { getMatchedTools } from '@/lib/supabase/queries/tools'
 import { getQueryEmbedding } from '@/lib/ai/embeddings'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { rateLimit, getClientIp } from '@/lib/rate-limit'
 import {
   analyzeIntent,
   buildContextualStack,
@@ -47,6 +48,10 @@ async function selectStackWithClaude(message: string, pool: Record<string, unkno
 }
 
 export async function POST(req: NextRequest) {
+  const ip = getClientIp(req)
+  const { success } = rateLimit(`matchmaker:${ip}`, 10, 60_000)
+  if (!success) return NextResponse.json({ error: 'Rate limited' }, { status: 429 })
+
   try {
     const { message } = await req.json()
     if (!message?.trim()) return NextResponse.json({ tools: [], explanation: '' })

@@ -436,70 +436,51 @@ function ToolCardGrid({ tool, pricingColor, pricingLabel, screenshotUrl, isWellF
       onMouseEnter={() => setHasBeenHovered(true)}
       className="relative card-directory h-full flex flex-col group"
     >
-      {/* Top bar: pricing badge right-aligned */}
-      <div className="px-5 pt-4 flex items-center justify-end gap-2 relative z-10">
-        <Link href={`/tools?pricing=${tool.pricing_model}`} onClick={(e) => e.stopPropagation()}>
-          <span className={cn('text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full border hover:opacity-80 transition-opacity cursor-pointer', pricingColor)}>
-            {tool.pricing_tags && tool.pricing_tags.length > 0 ? tool.pricing_tags[0] : pricingLabel}
-          </span>
-        </Link>
-      </div>
-
-      <div className="px-5 pb-5 flex flex-col gap-3 flex-1">
-        {/* Logo + name + rating */}
-        <div className="flex items-start gap-4">
-          <div className="h-14 w-14 shrink-0 rounded-md bg-muted/30 overflow-hidden flex items-center justify-center relative z-10">
+      <div className="px-4 py-3 sm:px-5 sm:py-4 flex flex-col gap-2 sm:gap-3 flex-1">
+        {/* Logo + name + rating + pricing */}
+        <div className="flex items-start gap-3">
+          <div className="h-11 w-11 sm:h-14 sm:w-14 shrink-0 rounded-md bg-muted/30 overflow-hidden flex items-center justify-center relative z-10">
             <ToolCardLogo logoUrl={tool.logo_url} name={tool.name} size={56} compact={compact} imageError={imageError} onError={() => setImageError(true)} />
           </div>
-          <div className="flex-1 min-w-0 pt-0.5">
+          <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1.5">
               <Link
                 href={`/tools/${tool.slug}`}
-                className="font-bold text-[18px] leading-[1.3] line-clamp-2 after:absolute after:inset-0 after:z-0"
+                className="font-bold text-[16px] sm:text-[18px] leading-[1.3] line-clamp-1 after:absolute after:inset-0 after:z-0"
               >
                 {tool.name}
               </Link>
               {tool.is_verified && <VerifiedBadge size="sm" className="relative z-10 shrink-0" />}
             </div>
-            {/* Rating */}
-            <div className="mt-1 flex items-center gap-1.5 relative z-10">
+            <div className="mt-0.5 flex items-center gap-1.5 relative z-10">
               {tool.avg_rating > 0 ? (
                 <>
-                  <Star className="h-4 w-4 fill-primary text-primary shrink-0" />
-                  <span className="text-[15px] font-bold leading-none">{tool.avg_rating.toFixed(1)}</span>
-                  <span className="text-[12px] text-muted-foreground">({tool.review_count})</span>
+                  <Star className="h-3.5 w-3.5 fill-primary text-primary shrink-0" />
+                  <span className="text-[13px] font-bold leading-none">{tool.avg_rating.toFixed(1)}</span>
+                  <span className="text-[11px] text-muted-foreground">({tool.review_count})</span>
                 </>
               ) : (
-                <span className="text-[12px] text-muted-foreground/50">No reviews yet</span>
+                <span className="text-[11px] text-muted-foreground/50">No reviews yet</span>
               )}
+              <Link href={`/tools?pricing=${tool.pricing_model}`} onClick={(e) => e.stopPropagation()}>
+                <span className={cn('text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border hover:opacity-80 transition-opacity cursor-pointer', pricingColor)}>
+                  {tool.pricing_tags && tool.pricing_tags.length > 0 ? tool.pricing_tags[0] : pricingLabel}
+                </span>
+              </Link>
             </div>
           </div>
         </div>
 
-        <p className="text-[14px] text-muted-foreground line-clamp-2 leading-[1.5] relative z-10">{tool.tagline}</p>
-
-        {/* Single most relevant badge — keep cards clean */}
-        <div className="flex flex-wrap gap-1 items-center relative z-10">
-          {tool.use_case && USE_CASE_LABELS[tool.use_case] && (
-            <Link href={`/tools?use_case=${tool.use_case}`} onClick={(e) => e.stopPropagation()} className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border badge-use-case hover:opacity-80 transition-opacity cursor-pointer">
-              {USE_CASE_LABELS[tool.use_case]}
-            </Link>
-          )}
-          {tool.is_open_source && (
-            <Link href="/tools?open_source=true" onClick={(e) => e.stopPropagation()} className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border badge-oss hover:opacity-80 transition-opacity cursor-pointer">
-              Open Source
-            </Link>
-          )}
-        </div>
+        <p className="text-[13px] sm:text-[14px] text-muted-foreground line-clamp-2 leading-[1.45] relative z-10">{tool.tagline}</p>
 
         {/* Footer: Track + Compare */}
-        <div className="flex items-center gap-2 mt-auto pt-3 border-t border-border relative z-10" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center gap-2 mt-auto pt-2 sm:pt-3 border-t border-border relative z-10" onClick={(e) => e.stopPropagation()}>
           <Link
             href={`/tracker?add=${tool.slug}`}
-            className="flex-1 h-9 flex items-center justify-center gap-1.5 text-xs font-semibold rounded-lg border border-border bg-background hover:bg-primary hover:text-white hover:border-primary transition-all duration-150"
+            className="flex-1 h-8 sm:h-9 flex items-center justify-center gap-1.5 text-xs font-semibold rounded-lg border border-border bg-background hover:bg-primary hover:text-white hover:border-primary transition-all duration-150"
           >
             <DollarSign className="h-3.5 w-3.5" />
-            Track This
+            Track
           </Link>
           <AddToCompareButton slug={tool.slug} name={tool.name} iconOnly />
         </div>

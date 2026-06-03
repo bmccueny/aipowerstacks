@@ -2,10 +2,11 @@ import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { createHmac } from 'crypto'
 
-const SECRET = process.env.NEWSLETTER_UNSUB_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY || 'fallback-secret'
+const SECRET = process.env.NEWSLETTER_UNSUB_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY
 
 /** Generate a token for unsubscribe links — call this when building email HTML */
 export function generateUnsubToken(email: string): string {
+  if (!SECRET) throw new Error('NEWSLETTER_UNSUB_SECRET or SUPABASE_SERVICE_ROLE_KEY is required')
   return createHmac('sha256', SECRET).update(email).digest('hex').slice(0, 32)
 }
 
@@ -13,6 +14,13 @@ export async function GET(request: Request) {
   const url = new URL(request.url)
   const token = url.searchParams.get('token')
   const email = url.searchParams.get('email')
+
+  if (!SECRET) {
+    return new NextResponse(html('Server configuration error.', false), {
+      status: 500,
+      headers: { 'Content-Type': 'text/html' },
+    })
+  }
 
   const supabase = createAdminClient()
 
@@ -42,28 +50,9 @@ export async function GET(request: Request) {
     })
   }
 
-  // Legacy email-based unsubscribe (backward compat for already-sent emails)
-  if (!email) {
-    return new NextResponse(html('Missing unsubscribe parameter.', false), {
-      status: 400,
-      headers: { 'Content-Type': 'text/html' },
-    })
-  }
-
-  const { error } = await supabase
-    .from('newsletter_subscribers')
-    .update({ status: 'unsubscribed', unsubscribed_at: new Date().toISOString() })
-    .eq('email', email)
-
-  if (error) {
-    return new NextResponse(html('Something went wrong. Please try again later.', false), {
-      status: 500,
-      headers: { 'Content-Type': 'text/html' },
-    })
-  }
-
-  return new NextResponse(html('You have been unsubscribed. You will no longer receive emails from AIPowerStacks.', true), {
-    status: 200,
+  // Token is required — legacy ?email= path removed (was unauthenticated)
+  return new NextResponse(html('Missing or invalid unsubscribe token. Please use the link from your email.', false), {
+    status: 400,
     headers: { 'Content-Type': 'text/html' },
   })
 }

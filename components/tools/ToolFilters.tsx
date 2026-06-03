@@ -65,7 +65,7 @@ export function ToolFilters({ categories }: ToolFiltersProps) {
     ...FEATURE_FILTERS
       .filter(f => searchParams.get(f.param) === 'true')
       .map(f => ({ key: f.param, value: 'true', label: f.label })),
-  ].filter(Boolean) as { key: string; value: string; label: string }[]
+  ].filter((x): x is { key: string; value: string; label: string } => x != null)
 
   const hasSecondaryActive = !!(useCase || teamSize || integration || modelProvider || deploymentType)
 

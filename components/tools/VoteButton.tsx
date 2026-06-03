@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { ArrowUp } from 'lucide-react'
+import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 
 const keyForTool = (toolId: string) => `tool_vote_${toolId}`
@@ -49,7 +50,10 @@ export function VoteButton({
     const data = await res.json().catch(() => null)
     setLoading(false)
 
-    if (!res.ok) return
+    if (!res.ok) {
+      toast.error('Could not save your vote. Try again.')
+      return
+    }
 
     setVoted(true)
     if (typeof data?.upvoteCount === 'number') {

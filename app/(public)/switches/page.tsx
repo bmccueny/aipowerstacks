@@ -6,6 +6,16 @@ import { createAdminClient } from '@/lib/supabase/admin'
 export const metadata: Metadata = {
   title: 'Tool Switch Stories | What People Are Switching To',
   description: 'See what AI tools people are switching from and to, with reasons and satisfaction scores. Real decisions from real users.',
+  alternates: { canonical: '/switches' },
+  openGraph: {
+    title: 'Tool Switch Stories | What People Are Switching To',
+    description: 'See what AI tools people are switching from and to, with reasons and satisfaction scores.',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Tool Switch Stories | What People Are Switching To',
+    description: 'See what AI tools people are switching from and to, with reasons and satisfaction scores.',
+  },
 }
 
 export const revalidate = 300

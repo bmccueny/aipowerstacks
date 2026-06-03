@@ -9,9 +9,9 @@
     { "path": "/api/cron/stale-tools",      "schedule": "0 4 * * *"    },
     { "path": "/api/cron/editor-reviews",   "schedule": "0 9 * * *"    },
     { "path": "/api/cron/blog-posts?slot=morning", "schedule": "0 12 * * *" },
-    { "path": "/api/cron/blog-posts?slot=evening", "schedule": "0 2 * * *"  },
+    { "path": "/api/cron/blog-posts?slot=evening", "schedule": "5 2 * * *"  },
     { "path": "/api/cron/social-posts?slot=morning", "schedule": "0 13 * * *" },
-    { "path": "/api/cron/social-posts?slot=evening", "schedule": "0 3 * * *"  },
+    { "path": "/api/cron/social-posts?slot=evening", "schedule": "5 3 * * *"  },
     { "path": "/api/cron/newsletter",       "schedule": "0 9 * * 1"    },
     { "path": "/api/cron/product-hunt",    "schedule": "0 11 * * *"   },
     { "path": "/api/cron/price-monitor",     "schedule": "0 3 * * *"   },
@@ -19,6 +19,11 @@
     { "path": "/api/cron/monthly-snapshot",  "schedule": "0 6 1 * *"   },
     { "path": "/api/cron/tool-changelog",    "schedule": "0 14 * * *"  },
     { "path": "/api/cron/spend-report",      "schedule": "0 9 1 * *"   },
-    { "path": "/api/cron/pricing-snapshot", "schedule": "0 6 * * *"    }
+    { "path": "/api/cron/pricing-snapshot", "schedule": "0 7 * * *"    },
+    { "path": "/api/cron/ai-news",          "schedule": "0 */4 * * *"  },
+    { "path": "/api/cron/cleanup-news",     "schedule": "30 4 * * *"   },
+    { "path": "/api/cron/billing-reminders","schedule": "0 10 * * *"   },
+    { "path": "/api/cron/new-alternatives", "schedule": "0 15 * * *"   },
+    { "path": "/api/cron/price-alerts",     "schedule": "30 3 * * *"   }
   ]
 }

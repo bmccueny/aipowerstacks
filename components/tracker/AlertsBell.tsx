@@ -57,6 +57,8 @@ export function AlertsBell() {
       <button
         type="button"
         onClick={() => setOpen(!open)}
+        aria-expanded={open}
+        aria-haspopup="true"
         className="relative p-2 rounded-lg hover:bg-muted/60 transition-colors"
         aria-label={`${unread} unread alerts`}
       >

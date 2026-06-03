@@ -16,7 +16,7 @@ const sizes = {
 
 export function StarRating({ rating, max = 5, size = 'md', className }: StarRatingProps) {
   return (
-    <div className={cn('flex items-center gap-0.5', className)}>
+    <div className={cn('flex items-center gap-0.5', className)} role="img" aria-label={`${Math.round(rating)} out of ${max} stars`}>
       {Array.from({ length: max }).map((_, i) => (
         <Star
           key={i}

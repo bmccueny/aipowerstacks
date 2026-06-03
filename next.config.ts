@@ -21,6 +21,11 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        source: '/pro',
+        destination: '/register',
+        permanent: true,
+      },
+      {
         source: '/auth/sign-up',
         destination: '/register',
         permanent: true,
@@ -58,9 +63,16 @@ const nextConfig: NextConfig = {
       },
     ]
   },
+  experimental: {
+    optimizePackageImports: ['lucide-react'],
+  },
   images: {
     remotePatterns: [
-      { protocol: 'https', hostname: '**' },
+      { protocol: 'https', hostname: '*.supabase.co' },
+      { protocol: 'https', hostname: 'logo.clearbit.com' },
+      { protocol: 'https', hostname: '*.googleusercontent.com' },
+      { protocol: 'https', hostname: 'cdn.jsdelivr.net' },
+      { protocol: 'https', hostname: '*.githubusercontent.com' },
     ],
     deviceSizes: [640, 828, 1080, 1200],
     imageSizes: [16, 32, 48, 64, 96, 128, 256],

@@ -43,7 +43,7 @@ export async function getPublishedPosts(page = 1, category?: string) {
     .range(offset, offset + BLOG_PAGE_SIZE - 1)
 
   if (category) {
-    const { data: cat } = await supabase.from('blog_categories').select('id').eq('slug', category).single()
+    const { data: cat } = await supabase.from('blog_categories').select('id').eq('slug', category).maybeSingle()
     const catData = cat as { id: string } | null
     if (catData?.id) query = query.eq('category_id', catData.id)
   }
@@ -52,7 +52,7 @@ export async function getPublishedPosts(page = 1, category?: string) {
   const posts = (data ?? []).map(p => ({ ...p, author: null })) as (BlogPostSummary)[]
 
   // Fetch authors separately to avoid join issues
-  const authorIds = Array.from(new Set(posts.map(p => p.author_id).filter(Boolean)))
+  const authorIds = Array.from(new Set(posts.map(p => p.author_id).filter((id): id is string => id != null)))
   if (authorIds.length > 0) {
     const { data: authors } = await supabase
       .from('profiles')
@@ -61,9 +61,9 @@ export async function getPublishedPosts(page = 1, category?: string) {
     
     if (authors) {
       const authorMap = new Map(authors.map(a => [a.id, a]))
-      posts.forEach(p => {
-        p.author = authorMap.get(p.author_id) || null
-      })
+      for (const p of posts) {
+        p.author = authorMap.get(p.author_id) ?? null
+      }
     }
   }
 
@@ -86,7 +86,7 @@ export async function getBlogPostBySlug(slug: string) {
     .from('profiles')
     .select('display_name, username, avatar_url, bio, social_links')
     .eq('id', post.author_id)
-    .single()
+    .maybeSingle()
 
   return { ...post, author: author || null } as BlogPostFull
 }
@@ -106,8 +106,8 @@ export async function getFeaturedPost() {
     .eq('is_featured', true)
     .order('published_at', { ascending: false })
     .limit(1)
-    .single()
-  
+    .maybeSingle()
+
   if (!post) return null
 
   // Fetch author
@@ -115,7 +115,7 @@ export async function getFeaturedPost() {
     .from('profiles')
     .select('display_name, username, avatar_url, bio')
     .eq('id', post.author_id)
-    .single()
+    .maybeSingle()
 
   return { ...post, author: author || null } as BlogPostSummary
 }
@@ -133,7 +133,7 @@ export async function getLatestPosts(limit = 3): Promise<BlogPostSummary[]> {
   if (!dataRaw) return []
   const posts = dataRaw.map(p => ({ ...p, author: null })) as BlogPostSummary[]
 
-  const authorIds = Array.from(new Set(posts.map(p => p.author_id).filter(Boolean)))
+  const authorIds = Array.from(new Set(posts.map(p => p.author_id).filter((id): id is string => id != null)))
   if (authorIds.length > 0) {
     const { data: authors } = await supabase
       .from('profiles')
@@ -142,9 +142,9 @@ export async function getLatestPosts(limit = 3): Promise<BlogPostSummary[]> {
 
     if (authors) {
       const authorMap = new Map(authors.map(a => [a.id, a]))
-      posts.forEach(p => {
-        p.author = authorMap.get(p.author_id) || null
-      })
+      for (const p of posts) {
+        p.author = authorMap.get(p.author_id) ?? null
+      }
     }
   }
 
@@ -188,7 +188,7 @@ export async function getRelatedPosts(
   }
 
   // Fetch authors
-  const authorIds = Array.from(new Set(posts.map(p => p.author_id).filter(Boolean)))
+  const authorIds = Array.from(new Set(posts.map(p => p.author_id).filter((id): id is string => id != null)))
   if (authorIds.length > 0) {
     const { data: authors } = await supabase
       .from('profiles')
@@ -197,9 +197,9 @@ export async function getRelatedPosts(
 
     if (authors) {
       const authorMap = new Map(authors.map(a => [a.id, a]))
-      posts.forEach(p => {
-        p.author = authorMap.get(p.author_id) || null
-      })
+      for (const p of posts) {
+        p.author = authorMap.get(p.author_id) ?? null
+      }
     }
   }
 
@@ -228,7 +228,7 @@ export async function getLatestBriefings(limit = 3): Promise<BlogPostSummary[]> 
   const posts = dataRaw.map(p => ({ ...p, author: null })) as BlogPostSummary[]
 
   // Fetch authors separately
-  const authorIds = Array.from(new Set(posts.map(p => p.author_id).filter(Boolean)))
+  const authorIds = Array.from(new Set(posts.map(p => p.author_id).filter((id): id is string => id != null)))
   if (authorIds.length > 0) {
     const { data: authors } = await supabase
       .from('profiles')
@@ -237,9 +237,9 @@ export async function getLatestBriefings(limit = 3): Promise<BlogPostSummary[]> 
     
     if (authors) {
       const authorMap = new Map(authors.map(a => [a.id, a]))
-      posts.forEach(p => {
-        p.author = authorMap.get(p.author_id) || null
-      })
+      for (const p of posts) {
+        p.author = authorMap.get(p.author_id) ?? null
+      }
     }
   }
 

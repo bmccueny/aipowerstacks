@@ -49,7 +49,7 @@ export default async function ChallengesPage() {
           <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Stack Challenges</h1>
         </div>
         <p className="text-muted-foreground text-lg max-w-xl">
-          Build the best AI workflow for the prompt. The community votes for their favourite.
+          Build the best AI workflow for the prompt. The community votes for their favorite.
         </p>
       </div>
 

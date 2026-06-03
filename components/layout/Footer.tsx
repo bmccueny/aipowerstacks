@@ -36,7 +36,7 @@ export function Footer() {
   }
 
   return (
-    <footer className="border-t border-border bg-muted/30 dark:bg-[#000000] relative pb-[calc(env(safe-area-inset-bottom,0px)+60px)] md:pb-0">
+    <footer className="border-t border-border bg-muted/30 dark:bg-background relative pb-[calc(env(safe-area-inset-bottom,0px)+60px)] md:pb-0">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 relative">
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10">
           <div className="col-span-2 md:col-span-1">

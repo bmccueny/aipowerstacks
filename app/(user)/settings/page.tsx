@@ -193,7 +193,7 @@ export default function SettingsPage() {
               value={username}
               onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
               placeholder="username"
-              className="bg-white/5 border-white/10 pl-7"
+              className="bg-muted/50 border-border pl-7"
               maxLength={20}
             />
           </div>
@@ -206,7 +206,7 @@ export default function SettingsPage() {
             value={displayName}
             onChange={(e) => setDisplayName(e.target.value)}
             placeholder="Your name"
-            className="bg-white/5 border-white/10"
+            className="bg-muted/50 border-border"
             maxLength={60}
           />
         </div>
@@ -216,7 +216,7 @@ export default function SettingsPage() {
           <Input
             value={user.email ?? ''}
             disabled
-            className="bg-white/5 border-white/10 opacity-60"
+            className="bg-muted/50 border-border opacity-60"
           />
           <p className="text-xs text-muted-foreground mt-1">Email cannot be changed here.</p>
         </div>
@@ -301,7 +301,7 @@ export default function SettingsPage() {
                   value={linkedinUrl}
                   onChange={(e) => setLinkedinUrl(e.target.value)}
                   placeholder="https://linkedin.com/in/username"
-                  className="bg-white/5 border-white/10 pl-10 h-10 text-sm"
+                  className="bg-muted/50 border-border pl-10 h-10 text-sm"
                 />
               </div>
             </div>
@@ -313,7 +313,7 @@ export default function SettingsPage() {
                   value={githubUrl}
                   onChange={(e) => setGithubUrl(e.target.value)}
                   placeholder="https://github.com/username"
-                  className="bg-white/5 border-white/10 pl-10 h-10 text-sm"
+                  className="bg-muted/50 border-border pl-10 h-10 text-sm"
                 />
               </div>
             </div>
@@ -323,7 +323,7 @@ export default function SettingsPage() {
             <div className="bg-primary/5 border border-primary/20 rounded-md p-4">
               <p className="text-xs font-bold text-primary mb-1">Request Verification</p>
               <p className="text-[11px] text-muted-foreground mb-3">Once your profiles are linked, our team will review your identity.</p>
-              <Button variant="outline" size="sm" className="h-8 text-[10px] uppercase font-bold tracking-wider border-primary/30 text-primary hover:bg-primary/10">
+              <Button variant="outline" size="sm" className="h-8 text-[10px] uppercase font-bold tracking-wider border-primary/30 text-primary hover:bg-primary/10" onClick={() => window.open('mailto:verify@aipowerstacks.com?subject=Verification+Request', '_blank')}>
                 Apply for Verified Badge
               </Button>
             </div>

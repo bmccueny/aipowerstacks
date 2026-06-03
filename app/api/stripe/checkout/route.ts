@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { createClient } from '@/lib/supabase/server'
 
-const stripe = process.env.STRIPE_SECRET_KEY 
+const stripe = process.env.STRIPE_SECRET_KEY
   ? new Stripe(process.env.STRIPE_SECRET_KEY, {
       apiVersion: '2025-02-24.acacia' as any,
     })
@@ -49,13 +49,20 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Stripe is not configured' }, { status: 503 })
   }
 
+  const supabase = await createClient()
+
+  // Fix 2: Auth check — featured listing checkout must be authenticated
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
   const { toolSlug } = await req.json()
 
   if (!toolSlug || typeof toolSlug !== 'string') {
     return NextResponse.json({ error: 'toolSlug is required' }, { status: 400 })
   }
 
-  const supabase = await createClient()
   const { data: tool } = await supabase
     .from('tools')
     .select('id, name, slug, status')
@@ -72,7 +79,12 @@ export async function POST(req: NextRequest) {
   const session = await stripe!.checkout.sessions.create({
     mode: 'subscription',
     line_items: [{ price: process.env.STRIPE_PRICE_ID, quantity: 1 }],
-    metadata: { toolSlug: tool.slug, toolId: tool.id },
+    // Fix 2: Include userId in session metadata
+    metadata: { toolSlug: tool.slug, toolId: tool.id, userId: user.id },
+    // Fix 2: Pre-fill customer email
+    customer_email: user.email,
+    // Fix 1: Propagate metadata to the subscription so cancellation handler can read toolSlug
+    subscription_data: { metadata: { toolSlug: tool.slug, toolId: tool.id } },
     success_url: `${baseUrl}/advertise/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${baseUrl}/advertise`,
   })

@@ -45,7 +45,7 @@ interface Props {
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params
   const tool = await getToolBySlug(slug)
-  if (!tool) return {}
+  if (!tool) return { title: 'Tool Not Found', robots: { index: false } }
   return generateToolMetadata(tool)
 }
 
@@ -168,19 +168,6 @@ export default async function ToolDetailPage({ params }: Props) {
           ...(tool.categories ? [{ label: tool.categories.name, href: `/categories/${tool.categories.slug}` }] : []),
           { label: tool.name },
         ]} />
-        <nav className="flex items-center gap-1.5 text-sm text-muted-foreground mb-6">
-          <Link href="/" className="hover:text-foreground transition-colors">Home</Link>
-          <ChevronRight className="h-3.5 w-3.5" />
-          <Link href="/tools" className="hover:text-foreground transition-colors">Tools</Link>
-          {tool.categories && (
-            <>
-              <ChevronRight className="h-3.5 w-3.5" />
-              <Link href={`/categories/${tool.categories.slug}`} className="hover:text-foreground transition-colors">{tool.categories.name}</Link>
-            </>
-          )}
-          <ChevronRight className="h-3.5 w-3.5" />
-          <span className="text-foreground">{tool.name}</span>
-        </nav>
 
         <div className="rounded-2xl border border-border bg-muted/30 p-8 mb-6">
           <div className="flex flex-col sm:flex-row gap-6">

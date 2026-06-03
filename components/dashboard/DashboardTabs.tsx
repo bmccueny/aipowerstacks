@@ -74,10 +74,12 @@ export function DashboardTabs({
       </Link>
 
       {/* Tab bar */}
-      <div ref={glassRef} className="liquid-glass glass-card rounded-xl p-1 grid grid-cols-2 sm:grid-cols-4 gap-1 mb-8 border border-white/15">
+      <div ref={glassRef} role="tablist" className="liquid-glass glass-card rounded-xl p-1 grid grid-cols-2 sm:grid-cols-4 gap-1 mb-8 border border-white/15">
         {tabs.map(({ id, label, icon: Icon, count }) => (
           <button
             key={id}
+            role="tab"
+            aria-selected={active === id}
             onClick={() => setActive(id)}
             className={`flex items-center justify-center gap-2 px-3 py-2.5 text-sm font-bold rounded-md transition-colors ${
               active === id

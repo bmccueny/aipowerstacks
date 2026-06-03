@@ -333,15 +333,27 @@ export function TrackerClient({ tools, popularTools = [], autoAddSlug, importToo
 
   const updateSubCost = useCallback(async (subId: string, newCost: number) => {
     const sub = subs.find(s => s.id === subId)
-    if (!sub) return
-    const res = await fetch('/api/tracker', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ tool_id: sub.tool_id, monthly_cost: newCost }),
-    })
-    if (res.ok) {
-      setSubs(prev => prev.map(s => s.id === subId ? { ...s, monthly_cost: newCost } : s))
-      toast.success('Tier updated')
+    if (!sub) {
+      toast.error('Could not find subscription to update')
+      return
+    }
+    try {
+      const res = await fetch('/api/tracker', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tool_id: sub.tool_id,
+          monthly_cost: newCost,
+          use_tags: sub.use_tags ?? undefined,
+          billing_cycle: sub.billing_cycle ?? 'monthly',
+        }),
+      })
+      if (res.ok) {
+        setSubs(prev => prev.map(s => s.id === subId ? { ...s, monthly_cost: newCost } : s))
+        toast.success('Tier updated')
+      }
+    } catch {
+      toast.error('Failed to update cost')
     }
   }, [subs])
 

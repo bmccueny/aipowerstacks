@@ -365,6 +365,10 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
             <input
               type="text"
+              role="combobox"
+              aria-autocomplete="list"
+              aria-expanded={showDropdown && filtered.length > 0}
+              aria-haspopup="listbox"
               placeholder="Search for any AI tool..."
               value={search}
               onChange={e => { setSearch(e.target.value); setShowDropdown(true) }}
@@ -381,7 +385,7 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
             </button>
           </div>
           {showDropdown && filtered.length > 0 && (
-            <div className="absolute top-full left-0 right-0 z-[100] mt-2 bg-white dark:bg-neutral-900 border border-border rounded-xl shadow-2xl max-h-[50vh] sm:max-h-64 overflow-y-auto">
+            <div role="listbox" className="absolute top-full left-0 right-0 z-[100] mt-2 bg-popover border border-border rounded-xl shadow-2xl max-h-[50vh] sm:max-h-64 overflow-y-auto">
               {filtered.map(t => (
                 <div
                   key={t.id}

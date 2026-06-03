@@ -279,7 +279,7 @@ export async function searchTools({
       .from('categories')
       .select('id')
       .eq('slug', category)
-      .single()
+      .maybeSingle()
     categoryId = (cat as { id: string } | null)?.id
   }
 
@@ -500,7 +500,7 @@ export async function getToolBySlug(slug: string): Promise<ToolWithTags | null> 
     `)
     .eq('slug', slug)
     .eq('status', 'published')
-    .single()
+    .maybeSingle()
 
   if (error || !data) return null
   return data as unknown as ToolWithTags

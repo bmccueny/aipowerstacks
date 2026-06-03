@@ -6,6 +6,16 @@ import { createAdminClient } from '@/lib/supabase/admin'
 export const metadata: Metadata = {
   title: 'Stack Leaderboard | Most Efficient AI Tool Stacks',
   description: 'See the most popular and efficient AI tool stacks built by the community. Find inspiration for your own stack.',
+  alternates: { canonical: '/stacks/leaderboard' },
+  openGraph: {
+    title: 'Stack Leaderboard | Most Efficient AI Tool Stacks',
+    description: 'See the most popular and efficient AI tool stacks built by the community.',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Stack Leaderboard | Most Efficient AI Tool Stacks',
+    description: 'See the most popular and efficient AI tool stacks built by the community.',
+  },
 }
 
 export const revalidate = 300 // 5 min cache

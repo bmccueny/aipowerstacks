@@ -18,11 +18,11 @@ import { createClient } from '@/lib/supabase/server'
 const mockCreateClient = vi.mocked(createClient)
 
 function createMockSupabase(user: { id: string } | null, role: string | null) {
-  const mockSingle = vi.fn().mockResolvedValue({
+  const mockMaybeSingle = vi.fn().mockResolvedValue({
     data: role ? { role } : null,
     error: null,
   })
-  const mockEq = vi.fn().mockReturnValue({ single: mockSingle })
+  const mockEq = vi.fn().mockReturnValue({ maybeSingle: mockMaybeSingle })
   const mockSelect = vi.fn().mockReturnValue({ eq: mockEq })
   const mockFrom = vi.fn().mockReturnValue({ select: mockSelect })
 

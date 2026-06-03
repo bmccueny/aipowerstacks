@@ -36,10 +36,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const ogImage = post.cover_image_url ? normalizeThumUrl(post.cover_image_url) : undefined
   return {
     title: post.title,
-    description: post.excerpt,
+    description: post.excerpt || post.title,
     openGraph: {
       title: post.title,
-      description: post.excerpt,
+      description: post.excerpt || post.title,
       url: `${SITE_URL}/blog/${post.slug}`,
       type: 'article',
       publishedTime: post.published_at ?? undefined,
@@ -49,7 +49,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     twitter: {
       card: 'summary_large_image',
       title: post.title,
-      description: post.excerpt,
+      description: post.excerpt || post.title,
       ...(ogImage && { images: [ogImage] }),
     },
     alternates: {
@@ -129,7 +129,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: post.title,
-    description: post.excerpt,
+    description: post.excerpt || post.title,
     image: coverImageUrl,
     datePublished: post.published_at,
     dateModified: post.updated_at || post.published_at,

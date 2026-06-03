@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 
 export function HelpfulButton({
@@ -19,10 +20,14 @@ export function HelpfulButton({
     setLoading(true)
     const res = await fetch(`/api/reviews/${reviewId}/helpful`, { method: 'POST' })
     setLoading(false)
-    if (!res.ok) return
+    if (!res.ok) {
+      toast.error('Something went wrong')
+      return
+    }
 
     setCount((c) => c + 1)
     setDone(true)
+    toast.success('Marked as helpful')
   }
 
   return (

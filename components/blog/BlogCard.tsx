@@ -59,9 +59,15 @@ function AuthorLink({ author, size = 'sm' }: { author: BlogPostSummary['author']
   return <div className={`flex items-center ${gap}`}>{content}</div>
 }
 
+function stripHtml(text: string | null | undefined): string {
+  if (!text) return ''
+  return text.replace(/<[^>]*>/g, '')
+}
+
 export function BlogCard({ post, featured = false, variant }: { post: BlogPostSummary; featured?: boolean; variant?: 'secondary' }) {
   const date = post.published_at ? new Date(post.published_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : null
   const coverImageUrl = normalizeThumUrl(post.cover_image_url)
+  const cleanExcerpt = stripHtml(post.excerpt)
 
   if (featured) {
     return (
@@ -84,7 +90,7 @@ export function BlogCard({ post, featured = false, variant }: { post: BlogPostSu
               <span className="text-xs font-semibold text-primary uppercase tracking-wider mb-3">{post.tags[0]}</span>
             )}
             <h2 className="text-2xl font-bold mb-3 pb-0.5 transition-colors line-clamp-2 leading-[1.25]">{post.title}</h2>
-            <p className="text-muted-foreground text-[14px] line-clamp-2 mb-5 pb-0.5 leading-[1.6]">{post.excerpt}</p>
+            <p className="text-muted-foreground text-[14px] line-clamp-2 mb-5 pb-0.5 leading-[1.6]">{cleanExcerpt}</p>
             <div className="flex items-center gap-4 text-[13px] text-muted-foreground">
               {date && <span className="flex items-center gap-1.5"><Calendar className="h-3 w-3" />{date}</span>}
               {post.reading_time_min && <span className="flex items-center gap-1.5"><Clock className="h-3 w-3" />{post.reading_time_min} min read</span>}
@@ -116,7 +122,7 @@ export function BlogCard({ post, featured = false, variant }: { post: BlogPostSu
               <span className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">{post.tags[0]}</span>
             )}
             <h3 className="font-bold text-lg mb-2 pb-0.5 transition-colors line-clamp-2 flex-1 leading-[1.3]">{post.title}</h3>
-            <p className="text-[13px] text-muted-foreground line-clamp-1 mb-3 leading-[1.5]">{post.excerpt}</p>
+            <p className="text-[13px] text-muted-foreground line-clamp-1 mb-3 leading-[1.5]">{cleanExcerpt}</p>
             <div className="flex items-center gap-3 text-[12px] text-muted-foreground border-t border-border/30 pt-3 mt-auto">
               {date && <span className="flex items-center gap-1.5"><Calendar className="h-3 w-3" />{date}</span>}
               {post.reading_time_min && <span className="flex items-center gap-1.5"><Clock className="h-3 w-3" />{post.reading_time_min} min read</span>}
@@ -147,7 +153,7 @@ export function BlogCard({ post, featured = false, variant }: { post: BlogPostSu
             <span className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">{post.tags[0]}</span>
           )}
           <h3 className="font-semibold text-[16px] mb-2 pb-0.5 transition-colors line-clamp-2 flex-1 leading-[1.3]">{post.title}</h3>
-          <p className="text-[13px] text-muted-foreground line-clamp-2 mb-3 pb-0.5 leading-[1.5]">{post.excerpt}</p>
+          <p className="text-[13px] text-muted-foreground line-clamp-2 mb-3 pb-0.5 leading-[1.5]">{cleanExcerpt}</p>
           <div className="flex items-center gap-3 text-[12px] text-muted-foreground border-t border-border/30 pt-3 mt-auto">
             {date && <span>{date}</span>}
             {post.reading_time_min && <span>{post.reading_time_min} min read</span>}

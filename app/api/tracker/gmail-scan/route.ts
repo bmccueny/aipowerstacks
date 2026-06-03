@@ -185,7 +185,7 @@ export async function POST() {
       q: GMAIL_QUERY,
       maxResults: 100,
     })
-    messageIds = (listRes.data.messages ?? []).map((m: { id?: string | null }) => m.id!).filter(Boolean)
+    messageIds = (listRes.data.messages ?? []).map((m: { id?: string | null }) => m.id).filter((id): id is string => id != null)
   } catch {
     return NextResponse.json(
       { error: 'Failed to read Gmail. Please reconnect.' },

@@ -4,6 +4,16 @@ import { StackAdvisorClient } from '@/components/home/StackAdvisorClient'
 export const metadata: Metadata = {
   title: 'AI Stack Advisor | Get Your Perfect AI Tool Stack',
   description: 'Tell us your role and budget — our AI recommends the optimal tool stack with zero overlap and maximum value.',
+  alternates: { canonical: '/stack-advisor' },
+  openGraph: {
+    title: 'AI Stack Advisor | Get Your Perfect AI Tool Stack',
+    description: 'Tell us your role and budget — our AI recommends the optimal tool stack with zero overlap and maximum value.',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'AI Stack Advisor | Get Your Perfect AI Tool Stack',
+    description: 'Tell us your role and budget — our AI recommends the optimal tool stack with zero overlap and maximum value.',
+  },
 }
 
 export default function StackAdvisorPage() {

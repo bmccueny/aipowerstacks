@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-
-// pricing_history table may not exist in generated types yet — use untyped client for this table
+import { fromTable } from '@/lib/supabase/untyped'
 
 /*
  * Daily pricing snapshot cron — records current prices for all tools.
@@ -24,10 +23,7 @@ export async function GET(request: Request) {
   const today = new Date().toISOString().split('T')[0]
 
   // Check if we already ran today
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const db = admin as any
-  const { count: existingCount } = await db
-    .from('pricing_history')
+  const { count: existingCount } = await fromTable(admin, 'pricing_history')
     .select('id', { count: 'exact', head: true })
     .eq('snapshot_date', today)
 
@@ -57,8 +53,7 @@ export async function GET(request: Request) {
   let inserted = 0
   for (let i = 0; i < rows.length; i += 500) {
     const batch = rows.slice(i, i + 500)
-    const { error: insertError } = await db
-      .from('pricing_history')
+    const { error: insertError } = await fromTable(admin, 'pricing_history')
       .upsert(batch, { onConflict: 'tool_id,tier_name,snapshot_date' })
 
     if (insertError) {
@@ -70,8 +65,7 @@ export async function GET(request: Request) {
 
   // Detect price changes vs previous snapshot
   const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0]
-  const { data: prevSnapshot } = await db
-    .from('pricing_history')
+  const { data: prevSnapshot } = await fromTable(admin, 'pricing_history')
     .select('tool_id, tier_name, monthly_price')
     .eq('snapshot_date', yesterday)
 
@@ -98,8 +92,7 @@ export async function GET(request: Request) {
   // Update pricing_last_verified_at on all tools that have tiers
   const toolIds = [...new Set(tiers.map(t => t.tool_id))]
   for (let i = 0; i < toolIds.length; i += 200) {
-    await db
-      .from('tools')
+    await fromTable(admin, 'tools')
       .update({ pricing_last_verified_at: new Date().toISOString() })
       .in('id', toolIds.slice(i, i + 200))
   }

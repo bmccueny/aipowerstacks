@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getQueryEmbedding } from '@/lib/ai/embeddings'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { rateLimit, getClientIp } from '@/lib/rate-limit'
 
 /**
  * POST /api/search
@@ -15,6 +16,10 @@ import { createAdminClient } from '@/lib/supabase/admin'
  * Body: { query: string, limit?: number, threshold?: number }
  */
 export async function POST(req: NextRequest) {
+  const ip = getClientIp(req)
+  const { success } = rateLimit(`search:${ip}`, 20, 60_000)
+  if (!success) return NextResponse.json({ error: 'Rate limited' }, { status: 429 })
+
   try {
     const { query, limit = 20, threshold = 0.15 } = await req.json()
 

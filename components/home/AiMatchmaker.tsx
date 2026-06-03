@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { toast } from 'sonner'
 import { 
   Sparkles, 
   ChevronRight, 
@@ -486,7 +487,7 @@ export function AiMatchmaker({ initialQuery }: { initialQuery?: string } = {}) {
                         const slugs = results.map((t) => t.slug).join(',')
                         const shareUrl = `${window.location.origin}/matchmaker/results?tools=${slugs}${chatMessage ? `&q=${encodeURIComponent(chatMessage)}` : ''}`
                         navigator.clipboard.writeText(shareUrl)
-                        alert('Share link copied!')
+                        toast.success('Share link copied!')
                       }}
                       className="gap-2 text-primary border-primary/20 hover:bg-primary hover:text-primary-foreground font-black uppercase tracking-widest text-[10px] h-10 px-4"
                     >

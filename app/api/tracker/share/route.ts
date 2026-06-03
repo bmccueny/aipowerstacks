@@ -115,7 +115,7 @@ export async function POST(request: Request) {
     .select('id')
     .eq('user_id', user.id)
     .limit(1)
-    .single()
+    .maybeSingle()
 
   const shareId = existing?.id || generateShareId()
 

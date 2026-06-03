@@ -122,7 +122,7 @@ export default function LoginPage() {
               required
               aria-label="Email address"
               autoComplete="email"
-              className="w-full h-12 px-4 bg-background border border-border rounded-xl text-[15px] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 placeholder:text-muted-foreground transition-all"
+              className="w-full h-12 px-4 bg-background border border-border dark:border-foreground/20 rounded-xl text-[15px] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 placeholder:text-muted-foreground transition-all"
             />
           </div>
 
@@ -143,7 +143,7 @@ export default function LoginPage() {
                 required
                 aria-label="Password"
                 autoComplete="current-password"
-                className="w-full h-12 px-4 pr-12 bg-background border border-border rounded-xl text-[15px] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 placeholder:text-muted-foreground transition-all"
+                className="w-full h-12 px-4 pr-12 bg-background border border-border dark:border-foreground/20 rounded-xl text-[15px] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 placeholder:text-muted-foreground transition-all"
               />
               <button
                 type="button"
