@@ -6,17 +6,17 @@ import { Button } from '@/components/ui/button'
 
 export const metadata: Metadata = {
   title: 'About AIPowerStacks',
-  description: 'Learn about AIPowerStacks and our mission to help you discover and compare the best AI tools on the market.',
+  description: 'AIPowerStacks exists because most teams are paying for more AI than they use. We built the tracker, the overlap detector, and the comparison tools so you can stop guessing and start cutting.',
   alternates: { canonical: '/about' },
   openGraph: {
-    title: 'About AIPowerStacks',
-    description: 'Learn about AIPowerStacks and our mission to help you discover and compare the best AI tools on the market.',
+    title: 'About AIPowerStacks | AI Spend Management',
+    description: 'AIPowerStacks exists because most teams are paying for more AI than they use. We built the tracker, the overlap detector, and the comparison tools so you can stop guessing and start cutting.',
     url: `${SITE_URL}/about`,
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'About AIPowerStacks',
-    description: 'Learn about AIPowerStacks and our mission to help you discover and compare the best AI tools on the market.',
+    title: 'About AIPowerStacks | AI Spend Management',
+    description: 'AIPowerStacks exists because most teams are paying for more AI than they use. We built the tracker, the overlap detector, and the comparison tools so you can stop guessing and start cutting.',
   },
 }
 
@@ -26,17 +26,14 @@ export default function AboutPage() {
       <div className="page-hero text-center mb-12">
         <h1 className="text-4xl font-bold mb-4">Our Mission</h1>
         <p className="text-lg text-muted-foreground">
-          Helping you cut through the noise and find the right AI tools for your workflow in under 60 seconds.
+          Stop overpaying for AI. We built the tools to help you track, compare, and cut.
         </p>
       </div>
 
       <div className="prose dark:prose-invert max-w-none mb-16">
         <h2 className="text-2xl font-bold mb-4">What is AIPowerStacks?</h2>
         <p className="text-muted-foreground leading-relaxed mb-6">
-          AIPowerStacks is a comprehensive and up-to-date AI tools directory. We track AI tools across writing, coding, image generation, video, productivity, and more.
-        </p>
-        <p className="text-muted-foreground leading-relaxed mb-6">
-          The AI landscape is moving at breakneck speed. Every day, dozens of new tools are launched. Most are noise; some are transformative. Our goal is to help you identify the transformative ones quickly, so you can focus on building and creating.
+          AIPowerStacks exists because most teams are paying for more AI than they use. We built the tracker, the overlap detector, and the comparison tools so you can stop guessing and start cutting.
         </p>
 
         <h2 className="text-2xl font-bold mt-12 mb-6">Why Trust Us?</h2>

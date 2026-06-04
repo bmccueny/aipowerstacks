@@ -162,6 +162,21 @@ export async function generateMetadata({
 
 export const revalidate = 3600
 
+const MANUAL_PAIRS = [
+  'chatgpt-vs-claude',
+  'chatgpt-vs-gemini',
+  'claude-vs-gemini',
+  'cursor-vs-copilot',
+  'midjourney-vs-dall-e',
+  'jasper-vs-copy-ai',
+  'notion-ai-vs-coda',
+  'perplexity-vs-chatgpt',
+  'grammarly-vs-chatgpt',
+  'claude-vs-copilot',
+  'stable-diffusion-vs-midjourney',
+  'anthropic-vs-openai',
+]
+
 export async function generateStaticParams() {
   const supabase = createAdminClient()
   const { data: tools } = await supabase
@@ -170,16 +185,28 @@ export async function generateStaticParams() {
     .eq('status', 'published')
     .gte('review_count', 2)
     .order('review_count', { ascending: false })
-    .limit(30)
+    .limit(50)
 
   if (!tools || tools.length < 2) return []
 
+  const seen = new Set<string>()
   const pairs: { slug: string }[] = []
+
   for (let i = 0; i < tools.length && pairs.length < 200; i++) {
-    for (let j = i + 1; j < Math.min(i + 5, tools.length) && pairs.length < 200; j++) {
-      pairs.push({ slug: `${tools[i].slug}-vs-${tools[j].slug}` })
+    for (let j = i + 1; j < Math.min(i + 9, tools.length) && pairs.length < 200; j++) {
+      const slug = `${tools[i].slug}-vs-${tools[j].slug}`
+      seen.add(slug)
+      pairs.push({ slug })
     }
   }
+
+  for (const slug of MANUAL_PAIRS) {
+    if (!seen.has(slug)) {
+      seen.add(slug)
+      pairs.push({ slug })
+    }
+  }
+
   return pairs
 }
 
@@ -745,6 +772,22 @@ export default async function VsComparisonPage({
           <Button size="lg" className="gap-2 font-bold">
             Open Full Compare <ArrowLeftRight className="h-4 w-4" />
           </Button>
+        </Link>
+      </div>
+
+      {/* Cross-links to alternatives and pricing pages */}
+      <div className="flex flex-wrap gap-4 mt-6 text-sm justify-center">
+        <Link href={`/alternatives/to-${toolA.slug}`} className="text-primary hover:underline">
+          {toolA.name} alternatives
+        </Link>
+        <Link href={`/pricing/${toolA.slug}`} className="text-primary hover:underline">
+          {toolA.name} pricing
+        </Link>
+        <Link href={`/alternatives/to-${toolB.slug}`} className="text-primary hover:underline">
+          {toolB.name} alternatives
+        </Link>
+        <Link href={`/pricing/${toolB.slug}`} className="text-primary hover:underline">
+          {toolB.name} pricing
         </Link>
       </div>
     </div>

@@ -66,9 +66,9 @@ export default async function HomePage() {
                 {siteStats.toolCount}+ tools tracked
               </p>
               <h1 className="text-[clamp(2.75rem,6vw,4.5rem)] font-bold tracking-[-0.035em] text-foreground leading-[0.98]">
-                How much is
+                You&apos;re paying for
                 <br />
-                <span className="text-primary">AI</span> costing you?
+                <span className="text-primary">AI</span> tools that overlap.
               </h1>
               <p className="mt-6 sm:mt-6 text-[1.125rem] text-muted-foreground leading-[1.7] max-w-[44ch]">
                 Track your AI subscriptions. See what overlaps.

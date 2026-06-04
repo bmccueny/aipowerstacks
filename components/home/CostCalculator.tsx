@@ -611,20 +611,31 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
                 <div className="rounded-xl border border-amber-400/30 bg-amber-400/[0.05] p-3.5">
                   <div className="flex items-start gap-2.5">
                     <AlertTriangle className="h-4 w-4 text-amber-500 mt-0.5 shrink-0" />
-                    <div>
+                    <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold text-foreground">
-                        {insights.overlaps.length} overlap{insights.overlaps.length > 1 ? 's' : ''} detected
+                        {insights.overlaps.length} overlapping tool{insights.overlaps.length > 1 ? 's' : ''} detected
                       </p>
-                      {insights.overlaps.slice(0, 2).map((o, i) => (
-                        <p key={i} className="text-xs text-muted-foreground mt-1">
-                          <strong className="text-foreground">{o.tools[0]}</strong> and <strong className="text-foreground">{o.tools[1]}</strong> — {o.reason.toLowerCase()}
-                        </p>
-                      ))}
                       {insights.totalSavings > 0 && (
-                        <p className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 mt-1.5">
-                          Potential savings: ${insights.totalSavings}/year
+                        <p className="text-xs font-semibold text-amber-600 dark:text-amber-400 mt-0.5">
+                          ${insights.totalSavings}/yr at risk
                         </p>
                       )}
+                      {insights.overlaps.slice(0, 2).map((o, i) => (
+                        <p key={i} className="text-xs text-muted-foreground mt-1.5">
+                          <span className="blur-sm select-none">{o.tools[0]}</span>
+                          {' '}and{' '}
+                          <span className="blur-sm select-none">{o.tools[1]}</span>
+                          {' '}— {o.reason.toLowerCase()}
+                        </p>
+                      ))}
+                      <div className="mt-3">
+                        <Link
+                          href="/register?redirectTo=/tracker"
+                          className="inline-flex items-center gap-2 text-sm font-bold text-primary hover:underline"
+                        >
+                          Sign up free to reveal your overlaps →
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 </div>

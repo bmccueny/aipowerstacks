@@ -47,7 +47,7 @@ export function Footer() {
               </span>
             </Link>
             <p className="text-[13px] text-muted-foreground max-w-xs leading-relaxed">
-              Discover and compare AI tools by use case, pricing, and integrations. Verified listings and real user reviews, updated every day.
+              Track your AI spend. Spot overlap. Cut what you don&apos;t need. 600+ tools, real pricing, updated daily.
             </p>
             <div className="mt-4 flex items-center gap-2">
               <a href={shareLinks.x} target="_blank" rel="noopener noreferrer" aria-label="Share on X" className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors">

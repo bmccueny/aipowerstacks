@@ -84,6 +84,9 @@ export function SubmitToolForm({
   }
 
   if (submitted) {
+    const toolSlug = form.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')
+    const toolUrl = `https://aipowerstacks.com/tools/${toolSlug}`
+
     return (
       <div className="glass-card rounded-xl p-10 text-center">
         <div className="text-5xl mb-4">🎉</div>
@@ -92,6 +95,30 @@ export function SubmitToolForm({
           Thanks for submitting. Our team will review your tool and get back to you.
         </p>
         <Button onClick={() => router.push('/tools')}>Browse Tools</Button>
+
+        <div className="mt-6 pt-6 border-t border-border">
+          <p className="text-sm font-bold mb-3">Share your listing</p>
+          <div className="flex flex-col gap-2">
+            <button
+              onClick={() => {
+                const text = `We just listed ${form.name} on @aipowerstacks! Check it out 👇`
+                window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(toolUrl)}`, '_blank')
+              }}
+              className="w-full h-11 px-4 rounded-xl border border-border bg-background hover:bg-muted/50 transition-colors flex items-center justify-center gap-2 text-sm font-semibold"
+            >
+              Share on X / Twitter
+            </button>
+            <button
+              onClick={() => {
+                window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(toolUrl)}`, '_blank')
+              }}
+              className="w-full h-11 px-4 rounded-xl border border-border bg-background hover:bg-muted/50 transition-colors flex items-center justify-center gap-2 text-sm font-semibold"
+            >
+              Share on LinkedIn
+            </button>
+          </div>
+          <p className="text-xs text-muted-foreground mt-3 text-center">Sharing helps your tool get discovered faster</p>
+        </div>
       </div>
     )
   }

@@ -9,7 +9,7 @@ import { BrandMark } from '@/components/common/BrandMark'
 // useLiquidGlass removed — iOS clean style
 
 export default function RegisterPage() {
-  const [redirectTo, setRedirectTo] = useState('/welcome')
+  const [redirectTo, setRedirectTo] = useState('/onboarding')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')

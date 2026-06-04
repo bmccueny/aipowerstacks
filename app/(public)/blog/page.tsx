@@ -59,7 +59,7 @@ export default async function BlogPage({
           {categories.map((cat) => (
             <Link
               key={cat.id}
-              href={`/blog?category=${cat.slug}`}
+              href={`/blog/${cat.slug}`}
               className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-colors ${
                 category === cat.slug
                   ? 'bg-primary text-primary-foreground'

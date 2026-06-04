@@ -16,6 +16,7 @@ export type Database = {
           social_links: { platform: string; url: string }[] | null
           is_identity_verified: boolean
           role: 'user' | 'editor' | 'admin'
+          plan: 'free' | 'pro'
           monthly_budget: number | null
           created_at: string
           updated_at: string
@@ -32,6 +33,7 @@ export type Database = {
           social_links?: { platform: string; url: string }[] | null
           is_identity_verified?: boolean
           role?: 'user' | 'editor' | 'admin'
+          plan?: 'free' | 'pro'
           monthly_budget?: number | null
           created_at?: string
           updated_at?: string
@@ -47,6 +49,7 @@ export type Database = {
           social_links?: { platform: string; url: string }[] | null
           is_identity_verified?: boolean
           role?: 'user' | 'editor' | 'admin'
+          plan?: 'free' | 'pro'
           monthly_budget?: number | null
           updated_at?: string
         }
@@ -349,6 +352,7 @@ export type Database = {
           is_verified: boolean
           helpful_count: number
           status: 'draft' | 'pending' | 'published'
+          source: 'user' | 'editor'
           moderated_by: string | null
           moderated_at: string | null
           rejection_reason: string | null
@@ -365,6 +369,7 @@ export type Database = {
           is_verified?: boolean
           helpful_count?: number
           status?: 'draft' | 'pending' | 'published'
+          source?: 'user' | 'editor'
           moderated_by?: string | null
           moderated_at?: string | null
           rejection_reason?: string | null

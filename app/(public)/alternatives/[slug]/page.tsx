@@ -309,6 +309,11 @@ export default async function AlternativesPage({ params }: Props) {
                     </Button>
                   </OutboundLink>
                 </div>
+                {alt.pricing_model && (
+                  <Link href={`/pricing/${alt.slug}`} className="text-[10px] text-muted-foreground hover:text-primary mt-2 inline-block">
+                    View pricing →
+                  </Link>
+                )}
               </div>
             ))}
           </div>

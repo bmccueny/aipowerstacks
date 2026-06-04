@@ -112,7 +112,7 @@ export function AiMatchmaker({ initialQuery }: { initialQuery?: string } = {}) {
     setStackRoles(rolesMap)
   }
 
-  const fetchMatchmaker = async (request: Request | string, minDelay = 6500) => {
+  const fetchMatchmaker = async (request: Request | string, minDelay = 2500) => {
     const [res] = await Promise.all([
       typeof request === 'string' ? fetch(request) : fetch(request),
       new Promise<void>(resolve => setTimeout(resolve, minDelay)),
@@ -280,12 +280,14 @@ export function AiMatchmaker({ initialQuery }: { initialQuery?: string } = {}) {
                   value={chatMessage}
                   onChange={(e) => setChatMessage(e.target.value)}
                   placeholder="Tell me your goal..."
-                  className="w-full bg-background border-2 border-foreground rounded-md h-14 pl-12 pr-24 sm:pr-32 focus:outline-none focus-visible:border-primary focus-visible:ring-4 focus-visible:ring-primary/5 transition-all font-bold text-sm sm:text-base"
+                  enterKeyHint="send"
+                  autoComplete="off"
+                  className="w-full bg-background border-2 border-foreground rounded-md h-14 pl-12 pr-14 sm:pr-24 focus:outline-none focus-visible:border-primary focus-visible:ring-4 focus-visible:ring-primary/5 transition-all font-bold text-sm sm:text-base"
                 />
                 <div className="absolute inset-y-0 right-2 flex items-center">
                   <Button type="submit" disabled={!chatMessage.trim() || loading} className="h-10 px-6 gap-2">
                     {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-                    <span>Match Me</span>
+                    <span className="hidden sm:inline">Match Me</span>
                   </Button>
                 </div>
               </form>

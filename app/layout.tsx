@@ -22,10 +22,10 @@ import './globals.css'
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: 'AIPowerStacks | Discover & Compare AI Tools',
+    default: 'AIPowerStacks | Track Your AI Spend & Stop Overpaying',
     template: '%s | AIPowerStacks',
   },
-  description: 'Discover and compare AI tools side-by-side. Filter by use case, pricing, and integrations. Verified listings, real user reviews, and daily updates.',
+  description: 'Stop overpaying for AI. Track your subscriptions, detect overlap, and find what to cancel. 600+ tools with real pricing data, side-by-side comparisons, and daily updates.',
   alternates: {
     canonical: '/',
   },

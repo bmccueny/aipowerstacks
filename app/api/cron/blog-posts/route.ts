@@ -1192,9 +1192,16 @@ export async function GET(request: Request) {
       })
     }
 
-    // 9. Quality gate
+    // 9. Quality gate — two-tier check:
+    //    Simple gate: word count + title + excerpt minimums → auto-publish candidate
+    //    Strict gate: structural checks (H3s, links, tags) → final publish/draft decision
+    const wordCount = post.content.replace(/<[^>]+>/g, '').split(/\s+/).length
+    const hasTitle = post.title && post.title.length > 10
+    const hasExcerpt = post.excerpt && post.excerpt.length > 20
+    const shouldAutoPublish = wordCount >= 600 && hasTitle && hasExcerpt
+
     const quality = qualityCheck(post, cluster)
-    const postStatus = quality.pass ? 'published' : 'draft'
+    const postStatus = (shouldAutoPublish && quality.pass) ? 'published' : 'draft'
 
     const { error } = await supabase.from('blog_posts').upsert(
       {

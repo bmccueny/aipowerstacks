@@ -354,6 +354,9 @@ export async function GET(request: Request) {
 
       content = stripHashtags(content)
 
+      // Quality gate: mark as 'approved' if body length is within Twitter's useful range
+      const twitterStatus = content.length > 50 && content.length <= 280 ? 'approved' : 'draft'
+
       const { error: insertError } = await supabase.from('social_posts').insert({
         platform: 'twitter',
         post_type: postType,
@@ -363,7 +366,7 @@ export async function GET(request: Request) {
         link_title: linkTitle,
         source_type: sourceType,
         source_id: sourceId,
-        status: 'draft',
+        status: twitterStatus,
       })
 
       if (insertError) {
@@ -376,6 +379,8 @@ export async function GET(request: Request) {
       try {
         const linkedInContent = stripHashtags(await adaptForLinkedIn(content, postType))
         if (linkedInContent) {
+          // LinkedIn cap is 500 chars; reuse same lower bound as Twitter
+          const linkedInStatus = linkedInContent.length > 50 && linkedInContent.length <= 500 ? 'approved' : 'draft'
           const { error: liError } = await supabase.from('social_posts').insert({
             platform: 'linkedin',
             post_type: postType,
@@ -385,7 +390,7 @@ export async function GET(request: Request) {
             link_title: linkTitle,
             source_type: sourceType,
             source_id: sourceId,
-            status: 'draft',
+            status: linkedInStatus,
           })
           if (!liError) {
             results.push({ type: `${postType}_linkedin`, status: 'created', content: linkedInContent.slice(0, 100) })

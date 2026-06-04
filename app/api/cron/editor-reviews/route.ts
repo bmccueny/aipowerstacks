@@ -262,6 +262,7 @@ export async function GET(request: Request) {
       body: review.body,
       status: 'published',
       is_verified: true,
+      source: 'editor',
     })
 
     return NextResponse.json({

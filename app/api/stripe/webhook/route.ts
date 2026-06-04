@@ -38,9 +38,13 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: 'Database update failed' }, { status: 500 })
       }
     } else if (session.metadata?.plan === 'pro' && session.metadata?.userId) {
-      // TODO: Add a `plan` column to `profiles` table, then uncomment:
-      // await supabase.from('profiles').update({ plan: 'pro' }).eq('id', session.metadata.userId)
-      console.log('Stripe webhook: pro plan checkout completed for user', session.metadata.userId)
+      const { error } = await supabase
+        .from('profiles')
+        .update({ plan: 'pro' })
+        .eq('id', session.metadata.userId)
+      if (error) {
+        console.error('Stripe webhook: failed to upgrade user to pro', session.metadata.userId, error.message)
+      }
     }
   }
 
@@ -58,6 +62,10 @@ export async function POST(req: NextRequest) {
         console.error('Stripe webhook: failed to unfeature tool', toolSlug, error.message)
         return NextResponse.json({ error: 'Database update failed' }, { status: 500 })
       }
+    } else if (subscription.metadata?.plan === 'pro') {
+      // Find user by looking up the Stripe customer
+      // For now, log it — we'd need customer_id mapping
+      console.log('Stripe webhook: pro subscription cancelled, customer:', subscription.customer)
     }
   }
 

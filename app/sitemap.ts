@@ -3,12 +3,22 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { SITE_URL } from '@/lib/constants/site'
 import { getAllBestPageSlugs } from '@/lib/constants/best-pages'
+import { getBlogCategories } from '@/lib/supabase/queries/blog'
 
 const BASE_URL = SITE_URL
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const supabase = await createClient()
   const adminSupabase = createAdminClient()
+
+  const blogCategories = await getBlogCategories()
+
+  const blogCategoryUrls: MetadataRoute.Sitemap = blogCategories.map((cat) => ({
+    url: `${BASE_URL}/blog/${cat.slug}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.6,
+  }))
 
   const [toolsRes, categoriesRes, postsRes, stacksRes, curatorsRes, vsToolsRes, pricingToolsRes] = await Promise.allSettled([
     supabase.from('tools').select('slug, updated_at').eq('status', 'published').limit(5000),
@@ -141,10 +151,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/tracker`, lastModified: new Date(), changeFrequency: 'monthly' as const, priority: 0.5 },
     { url: `${BASE_URL}/switches`, lastModified: new Date(), changeFrequency: 'weekly' as const, priority: 0.5 },
     { url: `${BASE_URL}/stacks/leaderboard`, lastModified: new Date(), changeFrequency: 'daily' as const, priority: 0.6 },
+    { url: `${BASE_URL}/curators`, lastModified: new Date(), changeFrequency: 'daily' as const, priority: 0.7 },
     { url: `${BASE_URL}/stack-advisor`, lastModified: new Date(), changeFrequency: 'monthly' as const, priority: 0.6 },
     ...toolUrls,
     ...categoryUrls,
     ...blogUrls,
+    ...blogCategoryUrls,
     ...stackUrls,
     ...curators.map((c) => ({
       url: `${BASE_URL}/curators/${c.username}`,

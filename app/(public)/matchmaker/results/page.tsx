@@ -154,7 +154,7 @@ export default async function MatchmakerResultsPage({ searchParams }: Props) {
           </div>
 
           <div className="text-center space-y-4">
-            <Link href="/tracker">
+            <Link href={`/tracker?import=${orderedTools.map(t => t.slug).join(',')}`}>
               <Button size="lg" className="gap-2 font-bold">
                 <Sparkles className="h-4 w-4" /> Track These in My Budget
               </Button>

@@ -24,6 +24,8 @@ export function RelatedPages({ toolSlug, categorySlug, alternatives }: Props) {
 
   const links: { href: string; label: string }[] = [
     { href: `/alternatives/to-${toolSlug}`, label: 'View all alternatives' },
+    { href: `/pricing/${toolSlug}`, label: 'Pricing plans' },
+    { href: `/compare?tools=${toolSlug}`, label: 'Compare with alternatives' },
   ]
 
   if (topAlternative) {

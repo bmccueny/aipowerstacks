@@ -10,6 +10,7 @@ import { PRICING_LABELS, PRICING_BADGE_COLORS } from '@/lib/constants'
 import { SITE_URL } from '@/lib/constants/site'
 import { cn } from '@/lib/utils'
 import { OutboundLink } from '@/components/common/OutboundLink'
+import { PriceHistoryChart } from '@/components/tools/PriceHistoryChart'
 
 export const revalidate = 86400
 
@@ -427,6 +428,19 @@ export default async function PricingSlugPage({ params }: Props) {
           </div>
         )}
 
+        {/* Price history sparkline */}
+        {tiers.length > 0 && (
+          <div className="mt-6">
+            <PriceHistoryChart slug={tool.slug} />
+          </div>
+        )}
+
+        {/* Report incorrect pricing */}
+        <p className="mt-3 text-xs text-muted-foreground text-center">
+          Prices incorrect?{' '}
+          <Link href={`/tracker?add=${tool.slug}`} className="text-primary hover:underline">Report updated pricing</Link>
+        </p>
+
         {/* Track CTA */}
         <div className="mt-6 flex items-center gap-3">
           <Link href={`/tracker?add=${tool.slug}`}>
@@ -512,6 +526,11 @@ export default async function PricingSlugPage({ params }: Props) {
           <div className="mt-4">
             <Link href={`/alternatives/to-${tool.slug}`} className="text-sm text-primary hover:underline">
               See all {tool.name} alternatives →
+            </Link>
+          </div>
+          <div className="mt-6 text-center">
+            <Link href={`/compare?tools=${tool.slug}`} className="text-sm text-primary hover:underline">
+              Compare {tool.name} with alternatives →
             </Link>
           </div>
         </section>
