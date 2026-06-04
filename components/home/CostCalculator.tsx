@@ -347,67 +347,6 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
             })}
           </div>
 
-          {/* Search toggle */}
-          <button
-            type="button"
-            onClick={() => setShowSearch(true)}
-            className="w-full mt-3 py-2.5 text-xs font-medium text-muted-foreground hover:text-foreground flex items-center justify-center gap-1.5 transition-colors"
-          >
-            <Search className="h-3.5 w-3.5" /> Don&apos;t see your tool? Search
-          </button>
-        </div>
-      )}
-
-      {/* ── Search fallback ── */}
-      {!selectedTool && showSearch && (
-        <div ref={wrapperRef} className="relative mb-4">
-          <div className="relative">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-            <input
-              type="text"
-              role="combobox"
-              aria-autocomplete="list"
-              aria-expanded={showDropdown && filtered.length > 0}
-              aria-haspopup="listbox"
-              placeholder="Search for any AI tool..."
-              value={search}
-              onChange={e => { setSearch(e.target.value); setShowDropdown(true) }}
-              onFocus={() => { if (search.length > 1) setShowDropdown(true) }}
-              autoFocus
-              className="w-full pl-10 pr-10 py-3.5 text-base sm:text-sm rounded-2xl border border-border bg-background focus:outline-none focus:border-primary/40 focus:ring-2 focus:ring-primary/20 transition-all min-h-[48px]"
-            />
-            <button
-              onClick={() => { setShowSearch(false); setSearch('') }}
-              aria-label="Close search"
-              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-muted rounded-lg"
-            >
-              <X className="h-4 w-4 text-muted-foreground" />
-            </button>
-          </div>
-          {showDropdown && filtered.length > 0 && (
-            <div role="listbox" className="absolute top-full left-0 right-0 z-[100] mt-2 bg-popover border border-border rounded-xl shadow-2xl max-h-[50vh] sm:max-h-64 overflow-y-auto">
-              {filtered.map(t => (
-                <div
-                  key={t.id}
-                  role="option"
-                  aria-selected={false}
-                  aria-label={`Select ${t.name}`}
-                  tabIndex={0}
-                  onMouseDown={e => { e.preventDefault(); selectTool(t) }}
-                  onTouchEnd={e => { e.preventDefault(); selectTool(t) }}
-                  onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectTool(t) } }}
-                  className="px-4 py-3 flex items-center gap-3 hover:bg-muted/80 active:bg-muted cursor-pointer border-b border-border/20 last:border-0 min-h-[48px]"
-                >
-                  {t.logo_url ? (
-                    <img src={t.logo_url} alt={t.name} width={28} height={28} loading="lazy" decoding="async" className="w-7 h-7 rounded-lg object-contain shrink-0" />
-                  ) : (
-                    <span className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center text-xs font-bold text-primary shrink-0">{t.name[0]}</span>
-                  )}
-                  <span className="font-medium text-sm flex-1">{t.name}</span>
-                </div>
-              ))}
-            </div>
-          )}
         </div>
       )}
 
