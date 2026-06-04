@@ -15,7 +15,6 @@ import { getHomepageData } from '@/lib/supabase/queries/homepage'
 import { JsonLd } from '@/components/common/JsonLd'
 import { SITE_URL } from '@/lib/constants/site'
 import { AuthCTALink } from '@/components/home/AuthCTALink'
-import { HeroSearch } from '@/components/home/HeroSearch'
 
 export const revalidate = 60
 
@@ -75,10 +74,7 @@ export default async function HomePage() {
                 <br />
                 Cut what you don&apos;t need.
               </p>
-              <div className="mt-8">
-                <HeroSearch toolCount={siteStats.toolCount} />
-              </div>
-              <div className="mt-6 flex flex-wrap items-center gap-3">
+              <div className="mt-10 flex flex-wrap items-center gap-3">
                 <AuthCTALink fallbackHref="/login?redirectTo=/tracker" authHref="/tracker">
                   <Button size="lg" className="btn-glow font-bold gap-2.5 h-[52px] px-8 text-[15px] rounded-xl">
                     Track My AI Spend

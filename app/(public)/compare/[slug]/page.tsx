@@ -775,6 +775,20 @@ export default async function VsComparisonPage({
         </Link>
       </div>
 
+      {/* Save & get alerts — signup gate */}
+      <div className="glass-card rounded-xl p-6 text-center mt-8">
+        <h3 className="font-bold text-lg mb-2">Save this comparison</h3>
+        <p className="text-sm text-muted-foreground mb-4">
+          Get notified when {toolA.name} or {toolB.name} changes pricing. Free forever.
+        </p>
+        <Link href={`/register?redirectTo=/compare/${slug}`}>
+          <Button size="lg" className="font-bold gap-2">
+            Save & Get Price Alerts
+            <ArrowRight className="h-4 w-4" />
+          </Button>
+        </Link>
+      </div>
+
       {/* Cross-links to alternatives and pricing pages */}
       <div className="flex flex-wrap gap-4 mt-6 text-sm justify-center">
         <Link href={`/alternatives/to-${toolA.slug}`} className="text-primary hover:underline">
