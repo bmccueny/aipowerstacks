@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, type ComponentProps } from 'react'
+import { useState, useMemo, type ComponentProps } from 'react'
 import { ReviewCard } from './ReviewCard'
 
 type ReviewItem = ComponentProps<typeof ReviewCard>['review']
@@ -10,19 +10,33 @@ export function ReviewList({ reviews, currentUserId }: { reviews: ReviewItem[]; 
   const [sort, setSort] = useState<SortOption>('helpful')
   const [filterRating, setFilterRating] = useState<number | null>(null)
 
-  const filtered = filterRating
-    ? reviews.filter(r => r.rating === filterRating)
-    : reviews
-
-  const sorted = [...filtered].sort((a, b) => {
-    switch (sort) {
-      case 'newest': return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-      case 'highest': return b.rating - a.rating
-      case 'lowest': return a.rating - b.rating
-      case 'helpful':
-      default: return (b.helpful_count ?? 0) - (a.helpful_count ?? 0)
+  // ⚡ Bolt Optimization: Memoize the rating counts to avoid recalculating 5 times per render
+  const ratingCounts = useMemo(() => {
+    const counts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 } as Record<number, number>
+    for (const review of reviews) {
+      if (counts[review.rating] !== undefined) {
+        counts[review.rating]++
+      }
     }
-  })
+    return counts
+  }, [reviews])
+
+  // ⚡ Bolt Optimization: Memoize filtered and sorted results to prevent recalculation on every re-render
+  const sorted = useMemo(() => {
+    const filtered = filterRating
+      ? reviews.filter(r => r.rating === filterRating)
+      : reviews
+
+    return [...filtered].sort((a, b) => {
+      switch (sort) {
+        case 'newest': return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        case 'highest': return b.rating - a.rating
+        case 'lowest': return a.rating - b.rating
+        case 'helpful':
+        default: return (b.helpful_count ?? 0) - (a.helpful_count ?? 0)
+      }
+    })
+  }, [reviews, filterRating, sort])
 
   if (reviews.length === 0) return null
 
@@ -50,7 +64,7 @@ export function ReviewList({ reviews, currentUserId }: { reviews: ReviewItem[]; 
             All
           </button>
           {[5, 4, 3, 2, 1].map(star => {
-            const count = reviews.filter(r => r.rating === star).length
+            const count = ratingCounts[star]
             if (count === 0) return null
             return (
               <button
