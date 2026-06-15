@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import Link from 'next/link'
 import { X, Search, ArrowRight, Check, Loader2, Terminal, Pen, Megaphone, FlaskConical, AlertTriangle, Users, TrendingDown } from 'lucide-react'
 
@@ -136,9 +136,10 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
   }, [added, fetchInsights])
 
   // Build the popular tools grid from props
-  const popularTools = POPULAR_SLUGS
+  // ⚡ Bolt: Memoized O(N*M) search since POPULAR_SLUGS mapping was running on every keystroke
+  const popularTools = useMemo(() => POPULAR_SLUGS
     .map(slug => tools.find(t => t.slug === slug))
-    .filter((t): t is QuickTool => t != null)
+    .filter((t): t is QuickTool => t != null), [tools])
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
