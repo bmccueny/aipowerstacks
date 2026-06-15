@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import Link from 'next/link'
 import { X, Search, ArrowRight, Check, Loader2, Terminal, Pen, Megaphone, FlaskConical, AlertTriangle, Users, TrendingDown } from 'lucide-react'
 
@@ -136,9 +136,11 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
   }, [added, fetchInsights])
 
   // Build the popular tools grid from props
-  const popularTools = POPULAR_SLUGS
-    .map(slug => tools.find(t => t.slug === slug))
-    .filter((t): t is QuickTool => t != null)
+  const popularTools = useMemo(() => {
+    return POPULAR_SLUGS
+      .map(slug => tools.find(t => t.slug === slug))
+      .filter((t): t is QuickTool => t != null)
+  }, [tools])
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -167,11 +169,13 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
       .catch(() => { setTiers([]); setTiersLoading(false) })
   }, [selectedTool])
 
-  const addedIds = new Set(added.map(t => t.id))
+  const addedIds = useMemo(() => new Set(added.map(t => t.id)), [added])
 
-  const filtered = search.length > 1
-    ? tools.filter(t => t.name.toLowerCase().includes(search.toLowerCase()) && !addedIds.has(t.id)).slice(0, 6)
-    : []
+  const filtered = useMemo(() => {
+    return search.length > 1
+      ? tools.filter(t => t.name.toLowerCase().includes(search.toLowerCase()) && !addedIds.has(t.id)).slice(0, 6)
+      : []
+  }, [search, tools, addedIds])
 
   const selectTool = (tool: QuickTool) => {
     setSelectedTool(tool)
@@ -268,15 +272,26 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
     }
   }
 
-  const monthlyTotal = added.reduce((sum, t) => sum + t.price, 0)
-  const annualTotal = added.reduce((sum, t) => {
-    if (t.annualPrice != null) return sum + Math.round(t.annualPrice / 12 * 100) / 100
-    return sum + Math.round(t.price * 0.8 * 100) / 100
-  }, 0)
-  const total = Math.round((billingCycle === 'monthly' ? monthlyTotal : annualTotal) * 100) / 100
-  const yearly = Math.round(total * 12 * 100) / 100
-  const monthlySavings = Math.round((monthlyTotal - annualTotal) * 100) / 100
-  const comparison = getComparison(yearly)
+  const { monthlyTotal, annualTotal, total, yearly, monthlySavings, comparison } = useMemo(() => {
+    const mTotal = added.reduce((sum, t) => sum + t.price, 0)
+    const aTotal = added.reduce((sum, t) => {
+      if (t.annualPrice != null) return sum + Math.round((t.annualPrice / 12) * 100) / 100
+      return sum + Math.round(t.price * 0.8 * 100) / 100
+    }, 0)
+    const tTotal = Math.round((billingCycle === 'monthly' ? mTotal : aTotal) * 100) / 100
+    const yTotal = Math.round(tTotal * 12 * 100) / 100
+    const mSavings = Math.round((mTotal - aTotal) * 100) / 100
+    const comp = getComparison(yTotal)
+
+    return {
+      monthlyTotal: mTotal,
+      annualTotal: aTotal,
+      total: tTotal,
+      yearly: yTotal,
+      monthlySavings: mSavings,
+      comparison: comp
+    }
+  }, [added, billingCycle])
 
   return (
     <div className="max-w-xl mx-auto">
