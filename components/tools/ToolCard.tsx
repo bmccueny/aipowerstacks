@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Star, ExternalLink, Github, DollarSign } from 'lucide-react'
@@ -493,7 +493,7 @@ function ToolCardGrid({ tool, pricingColor, pricingLabel, screenshotUrl, isWellF
 // ToolCard — public API (thin router)
 // ---------------------------------------------------------------------------
 
-export function ToolCard({ tool, view = 'grid', cardStyle = 'default', compact = false }: ToolCardProps) {
+const ToolCardComponent = function ToolCard({ tool, view = 'grid', cardStyle = 'default', compact = false }: ToolCardProps) {
   const [imageError, setImageError] = useState(false)
   const [hasBeenHovered, setHasBeenHovered] = useState(false)
   const pricingColor = PRICING_BADGE_COLORS[tool.pricing_model] ?? PRICING_BADGE_COLORS.unknown
@@ -524,3 +524,24 @@ export function ToolCard({ tool, view = 'grid', cardStyle = 'default', compact =
 
   return <ToolCardGrid {...shared} />
 }
+
+export const ToolCard = React.memo(ToolCardComponent, (prevProps, nextProps) => {
+  // Use a custom comparator to prevent unnecessary re-renders in Next.js
+  // where server-fetched objects get new references on every navigation.
+  return (
+    prevProps.tool.id === nextProps.tool.id &&
+    // Check all mutable/display properties that could change when data is refreshed
+    prevProps.tool.name === nextProps.tool.name &&
+    prevProps.tool.tagline === nextProps.tool.tagline &&
+    prevProps.tool.logo_url === nextProps.tool.logo_url &&
+    prevProps.tool.pricing_model === nextProps.tool.pricing_model &&
+    prevProps.tool.is_verified === nextProps.tool.is_verified &&
+    prevProps.tool.avg_rating === nextProps.tool.avg_rating &&
+    prevProps.tool.review_count === nextProps.tool.review_count &&
+    prevProps.tool.upvote_count === nextProps.tool.upvote_count &&
+    // Other props
+    prevProps.view === nextProps.view &&
+    prevProps.cardStyle === nextProps.cardStyle &&
+    prevProps.compact === nextProps.compact
+  )
+})

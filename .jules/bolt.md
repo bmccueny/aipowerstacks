@@ -1,0 +1,3 @@
+## 2024-06-16 - Add React.memo for Next.js App Router RSC
+**Learning:** In Next.js App Router applications, server-fetched data creates new object references on every navigation. When applying React.memo() to components receiving these objects, always provide a custom comparison function checking specific properties (like ID and display primitives) to prevent unnecessary re-renders. We should check all mutable/display properties that could change.
+**Action:** Add React.memo with a custom comparator comparing `id` and important primitive properties when rendering grids of data in Next.js Server Components that are passed to Client Components.
