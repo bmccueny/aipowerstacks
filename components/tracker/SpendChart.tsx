@@ -20,9 +20,9 @@ export function SpendChart({ subscriptions }: SpendChartProps) {
   const data = useMemo(() => {
     if (subscriptions.length === 0) return []
 
-    // Sort by created_at
-    const sorted = [...subscriptions].sort(
-      (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
+    // Sort by created_at (avoiding O(N log N) Date allocations since ISO strings sort chronologically)
+    const sorted = [...subscriptions].sort((a, b) =>
+      a.created_at < b.created_at ? -1 : a.created_at > b.created_at ? 1 : 0
     )
 
     // Build monthly snapshots: each month shows cumulative spend
@@ -30,8 +30,8 @@ export function SpendChart({ subscriptions }: SpendChartProps) {
     let cumulative = 0
 
     for (const sub of sorted) {
-      const d = new Date(sub.created_at)
-      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
+      // Extract YYYY-MM directly from ISO string (e.g. "2024-05-12T...")
+      const key = sub.created_at.substring(0, 7)
       cumulative += Number(sub.monthly_cost)
       months.set(key, cumulative)
     }
