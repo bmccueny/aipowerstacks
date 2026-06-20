@@ -1,291 +1,440 @@
-'use client'
+"use client";
 
-import { useState, useRef, useEffect, useCallback } from 'react'
-import Link from 'next/link'
-import { X, Search, ArrowRight, Check, Loader2, Terminal, Pen, Megaphone, FlaskConical, AlertTriangle, Users, TrendingDown } from 'lucide-react'
+import { useState, useRef, useEffect, useCallback, useMemo } from "react";
+import Link from "next/link";
+import {
+  X,
+  Search,
+  ArrowRight,
+  Check,
+  Loader2,
+  Terminal,
+  Pen,
+  Megaphone,
+  FlaskConical,
+  AlertTriangle,
+  Users,
+  TrendingDown,
+} from "lucide-react";
 
 type QuickTool = {
-  id: string
-  name: string
-  slug: string
-  logo_url: string | null
-  pricing_model: string
-}
+  id: string;
+  name: string;
+  slug: string;
+  logo_url: string | null;
+  pricing_model: string;
+};
 
-type TierData = { tier_name: string; monthly_price: number; annual_price: number | null; features: string }
+type TierData = {
+  tier_name: string;
+  monthly_price: number;
+  annual_price: number | null;
+  features: string;
+};
 
-type AddedTool = QuickTool & { price: number; annualPrice: number | null; tier: string }
+type AddedTool = QuickTool & {
+  price: number;
+  annualPrice: number | null;
+  tier: string;
+};
 
 // Curated popular tools shown in the tap grid
 const POPULAR_SLUGS = [
-  'chatgpt', 'claude-code', 'gemini', 'cursor-editor', 'midjourney',
-  'perplexity-ai', 'github-copilot', 'notion-ai', 'canva', 'elevenlabs',
-  'figma-ai', 'v0-by-vercel', 'suno', 'zapier', 'grammarly',
-  'runway-gen-4', 'make', 'higgsfield-ai', 'adobe-firefly', 'n8n',
-]
+  "chatgpt",
+  "claude-code",
+  "gemini",
+  "cursor-editor",
+  "midjourney",
+  "perplexity-ai",
+  "github-copilot",
+  "notion-ai",
+  "canva",
+  "elevenlabs",
+  "figma-ai",
+  "v0-by-vercel",
+  "suno",
+  "zapier",
+  "grammarly",
+  "runway-gen-4",
+  "make",
+  "higgsfield-ai",
+  "adobe-firefly",
+  "n8n",
+];
 
 // Preset stacks
 const PRESETS = [
-  { label: 'Developer', icon: Terminal, color: 'text-emerald-500', slugs: ['claude-code', 'cursor-editor', 'github-copilot', 'v0-by-vercel'] },
-  { label: 'Creator', icon: Pen, color: 'text-violet-500', slugs: ['midjourney', 'runway-gen-4', 'canva', 'elevenlabs'] },
-  { label: 'Marketer', icon: Megaphone, color: 'text-amber-500', slugs: ['chatgpt', 'jasper-ai', 'surfer-seo', 'adcreative-ai'] },
-  { label: 'Researcher', icon: FlaskConical, color: 'text-blue-500', slugs: ['perplexity-ai', 'gemini', 'notebooklm', 'elicit'] },
-]
+  {
+    label: "Developer",
+    icon: Terminal,
+    color: "text-emerald-500",
+    slugs: ["claude-code", "cursor-editor", "github-copilot", "v0-by-vercel"],
+  },
+  {
+    label: "Creator",
+    icon: Pen,
+    color: "text-violet-500",
+    slugs: ["midjourney", "runway-gen-4", "canva", "elevenlabs"],
+  },
+  {
+    label: "Marketer",
+    icon: Megaphone,
+    color: "text-amber-500",
+    slugs: ["chatgpt", "jasper-ai", "surfer-seo", "adcreative-ai"],
+  },
+  {
+    label: "Researcher",
+    icon: FlaskConical,
+    color: "text-blue-500",
+    slugs: ["perplexity-ai", "gemini", "notebooklm", "elicit"],
+  },
+];
 
 const SPEND_COMPARISONS = [
-  { threshold: 50, text: 'a nice dinner out' },
-  { threshold: 100, text: 'a gym membership' },
-  { threshold: 200, text: 'a car payment' },
-  { threshold: 500, text: 'a vacation flight' },
-  { threshold: 1000, text: 'a new iPhone' },
-  { threshold: 2000, text: 'a MacBook Air' },
-  { threshold: 3000, text: 'a month of rent' },
-  { threshold: 5000, text: 'a used car' },
-]
+  { threshold: 50, text: "a nice dinner out" },
+  { threshold: 100, text: "a gym membership" },
+  { threshold: 200, text: "a car payment" },
+  { threshold: 500, text: "a vacation flight" },
+  { threshold: 1000, text: "a new iPhone" },
+  { threshold: 2000, text: "a MacBook Air" },
+  { threshold: 3000, text: "a month of rent" },
+  { threshold: 5000, text: "a used car" },
+];
 
 function getComparison(yearly: number): string | null {
   for (let i = SPEND_COMPARISONS.length - 1; i >= 0; i--) {
-    if (yearly >= SPEND_COMPARISONS[i].threshold) return SPEND_COMPARISONS[i].text
+    if (yearly >= SPEND_COMPARISONS[i].threshold)
+      return SPEND_COMPARISONS[i].text;
   }
-  return null
+  return null;
 }
 
-export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLoggedIn?: boolean }) {
-  const [added, setAdded] = useState<AddedTool[]>([])
-  const [search, setSearch] = useState('')
-  const [showDropdown, setShowDropdown] = useState(false)
-  const [selectedTool, setSelectedTool] = useState<QuickTool | null>(null)
-  const [tiers, setTiers] = useState<TierData[]>([])
-  const [showSearch, setShowSearch] = useState(false)
-  const [editingTierId, setEditingTierId] = useState<string | null>(null)
-  const [editTiers, setEditTiers] = useState<TierData[]>([])
-  const [loadingToolId, setLoadingToolId] = useState<string | null>(null)
-  const [tiersLoading, setTiersLoading] = useState(false)
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly')
-  const wrapperRef = useRef<HTMLDivElement>(null)
-  const tierCache = useRef(new Map<string, TierData[]>())
+export function CostCalculator({
+  tools,
+  isLoggedIn,
+}: {
+  tools: QuickTool[];
+  isLoggedIn?: boolean;
+}) {
+  const [added, setAdded] = useState<AddedTool[]>([]);
+  const [search, setSearch] = useState("");
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [selectedTool, setSelectedTool] = useState<QuickTool | null>(null);
+  const [tiers, setTiers] = useState<TierData[]>([]);
+  const [showSearch, setShowSearch] = useState(false);
+  const [editingTierId, setEditingTierId] = useState<string | null>(null);
+  const [editTiers, setEditTiers] = useState<TierData[]>([]);
+  const [loadingToolId, setLoadingToolId] = useState<string | null>(null);
+  const [tiersLoading, setTiersLoading] = useState(false);
+  const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">(
+    "monthly",
+  );
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const tierCache = useRef(new Map<string, TierData[]>());
 
   // Instant insight state
   type InsightData = {
-    overlaps: { tools: string[]; reason: string; savings: number }[]
-    percentile: number
-    wastePercent: number
-    totalSavings: number
-  }
-  const [insights, setInsights] = useState<InsightData | null>(null)
-  const [insightsLoading, setInsightsLoading] = useState(false)
-  const insightsFetched = useRef(new Set<string>())
+    overlaps: { tools: string[]; reason: string; savings: number }[];
+    percentile: number;
+    wastePercent: number;
+    totalSavings: number;
+  };
+  const [insights, setInsights] = useState<InsightData | null>(null);
+  const [insightsLoading, setInsightsLoading] = useState(false);
+  const insightsFetched = useRef(new Set<string>());
 
   // Fetch insights when 3+ tools are added
   const fetchInsights = useCallback(async (toolList: AddedTool[]) => {
-    if (toolList.length < 3) { setInsights(null); return }
+    if (toolList.length < 3) {
+      setInsights(null);
+      return;
+    }
 
-    const key = toolList.map(t => t.id).sort().join(',')
-    if (insightsFetched.current.has(key)) return
-    insightsFetched.current.add(key)
+    const key = toolList
+      .map((t) => t.id)
+      .sort()
+      .join(",");
+    if (insightsFetched.current.has(key)) return;
+    insightsFetched.current.add(key);
 
-    setInsightsLoading(true)
+    setInsightsLoading(true);
     try {
-      const ids = toolList.map(t => t.id)
-      const total = toolList.reduce((s, t) => s + t.price, 0)
+      const ids = toolList.map((t) => t.id);
+      const total = toolList.reduce((s, t) => s + t.price, 0);
 
       const [overlapRes, benchRes] = await Promise.allSettled([
-        fetch('/api/tracker/quick-overlap', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+        fetch("/api/tracker/quick-overlap", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ tool_ids: ids }),
-        }).then(r => r.ok ? r.json() : null),
-        fetch(`/api/tracker/benchmark?tool_ids=${ids.join(',')}&total=${total}`).then(r => r.ok ? r.json() : null),
-      ])
+        }).then((r) => (r.ok ? r.json() : null)),
+        fetch(
+          `/api/tracker/benchmark?tool_ids=${ids.join(",")}&total=${total}`,
+        ).then((r) => (r.ok ? r.json() : null)),
+      ]);
 
-      const overlap = overlapRes.status === 'fulfilled' ? overlapRes.value : null
-      const bench = benchRes.status === 'fulfilled' ? benchRes.value : null
+      const overlap =
+        overlapRes.status === "fulfilled" ? overlapRes.value : null;
+      const bench = benchRes.status === "fulfilled" ? benchRes.value : null;
 
-      const overlaps = (overlap?.overlaps || []).map((o: { toolNames: [string, string]; reason: string; confidence: number }) => ({
-        tools: o.toolNames,
-        reason: o.reason,
-        savings: 0,
-      }))
+      const overlaps = (overlap?.overlaps || []).map(
+        (o: {
+          toolNames: [string, string];
+          reason: string;
+          confidence: number;
+        }) => ({
+          tools: o.toolNames,
+          reason: o.reason,
+          savings: 0,
+        }),
+      );
 
       // Estimate waste: each overlap pair = the cheaper tool's cost is potentially wasted
-      let estimatedWaste = 0
+      let estimatedWaste = 0;
       for (const o of overlap?.overlaps || []) {
-        const slugs: string[] = o.tools || []
-        const costs = slugs.map((s: string) => toolList.find(t => t.slug === s)?.price || 0).sort((a: number, b: number) => a - b)
-        if (costs.length >= 2) estimatedWaste += costs[0] // cheaper tool is the waste
+        const slugs: string[] = o.tools || [];
+        const costs = slugs
+          .map((s: string) => toolList.find((t) => t.slug === s)?.price || 0)
+          .sort((a: number, b: number) => a - b);
+        if (costs.length >= 2) estimatedWaste += costs[0]; // cheaper tool is the waste
       }
-      const wastePercent = total > 0 ? Math.round((estimatedWaste / total) * 100) : 0
+      const wastePercent =
+        total > 0 ? Math.round((estimatedWaste / total) * 100) : 0;
 
       setInsights({
         overlaps,
         percentile: bench?.percentile ?? 50,
         wastePercent,
         totalSavings: Math.round(estimatedWaste * 12),
-      })
+      });
     } catch {
-      setInsights(null)
+      setInsights(null);
     } finally {
-      setInsightsLoading(false)
+      setInsightsLoading(false);
     }
-  }, [])
+  }, []);
 
   // Trigger insight fetch when tools change
   useEffect(() => {
-    if (added.length >= 3) fetchInsights(added)
-    else setInsights(null)
-  }, [added, fetchInsights])
+    if (added.length >= 3) fetchInsights(added);
+    else setInsights(null);
+  }, [added, fetchInsights]);
 
   // Build the popular tools grid from props
-  const popularTools = POPULAR_SLUGS
-    .map(slug => tools.find(t => t.slug === slug))
-    .filter((t): t is QuickTool => t != null)
+  const popularTools = useMemo(
+    () =>
+      POPULAR_SLUGS.map((slug) => tools.find((t) => t.slug === slug)).filter(
+        (t): t is QuickTool => t != null,
+      ),
+    [tools],
+  );
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
-        setShowDropdown(false)
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(e.target as Node)
+      ) {
+        setShowDropdown(false);
       }
-    }
-    document.addEventListener('mousedown', handler)
-    return () => document.removeEventListener('mousedown', handler)
-  }, [])
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
 
   // Load tiers when tool selected (cache-first)
   useEffect(() => {
-    if (!selectedTool) { setTiers([]); return }
-    const cached = tierCache.current.get(selectedTool.id)
-    if (cached) { setTiers(cached); return }
-    setTiersLoading(true)
+    if (!selectedTool) {
+      setTiers([]);
+      return;
+    }
+    const cached = tierCache.current.get(selectedTool.id);
+    if (cached) {
+      setTiers(cached);
+      return;
+    }
+    setTiersLoading(true);
     fetch(`/api/tracker/tiers?tool_id=${selectedTool.id}`)
-      .then(r => r.json())
-      .then(d => {
-        const result: TierData[] = d.tiers || []
-        tierCache.current.set(selectedTool.id, result)
-        setTiers(result)
-        setTiersLoading(false)
+      .then((r) => r.json())
+      .then((d) => {
+        const result: TierData[] = d.tiers || [];
+        tierCache.current.set(selectedTool.id, result);
+        setTiers(result);
+        setTiersLoading(false);
       })
-      .catch(() => { setTiers([]); setTiersLoading(false) })
-  }, [selectedTool])
+      .catch(() => {
+        setTiers([]);
+        setTiersLoading(false);
+      });
+  }, [selectedTool]);
 
-  const addedIds = new Set(added.map(t => t.id))
+  const addedIds = new Set(added.map((t) => t.id));
 
-  const filtered = search.length > 1
-    ? tools.filter(t => t.name.toLowerCase().includes(search.toLowerCase()) && !addedIds.has(t.id)).slice(0, 6)
-    : []
+  const filtered =
+    search.length > 1
+      ? tools
+          .filter(
+            (t) =>
+              t.name.toLowerCase().includes(search.toLowerCase()) &&
+              !addedIds.has(t.id),
+          )
+          .slice(0, 6)
+      : [];
 
   const selectTool = (tool: QuickTool) => {
-    setSelectedTool(tool)
-    setSearch('')
-    setShowDropdown(false)
-    setShowSearch(false)
-  }
+    setSelectedTool(tool);
+    setSearch("");
+    setShowDropdown(false);
+    setShowSearch(false);
+  };
 
   const quickAdd = (tool: QuickTool) => {
-    const cached = tierCache.current.get(tool.id)
+    const cached = tierCache.current.get(tool.id);
     if (cached) {
-      const paidTiers = cached.filter(t => t.monthly_price > 0)
-      const defaultTier = paidTiers[0] || cached[0]
+      const paidTiers = cached.filter((t) => t.monthly_price > 0);
+      const defaultTier = paidTiers[0] || cached[0];
       if (defaultTier) {
-        setAdded(prev => [...prev, {
-          ...tool,
-          price: defaultTier.monthly_price,
-          annualPrice: defaultTier.annual_price ?? null,
-          tier: defaultTier.tier_name,
-        }])
-      } else {
-        selectTool(tool)
-      }
-      return
-    }
-
-    setLoadingToolId(tool.id)
-    fetch(`/api/tracker/tiers?tool_id=${tool.id}`)
-      .then(r => r.json())
-      .then(d => {
-        const tierList: TierData[] = d.tiers || []
-        tierCache.current.set(tool.id, tierList)
-        const paidTiers = tierList.filter(t => t.monthly_price > 0)
-        const defaultTier = paidTiers[0] || tierList[0]
-        if (defaultTier) {
-          setAdded(prev => [...prev, {
+        setAdded((prev) => [
+          ...prev,
+          {
             ...tool,
             price: defaultTier.monthly_price,
             annualPrice: defaultTier.annual_price ?? null,
             tier: defaultTier.tier_name,
-          }])
+          },
+        ]);
+      } else {
+        selectTool(tool);
+      }
+      return;
+    }
+
+    setLoadingToolId(tool.id);
+    fetch(`/api/tracker/tiers?tool_id=${tool.id}`)
+      .then((r) => r.json())
+      .then((d) => {
+        const tierList: TierData[] = d.tiers || [];
+        tierCache.current.set(tool.id, tierList);
+        const paidTiers = tierList.filter((t) => t.monthly_price > 0);
+        const defaultTier = paidTiers[0] || tierList[0];
+        if (defaultTier) {
+          setAdded((prev) => [
+            ...prev,
+            {
+              ...tool,
+              price: defaultTier.monthly_price,
+              annualPrice: defaultTier.annual_price ?? null,
+              tier: defaultTier.tier_name,
+            },
+          ]);
         } else {
-          selectTool(tool)
+          selectTool(tool);
         }
-        setLoadingToolId(null)
+        setLoadingToolId(null);
       })
       .catch(() => {
-        selectTool(tool)
-        setLoadingToolId(null)
-      })
-  }
+        selectTool(tool);
+        setLoadingToolId(null);
+      });
+  };
 
-  const addWithTier = (price: number, tierName: string, annualPrice?: number | null) => {
-    if (!selectedTool) return
-    setAdded(prev => [...prev, { ...selectedTool, price, annualPrice: annualPrice ?? null, tier: tierName }])
-    setSelectedTool(null)
-  }
+  const addWithTier = (
+    price: number,
+    tierName: string,
+    annualPrice?: number | null,
+  ) => {
+    if (!selectedTool) return;
+    setAdded((prev) => [
+      ...prev,
+      {
+        ...selectedTool,
+        price,
+        annualPrice: annualPrice ?? null,
+        tier: tierName,
+      },
+    ]);
+    setSelectedTool(null);
+  };
 
   const remove = (id: string) => {
-    setAdded(prev => prev.filter(t => t.id !== id))
-    if (editingTierId === id) setEditingTierId(null)
-  }
+    setAdded((prev) => prev.filter((t) => t.id !== id));
+    if (editingTierId === id) setEditingTierId(null);
+  };
 
   const startEditTier = (toolId: string) => {
-    if (editingTierId === toolId) { setEditingTierId(null); return }
-    setEditingTierId(toolId)
-    const tool = added.find(t => t.id === toolId)
-    if (!tool) return
-    const cached = tierCache.current.get(tool.id)
-    if (cached) { setEditTiers(cached); return }
+    if (editingTierId === toolId) {
+      setEditingTierId(null);
+      return;
+    }
+    setEditingTierId(toolId);
+    const tool = added.find((t) => t.id === toolId);
+    if (!tool) return;
+    const cached = tierCache.current.get(tool.id);
+    if (cached) {
+      setEditTiers(cached);
+      return;
+    }
     fetch(`/api/tracker/tiers?tool_id=${tool.id}`)
-      .then(r => r.json())
-      .then(d => {
-        const result: TierData[] = d.tiers || []
-        tierCache.current.set(tool.id, result)
-        setEditTiers(result)
+      .then((r) => r.json())
+      .then((d) => {
+        const result: TierData[] = d.tiers || [];
+        tierCache.current.set(tool.id, result);
+        setEditTiers(result);
       })
-      .catch(() => setEditTiers([]))
-  }
+      .catch(() => setEditTiers([]));
+  };
 
-  const changeTier = (toolId: string, price: number, tierName: string, annualPrice?: number | null) => {
-    setAdded(prev => prev.map(t => t.id === toolId ? { ...t, price, annualPrice: annualPrice ?? null, tier: tierName } : t))
-    setEditingTierId(null)
-  }
+  const changeTier = (
+    toolId: string,
+    price: number,
+    tierName: string,
+    annualPrice?: number | null,
+  ) => {
+    setAdded((prev) =>
+      prev.map((t) =>
+        t.id === toolId
+          ? { ...t, price, annualPrice: annualPrice ?? null, tier: tierName }
+          : t,
+      ),
+    );
+    setEditingTierId(null);
+  };
 
-  const applyPreset = (preset: typeof PRESETS[number]) => {
+  const applyPreset = (preset: (typeof PRESETS)[number]) => {
     const presetTools = preset.slugs
-      .map(slug => tools.find(t => t.slug === slug))
-      .filter((t): t is QuickTool => t != null && !addedIds.has(t.id))
+      .map((slug) => tools.find((t) => t.slug === slug))
+      .filter((t): t is QuickTool => t != null && !addedIds.has(t.id));
 
     // Quick-add all preset tools
     for (const tool of presetTools) {
-      quickAdd(tool)
+      quickAdd(tool);
     }
-  }
+  };
 
-  const monthlyTotal = added.reduce((sum, t) => sum + t.price, 0)
+  const monthlyTotal = added.reduce((sum, t) => sum + t.price, 0);
   const annualTotal = added.reduce((sum, t) => {
-    if (t.annualPrice != null) return sum + Math.round(t.annualPrice / 12 * 100) / 100
-    return sum + Math.round(t.price * 0.8 * 100) / 100
-  }, 0)
-  const total = Math.round((billingCycle === 'monthly' ? monthlyTotal : annualTotal) * 100) / 100
-  const yearly = Math.round(total * 12 * 100) / 100
-  const monthlySavings = Math.round((monthlyTotal - annualTotal) * 100) / 100
-  const comparison = getComparison(yearly)
+    if (t.annualPrice != null)
+      return sum + Math.round((t.annualPrice / 12) * 100) / 100;
+    return sum + Math.round(t.price * 0.8 * 100) / 100;
+  }, 0);
+  const total =
+    Math.round(
+      (billingCycle === "monthly" ? monthlyTotal : annualTotal) * 100,
+    ) / 100;
+  const yearly = Math.round(total * 12 * 100) / 100;
+  const monthlySavings = Math.round((monthlyTotal - annualTotal) * 100) / 100;
+  const comparison = getComparison(yearly);
 
   return (
     <div className="max-w-xl mx-auto">
       {/* ── Preset shortcuts ── */}
       {added.length === 0 && (
         <div className="flex flex-wrap justify-center gap-2 mb-5">
-          <span className="text-xs text-muted-foreground mr-1 self-center">I&apos;m a:</span>
-          {PRESETS.map(preset => {
-            const Icon = preset.icon
+          <span className="text-xs text-muted-foreground mr-1 self-center">
+            I&apos;m a:
+          </span>
+          {PRESETS.map((preset) => {
+            const Icon = preset.icon;
             return (
               <button
                 key={preset.label}
@@ -293,10 +442,12 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
                 onClick={() => applyPreset(preset)}
                 className="px-3.5 py-2 rounded-full border border-border hover:border-primary/40 hover:bg-primary/5 text-sm transition-all cursor-pointer flex items-center gap-2 group"
               >
-                <Icon className={`h-3.5 w-3.5 ${preset.color} group-hover:scale-110 transition-transform`} />
+                <Icon
+                  className={`h-3.5 w-3.5 ${preset.color} group-hover:scale-110 transition-transform`}
+                />
                 <span className="font-semibold">{preset.label}</span>
               </button>
-            )
+            );
           })}
         </div>
       )}
@@ -305,23 +456,27 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
       {!selectedTool && !showSearch && (
         <div className="mb-4">
           <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-2.5 sm:gap-3">
-            {popularTools.map(tool => {
-              const isAdded = addedIds.has(tool.id)
-              const isLoading = loadingToolId === tool.id
+            {popularTools.map((tool) => {
+              const isAdded = addedIds.has(tool.id);
+              const isLoading = loadingToolId === tool.id;
               return (
                 <button
                   key={tool.id}
                   type="button"
                   disabled={isLoading}
-                  onClick={() => isAdded ? remove(tool.id) : quickAdd(tool)}
-                  aria-label={isAdded ? `Remove ${tool.name} from stack` : `Add ${tool.name} to stack`}
+                  onClick={() => (isAdded ? remove(tool.id) : quickAdd(tool))}
+                  aria-label={
+                    isAdded
+                      ? `Remove ${tool.name} from stack`
+                      : `Add ${tool.name} to stack`
+                  }
                   aria-pressed={isAdded}
                   className={`relative p-3 sm:p-3 rounded-xl border transition-all text-center cursor-pointer group min-h-[72px] ${
                     isLoading
-                      ? 'border-primary/30 bg-primary/[0.03] animate-pulse'
+                      ? "border-primary/30 bg-primary/[0.03] animate-pulse"
                       : isAdded
-                        ? 'border-primary/40 bg-primary/5'
-                        : 'border-border hover:border-primary/30 hover:bg-primary/[0.02]'
+                        ? "border-primary/40 bg-primary/5"
+                        : "border-border hover:border-primary/30 hover:bg-primary/[0.02]"
                   }`}
                 >
                   {isLoading && (
@@ -334,19 +489,32 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
                       <Check className="h-2.5 w-2.5 text-white" />
                     </div>
                   )}
-                  <div className={`h-10 w-10 mx-auto mb-1.5 flex items-center justify-center ${isLoading ? 'opacity-50' : ''}`}>
+                  <div
+                    className={`h-10 w-10 mx-auto mb-1.5 flex items-center justify-center ${isLoading ? "opacity-50" : ""}`}
+                  >
                     {tool.logo_url ? (
-                      <img src={tool.logo_url} alt={tool.name} width={40} height={40} loading="lazy" decoding="async" className="w-10 h-10 rounded-lg object-contain" />
+                      <img
+                        src={tool.logo_url}
+                        alt={tool.name}
+                        width={40}
+                        height={40}
+                        loading="lazy"
+                        decoding="async"
+                        className="w-10 h-10 rounded-lg object-contain"
+                      />
                     ) : (
-                      <span className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">{tool.name[0]}</span>
+                      <span className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">
+                        {tool.name[0]}
+                      </span>
                     )}
                   </div>
-                  <p className="text-xs font-medium leading-tight line-clamp-1">{tool.name}</p>
+                  <p className="text-xs font-medium leading-tight line-clamp-1">
+                    {tool.name}
+                  </p>
                 </button>
-              )
+              );
             })}
           </div>
-
         </div>
       )}
 
@@ -355,12 +523,28 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
         <div className="rounded-2xl border border-primary/20 bg-primary/[0.02] p-4 sm:p-4 mb-4">
           <div className="flex items-center gap-3 mb-3">
             {selectedTool.logo_url ? (
-              <img src={selectedTool.logo_url} alt={selectedTool.name} width={32} height={32} loading="lazy" decoding="async" className="w-8 h-8 rounded-lg object-contain" />
+              <img
+                src={selectedTool.logo_url}
+                alt={selectedTool.name}
+                width={32}
+                height={32}
+                loading="lazy"
+                decoding="async"
+                className="w-8 h-8 rounded-lg object-contain"
+              />
             ) : (
-              <span className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-sm font-bold text-primary">{selectedTool.name[0]}</span>
+              <span className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-sm font-bold text-primary">
+                {selectedTool.name[0]}
+              </span>
             )}
-            <span className="font-bold text-sm flex-1">{selectedTool.name}</span>
-            <button onClick={() => setSelectedTool(null)} aria-label={`Deselect ${selectedTool.name}`} className="p-1 hover:bg-muted rounded-lg">
+            <span className="font-bold text-sm flex-1">
+              {selectedTool.name}
+            </span>
+            <button
+              onClick={() => setSelectedTool(null)}
+              aria-label={`Deselect ${selectedTool.name}`}
+              className="p-1 hover:bg-muted rounded-lg"
+            >
               <X className="h-4 w-4 text-muted-foreground" />
             </button>
           </div>
@@ -368,38 +552,58 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
           {tiersLoading ? (
             <div className="flex items-center gap-2 py-3">
               <Loader2 className="h-4 w-4 animate-spin text-primary" />
-              <span className="text-xs text-muted-foreground">Loading plans...</span>
+              <span className="text-xs text-muted-foreground">
+                Loading plans...
+              </span>
             </div>
           ) : (
-          <div className="flex flex-wrap gap-2">
-            {tiers.length > 0 ? tiers.map(tier => (
-              <button
-                key={tier.tier_name}
-                type="button"
-                onClick={() => addWithTier(tier.monthly_price, tier.tier_name, tier.annual_price)}
-                className="px-3.5 py-2 sm:px-3 sm:py-1.5 rounded-lg border border-border hover:border-primary/40 hover:bg-primary/5 text-sm transition-all cursor-pointer min-h-[44px] sm:min-h-0"
-              >
-                <span className="font-bold">{tier.monthly_price === 0 ? 'Free' : `$${tier.monthly_price}`}</span>
-                <span className="text-xs text-muted-foreground ml-1">{tier.tier_name}</span>
-              </button>
-            )) : (
-              <div className="w-full">
-                <p className="text-[10px] text-muted-foreground/60 mb-1.5">Estimated — exact plans not available</p>
-                <div className="flex flex-wrap gap-2">
-                  {[0, 10, 20, 50].map(p => (
-                    <button
-                      key={p}
-                      type="button"
-                      onClick={() => addWithTier(p, p === 0 ? 'Free' : `$${p}/mo`)}
-                      className="px-3 py-1.5 rounded-lg border border-dashed border-border hover:border-primary/40 hover:bg-primary/5 text-sm font-bold transition-all cursor-pointer"
-                    >
-                      {p === 0 ? 'Free' : `~$${p}`}
-                    </button>
-                  ))}
+            <div className="flex flex-wrap gap-2">
+              {tiers.length > 0 ? (
+                tiers.map((tier) => (
+                  <button
+                    key={tier.tier_name}
+                    type="button"
+                    onClick={() =>
+                      addWithTier(
+                        tier.monthly_price,
+                        tier.tier_name,
+                        tier.annual_price,
+                      )
+                    }
+                    className="px-3.5 py-2 sm:px-3 sm:py-1.5 rounded-lg border border-border hover:border-primary/40 hover:bg-primary/5 text-sm transition-all cursor-pointer min-h-[44px] sm:min-h-0"
+                  >
+                    <span className="font-bold">
+                      {tier.monthly_price === 0
+                        ? "Free"
+                        : `$${tier.monthly_price}`}
+                    </span>
+                    <span className="text-xs text-muted-foreground ml-1">
+                      {tier.tier_name}
+                    </span>
+                  </button>
+                ))
+              ) : (
+                <div className="w-full">
+                  <p className="text-[10px] text-muted-foreground/60 mb-1.5">
+                    Estimated — exact plans not available
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {[0, 10, 20, 50].map((p) => (
+                      <button
+                        key={p}
+                        type="button"
+                        onClick={() =>
+                          addWithTier(p, p === 0 ? "Free" : `$${p}/mo`)
+                        }
+                        className="px-3 py-1.5 rounded-lg border border-dashed border-border hover:border-primary/40 hover:bg-primary/5 text-sm font-bold transition-all cursor-pointer"
+                      >
+                        {p === 0 ? "Free" : `~$${p}`}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
           )}
         </div>
       )}
@@ -408,16 +612,20 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
       {added.length > 0 && (
         <div className="rounded-2xl border border-border divide-y divide-border mb-4">
           {/* Billing toggle */}
-          <div className="flex items-center justify-center gap-1 px-4 py-2.5 bg-muted/30" role="tablist" aria-label="Billing cycle">
+          <div
+            className="flex items-center justify-center gap-1 px-4 py-2.5 bg-muted/30"
+            role="tablist"
+            aria-label="Billing cycle"
+          >
             <button
               type="button"
               role="tab"
-              aria-selected={billingCycle === 'monthly'}
-              onClick={() => setBillingCycle('monthly')}
+              aria-selected={billingCycle === "monthly"}
+              onClick={() => setBillingCycle("monthly")}
               className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all ${
-                billingCycle === 'monthly'
-                  ? 'bg-primary text-white'
-                  : 'text-muted-foreground hover:text-foreground'
+                billingCycle === "monthly"
+                  ? "bg-primary text-white"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               Monthly
@@ -425,99 +633,160 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
             <button
               type="button"
               role="tab"
-              aria-selected={billingCycle === 'annual'}
-              onClick={() => setBillingCycle('annual')}
+              aria-selected={billingCycle === "annual"}
+              onClick={() => setBillingCycle("annual")}
               className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all ${
-                billingCycle === 'annual'
-                  ? 'bg-primary text-white'
-                  : 'text-muted-foreground hover:text-foreground'
+                billingCycle === "annual"
+                  ? "bg-primary text-white"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               Annual
-              {added.some(t => t.price > 0) && (
+              {added.some((t) => t.price > 0) && (
                 <span className="ml-1 text-[10px] opacity-80">save ~20%</span>
               )}
             </button>
           </div>
 
-          {added.map(tool => {
-            const displayPrice = billingCycle === 'annual'
-              ? (tool.annualPrice != null ? Math.round(tool.annualPrice / 12 * 100) / 100 : Math.round(tool.price * 0.8 * 100) / 100)
-              : tool.price
+          {added.map((tool) => {
+            const displayPrice =
+              billingCycle === "annual"
+                ? tool.annualPrice != null
+                  ? Math.round((tool.annualPrice / 12) * 100) / 100
+                  : Math.round(tool.price * 0.8 * 100) / 100
+                : tool.price;
             return (
-            <div key={tool.id}>
-              <div className="flex items-center gap-3 px-4 py-2.5">
-                {tool.logo_url ? (
-                  <img src={tool.logo_url} alt={tool.name} width={24} height={24} loading="lazy" decoding="async" className="w-6 h-6 rounded object-contain shrink-0" />
-                ) : (
-                  <span className="w-6 h-6 rounded bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary shrink-0">{tool.name[0]}</span>
-                )}
-                <span className="text-sm font-medium flex-1 truncate">{tool.name}</span>
-                <button
-                  onClick={() => startEditTier(tool.id)}
-                  className="flex items-center gap-1.5 hover:bg-muted/80 px-2 py-0.5 rounded-lg transition-colors cursor-pointer"
-                >
-                  <span className="text-xs text-muted-foreground">{tool.tier}</span>
-                  <span className="text-sm font-bold">{displayPrice === 0 ? 'Free' : `$${displayPrice % 1 === 0 ? displayPrice : displayPrice.toFixed(2)}`}</span>
-                  {billingCycle === 'annual' && tool.price > 0 && (
-                    <span className="text-[10px] text-emerald-600 font-medium line-through decoration-muted-foreground/40">${tool.price}</span>
+              <div key={tool.id}>
+                <div className="flex items-center gap-3 px-4 py-2.5">
+                  {tool.logo_url ? (
+                    <img
+                      src={tool.logo_url}
+                      alt={tool.name}
+                      width={24}
+                      height={24}
+                      loading="lazy"
+                      decoding="async"
+                      className="w-6 h-6 rounded object-contain shrink-0"
+                    />
+                  ) : (
+                    <span className="w-6 h-6 rounded bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary shrink-0">
+                      {tool.name[0]}
+                    </span>
                   )}
-                  <span className="text-[10px] text-primary">edit</span>
-                </button>
-                <button onClick={() => remove(tool.id)} aria-label={`Remove ${tool.name}`} className="p-0.5 hover:text-destructive transition-colors">
-                  <X className="h-3.5 w-3.5 text-muted-foreground" />
-                </button>
-              </div>
-              {editingTierId === tool.id && (
-                <div className="px-4 pb-3 flex flex-wrap gap-1.5">
-                  {editTiers.length > 0 ? editTiers.map(tier => (
-                    <button
-                      key={tier.tier_name}
-                      type="button"
-                      onClick={() => changeTier(tool.id, tier.monthly_price, tier.tier_name, tier.annual_price)}
-                      className={`px-2.5 py-1 rounded-lg border text-xs transition-all cursor-pointer ${
-                        tool.tier === tier.tier_name
-                          ? 'border-primary/40 bg-primary/10 font-bold'
-                          : 'border-border hover:border-primary/30 hover:bg-primary/5'
-                      }`}
-                    >
-                      <span className="font-bold">{tier.monthly_price === 0 ? 'Free' : `$${tier.monthly_price}`}</span>
-                      <span className="text-muted-foreground ml-1">{tier.tier_name}</span>
-                    </button>
-                  )) : (
-                    [0, 10, 20, 50, 100, 200].map(p => (
-                      <button
-                        key={p}
-                        type="button"
-                        onClick={() => changeTier(tool.id, p, p === 0 ? 'Free' : `$${p}/mo`)}
-                        className={`px-2.5 py-1 rounded-lg border text-xs font-bold transition-all cursor-pointer ${
-                          tool.price === p
-                            ? 'border-primary/40 bg-primary/10'
-                            : 'border-border hover:border-primary/30 hover:bg-primary/5'
-                        }`}
-                      >
-                        {p === 0 ? 'Free' : `$${p}`}
-                      </button>
-                    ))
-                  )}
+                  <span className="text-sm font-medium flex-1 truncate">
+                    {tool.name}
+                  </span>
+                  <button
+                    onClick={() => startEditTier(tool.id)}
+                    className="flex items-center gap-1.5 hover:bg-muted/80 px-2 py-0.5 rounded-lg transition-colors cursor-pointer"
+                  >
+                    <span className="text-xs text-muted-foreground">
+                      {tool.tier}
+                    </span>
+                    <span className="text-sm font-bold">
+                      {displayPrice === 0
+                        ? "Free"
+                        : `$${displayPrice % 1 === 0 ? displayPrice : displayPrice.toFixed(2)}`}
+                    </span>
+                    {billingCycle === "annual" && tool.price > 0 && (
+                      <span className="text-[10px] text-emerald-600 font-medium line-through decoration-muted-foreground/40">
+                        ${tool.price}
+                      </span>
+                    )}
+                    <span className="text-[10px] text-primary">edit</span>
+                  </button>
+                  <button
+                    onClick={() => remove(tool.id)}
+                    aria-label={`Remove ${tool.name}`}
+                    className="p-0.5 hover:text-destructive transition-colors"
+                  >
+                    <X className="h-3.5 w-3.5 text-muted-foreground" />
+                  </button>
                 </div>
-              )}
-            </div>
-            )
+                {editingTierId === tool.id && (
+                  <div className="px-4 pb-3 flex flex-wrap gap-1.5">
+                    {editTiers.length > 0
+                      ? editTiers.map((tier) => (
+                          <button
+                            key={tier.tier_name}
+                            type="button"
+                            onClick={() =>
+                              changeTier(
+                                tool.id,
+                                tier.monthly_price,
+                                tier.tier_name,
+                                tier.annual_price,
+                              )
+                            }
+                            className={`px-2.5 py-1 rounded-lg border text-xs transition-all cursor-pointer ${
+                              tool.tier === tier.tier_name
+                                ? "border-primary/40 bg-primary/10 font-bold"
+                                : "border-border hover:border-primary/30 hover:bg-primary/5"
+                            }`}
+                          >
+                            <span className="font-bold">
+                              {tier.monthly_price === 0
+                                ? "Free"
+                                : `$${tier.monthly_price}`}
+                            </span>
+                            <span className="text-muted-foreground ml-1">
+                              {tier.tier_name}
+                            </span>
+                          </button>
+                        ))
+                      : [0, 10, 20, 50, 100, 200].map((p) => (
+                          <button
+                            key={p}
+                            type="button"
+                            onClick={() =>
+                              changeTier(
+                                tool.id,
+                                p,
+                                p === 0 ? "Free" : `$${p}/mo`,
+                              )
+                            }
+                            className={`px-2.5 py-1 rounded-lg border text-xs font-bold transition-all cursor-pointer ${
+                              tool.price === p
+                                ? "border-primary/40 bg-primary/10"
+                                : "border-border hover:border-primary/30 hover:bg-primary/5"
+                            }`}
+                          >
+                            {p === 0 ? "Free" : `$${p}`}
+                          </button>
+                        ))}
+                  </div>
+                )}
+              </div>
+            );
           })}
           {/* Total */}
           <div className="flex items-center justify-between px-4 py-3.5 sm:py-3 bg-muted/30">
-            <span className="text-sm font-bold">{billingCycle === 'monthly' ? 'Monthly total' : 'Monthly (annual billing)'}</span>
-            <span className="text-xl font-black">${total % 1 === 0 ? total : total.toFixed(2)}<span className="text-sm text-muted-foreground font-normal">/mo</span></span>
+            <span className="text-sm font-bold">
+              {billingCycle === "monthly"
+                ? "Monthly total"
+                : "Monthly (annual billing)"}
+            </span>
+            <span className="text-xl font-black">
+              ${total % 1 === 0 ? total : total.toFixed(2)}
+              <span className="text-sm text-muted-foreground font-normal">
+                /mo
+              </span>
+            </span>
           </div>
           <div className="flex items-center justify-between px-4 py-2.5 sm:py-2 bg-muted/30">
             <span className="text-xs text-muted-foreground">Annual cost</span>
-            <span className="text-sm font-bold text-muted-foreground">${yearly % 1 === 0 ? yearly : yearly.toFixed(2)}/year</span>
+            <span className="text-sm font-bold text-muted-foreground">
+              ${yearly % 1 === 0 ? yearly : yearly.toFixed(2)}/year
+            </span>
           </div>
-          {billingCycle === 'annual' && monthlySavings > 0 && (
+          {billingCycle === "annual" && monthlySavings > 0 && (
             <div className="flex items-center justify-between px-4 py-2 bg-emerald-500/5">
-              <span className="text-xs font-medium text-emerald-700 dark:text-emerald-400">Annual savings</span>
-              <span className="text-sm font-bold text-emerald-700 dark:text-emerald-400">${Math.round(monthlySavings * 12)}/year</span>
+              <span className="text-xs font-medium text-emerald-700 dark:text-emerald-400">
+                Annual savings
+              </span>
+              <span className="text-sm font-bold text-emerald-700 dark:text-emerald-400">
+                ${Math.round(monthlySavings * 12)}/year
+              </span>
             </div>
           )}
         </div>
@@ -528,17 +797,32 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
         <div className="space-y-3">
           {/* Spend context */}
           <p className="text-sm text-muted-foreground text-center">
-            {comparison
-              ? <>That&apos;s <strong className="text-foreground">${yearly % 1 === 0 ? yearly : yearly.toFixed(2)}/year</strong> — more than {comparison}.</>
-              : <>That&apos;s <strong className="text-foreground">${yearly % 1 === 0 ? yearly : yearly.toFixed(2)}/year</strong> on {added.length} AI tools.</>
-            }
+            {comparison ? (
+              <>
+                That&apos;s{" "}
+                <strong className="text-foreground">
+                  ${yearly % 1 === 0 ? yearly : yearly.toFixed(2)}/year
+                </strong>{" "}
+                — more than {comparison}.
+              </>
+            ) : (
+              <>
+                That&apos;s{" "}
+                <strong className="text-foreground">
+                  ${yearly % 1 === 0 ? yearly : yearly.toFixed(2)}/year
+                </strong>{" "}
+                on {added.length} AI tools.
+              </>
+            )}
           </p>
 
           {/* Loading state for insights */}
           {insightsLoading && added.length >= 3 && (
             <div className="flex items-center justify-center gap-2 py-3">
               <Loader2 className="h-4 w-4 animate-spin text-primary" />
-              <span className="text-xs text-muted-foreground">Analyzing your stack...</span>
+              <span className="text-xs text-muted-foreground">
+                Analyzing your stack...
+              </span>
             </div>
           )}
 
@@ -552,7 +836,8 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
                     <AlertTriangle className="h-4 w-4 text-amber-500 mt-0.5 shrink-0" />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold text-foreground">
-                        {insights.overlaps.length} overlapping tool{insights.overlaps.length > 1 ? 's' : ''} detected
+                        {insights.overlaps.length} overlapping tool
+                        {insights.overlaps.length > 1 ? "s" : ""} detected
                       </p>
                       {insights.totalSavings > 0 && (
                         <p className="text-xs font-semibold text-amber-600 dark:text-amber-400 mt-0.5">
@@ -560,11 +845,18 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
                         </p>
                       )}
                       {insights.overlaps.slice(0, 2).map((o, i) => (
-                        <p key={i} className="text-xs text-muted-foreground mt-1.5">
-                          <span className="blur-sm select-none">{o.tools[0]}</span>
-                          {' '}and{' '}
-                          <span className="blur-sm select-none">{o.tools[1]}</span>
-                          {' '}— {o.reason.toLowerCase()}
+                        <p
+                          key={i}
+                          className="text-xs text-muted-foreground mt-1.5"
+                        >
+                          <span className="blur-sm select-none">
+                            {o.tools[0]}
+                          </span>{" "}
+                          and{" "}
+                          <span className="blur-sm select-none">
+                            {o.tools[1]}
+                          </span>{" "}
+                          — {o.reason.toLowerCase()}
                         </p>
                       ))}
                       <div className="mt-3">
@@ -585,28 +877,42 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
                 <div className="flex-1 rounded-xl border border-border p-3 text-center">
                   <div className="flex items-center justify-center gap-1.5 mb-1">
                     <Users className="h-3.5 w-3.5 text-blue-500" />
-                    <span className="text-xs text-muted-foreground">vs peers</span>
+                    <span className="text-xs text-muted-foreground">
+                      vs peers
+                    </span>
                   </div>
                   <p className="text-lg font-bold">
                     {insights.percentile >= 70 ? (
-                      <span className="text-amber-500">Top {100 - insights.percentile}%</span>
+                      <span className="text-amber-500">
+                        Top {100 - insights.percentile}%
+                      </span>
                     ) : insights.percentile <= 30 ? (
-                      <span className="text-emerald-500">Bottom {insights.percentile}%</span>
+                      <span className="text-emerald-500">
+                        Bottom {insights.percentile}%
+                      </span>
                     ) : (
                       <span className="text-blue-500">Average</span>
                     )}
                   </p>
-                  <p className="text-[10px] text-muted-foreground">of AI spenders</p>
+                  <p className="text-[10px] text-muted-foreground">
+                    of AI spenders
+                  </p>
                 </div>
 
                 {insights.wastePercent > 0 && (
                   <div className="flex-1 rounded-xl border border-red-400/20 bg-red-400/[0.03] p-3 text-center">
                     <div className="flex items-center justify-center gap-1.5 mb-1">
                       <TrendingDown className="h-3.5 w-3.5 text-red-500" />
-                      <span className="text-xs text-muted-foreground">waste</span>
+                      <span className="text-xs text-muted-foreground">
+                        waste
+                      </span>
                     </div>
-                    <p className="text-lg font-bold text-red-500">{insights.wastePercent}%</p>
-                    <p className="text-[10px] text-muted-foreground">may be redundant</p>
+                    <p className="text-lg font-bold text-red-500">
+                      {insights.wastePercent}%
+                    </p>
+                    <p className="text-[10px] text-muted-foreground">
+                      may be redundant
+                    </p>
                   </div>
                 )}
               </div>
@@ -616,13 +922,17 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
           {/* CTA */}
           <div className="text-center pt-1">
             <Link
-              href={`/tracker?import=${added.map(t => `${t.slug}:${t.price}`).join(',')}`}
+              href={`/tracker?import=${added.map((t) => `${t.slug}:${t.price}`).join(",")}`}
               className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2"
             >
-              {insights?.overlaps.length ? 'Get Your Full Stack Analysis' : 'Get My Savings Report'}
+              {insights?.overlaps.length
+                ? "Get Your Full Stack Analysis"
+                : "Get My Savings Report"}
               <ArrowRight className="h-4 w-4" />
             </Link>
-            <p className="text-[10px] text-muted-foreground mt-2">Free forever. No credit card.</p>
+            <p className="text-[10px] text-muted-foreground mt-2">
+              Free forever. No credit card.
+            </p>
           </div>
         </div>
       )}
@@ -639,5 +949,5 @@ export function CostCalculator({ tools, isLoggedIn }: { tools: QuickTool[]; isLo
         </p>
       )}
     </div>
-  )
+  );
 }
