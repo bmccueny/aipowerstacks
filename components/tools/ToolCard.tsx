@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, memo } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Star, ExternalLink, Github, DollarSign } from 'lucide-react'
@@ -493,7 +493,7 @@ function ToolCardGrid({ tool, pricingColor, pricingLabel, screenshotUrl, isWellF
 // ToolCard — public API (thin router)
 // ---------------------------------------------------------------------------
 
-export function ToolCard({ tool, view = 'grid', cardStyle = 'default', compact = false }: ToolCardProps) {
+function ToolCardBase({ tool, view = 'grid', cardStyle = 'default', compact = false }: ToolCardProps) {
   const [imageError, setImageError] = useState(false)
   const [hasBeenHovered, setHasBeenHovered] = useState(false)
   const pricingColor = PRICING_BADGE_COLORS[tool.pricing_model] ?? PRICING_BADGE_COLORS.unknown
@@ -524,3 +524,16 @@ export function ToolCard({ tool, view = 'grid', cardStyle = 'default', compact =
 
   return <ToolCardGrid {...shared} />
 }
+
+// ⚡ Bolt Performance Optimization:
+// Next.js App Router server-fetched data creates new object references on every navigation.
+// We use a custom comparison function checking the tool ID and primitive display props
+// to prevent unnecessary re-renders of the ToolCard components in lists/grids.
+export const ToolCard = memo(ToolCardBase, (prevProps, nextProps) => {
+  return (
+    prevProps.tool.id === nextProps.tool.id &&
+    prevProps.view === nextProps.view &&
+    prevProps.cardStyle === nextProps.cardStyle &&
+    prevProps.compact === nextProps.compact
+  )
+})
