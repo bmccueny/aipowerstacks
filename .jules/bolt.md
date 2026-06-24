@@ -1,0 +1,3 @@
+## 2024-05-18 - Missing React.memo() on ToolCard
+**Learning:** ToolGrid renders a list of ToolCard components, but ToolCard is not memoized. Since ToolCard takes an object (`tool`) as a prop, any re-render of the parent component (e.g. `ToolsPage` or `ToolGrid` itself when wrapped in Suspense/Transition or if it gets more complex state) could cause all `ToolCard`s to re-render unnecessarily.
+**Action:** Wrap `ToolCard` in `React.memo` with a custom comparison function if necessary (though if `tool` object references are stable from the parent or if we just compare IDs, it might be fine. Wait, Next.js App Router server components passing data to client components might pass new objects. We should provide a custom comparison function that checks `tool.id`).
