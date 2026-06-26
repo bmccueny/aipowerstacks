@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, memo } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Star, ExternalLink, Github, DollarSign } from 'lucide-react'
@@ -493,7 +493,7 @@ function ToolCardGrid({ tool, pricingColor, pricingLabel, screenshotUrl, isWellF
 // ToolCard — public API (thin router)
 // ---------------------------------------------------------------------------
 
-export function ToolCard({ tool, view = 'grid', cardStyle = 'default', compact = false }: ToolCardProps) {
+export const ToolCard = memo(function ToolCard({ tool, view = 'grid', cardStyle = 'default', compact = false }: ToolCardProps) {
   const [imageError, setImageError] = useState(false)
   const [hasBeenHovered, setHasBeenHovered] = useState(false)
   const pricingColor = PRICING_BADGE_COLORS[tool.pricing_model] ?? PRICING_BADGE_COLORS.unknown
@@ -523,4 +523,22 @@ export function ToolCard({ tool, view = 'grid', cardStyle = 'default', compact =
   }
 
   return <ToolCardGrid {...shared} />
-}
+}, (prevProps, nextProps) => {
+  return (
+    prevProps.tool.id === nextProps.tool.id &&
+    prevProps.tool.avg_rating === nextProps.tool.avg_rating &&
+    prevProps.tool.review_count === nextProps.tool.review_count &&
+    prevProps.tool.upvote_count === nextProps.tool.upvote_count &&
+    prevProps.tool.is_verified === nextProps.tool.is_verified &&
+    prevProps.tool.is_featured === nextProps.tool.is_featured &&
+    prevProps.tool.pricing_model === nextProps.tool.pricing_model &&
+    prevProps.tool.slug === nextProps.tool.slug &&
+    prevProps.tool.name === nextProps.tool.name &&
+    prevProps.tool.tagline === nextProps.tool.tagline &&
+    prevProps.tool.logo_url === nextProps.tool.logo_url &&
+    prevProps.tool.website_url === nextProps.tool.website_url &&
+    prevProps.view === nextProps.view &&
+    prevProps.cardStyle === nextProps.cardStyle &&
+    prevProps.compact === nextProps.compact
+  )
+})
