@@ -1,0 +1,3 @@
+## 2024-05-18 - ToolCard Custom Comparer for React.memo
+**Learning:** Only comparing IDs in `React.memo` custom comparer will miss dynamic property changes of an object and leave stale UI. When optimizing components that take big objects, you must manually compare all the primitives that could reasonably update, or fallback to default shallow equal (which defeats the purpose if a new reference is created every render, like in Next.js Server Components passing data down). Since data like `avg_rating` and `upvote_count` can update, those need to be compared.
+**Action:** When manually writing `React.memo` comparers for objects, check the type definitions for all properties that could trigger visual changes, not just the ID.
