@@ -1,0 +1,5 @@
+In Next.js App Router applications, server-fetched data creates new object references on every navigation. When applying React.memo() to components receiving these objects, provide a custom comparison function checking ALL visually relevant properties (including dynamic data like ratings and upvotes, not just the ID). Comparing only the ID will cause stale UI bugs.
+
+## 2024-05-18 - React.memo custom equality checks
+**Learning:** In Next.js App Router applications, server-fetched data creates new object references on every navigation. When applying `React.memo()` to components receiving these objects, provide a custom comparison function checking ALL visually relevant properties (including dynamic data like ratings and upvotes, not just the ID). Comparing only the ID will cause stale UI bugs. Never use `JSON.stringify()` inside a `React.memo()` custom equality check, as serializing large objects on every render cycle is computationally expensive and generates memory garbage.
+**Action:** Always write explicit property checks for primitive values inside the custom equality function.
