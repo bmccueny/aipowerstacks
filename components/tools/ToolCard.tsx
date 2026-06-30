@@ -1,43 +1,48 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import Link from 'next/link'
-import Image from 'next/image'
-import { Star, ExternalLink, Github, DollarSign } from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
-import type { ToolCardData } from '@/lib/types'
-import { PRICING_BADGE_COLORS, PRICING_LABELS, MODEL_PROVIDER_LABELS, USE_CASE_LABELS } from '@/lib/constants'
+import React, { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { Star, ExternalLink, Github, DollarSign } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import type { ToolCardData } from "@/lib/types";
+import {
+  PRICING_BADGE_COLORS,
+  PRICING_LABELS,
+  MODEL_PROVIDER_LABELS,
+  USE_CASE_LABELS,
+} from "@/lib/constants";
 // WellFavoredBadge removed — too cluttered on cards
-import { VerifiedBadge } from '@/components/ui/VerifiedBadge'
-import { AddToStackButton } from './AddToStackButton'
-import { AddToCompareButton } from './AddToCompareButton'
+import { VerifiedBadge } from "@/components/ui/VerifiedBadge";
+import { AddToStackButton } from "./AddToStackButton";
+import { AddToCompareButton } from "./AddToCompareButton";
 // isWellFavoredTool removed — badge was too noisy on cards
 // freshness indicator moved to detail page only
-import { cn } from '@/lib/utils'
+import { cn } from "@/lib/utils";
 
 // ---------------------------------------------------------------------------
 // Shared types & helpers
 // ---------------------------------------------------------------------------
 
 interface ToolCardProps {
-  tool: ToolCardData
-  view?: 'grid' | 'list'
-  cardStyle?: 'default' | 'home'
-  compact?: boolean
+  tool: ToolCardData;
+  view?: "grid" | "list";
+  cardStyle?: "default" | "home";
+  compact?: boolean;
 }
 
 /** Resolved values derived from the tool, shared across sub-components. */
 interface ResolvedToolProps {
-  tool: ToolCardData
-  compact: boolean
-  pricingColor: string
-  pricingLabel: string
-  screenshotUrl: string | null
-  isWellFavored?: boolean
-  imageError: boolean
-  setImageError: (v: boolean) => void
-  hasBeenHovered: boolean
-  setHasBeenHovered: (v: boolean) => void
+  tool: ToolCardData;
+  compact: boolean;
+  pricingColor: string;
+  pricingLabel: string;
+  screenshotUrl: string | null;
+  isWellFavored?: boolean;
+  imageError: boolean;
+  setImageError: (v: boolean) => void;
+  hasBeenHovered: boolean;
+  setHasBeenHovered: (v: boolean) => void;
 }
 
 // ---------------------------------------------------------------------------
@@ -52,19 +57,24 @@ function ToolCardLogo({
   imageError,
   onError,
 }: {
-  logoUrl: string | null
-  name: string
-  size: number
-  compact?: boolean
-  imageError: boolean
-  onError: () => void
+  logoUrl: string | null;
+  name: string;
+  size: number;
+  compact?: boolean;
+  imageError: boolean;
+  onError: () => void;
 }) {
   if (!logoUrl || imageError) {
     return (
-      <span className={cn('font-black text-primary uppercase', compact ? 'text-sm' : 'text-base')}>
+      <span
+        className={cn(
+          "font-black text-primary uppercase",
+          compact ? "text-sm" : "text-base",
+        )}
+      >
         {name[0]}
       </span>
-    )
+    );
   }
   return (
     <img
@@ -77,7 +87,7 @@ function ToolCardLogo({
       className="object-contain"
       onError={onError}
     />
-  )
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -90,11 +100,11 @@ function PricingBadgeBadgeStyle({
   pricingColor,
   pricingLabel,
 }: {
-  tool: ToolCardData
-  pricingColor: string
-  pricingLabel: string
+  tool: ToolCardData;
+  pricingColor: string;
+  pricingLabel: string;
 }) {
-  const href = `/tools?pricing=${tool.pricing_model}`
+  const href = `/tools?pricing=${tool.pricing_model}`;
   if (tool.pricing_tags && tool.pricing_tags.length > 0) {
     return (
       <>
@@ -109,15 +119,18 @@ function PricingBadgeBadgeStyle({
           </Link>
         ))}
       </>
-    )
+    );
   }
   return (
     <Link href={href} onClick={(e) => e.stopPropagation()}>
-      <Badge variant="outline" className={`text-[11px] hover:opacity-80 transition-opacity cursor-pointer ${pricingColor}`}>
+      <Badge
+        variant="outline"
+        className={`text-[11px] hover:opacity-80 transition-opacity cursor-pointer ${pricingColor}`}
+      >
         {pricingLabel}
       </Badge>
     </Link>
-  )
+  );
 }
 
 /** Variant used by grid and home-default views (span-based). */
@@ -127,48 +140,58 @@ function PricingBadgeSpanStyle({
   pricingLabel,
   limit,
 }: {
-  tool: ToolCardData
-  pricingColor: string
-  pricingLabel: string
-  limit?: number
+  tool: ToolCardData;
+  pricingColor: string;
+  pricingLabel: string;
+  limit?: number;
 }) {
-  const href = `/tools?pricing=${tool.pricing_model}`
+  const href = `/tools?pricing=${tool.pricing_model}`;
   if (tool.pricing_tags && tool.pricing_tags.length > 0) {
     return (
       <>
-        {(limit ? tool.pricing_tags.slice(0, limit) : tool.pricing_tags).map((tag) => (
-          <Link
-            key={tag}
-            href={href}
-            onClick={(e) => e.stopPropagation()}
-            className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 hover:opacity-80 transition-opacity cursor-pointer"
-          >
-            {tag}
-          </Link>
-        ))}
+        {(limit ? tool.pricing_tags.slice(0, limit) : tool.pricing_tags).map(
+          (tag) => (
+            <Link
+              key={tag}
+              href={href}
+              onClick={(e) => e.stopPropagation()}
+              className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 hover:opacity-80 transition-opacity cursor-pointer"
+            >
+              {tag}
+            </Link>
+          ),
+        )}
       </>
-    )
+    );
   }
   return (
-    <Link href={href} onClick={(e) => e.stopPropagation()} className={cn('text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border hover:opacity-80 transition-opacity cursor-pointer', pricingColor)}>
+    <Link
+      href={href}
+      onClick={(e) => e.stopPropagation()}
+      className={cn(
+        "text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border hover:opacity-80 transition-opacity cursor-pointer",
+        pricingColor,
+      )}
+    >
       {pricingLabel}
     </Link>
-  )
+  );
 }
 
 /** Model-provider badge — clickable, links to filtered browse page */
 function ModelProviderBadge({
   tool,
-  variant = 'span',
+  variant = "span",
 }: {
-  tool: ToolCardData
-  variant?: 'badge' | 'span'
+  tool: ToolCardData;
+  variant?: "badge" | "span";
 }) {
-  if (!tool.model_provider || tool.model_provider === 'proprietary') return null
-  const label = `${tool.is_api_wrapper ? '⚠ Wrapper' : variant === 'badge' ? 'Powered by' : '⚡'} ${MODEL_PROVIDER_LABELS[tool.model_provider] ?? tool.model_provider}`
-  const href = `/tools?model_provider=${tool.model_provider}`
+  if (!tool.model_provider || tool.model_provider === "proprietary")
+    return null;
+  const label = `${tool.is_api_wrapper ? "⚠ Wrapper" : variant === "badge" ? "Powered by" : "⚡"} ${MODEL_PROVIDER_LABELS[tool.model_provider] ?? tool.model_provider}`;
+  const href = `/tools?model_provider=${tool.model_provider}`;
 
-  if (variant === 'badge') {
+  if (variant === "badge") {
     return (
       <Link href={href} onClick={(e) => e.stopPropagation()}>
         <Badge
@@ -178,91 +201,173 @@ function ModelProviderBadge({
           {label}
         </Badge>
       </Link>
-    )
+    );
   }
 
   return (
-    <Link href={href} onClick={(e) => e.stopPropagation()} className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border badge-model hover:opacity-80 transition-opacity cursor-pointer">
+    <Link
+      href={href}
+      onClick={(e) => e.stopPropagation()}
+      className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border badge-model hover:opacity-80 transition-opacity cursor-pointer"
+    >
       {label}
     </Link>
-  )
+  );
 }
 
 /** Capability pills — clickable, link to filtered browse page */
-function CapabilityBadges({ tool, variant = 'span' }: { tool: ToolCardData; variant?: 'badge' | 'span' }) {
-  const pills: { label: string; cls: string; href: string }[] = []
+function CapabilityBadges({
+  tool,
+  variant = "span",
+}: {
+  tool: ToolCardData;
+  variant?: "badge" | "span";
+}) {
+  const pills: { label: string; cls: string; href: string }[] = [];
 
   if (tool.use_case && USE_CASE_LABELS[tool.use_case]) {
-    pills.push({ label: USE_CASE_LABELS[tool.use_case], cls: 'badge-use-case', href: `/tools?use_case=${tool.use_case}` })
+    pills.push({
+      label: USE_CASE_LABELS[tool.use_case],
+      cls: "badge-use-case",
+      href: `/tools?use_case=${tool.use_case}`,
+    });
   }
   if (tool.has_api) {
-    pills.push({ label: 'API', cls: 'badge-api', href: '/tools?has_api=true' })
+    pills.push({ label: "API", cls: "badge-api", href: "/tools?has_api=true" });
   }
   if (tool.is_open_source) {
-    pills.push({ label: 'Open Source', cls: 'badge-oss', href: '/tools?open_source=true' })
+    pills.push({
+      label: "Open Source",
+      cls: "badge-oss",
+      href: "/tools?open_source=true",
+    });
   }
   if (tool.has_mobile_app) {
-    pills.push({ label: 'Mobile', cls: 'badge-mobile', href: '/tools?has_mobile=true' })
+    pills.push({
+      label: "Mobile",
+      cls: "badge-mobile",
+      href: "/tools?has_mobile=true",
+    });
   }
-  const dt = (tool as Record<string, unknown>).deployment_type as string | null
-  if (dt === 'self-hosted') {
-    pills.push({ label: 'Self-Hosted', cls: 'badge-deploy', href: '/tools?deployment_type=self-hosted' })
-  } else if (dt === 'both') {
-    pills.push({ label: 'Local + Cloud', cls: 'badge-deploy', href: '/tools?deployment_type=both' })
+  const dt = (tool as Record<string, unknown>).deployment_type as string | null;
+  if (dt === "self-hosted") {
+    pills.push({
+      label: "Self-Hosted",
+      cls: "badge-deploy",
+      href: "/tools?deployment_type=self-hosted",
+    });
+  } else if (dt === "both") {
+    pills.push({
+      label: "Local + Cloud",
+      cls: "badge-deploy",
+      href: "/tools?deployment_type=both",
+    });
   }
 
   // GitHub badge — links to filtered directory of all GitHub tools
-  const isGitHub = tool.website_url?.includes('github.com')
-  const gitHubPill = isGitHub ? { label: 'GitHub', cls: 'badge-github', href: '/tools?source=github' } : null
+  const isGitHub = tool.website_url?.includes("github.com");
+  const gitHubPill = isGitHub
+    ? { label: "GitHub", cls: "badge-github", href: "/tools?source=github" }
+    : null;
 
-  if (pills.length === 0 && !gitHubPill) return null
+  if (pills.length === 0 && !gitHubPill) return null;
 
-  if (variant === 'badge') {
+  if (variant === "badge") {
     // Cap at 3 badges in list view to prevent visual noise
-    const allPills = [...pills.slice(0, 2), ...(gitHubPill ? [gitHubPill] : [])].slice(0, 3)
-    const remaining = pills.length + (gitHubPill ? 1 : 0) - allPills.length
+    const allPills = [
+      ...pills.slice(0, 2),
+      ...(gitHubPill ? [gitHubPill] : []),
+    ].slice(0, 3);
+    const remaining = pills.length + (gitHubPill ? 1 : 0) - allPills.length;
     return (
       <>
         {allPills.map((p) => (
-          <Link key={p.label} href={p.href} onClick={(e) => e.stopPropagation()}>
-            <Badge variant="secondary" className={cn('text-[10px] hover:opacity-80 transition-opacity cursor-pointer', p.cls)}>{p.label}</Badge>
+          <Link
+            key={p.label}
+            href={p.href}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Badge
+              variant="secondary"
+              className={cn(
+                "text-[10px] hover:opacity-80 transition-opacity cursor-pointer",
+                p.cls,
+              )}
+            >
+              {p.label}
+            </Badge>
           </Link>
         ))}
         {remaining > 0 && (
-          <span className="text-[9px] font-bold text-muted-foreground">+{remaining}</span>
+          <span className="text-[9px] font-bold text-muted-foreground">
+            +{remaining}
+          </span>
         )}
       </>
-    )
+    );
   }
 
   return (
     <>
       {pills.map((p) => (
-        <Link key={p.label} href={p.href} onClick={(e) => e.stopPropagation()} className={cn('text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border hover:opacity-80 transition-opacity cursor-pointer', p.cls)}>
+        <Link
+          key={p.label}
+          href={p.href}
+          onClick={(e) => e.stopPropagation()}
+          className={cn(
+            "text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border hover:opacity-80 transition-opacity cursor-pointer",
+            p.cls,
+          )}
+        >
           {p.label}
         </Link>
       ))}
       {gitHubPill && (
-        <Link href={gitHubPill.href} onClick={(e) => e.stopPropagation()} className={cn('text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border hover:opacity-80 transition-opacity cursor-pointer inline-flex items-center gap-1', gitHubPill.cls)}>
-          <Github className="h-3 w-3" />{gitHubPill.label}
+        <Link
+          href={gitHubPill.href}
+          onClick={(e) => e.stopPropagation()}
+          className={cn(
+            "text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border hover:opacity-80 transition-opacity cursor-pointer inline-flex items-center gap-1",
+            gitHubPill.cls,
+          )}
+        >
+          <Github className="h-3 w-3" />
+          {gitHubPill.label}
         </Link>
       )}
     </>
-  )
+  );
 }
 
 // ---------------------------------------------------------------------------
 // ToolCardList — view === 'list'
 // ---------------------------------------------------------------------------
 
-function ToolCardList({ tool, pricingColor, pricingLabel, isWellFavored, imageError, setImageError, hasBeenHovered, setHasBeenHovered, compact }: ResolvedToolProps) {
+function ToolCardList({
+  tool,
+  pricingColor,
+  pricingLabel,
+  isWellFavored,
+  imageError,
+  setImageError,
+  hasBeenHovered,
+  setHasBeenHovered,
+  compact,
+}: ResolvedToolProps) {
   return (
     <div
       onMouseEnter={() => setHasBeenHovered(true)}
       className="glass-card rounded-xl px-5 py-4 flex flex-wrap sm:flex-nowrap items-center gap-4 group relative cursor-pointer"
     >
       <div className="h-12 w-12 shrink-0 rounded-md bg-muted overflow-hidden flex items-center justify-center">
-        <ToolCardLogo logoUrl={tool.logo_url} name={tool.name} size={48} compact={compact} imageError={imageError} onError={() => setImageError(true)} />
+        <ToolCardLogo
+          logoUrl={tool.logo_url}
+          name={tool.name}
+          size={48}
+          compact={compact}
+          imageError={imageError}
+          onError={() => setImageError(true)}
+        />
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
@@ -272,13 +377,25 @@ function ToolCardList({ tool, pricingColor, pricingLabel, isWellFavored, imageEr
           >
             {tool.name}
           </Link>
-          {tool.is_featured && <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-primary/10 text-primary border border-primary/20 relative z-10">Featured</span>}
-          {tool.is_verified && <VerifiedBadge size="sm" className="relative z-10" />}
+          {tool.is_featured && (
+            <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-primary/10 text-primary border border-primary/20 relative z-10">
+              Featured
+            </span>
+          )}
+          {tool.is_verified && (
+            <VerifiedBadge size="sm" className="relative z-10" />
+          )}
         </div>
-        <p className="text-[14px] leading-[1.45] text-muted-foreground truncate mt-0.5 relative z-10">{tool.tagline}</p>
+        <p className="text-[14px] leading-[1.45] text-muted-foreground truncate mt-0.5 relative z-10">
+          {tool.tagline}
+        </p>
         <div className="mt-1.5 flex flex-wrap items-center gap-1.5 relative z-10">
-<div className="flex flex-wrap gap-1">
-            <PricingBadgeBadgeStyle tool={tool} pricingColor={pricingColor} pricingLabel={pricingLabel} />
+          <div className="flex flex-wrap gap-1">
+            <PricingBadgeBadgeStyle
+              tool={tool}
+              pricingColor={pricingColor}
+              pricingLabel={pricingLabel}
+            />
           </div>
           <CapabilityBadges tool={tool} variant="badge" />
           <ModelProviderBadge tool={tool} variant="badge" />
@@ -297,7 +414,9 @@ function ToolCardList({ tool, pricingColor, pricingLabel, isWellFavored, imageEr
         {tool.avg_rating > 0 && (
           <div className="flex items-center gap-1">
             <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-            <span className="text-[12px] text-muted-foreground">{tool.avg_rating.toFixed(1)}</span>
+            <span className="text-[12px] text-muted-foreground">
+              {tool.avg_rating.toFixed(1)}
+            </span>
           </div>
         )}
         <div onClick={(e) => e.stopPropagation()}>
@@ -305,20 +424,32 @@ function ToolCardList({ tool, pricingColor, pricingLabel, isWellFavored, imageEr
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 // ---------------------------------------------------------------------------
 // ToolCardHome — cardStyle === 'home'
 // ---------------------------------------------------------------------------
 
-function ToolCardHome({ tool, compact, pricingColor, pricingLabel, isWellFavored, imageError, setImageError, hasBeenHovered, setHasBeenHovered }: ResolvedToolProps) {
+function ToolCardHome({
+  tool,
+  compact,
+  pricingColor,
+  pricingLabel,
+  isWellFavored,
+  imageError,
+  setImageError,
+  hasBeenHovered,
+  setHasBeenHovered,
+}: ResolvedToolProps) {
   return (
     <div
       onMouseEnter={() => setHasBeenHovered(true)}
       className={cn(
-        'card-directory relative flex flex-col group h-full hover:shadow-[0_20px_40px_-8px_rgba(0,0,0,0.15)] transition-all duration-300',
-        compact ? 'p-5 min-h-[220px] items-center text-center' : 'p-6 min-h-[280px]'
+        "card-directory relative flex flex-col group h-full hover:shadow-[0_20px_40px_-8px_rgba(0,0,0,0.15)] transition-all duration-300",
+        compact
+          ? "p-5 min-h-[220px] items-center text-center"
+          : "p-6 min-h-[280px]",
       )}
     >
       {compact ? (
@@ -331,12 +462,22 @@ function ToolCardHome({ tool, compact, pricingColor, pricingLabel, isWellFavored
           <div className="relative">
             <div className="absolute inset-0 glass-card rounded-3xl blur-sm scale-110 opacity-60" />
             <div className="relative h-20 w-20 rounded-3xl bg-background/80 backdrop-blur-sm shadow-[0_8px_24px_-4px_rgba(0,0,0,0.12)] overflow-hidden flex items-center justify-center z-10 transition-all duration-300 group-hover:shadow-[0_12px_32px_-4px_rgba(0,0,0,0.18)]">
-              <ToolCardLogo logoUrl={tool.logo_url} name={tool.name} size={80} compact={compact} imageError={imageError} onError={() => setImageError(true)} />
+              <ToolCardLogo
+                logoUrl={tool.logo_url}
+                name={tool.name}
+                size={80}
+                compact={compact}
+                imageError={imageError}
+                onError={() => setImageError(true)}
+              />
             </div>
           </div>
           <div className="min-w-0 px-2">
             <div className="flex items-center justify-center gap-1.5 mb-1">
-              <Link href={`/tools/${tool.slug}`} className="font-black tracking-tight text-xl leading-tight line-clamp-1 after:absolute after:inset-0 after:z-0">
+              <Link
+                href={`/tools/${tool.slug}`}
+                className="font-black tracking-tight text-xl leading-tight line-clamp-1 after:absolute after:inset-0 after:z-0"
+              >
                 {tool.name}
               </Link>
             </div>
@@ -346,7 +487,14 @@ function ToolCardHome({ tool, compact, pricingColor, pricingLabel, isWellFavored
         <>
           <div className="flex items-start gap-4 min-h-[72px]">
             <div className="h-12 w-12 rounded-md bg-background overflow-hidden flex items-center justify-center relative z-10 shrink-0">
-              <ToolCardLogo logoUrl={tool.logo_url} name={tool.name} size={48} compact={compact} imageError={imageError} onError={() => setImageError(true)} />
+              <ToolCardLogo
+                logoUrl={tool.logo_url}
+                name={tool.name}
+                size={48}
+                compact={compact}
+                imageError={imageError}
+                onError={() => setImageError(true)}
+              />
             </div>
             <div className="min-w-0 pt-0.5 flex-1">
               <div className="flex items-start gap-1.5">
@@ -356,24 +504,37 @@ function ToolCardHome({ tool, compact, pricingColor, pricingLabel, isWellFavored
                 >
                   {tool.name}
                 </Link>
-                {tool.is_verified && <VerifiedBadge size="sm" className="mt-0.5 relative z-10" />}
+                {tool.is_verified && (
+                  <VerifiedBadge size="sm" className="mt-0.5 relative z-10" />
+                )}
               </div>
               <div className="mt-1 flex items-center gap-1.5 flex-wrap relative z-10">
                 {tool.avg_rating > 0 ? (
                   <>
                     <Star className="h-3.5 w-3.5 fill-primary text-primary shrink-0" />
-                    <span className="text-[13px] font-bold leading-none">{tool.avg_rating.toFixed(1)}</span>
-                    <span className="text-[11px] text-muted-foreground">({tool.review_count})</span>
+                    <span className="text-[13px] font-bold leading-none">
+                      {tool.avg_rating.toFixed(1)}
+                    </span>
+                    <span className="text-[11px] text-muted-foreground">
+                      ({tool.review_count})
+                    </span>
                   </>
                 ) : null}
-<div className="flex flex-wrap gap-1">
-                  <PricingBadgeSpanStyle tool={tool} pricingColor={pricingColor} pricingLabel={pricingLabel} limit={1} />
+                <div className="flex flex-wrap gap-1">
+                  <PricingBadgeSpanStyle
+                    tool={tool}
+                    pricingColor={pricingColor}
+                    pricingLabel={pricingLabel}
+                    limit={1}
+                  />
                   <ModelProviderBadge tool={tool} variant="span" />
                 </div>
               </div>
             </div>
           </div>
-          <p className="mt-3 pb-0.5 text-base leading-[1.5] font-medium text-muted-foreground line-clamp-2 relative z-10">{tool.tagline}</p>
+          <p className="mt-3 pb-0.5 text-base leading-[1.5] font-medium text-muted-foreground line-clamp-2 relative z-10">
+            {tool.tagline}
+          </p>
 
           {/* Capability badges */}
           <div className="mt-2 flex flex-wrap gap-1 items-center relative z-10">
@@ -382,23 +543,37 @@ function ToolCardHome({ tool, compact, pricingColor, pricingLabel, isWellFavored
         </>
       )}
 
-      <div className={cn(
-        'mt-auto pt-2.5 border-t border-border flex items-center justify-between gap-3 relative z-10 w-full',
-        compact && 'pt-3 mt-4'
-      )}>
+      <div
+        className={cn(
+          "mt-auto pt-2.5 border-t border-border flex items-center justify-between gap-3 relative z-10 w-full",
+          compact && "pt-3 mt-4",
+        )}
+      >
         {compact ? (
           <>
             <div className="flex flex-wrap gap-1 flex-1 relative z-10">
-              <Link href={`/tools?pricing=${tool.pricing_model}`} onClick={(e) => e.stopPropagation()}>
-              {tool.pricing_tags && tool.pricing_tags.length > 0 ? (
-                <Badge variant="secondary" className="bg-stone-100 text-stone-600 border-stone-200 uppercase font-black text-[10px] h-6 px-2.5 leading-none hover:opacity-80 transition-opacity cursor-pointer">
-                  {tool.pricing_tags[0]}
-                </Badge>
-              ) : (
-                <Badge variant="outline" className={cn('font-black uppercase text-[10px] h-6 px-2.5 hover:opacity-80 transition-opacity cursor-pointer', pricingColor)}>
-                  {pricingLabel}
-                </Badge>
-              )}
+              <Link
+                href={`/tools?pricing=${tool.pricing_model}`}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {tool.pricing_tags && tool.pricing_tags.length > 0 ? (
+                  <Badge
+                    variant="secondary"
+                    className="bg-stone-100 text-stone-600 border-stone-200 uppercase font-black text-[10px] h-6 px-2.5 leading-none hover:opacity-80 transition-opacity cursor-pointer"
+                  >
+                    {tool.pricing_tags[0]}
+                  </Badge>
+                ) : (
+                  <Badge
+                    variant="outline"
+                    className={cn(
+                      "font-black uppercase text-[10px] h-6 px-2.5 hover:opacity-80 transition-opacity cursor-pointer",
+                      pricingColor,
+                    )}
+                  >
+                    {pricingLabel}
+                  </Badge>
+                )}
               </Link>
             </div>
             <div className="flex items-center gap-2 relative z-10">
@@ -412,25 +587,47 @@ function ToolCardHome({ tool, compact, pricingColor, pricingLabel, isWellFavored
               >
                 <ExternalLink className="h-4 w-4" />
               </a>
-              <AddToStackButton toolId={tool.id} toolName={tool.name} iconOnly={true} />
+              <AddToStackButton
+                toolId={tool.id}
+                toolName={tool.name}
+                iconOnly={true}
+              />
             </div>
           </>
         ) : (
-          <div className="flex items-center gap-2 w-full" onClick={(e) => e.stopPropagation()}>
-            <AddToStackButton toolId={tool.id} toolName={tool.name} className="flex-1" />
+          <div
+            className="flex items-center gap-2 w-full"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <AddToStackButton
+              toolId={tool.id}
+              toolName={tool.name}
+              className="flex-1"
+            />
             <AddToCompareButton slug={tool.slug} name={tool.name} iconOnly />
           </div>
         )}
       </div>
     </div>
-  )
+  );
 }
 
 // ---------------------------------------------------------------------------
 // ToolCardGrid — default grid view
 // ---------------------------------------------------------------------------
 
-function ToolCardGrid({ tool, pricingColor, pricingLabel, screenshotUrl, isWellFavored, imageError, setImageError, hasBeenHovered, setHasBeenHovered, compact }: ResolvedToolProps) {
+function ToolCardGrid({
+  tool,
+  pricingColor,
+  pricingLabel,
+  screenshotUrl,
+  isWellFavored,
+  imageError,
+  setImageError,
+  hasBeenHovered,
+  setHasBeenHovered,
+  compact,
+}: ResolvedToolProps) {
   return (
     <div
       onMouseEnter={() => setHasBeenHovered(true)}
@@ -440,7 +637,14 @@ function ToolCardGrid({ tool, pricingColor, pricingLabel, screenshotUrl, isWellF
         {/* Logo + name + rating + pricing */}
         <div className="flex items-start gap-3">
           <div className="h-11 w-11 sm:h-14 sm:w-14 shrink-0 rounded-md bg-muted/30 overflow-hidden flex items-center justify-center relative z-10">
-            <ToolCardLogo logoUrl={tool.logo_url} name={tool.name} size={56} compact={compact} imageError={imageError} onError={() => setImageError(true)} />
+            <ToolCardLogo
+              logoUrl={tool.logo_url}
+              name={tool.name}
+              size={56}
+              compact={compact}
+              imageError={imageError}
+              onError={() => setImageError(true)}
+            />
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1.5">
@@ -450,31 +654,54 @@ function ToolCardGrid({ tool, pricingColor, pricingLabel, screenshotUrl, isWellF
               >
                 {tool.name}
               </Link>
-              {tool.is_verified && <VerifiedBadge size="sm" className="relative z-10 shrink-0" />}
+              {tool.is_verified && (
+                <VerifiedBadge size="sm" className="relative z-10 shrink-0" />
+              )}
             </div>
             <div className="mt-0.5 flex items-center gap-1.5 relative z-10">
               {tool.avg_rating > 0 ? (
                 <>
                   <Star className="h-3.5 w-3.5 fill-primary text-primary shrink-0" />
-                  <span className="text-[13px] font-bold leading-none">{tool.avg_rating.toFixed(1)}</span>
-                  <span className="text-[11px] text-muted-foreground">({tool.review_count})</span>
+                  <span className="text-[13px] font-bold leading-none">
+                    {tool.avg_rating.toFixed(1)}
+                  </span>
+                  <span className="text-[11px] text-muted-foreground">
+                    ({tool.review_count})
+                  </span>
                 </>
               ) : (
-                <span className="text-[11px] text-muted-foreground/50">No reviews yet</span>
+                <span className="text-[11px] text-muted-foreground/50">
+                  No reviews yet
+                </span>
               )}
-              <Link href={`/tools?pricing=${tool.pricing_model}`} onClick={(e) => e.stopPropagation()}>
-                <span className={cn('text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border hover:opacity-80 transition-opacity cursor-pointer', pricingColor)}>
-                  {tool.pricing_tags && tool.pricing_tags.length > 0 ? tool.pricing_tags[0] : pricingLabel}
+              <Link
+                href={`/tools?pricing=${tool.pricing_model}`}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <span
+                  className={cn(
+                    "text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border hover:opacity-80 transition-opacity cursor-pointer",
+                    pricingColor,
+                  )}
+                >
+                  {tool.pricing_tags && tool.pricing_tags.length > 0
+                    ? tool.pricing_tags[0]
+                    : pricingLabel}
                 </span>
               </Link>
             </div>
           </div>
         </div>
 
-        <p className="text-[13px] sm:text-[14px] text-muted-foreground line-clamp-2 leading-[1.45] relative z-10">{tool.tagline}</p>
+        <p className="text-[13px] sm:text-[14px] text-muted-foreground line-clamp-2 leading-[1.45] relative z-10">
+          {tool.tagline}
+        </p>
 
         {/* Footer: Track + Compare */}
-        <div className="flex items-center gap-2 mt-auto pt-2 sm:pt-3 border-t border-border relative z-10" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="flex items-center gap-2 mt-auto pt-2 sm:pt-3 border-t border-border relative z-10"
+          onClick={(e) => e.stopPropagation()}
+        >
           <Link
             href={`/tracker?add=${tool.slug}`}
             className="flex-1 h-8 sm:h-9 flex items-center justify-center gap-1.5 text-xs font-semibold rounded-lg border border-border bg-background hover:bg-primary hover:text-white hover:border-primary transition-all duration-150"
@@ -486,20 +713,65 @@ function ToolCardGrid({ tool, pricingColor, pricingLabel, screenshotUrl, isWellF
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 // ---------------------------------------------------------------------------
 // ToolCard — public API (thin router)
 // ---------------------------------------------------------------------------
 
-export function ToolCard({ tool, view = 'grid', cardStyle = 'default', compact = false }: ToolCardProps) {
-  const [imageError, setImageError] = useState(false)
-  const [hasBeenHovered, setHasBeenHovered] = useState(false)
-  const pricingColor = PRICING_BADGE_COLORS[tool.pricing_model] ?? PRICING_BADGE_COLORS.unknown
-  const pricingLabel = PRICING_LABELS[tool.pricing_model] ?? 'Unknown'
-  const screenshotUrl = (tool.screenshot_urls as string[] | null)?.[0] ?? null
-  const wellFavored = false
+function arePropsEqual(prevProps: ToolCardProps, nextProps: ToolCardProps) {
+  // Compare top-level simple props
+  if (
+    prevProps.view !== nextProps.view ||
+    prevProps.cardStyle !== nextProps.cardStyle ||
+    prevProps.compact !== nextProps.compact
+  ) {
+    return false;
+  }
+
+  // Next.js App Router creates new object references for data fetched on the server
+  // So we must do a shallow check of the actual properties of the tool object.
+  // Instead of brittle manual property checks (e.g., missing dynamic properties),
+  // loop over Object.keys to safely verify primitives and array lengths.
+  const prevToolKeys = Object.keys(prevProps.tool);
+  const nextToolKeys = Object.keys(nextProps.tool);
+
+  if (prevToolKeys.length !== nextToolKeys.length) return false;
+
+  for (const key of prevToolKeys) {
+    const prevVal = (prevProps.tool as any)[key];
+    const nextVal = (nextProps.tool as any)[key];
+
+    // Arrays (like pricing_tags, screenshot_urls)
+    if (Array.isArray(prevVal) && Array.isArray(nextVal)) {
+      if (prevVal.length !== nextVal.length) return false;
+      for (let i = 0; i < prevVal.length; i++) {
+        if (prevVal[i] !== nextVal[i]) return false;
+      }
+    }
+    // Primitive or other reference comparison
+    else if (prevVal !== nextVal) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+export const ToolCard = React.memo(function ToolCard({
+  tool,
+  view = "grid",
+  cardStyle = "default",
+  compact = false,
+}: ToolCardProps) {
+  const [imageError, setImageError] = useState(false);
+  const [hasBeenHovered, setHasBeenHovered] = useState(false);
+  const pricingColor =
+    PRICING_BADGE_COLORS[tool.pricing_model] ?? PRICING_BADGE_COLORS.unknown;
+  const pricingLabel = PRICING_LABELS[tool.pricing_model] ?? "Unknown";
+  const screenshotUrl = (tool.screenshot_urls as string[] | null)?.[0] ?? null;
+  const wellFavored = false;
 
   const shared: ResolvedToolProps = {
     tool,
@@ -512,15 +784,15 @@ export function ToolCard({ tool, view = 'grid', cardStyle = 'default', compact =
     setImageError,
     hasBeenHovered,
     setHasBeenHovered,
+  };
+
+  if (view === "list") {
+    return <ToolCardList {...shared} />;
   }
 
-  if (view === 'list') {
-    return <ToolCardList {...shared} />
+  if (cardStyle === "home") {
+    return <ToolCardHome {...shared} />;
   }
 
-  if (cardStyle === 'home') {
-    return <ToolCardHome {...shared} />
-  }
-
-  return <ToolCardGrid {...shared} />
-}
+  return <ToolCardGrid {...shared} />;
+}, arePropsEqual);
