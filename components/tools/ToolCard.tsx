@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, memo } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Star, ExternalLink, Github, DollarSign } from 'lucide-react'
@@ -493,7 +493,7 @@ function ToolCardGrid({ tool, pricingColor, pricingLabel, screenshotUrl, isWellF
 // ToolCard — public API (thin router)
 // ---------------------------------------------------------------------------
 
-export function ToolCard({ tool, view = 'grid', cardStyle = 'default', compact = false }: ToolCardProps) {
+function ToolCardBase({ tool, view = 'grid', cardStyle = 'default', compact = false }: ToolCardProps) {
   const [imageError, setImageError] = useState(false)
   const [hasBeenHovered, setHasBeenHovered] = useState(false)
   const pricingColor = PRICING_BADGE_COLORS[tool.pricing_model] ?? PRICING_BADGE_COLORS.unknown
@@ -524,3 +524,39 @@ export function ToolCard({ tool, view = 'grid', cardStyle = 'default', compact =
 
   return <ToolCardGrid {...shared} />
 }
+
+// Custom equality check for React.memo to handle Next.js App Router server-fetched data
+// It compares primitive props and uses a shallow loop over Object.keys to compare the tool object,
+// iterating element-by-element for arrays to avoid stale UI while preventing unnecessary re-renders.
+function arePropsEqual(prevProps: ToolCardProps, nextProps: ToolCardProps) {
+  if (prevProps.view !== nextProps.view) return false
+  if (prevProps.cardStyle !== nextProps.cardStyle) return false
+  if (prevProps.compact !== nextProps.compact) return false
+
+  const prevTool = prevProps.tool as Record<string, any>
+  const nextTool = nextProps.tool as Record<string, any>
+
+  const keys = Object.keys(prevTool)
+  const nextKeys = Object.keys(nextTool)
+
+  if (keys.length !== nextKeys.length) return false
+
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i]
+    const prevVal = prevTool[key]
+    const nextVal = nextTool[key]
+
+    if (Array.isArray(prevVal) && Array.isArray(nextVal)) {
+      if (prevVal.length !== nextVal.length) return false
+      for (let j = 0; j < prevVal.length; j++) {
+        if (prevVal[j] !== nextVal[j]) return false
+      }
+    } else if (prevVal !== nextVal) {
+      return false
+    }
+  }
+
+  return true
+}
+
+export const ToolCard = memo(ToolCardBase, arePropsEqual)
