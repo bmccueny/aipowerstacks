@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, memo } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Star, ExternalLink, Github, DollarSign } from 'lucide-react'
@@ -493,7 +493,7 @@ function ToolCardGrid({ tool, pricingColor, pricingLabel, screenshotUrl, isWellF
 // ToolCard — public API (thin router)
 // ---------------------------------------------------------------------------
 
-export function ToolCard({ tool, view = 'grid', cardStyle = 'default', compact = false }: ToolCardProps) {
+function ToolCardComponent({ tool, view = 'grid', cardStyle = 'default', compact = false }: ToolCardProps) {
   const [imageError, setImageError] = useState(false)
   const [hasBeenHovered, setHasBeenHovered] = useState(false)
   const pricingColor = PRICING_BADGE_COLORS[tool.pricing_model] ?? PRICING_BADGE_COLORS.unknown
@@ -524,3 +524,49 @@ export function ToolCard({ tool, view = 'grid', cardStyle = 'default', compact =
 
   return <ToolCardGrid {...shared} />
 }
+
+// Optimization: Custom equality check for React.memo to prevent unnecessary re-renders.
+// In Next.js App Router, server-fetched data creates new object references on navigation.
+// Comparing only tool.id causes stale UI bugs (e.g., ratings/upvotes don't update).
+// JSON.stringify is too computationally expensive and generates memory garbage.
+// We use a shallow comparison loop over Object.keys() to check all visually relevant properties.
+// For array properties, we iterate and compare elements instead of just checking length.
+const arePropsEqual = (prevProps: ToolCardProps, nextProps: ToolCardProps) => {
+  // 1. Check primitive props
+  if (
+    prevProps.view !== nextProps.view ||
+    prevProps.cardStyle !== nextProps.cardStyle ||
+    prevProps.compact !== nextProps.compact
+  ) {
+    return false
+  }
+
+  // 2. Check tool object
+  const prevTool = prevProps.tool as Record<string, any>
+  const nextTool = nextProps.tool as Record<string, any>
+
+  if (!prevTool || !nextTool) return prevTool === nextTool
+
+  const keys = Object.keys(prevTool)
+  if (keys.length !== Object.keys(nextTool).length) return false
+
+  for (const key of keys) {
+    const val1 = prevTool[key]
+    const val2 = nextTool[key]
+
+    // Handle array properties (e.g., tags, pricing_tags, use_cases)
+    if (Array.isArray(val1) && Array.isArray(val2)) {
+      if (val1.length !== val2.length) return false
+      for (let i = 0; i < val1.length; i++) {
+        if (val1[i] !== val2[i]) return false
+      }
+    } else if (val1 !== val2) {
+      // Shallow comparison for primitives and other objects
+      return false
+    }
+  }
+
+  return true
+}
+
+export const ToolCard = memo(ToolCardComponent, arePropsEqual)
